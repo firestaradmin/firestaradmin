@@ -47,7 +47,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -751,63 +751,6 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="UVGUI动态内存分配实现原理">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
-          UVGUI动态内存分配实现原理
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
-          
-          @firestaradmin 2020年10月16日22:10:34 UVGUI 动态内存分配实现原理UVGUI的动态内存管理是仿照LVGL写的，这里做一下记录。 一、数据结构分析UVGUI的动态内存管理，是通过一个入口结构体进行管理和分配，其内存块由 ug_mem_ent_t 结构体表示。定义如下： #define MEM_UNIT uint32_t  &#x2F;*The size of this un
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-10-18 00:00" pubdate>
-              2020-10-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/UVGUI/">UVGUI</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/UVGUI/">UVGUI</a>
-            
-              <a href="/tags/memory/">memory</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E9%93%BE%E8%A1%A8%E5%8E%9F%E7%90%86/" target="_self">
           <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="UVGUI链表实现原理">
         </a>
@@ -854,6 +797,63 @@
               <a href="/tags/UVGUI/">UVGUI</a>
             
               <a href="/tags/linklist/">linklist</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="UVGUI动态内存分配实现原理">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
+          UVGUI动态内存分配实现原理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
+          
+          @firestaradmin 2020年10月16日22:10:34 UVGUI 动态内存分配实现原理UVGUI的动态内存管理是仿照LVGL写的，这里做一下记录。 一、数据结构分析UVGUI的动态内存管理，是通过一个入口结构体进行管理和分配，其内存块由 ug_mem_ent_t 结构体表示。定义如下： #define MEM_UNIT uint32_t  &#x2F;*The size of this un
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-10-18 00:00" pubdate>
+              2020-10-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/UVGUI/">UVGUI</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/UVGUI/">UVGUI</a>
+            
+              <a href="/tags/memory/">memory</a>
             
           </div>
         
