@@ -23,14 +23,14 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="@firestaradmin 2020年11月27日16:06:56 FreeRTOS中断浅析一、STM32中断屏蔽的特殊寄存器我们在 STM32 上移植 FreeRTOS 的时候需要重点关注 PRIMASK、FAULTMASK 和 BASEPRI 这三个寄存器，本节就来学习一下这三个寄存器。 1 、PRIMASK 和 和 FAULTMASK  寄存器在许多应用中，需要暂时屏蔽所有的中断一执行一些">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20201127161837420.png">
 <meta property="article:published_time" content="2020-11-26T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-11-26T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="STM32">
 <meta property="article:tag" content="FreeRTOS">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20201127161837420.png">
   
   
   <title>FreeRTOS中断浅析 - Hexo</title>
@@ -287,7 +287,7 @@
 <li>configMAX_SYSCALL_INTERRUPT_PRIORITY&#x3D;&#x3D;5</li>
 <li>configKERNEL_INTERRUPT_PRIORITY&#x3D;&#x3D;15</li>
 </ul>
-<p><img src="/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png" srcset="/img/loading.gif" lazyload alt="image-20201127161837420"></p>
+<p><img src="/.top:888//image-20201127161837420.png" srcset="/img/loading.gif" lazyload alt="image-20201127161837420"></p>
 <p>由于高于 configMAX_SYSCALL_INTERRUPT_PRIORITY 的优先级不会被 FreeRTOS 内核屏蔽，因此那些对实时性要求严格的任务就可以使用这些优先级，比如四轴飞行器中的壁障检测。</p>
 
             </div>

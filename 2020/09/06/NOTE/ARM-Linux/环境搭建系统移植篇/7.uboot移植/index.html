@@ -23,32 +23,32 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="uboot移植一、获取ubootuboot官网的源码，对某一芯片的支持肯定没有原厂完善，所以一般选择原厂的uboot源码。 这里我们以 NXP 官方的 uboot 移植到正点原子的 I.MX6ULL 开发板上为例。 uboot官网下载http:&#x2F;&#x2F;www.denx.de&#x2F;wiki&#x2F;U-Boot&#x2F; 选择源码  ftp下载     选择要下载的版本  从你的板子参考厂商获取修改过的uboot 首先 u">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174610893.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174626000.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174641016.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817175657019.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183254084.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183701255.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817192750821.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818200355231.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818200505813.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818201707668.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818203813549.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818211726560.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818212327169.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818221858986.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818223729557.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224125442.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224138597.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224533045.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818235039839.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112010754.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112039004.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112102964.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112413619.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112518396.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112728189.png">
-<meta property="og:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819114151182.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174610893.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174626000.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174641016.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817175657019.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817183254084.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817183701255.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817192750821.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818200355231.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818200505813.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818201707668.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818203813549.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818211726560.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818212327169.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818221858986.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818223729557.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224125442.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224138597.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224533045.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818235039839.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112010754.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112039004.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112102964.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112413619.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112518396.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112728189.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819114151182.png">
 <meta property="article:published_time" content="2020-09-05T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-05T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
@@ -56,7 +56,7 @@
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="uboot">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174610893.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174610893.png">
   
   
   <title>7| uboot移植 - Hexo</title>
@@ -271,21 +271,21 @@
 <p>这里我们以 NXP 官方的 uboot 移植到正点原子的 I.MX6ULL 开发板上为例。</p>
 <h3 id="uboot官网下载"><a href="#uboot官网下载" class="headerlink" title="uboot官网下载"></a>uboot官网下载</h3><p><code>http://www.denx.de/wiki/U-Boot/</code></p>
 <p>选择源码</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174610893.png" srcset="/img/loading.gif" lazyload alt="image-20200817174610893"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174610893.png" srcset="/img/loading.gif" lazyload alt="image-20200817174610893"></p>
 <p>ftp下载</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174626000.png" srcset="/img/loading.gif" lazyload alt="image-20200817174626000">    选择要下载的版本</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817174641016.png" srcset="/img/loading.gif" lazyload alt="image-20200817174641016"></p>
-<h3 id="从你的板子参考厂商获取修改过的uboot"><a href="#从你的板子参考厂商获取修改过的uboot" class="headerlink" title="从你的板子参考厂商获取修改过的uboot"></a>从你的板子参考厂商获取修改过的uboot</h3><p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817175657019.png" srcset="/img/loading.gif" lazyload alt="image-20200817175657019"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174626000.png" srcset="/img/loading.gif" lazyload alt="image-20200817174626000">    选择要下载的版本</p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817174641016.png" srcset="/img/loading.gif" lazyload alt="image-20200817174641016"></p>
+<h3 id="从你的板子参考厂商获取修改过的uboot"><a href="#从你的板子参考厂商获取修改过的uboot" class="headerlink" title="从你的板子参考厂商获取修改过的uboot"></a>从你的板子参考厂商获取修改过的uboot</h3><p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817175657019.png" srcset="/img/loading.gif" lazyload alt="image-20200817175657019"></p>
 <p>首先 uboot 官方的基本是不会用的，因为支持太弱了。最常用的就是半导体厂商或者开发板厂商的 uboot，如果你用的半导体厂商的评估板，那么就使用半导体厂商的 uboot，如果你是购买的第三方开发板，比如正点原子的 I.MX6ULL 开发板，那么就使用正点原子提供的 uboot 源码（也是在半导体厂商的 uboot 上修改的）。当然了，你也可以在购买了第三方开发板以后使用半导体厂商提供的 uboot，只不过有些外设驱动可能不支持，需要自己移植，这个就是我们常说的 uboot 移植</p>
 <p>uboot 的移植并不是说我们完完全全的从零开始将 uboot 移植到我们现在所使用的开发板或者开发平台上。这个对于我们来说基本是不可能的，这个工作一般是半导体厂商做的，半导<br>体厂商负责将 uboot 移植到他们的芯片上，因此半导体厂商都会自己做一个开发板，这个开发板就叫做原厂开发板。半导体厂商会将 uboot 移植到他们自己的原厂开发板上，测试好以后就会将这个 uboot 发布出去，这就是大家常说的原厂 BSP 包。</p>
 <h2 id="二、uboot初次编译"><a href="#二、uboot初次编译" class="headerlink" title="二、uboot初次编译"></a>二、uboot初次编译</h2><p>首先在 Ubuntu 中安装 ncurses 库，否则编译会报错，安装命令如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs bash">sudo apt-get install libncurses5-dev<br></code></pre></td></tr></table></figure>
 
 <h3 id="1-解压uboot源码"><a href="#1-解压uboot源码" class="headerlink" title="1.解压uboot源码"></a>1.解压uboot源码</h3><p>获取uboot源码后，解压uboot得到这样一个目录</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183254084.png" srcset="/img/loading.gif" lazyload alt="image-20200817183254084"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817183254084.png" srcset="/img/loading.gif" lazyload alt="image-20200817183254084"></p>
 <h3 id="2-配置源码"><a href="#2-配置源码" class="headerlink" title="2.配置源码"></a>2.配置源码</h3><p>在目录下configs里找到默认的配置文件</p>
 <p>如IMX6uLL的官方开发板EVK的配置文件为</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183701255.png" srcset="/img/loading.gif" lazyload alt="image-20200817183701255"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817183701255.png" srcset="/img/loading.gif" lazyload alt="image-20200817183701255"></p>
 <p>使用<code>make xxx_defconfig</code>命令即可配置 uboot，比如：**(注意要在uboot根目录输入命令)**</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_14x14_evk_emmc_defconfig<br></code></pre></td></tr></table></figure>
 
@@ -298,7 +298,7 @@
 </ul>
 <hr>
 <p>这里每次输入那么长，很麻烦，可以直接在Makefile里给<code>ARCH</code> 和<code>CORSS_COMPILE </code>赋值, 或者可以写个SHELL脚本</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817192750821.png" srcset="/img/loading.gif" lazyload alt="image-20200817192750821"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200817192750821.png" srcset="/img/loading.gif" lazyload alt="image-20200817192750821"></p>
 <p>这样我们就可以使用如下简短的命令来编译 uboot 了：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">make mx6ull_14x14_evk_emmc_defconfig<br>make V=1 -j16<br></code></pre></td></tr></table></figure>
 
@@ -354,13 +354,13 @@
 </ul>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs csharp">config TARGET_MX6ULL_LXG_EMMC<br>	<span class="hljs-built_in">bool</span> <span class="hljs-string">&quot;Support mx6ull_lxg_emmc&quot;</span><br>	<span class="hljs-keyword">select</span> MX6ULL<br>	<span class="hljs-keyword">select</span> DM<br>	<span class="hljs-keyword">select</span> DM_THERMAL<br></code></pre></td></tr></table></figure>
 
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818200355231.png" srcset="/img/loading.gif" lazyload alt="image-20200818200355231"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818200355231.png" srcset="/img/loading.gif" lazyload alt="image-20200818200355231"></p>
 <ul>
 <li>在最后一行的 endif 的前一行添加如下内容:</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> <span class="hljs-string">&quot;board/freescale/mx6ull_lxg_emmc/Kconfig&quot;</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818200505813.png" srcset="/img/loading.gif" lazyload alt="image-20200818200505813"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818200505813.png" srcset="/img/loading.gif" lazyload alt="image-20200818200505813"></p>
 <hr>
 <p>到此为止，I.MX6U-ALPHA 开发板就已经添加到 uboot 中了，接下来就是编译这个新添加<br>的开发板。</p>
 <h3 id="5-使用新添加的板子配置编译uboot"><a href="#5-使用新添加的板子配置编译uboot" class="headerlink" title="5.使用新添加的板子配置编译uboot"></a>5.使用新添加的板子配置编译uboot</h3><p>在uboot根目录下新建一个名为 <code>mx6ull_lxg_emmc.sh</code> 的 shell 脚本，在这个shell脚本里面输入如下内容：</p>
@@ -374,9 +374,9 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">grep -nR <span class="hljs-string">&quot;`mx6ull_lxg_emmc.h&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>如果有很多文件都引用了<code>mx6ull_lxg_emmc.h</code>这个头文件，那就说明新板子添加成功，</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818201707668.png" srcset="/img/loading.gif" lazyload alt="image-20200818201707668"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818201707668.png" srcset="/img/loading.gif" lazyload alt="image-20200818201707668"></p>
 <p>编译完成以后就使用 imxdownload 将新编译出来的 u-boot.bin 烧写到 SD 卡中测试</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818203813549.png" srcset="/img/loading.gif" lazyload alt="image-20200818203813549"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818203813549.png" srcset="/img/loading.gif" lazyload alt="image-20200818203813549"></p>
 <p>从图中第一行的编译时间可以看出，这是我们刚刚编译的uboot，此时的 Board 还是“MX6ULL 14x14 EVK”，因为我们参考的 NXP官方的 I.MX6ULL 开发板来添加自己的开发板。接了 LCD 屏幕的话会发现 LCD 屏幕并没有显示 NXP 的 logo，而且从图可以看出此时的网络同样也没识别出来。如果你的开发板和官方的有些区别，默认uboot中的LCD 驱动和网络驱动是有问题的，需要修改。</p>
 <h3 id="6-LCD驱动修改"><a href="#6-LCD驱动修改" class="headerlink" title="6.LCD驱动修改"></a>6.LCD驱动修改</h3><p>一般 uboot 中修改驱动基本都是在 xxx.h 和 xxx.c 这两个文件中进行的，xxx 为板子名称，比如 mx6ull_lxg_emmc.h 和 mx6ull_lxg_emmc.c 这两个文件。<br>一般修改 LCD 驱动重点注意以下几点：<br><strong>①、LCD 所使用的 GPIO，查看 uboot 中 LCD 的 IO 配置是否正确。</strong><br><strong>②、LCD 背光引脚 GPIO 的配置。</strong><br><strong>③、LCD 配置参数是否正确。</strong></p>
 <p>这里以正点原子的 I.MX6U-ALPHA 开发板 为例：</p>
@@ -426,7 +426,7 @@
 <p>I.MX6UL&#x2F;ULL 有两个网络接口 ENET1 和 ENET2，正点原子的 I.MX6U-ALPHA 开发板提供了这两个网络接口，其中 ENET1 和 ENET2 都使用 LAN8720A 作为 PHY 芯片。NXP 官方的I.MX6ULL EVK 开发板使用 KSZ8081 这颗 PHY 芯片，LAN8720A 相比 KSZ8081 具有体积小、外围器件少、价格便宜等优点。</p>
 <p>换了PHY芯片，这个时候官方的驱动就不适用啦，需要修改驱动，使网络工作正常。</p>
 <p>正点原子I.MX6U-ALPHA 开发板 ENET1 的网络原理图如图：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818211726560.png" srcset="/img/loading.gif" lazyload alt="image-20200818211726560"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818211726560.png" srcset="/img/loading.gif" lazyload alt="image-20200818211726560"></p>
 <p>ENET1 的网络 PHY 芯片为 LAN8720A，通过 RMII 接口与 I.MX6ULL 相连，正点原子I.MX6U-ALPHA 开发板的 ENET1 引脚与 NXP 官方的 I.MX6ULL EVK 开发板基本一样，唯独复位引脚不同。从图可以看出，正点原子 I.MX6U-ALPHA 开发板的 ENET1 复位引脚ENET1_RST 接到了 I.M6ULL 的 SNVS_TAMPER7 这个引脚上。</p>
 <p>LAN8720A 内部是有寄存器的，I.MX6ULL 会读取 LAN8720 内部寄存器来判断当前的物理链接状态、连接速度(10M 还是 100M)和双工状态(半双工还是全双工)。I.MX6ULL 通过 MDIO接口来读取 PHY 芯片的内部寄存器，MDIO 接口有两个引脚，ENET_MDC 和 ENET_MDIO，ENET_MDC 提供时钟，ENET_MDIO 进行数据传输。一个 MIDO 接口可以管理 32 个 PHY 芯片，同一个 MDIO 接口下的这些 PHY 使用不同的器件地址来做区分，MIDO 接口通过不同的器件地址即可访问到相应的 PHY 芯片。I.MX6U-ALPHA 开发板 ENET1 上连接的 <strong>LAN8720A器件地址为 0X0</strong>，所示我们要修改 ENET1 网络驱动的话重点就三点：</p>
 <ul>
@@ -435,7 +435,7 @@
 <li>③、LAN8720 驱动</li>
 </ul>
 <p>再来看一下 开发板上的 ENET2 的原理图，如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818212327169.png" srcset="/img/loading.gif" lazyload alt="image-20200818212327169"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818212327169.png" srcset="/img/loading.gif" lazyload alt="image-20200818212327169"></p>
 <p>关于 ENET2 网络驱动的修改也注意一下三点：<br>①、ENET2 的复位引脚，从图可以看出，ENET2 的复位引脚 ENET2_RST 接到了I.MX6ULL 的 SNVS_TAMPER8 上。<br>②、ENET2 所使用的 PHY 芯片器件地址，从图可以看出，<strong>PHY 器件地址为 0X1</strong>。<br>③、LAN8720 驱动，ENET1 和 ENET2 都使用的 LAN8720，所以驱动肯定是一样的。</p>
 <h4 id="2、网络-PHY-地址修改"><a href="#2、网络-PHY-地址修改" class="headerlink" title="2、网络 PHY  地址修改"></a>2、网络 PHY  地址修改</h4><p>首先修改 uboot 中的 ENET1 和 ENET2 的 PHY 地址和驱动，打开<code>mx6ull_alientek_emmc.h</code>这个文件，找到如下代码：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_CMD_NET</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_PING</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_DHCP</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_MII</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_MXC</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_MII</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_ENET_DEV		1</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> (CONFIG_FEC_ENET_DEV == 0)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> IMX_FEC_BASE			ENET_BASE_ADDR</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_MXC_PHYADDR          0x2</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_XCV_TYPE             RMII</span><br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> (CONFIG_FEC_ENET_DEV == 1)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> IMX_FEC_BASE			ENET2_BASE_ADDR</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_MXC_PHYADDR			0x1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_FEC_XCV_TYPE				RMII</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_ETHPRIME			<span class="hljs-string">&quot;FEC&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_PHYLIB</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_PHY_MICREL</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
@@ -489,7 +489,7 @@
 <p>接下来while等待 LAN8720A 软件复位完成，也就是判断 BMCR的 bit15 位是否为 1，为 1 的话表示还没有复位完成。</p>
 <p><code>phy_write(phydev, MDIO_DEVAD_NONE, MII_BMCR, bmcr_reg);</code>重新向 BMCR 寄存器写入以前<br>的值，也就是之前读出的那个值。</p>
 <p>至此网络的复位引脚驱动修改完成，重新编译 uboot，然后将 u-boot.bin 烧写到 SD 卡中并启动，uboot 启动信息如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818221858986.png" srcset="/img/loading.gif" lazyload alt="image-20200818221858986"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818221858986.png" srcset="/img/loading.gif" lazyload alt="image-20200818221858986"></p>
 <p>可以看到“Net： FEC1”这一行，提示当前使用的 FEC1 这个网口，也就是 ENET2。</p>
 <h4 id="6、uboot网络环境变量的配置"><a href="#6、uboot网络环境变量的配置" class="headerlink" title="6、uboot网络环境变量的配置"></a>6、uboot网络环境变量的配置</h4><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> ipaddr <span class="hljs-number">192.168.0.120</span>  //开发板 IP 地址<br><span class="hljs-attribute">setenv</span> ethaddr <span class="hljs-number">00</span>:<span class="hljs-number">04</span>:<span class="hljs-number">9</span>f:<span class="hljs-number">04</span>:d2:<span class="hljs-number">35</span> //开发板网卡 MAC 地址<br><span class="hljs-attribute">setenv</span> gatewayip <span class="hljs-number">192.168.0.1</span> //开发板默认网关<br><span class="hljs-attribute">setenv</span> netmask <span class="hljs-number">255.255.255.0</span>  //开发板子网掩码<br><span class="hljs-attribute">setenv</span> serverip <span class="hljs-number">192.168.0.111</span>  //服务器地址，也就是 Ubuntu 地址<br><span class="hljs-attribute">saveenv</span> //保存环境变量<br></code></pre></td></tr></table></figure>
 
@@ -497,16 +497,16 @@
 <p>设置好环境变量以后就可以在 uboot 中使用网络了，用网线将 I.MX6U-ALPHA 上的 ENET2与电脑或者路由器连接起来，保证开发板和电脑在同一个网段内，通过 ping 命令来测试一下网络连接，命令如下：</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ping</span> <span class="hljs-number">192.168.0.111</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818223729557.png" srcset="/img/loading.gif" lazyload alt="image-20200818223729557"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818223729557.png" srcset="/img/loading.gif" lazyload alt="image-20200818223729557"></p>
 <p>从图可以看出，有“host 192.168.1.250 is alive”这句，说明 ping 主机成功，说明ENET2网络工作正常。再来测试一下ENET1的网络是否正常工作，打开mx6ull_lxg_emmc.h，将 CONFIG_FEC_ENET_DEV 改为 0，然后重新编译一下 uboot 并烧写到 SD 卡中重启。重启开发板</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224125442.png" srcset="/img/loading.gif" lazyload alt="image-20200818224125442"></p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224138597.png" srcset="/img/loading.gif" lazyload alt="image-20200818224138597"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224125442.png" srcset="/img/loading.gif" lazyload alt="image-20200818224125442"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224138597.png" srcset="/img/loading.gif" lazyload alt="image-20200818224138597"></p>
 <p>从图可以看出，ping 主机也成功，说明 ENET1 网络也工作正常，至此，I.MX6U-ALPHA 开发板的两个网络都工作正常了.</p>
 <h3 id="8、其他需要修改的地方"><a href="#8、其他需要修改的地方" class="headerlink" title="8、其他需要修改的地方"></a>8、其他需要修改的地方</h3><p>在 uboot 启动信息中会有“Board: MX6ULL 14x14 EVK”这一句，也就是说板子名字为“MX6ULL 14x14 EVK”，要将其改为我们所使用的板子名字，比如“MX6ULL LXG EMMC”或者“MX6ULL LXG NAND”。打开文件 mx6ull_lxg_emmc.c，找到函数checkboard，将其改为如下所示内容：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">checkboard</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (is_mx6ull_9x9_evk())<br>		<span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;Board: MX6ULL 9x9 EVK\n&quot;</span>);<br>	<span class="hljs-keyword">else</span><br>		<span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;Board: MX6ULL LXG EMMC\n&quot;</span>);<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>修改完成以后重新编译 uboot 并烧写到 SD 卡中验证，uboot 启动信息如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224533045.png" srcset="/img/loading.gif" lazyload alt="image-20200818224533045"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818224533045.png" srcset="/img/loading.gif" lazyload alt="image-20200818224533045"></p>
 <p>从图可以看出，Board 变成了“MX6ULL LXG EMMC”。至此 uboot 的驱动部分就修改完成了，uboot 移植也完成了，uboot 的最终目的就是启动 Linux 内核，所以需要通过启动 Linux 内核来判断 uboot 移植是否成功。在启动 Linux 内核之前我们先来学习两个重要的环境变量 bootcmd 和 bootargs。</p>
 <h2 id="四、uboot下的环境变量"><a href="#四、uboot下的环境变量" class="headerlink" title="四、uboot下的环境变量"></a>四、uboot下的环境变量</h2><p>uboot 中有两个非常重要的环境变量 bootcmd 和 bootargs，接下来看一下这两个环境变量。</p>
 <p>bootcmd 和 bootagrs 是采用类似 shell 脚本语言编写的，里面有很多的变量引用，这些变量其实都是环境变量，有很多是NXP自己定义的。文 件 mx6ull_lxg_emmc.h 中的宏<code>CONFIG_EXTRA_ENV_SETTINGS</code>保存着这些环境变量的默认值，内容如下：</p>
@@ -590,18 +590,18 @@
 <p>在 Linux 内核源码里面有相应的文档讲解如何设置，文档为Documentation&#x2F;filesystems&#x2F;nfs&#x2F;nfsroot.txt，格式如下：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby">root=<span class="hljs-regexp">/dev/nfs</span> nfsroot=[&lt;server-ip&gt;<span class="hljs-symbol">:</span>]&lt;root-dir&gt;[,&lt;nfs-options&gt;] <br>ip=&lt;client-ip&gt;<span class="hljs-symbol">:&lt;server-ip&gt;</span><span class="hljs-symbol">:&lt;gw-ip&gt;</span><span class="hljs-symbol">:&lt;netmask&gt;</span>:<br>&lt;hostname&gt;<span class="hljs-symbol">:&lt;device&gt;</span><span class="hljs-symbol">:&lt;autoconf&gt;</span><span class="hljs-symbol">:&lt;dns0-ip&gt;</span><span class="hljs-symbol">:&lt;dns1-ip&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p><server-ip>：   服务器 IP 地址，也就是存放根文件系统主机的 IP 地址，那就是Ubuntu 的 IP地址，比如我的 Ubuntu 主机 IP 地址为 192.168.1.250。</p>
-<p><root-dir> ：   根文件系统的存放路径，比如我的就是&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;nfs&#x2F;rootfs。</p>
-<p><nfs-options>：  NFS 的其他可选选项，一般不设置。</p>
-<p><client-ip> ：   客户端 IP 地址，也就是我们开发板的 IP 地址，Linux 内核启动以后就会使用此 IP 地址来配置开发板。</p>
-<p><server-ip> ：   服务器 IP 地址，前面已经说了。</p>
-<p><gw-ip> ：     网关地址，我的就是 192.168.1.1。</p>
-<p><netmask>：    子网掩码，我的就是 255.255.255.0。</p>
-<p><hostname>：   客户机的名字，一般不设置，此值可以空着。</p>
-<p><device> ：     设备名，也就是网卡名，一般是 eth0，eth1….，正点原子的 I.MX6U-ALPHA 开发板的 ENET2 为 eth0，ENET1 为 eth1。如果你的电脑只有一个网卡，那么基本只能是 eth0。这里我们使用 ENET2，所以网卡名就是 eth0。</p>
-<p><autoconf> ：   自动配置，一般不使用，所以设置为 off。</p>
-<p><dns0-ip> ：   DNS0 服务器 IP 地址，不使用。</p>
-<p><dns1-ip> ：   DNS1 服务器 IP 地址，不使用。</p>
+<p><server-ip>：   服务器 IP 地址，也就是存放根文件系统主机的 IP 地址，那就是Ubuntu 的 IP地址，比如我的 Ubuntu 主机 IP 地址为 192.168.1.250。</server-ip></p>
+<p><root-dir> ：   根文件系统的存放路径，比如我的就是&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;nfs&#x2F;rootfs。</root-dir></p>
+<p><nfs-options>：  NFS 的其他可选选项，一般不设置。</nfs-options></p>
+<p><client-ip> ：   客户端 IP 地址，也就是我们开发板的 IP 地址，Linux 内核启动以后就会使用此 IP 地址来配置开发板。</client-ip></p>
+<p><server-ip> ：   服务器 IP 地址，前面已经说了。</server-ip></p>
+<p><gw-ip> ：     网关地址，我的就是 192.168.1.1。</gw-ip></p>
+<p><netmask>：    子网掩码，我的就是 255.255.255.0。</netmask></p>
+<p><hostname>：   客户机的名字，一般不设置，此值可以空着。</hostname></p>
+<p><device> ：     设备名，也就是网卡名，一般是 eth0，eth1….，正点原子的 I.MX6U-ALPHA 开发板的 ENET2 为 eth0，ENET1 为 eth1。如果你的电脑只有一个网卡，那么基本只能是 eth0。这里我们使用 ENET2，所以网卡名就是 eth0。</device></p>
+<p><autoconf> ：   自动配置，一般不使用，所以设置为 off。</autoconf></p>
+<p><dns0-ip> ：   DNS0 服务器 IP 地址，不使用。</dns0-ip></p>
+<p><dns1-ip> ：   DNS1 服务器 IP 地址，不使用。</dns1-ip></p>
 <hr>
 <h6 id="Pc机Ubuntn-的nfs配置："><a href="#Pc机Ubuntn-的nfs配置：" class="headerlink" title="Pc机Ubuntn 的nfs配置："></a>Pc机Ubuntn 的nfs配置：</h6><p>安装NFS服务：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo apt-get install nfs-kernel-server rpcbind<br></code></pre></td></tr></table></figure>
@@ -626,14 +626,14 @@
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-built_in">make</span> mx6ull_lxg_emmc_defconfig<br><span class="hljs-built_in">make</span> menuconfig<br></code></pre></td></tr></table></figure>
 
 <p>打开后的图形化界面如图 34.1.1 所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818235039839.png" srcset="/img/loading.gif" lazyload alt="image-20200818235039839"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200818235039839.png" srcset="/img/loading.gif" lazyload alt="image-20200818235039839"></p>
 <h3 id="使能-dns-命令"><a href="#使能-dns-命令" class="headerlink" title="使能 dns 命令"></a>使能 dns 命令</h3><p>我们就以如何使能 dns 命令为例，讲解一下如何通过图形化界面来配置 uboot。进入“Command line interface —&gt;”这个配置项，此配置项用于配置 uboot 的命令，进入以后如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112010754.png" srcset="/img/loading.gif" lazyload alt="image-20200819112010754"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112010754.png" srcset="/img/loading.gif" lazyload alt="image-20200819112010754"></p>
 <p>从图 34.1.2 可以看出，有很多配置项，这些配置项也有子配置项，</p>
 <p>选择“Network commands—&gt;”，进入网络相关命令配置项，如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112039004.png" srcset="/img/loading.gif" lazyload alt="image-20200819112039004"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112039004.png" srcset="/img/loading.gif" lazyload alt="image-20200819112039004"></p>
 <p>从图可以看出，uboot 中有很多和网络有关的命令，比如 bootp、tftpboot、dhcp 等等。选中 dns，然后按下键盘上的“Y”键，此时 dns 前面的“[ ]”变成了“[ * ]”，如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112102964.png" srcset="/img/loading.gif" lazyload alt="image-20200819112102964"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112102964.png" srcset="/img/loading.gif" lazyload alt="image-20200819112102964"></p>
 <p>每个选项有 3 种编译选项：</p>
 <ul>
 <li>编译进 uboot 中(也就是编译进 u-boot.bin 中)</li>
@@ -645,11 +645,11 @@
 <p>有些功能模块是支持编译为模块的，这个一般在 Linux 内核里面很常用，uboot 下面不使用，如果要将某个功能编译为模块，那就按下“M”，此时“[ ]”就会变为“&lt; M &gt;”。</p>
 <p>细心的朋友应该会发现，在 mx6ull_lxg_emmc.h 里面我们配置使能了 dhcp 和 ping 命令，但是在图 中 dhcp 和 ping 前面的“[ ]”并不是“[ * ]”，也就是说不编译 dhcp 和 ping命令，这不是冲突了吗？实际情况是 dhcp 和 ping 命令是会编译的。之所以在图中没有体现出来时因为我们是直接在mx6ull_lxg_emmc.h 中定义的宏 CONFIG_CMD_PING 和CONFIG_CMD_DHCP，而 menuconfig 是通过读取.config 文件来判断使能了哪些功能，.config里面并没有宏CONFIG_CMD_PING ,CONFIG_CMD_DHCP，所以menuconfig就会识别出错。</p>
 <p>选中 dns，然后按下“H”或者“?”键可以打开 dns 命令的提示信息，如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112413619.png" srcset="/img/loading.gif" lazyload alt="image-20200819112413619"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112413619.png" srcset="/img/loading.gif" lazyload alt="image-20200819112413619"></p>
 <hr>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112518396.png" srcset="/img/loading.gif" lazyload alt="image-20200819112518396"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112518396.png" srcset="/img/loading.gif" lazyload alt="image-20200819112518396"></p>
 <p>保存会询问是否保存新的配置文件，通过键盘的←或→键来选择“Yes”项，然后按下键盘上的回车键确认保存。至此，我们就完成了通过图形界面使能了 uboot 的 dns 命令，打开.config文件，会发现多了“CONFIG_CMD_DNS&#x3D;y”这一行，如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819112728189.png" srcset="/img/loading.gif" lazyload alt="image-20200819112728189"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819112728189.png" srcset="/img/loading.gif" lazyload alt="image-20200819112728189"></p>
 <p>使用如下命令编译 uboot：</p>
 <p><code>make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></p>
 <p>千万不能使用如下命令：</p>
@@ -658,7 +658,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">setenv dnsip 114.114.114.114<br>saveenv<br></code></pre></td></tr></table></figure>
 
 <p>设置好以后就可以使用 dns 命令查看百度官网的 IP 地址了，输入命令：<br><code>dns www.baidu.com</code><br>结果如图所示：</p>
-<p><img src="/7.uboot%E7%A7%BB%E6%A4%8D/image-20200819114151182.png" srcset="/img/loading.gif" lazyload alt="image-20200819114151182"></p>
+<p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7/image-20200819114151182.png" srcset="/img/loading.gif" lazyload alt="image-20200819114151182"></p>
 <p>从图可以看出，“<a target="_blank" rel="noopener" href="http://www.baidu.com”的/">www.baidu.com”的</a> IP 地址，说明 dns 命令工作正常。这个就是通过图形化命令来配置 uboot，一般用来使能一些命令还是很方便的，这样就不需要到处找命令的配置宏是什么，然后在到配置文件里面去定义。</p>
 <h3 id="menuconfig-图形化配置原理"><a href="#menuconfig-图形化配置原理" class="headerlink" title="menuconfig 图形化配置原理"></a>menuconfig 图形化配置原理</h3><p>参考正点原子I.MX6U驱动开发指南的第34.2节。</p>
 <h3 id="Kconfig-语法简介"><a href="#Kconfig-语法简介" class="headerlink" title="Kconfig  语法简介"></a>Kconfig  语法简介</h3><p>参考正点原子I.MX6U驱动开发指南的第34.2节。</p>

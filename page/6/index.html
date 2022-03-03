@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/" target="_self">
-          9| Linux 中断实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/8%E3%80%81Linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          8| Linux  内核定时器实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/8%E3%80%81Linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux 中断实验不管是裸机实验还是 Linux 下的驱动实验，中断都是频繁使用的功能，在裸机中使用中断我们需要做一大堆的工作，比如配置寄存器，使能 IRQ 等等。Linux 内核提供了完善的中断框架，我们只需要申请中断，然后注册中断处理函数即可，使用非常方便，不需要一系列复杂的寄存器配置。本章我们就来学习一下如何在 Linux 下使用中断。 一、 Linux 中断简介1|Linux  中断 A
+          Linux  内核定时器实验定时器是我们最常用到的功能，一般用来完成定时功能，本章我们就来学习一下 Linux 内核提供的定时器 API 函数，通过这些定时器 API 函数我们可以完成很多要求定时的应用。Linux内核也提供了短延时函数，比如微秒、纳秒、毫秒延时函数，本章我们就来学习一下这些和时间有关的功能。 一、Linux  时间管理和内核定时器简介1|内核时间管理简介学习过 UCOS 或 Fr
         </a>
       </p>
 
@@ -230,70 +230,11 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
-            
-              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
-          4| Linux  设备树
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
-          
-          Linux  设备树什么是“设备树”，本章我们就来详细的谈一谈设备树。掌握设备树是 Linux 驱动开发人员必备的技能！因为在新版本的 Linux 中，ARM 相关的驱动全部采用了设备树(也有支持老式驱动的，比较少)，最新出的 CPU 其驱动开发也基本都是基于设备树的，比如 ST 新出的 STM32MP157、NXP的I.MX8系列等。 我们所使用的Linux版本为4.1.15，其支持设备树，所以
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-11 00:00" pubdate>
-              2020-09-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Embedded/">Embedded</a>
             
               <a href="/tags/ARM/">ARM</a>
             
-              <a href="/tags/Linux/">Linux</a>
-            
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
@@ -346,9 +287,68 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
+              <a href="/tags/Linux/">Linux</a>
+            
               <a href="/tags/ARM/">ARM</a>
             
+              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
+          4| Linux  设备树
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
+          
+          Linux  设备树什么是“设备树”，本章我们就来详细的谈一谈设备树。掌握设备树是 Linux 驱动开发人员必备的技能！因为在新版本的 Linux 中，ARM 相关的驱动全部采用了设备树(也有支持老式驱动的，比较少)，最新出的 CPU 其驱动开发也基本都是基于设备树的，比如 ST 新出的 STM32MP157、NXP的I.MX8系列等。 我们所使用的Linux版本为4.1.15，其支持设备树，所以
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-11 00:00" pubdate>
+              2020-09-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Embedded/">Embedded</a>
+            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -405,9 +405,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -462,9 +462,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -519,9 +519,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -576,9 +576,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -633,9 +633,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
@@ -745,9 +745,9 @@
             
               <a href="/tags/Embedded/">Embedded</a>
             
-              <a href="/tags/ARM/">ARM</a>
-            
               <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/ARM/">ARM</a>
             
           </div>
         

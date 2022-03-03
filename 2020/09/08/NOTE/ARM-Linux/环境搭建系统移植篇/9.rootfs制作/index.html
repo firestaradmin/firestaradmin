@@ -23,36 +23,36 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="根文件系统rootfs构建Linux“三巨头”除了uboot、linux-kernel，就剩最后一个 rootfs(根文件系统)了 这里我们就来学习一下根文件系统的组成以及如何构建根文件系统，这是 Linux 移植的最后一步。根文件系统构建好以后就意味着我们已经拥有了一个完整的、可以运行的最小系统。 以后我们就在这个最小系统上编写、测试 Linux 驱动，移植一些第三方组件，逐步的完善这个最小系统">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819184433558.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185354041.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185410941.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185909349.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819191938958.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192134684.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192414064.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192630679.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192900203.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193104374.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193855569.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193944234.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819194904576.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195259649.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195519385.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195915564.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200024505.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200209958.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200416444.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819221525029.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819223835685.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819224700923.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819231003064.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232015712.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232131493.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232935309.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232952811.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233330591.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233513402.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233819089.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819184433558.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185354041.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185410941.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185909349.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819191938958.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192134684.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192414064.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192630679.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192900203.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193104374.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193855569.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193944234.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819194904576.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195259649.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195519385.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195915564.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200024505.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200209958.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200416444.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819221525029.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819223835685.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819224700923.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819231003064.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232015712.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232131493.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232935309.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232952811.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233330591.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233513402.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233819089.png">
 <meta property="article:published_time" content="2020-09-07T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-07T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
@@ -60,7 +60,7 @@
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="rootfs">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819184433558.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819184433558.png">
   
   
   <title>9| BusyBox根文件系统rootfs构建 - Hexo</title>
@@ -288,7 +288,7 @@
 <figure class="highlight jboss-cli"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-keyword">cd</span> / <span class="hljs-string">//</span>进入根目录<br></code></pre></td></tr></table></figure>
 
 <p>进入根目录以后输入“ls”命令查看根目录下的内容都有哪些，结果如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819184433558.png" srcset="/img/loading.gif" lazyload alt="image-20200819184433558"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819184433558.png" srcset="/img/loading.gif" lazyload alt="image-20200819184433558"></p>
 <p>图中根目录下子目录和文件不少，但是这些都是 Ubuntu 所需要的，其中有很多子目录和文件我们嵌入式 Linux 是用不到的，所以这里就讲解一些常用的子目录：</p>
 <ul>
 <li><p><strong>1 、&#x2F;bin  目录</strong></p>
@@ -329,9 +329,9 @@
 <h2 id="二、BusyBox-构建根文件系统"><a href="#二、BusyBox-构建根文件系统" class="headerlink" title="二、BusyBox  构建根文件系统"></a>二、BusyBox  构建根文件系统</h2><h3 id="1、BusyBox-简介"><a href="#1、BusyBox-简介" class="headerlink" title="1、BusyBox  简介"></a>1、BusyBox  简介</h3><p>上面说了，根文件系统里面就是一堆的可执行文件和其他文件组成的？难道我们得一个一个的从网上去下载这些文件？显然这是不现实的！那么有没有人或者组织专门干这个事呢？他们负责“收集”这些文件，然后将其打包，像我们这样的开发者可以直接拿来用。</p>
 <p>答案是有的，它就叫做 <strong>BusyBox</strong>！其名字分为“Busy”和“Box”，也就是忙碌的盒子。盒子是用来放东西的，忙碌的是因为它要提供根文件系统所需的文件，所以忙碌。BusyBox 是一个集成了大量的 Linux 命令和工具的软件，像 ls、mv、ifconfig 等命令 BusyBox 都会提供。BusyBox 就是一个大的工具箱，这个工具箱里面集成了 Linux 的许多工具和命令。一般下载 BusyBox 的源码，然后配置 BusyBox，选择自己想要的功能，最后编译即可。</p>
 <p><strong>BusyBox</strong> 可以在其官网下载到，官网地址为：<a target="_blank" rel="noopener" href="https://busybox.net/%EF%BC%8C%E5%AE%98%E7%BD%91%E6%AF%94%E8%BE%83%E7%AE%80%E9%99%8B%EF%BC%8C%E5%A6%82%E5%9B%BE%E6%89%80%E7%A4%BA%EF%BC%9A">https://busybox.net/，官网比较简陋，如图所示：</a></p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185354041.png" srcset="/img/loading.gif" lazyload alt="image-20200819185354041"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185354041.png" srcset="/img/loading.gif" lazyload alt="image-20200819185354041"></p>
 <p>在官网左侧的“Get BusyBox”栏有一行“Download Source”，点击“Download Source”即可打开 BusyBox 的下载页，如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185410941.png" srcset="/img/loading.gif" lazyload alt="image-20200819185410941"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185410941.png" srcset="/img/loading.gif" lazyload alt="image-20200819185410941"></p>
 <p>BusyBox 准备好以后就可以构建根文件系统了。</p>
 <h3 id="2、编译-BusyBox-构建根文件系统"><a href="#2、编译-BusyBox-构建根文件系统" class="headerlink" title="2、编译 BusyBox  构建根文件系统"></a>2、编译 BusyBox  构建根文件系统</h3><p>一般我们在 Linux 驱动开发的时候都是通过 nfs 挂载根文件系统的，当产品最终上市开卖的时候才会将根文件系统烧写到 EMMC 或者 NAND 中。</p>
 <p>所以要根据之前的教程，设置的 nfs 服务器目录，我们在nfs目录中创建一个名为 rootfs 的子目录(名字大家可以随意起，为了方便就用了 rootfs)，比如我的电脑中“&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;nfs”就是我设置的 NFS 服务器目录，使用如下命令创建名为rootfs 的子目录：</p>
@@ -341,7 +341,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -vxjf busybox-1.29.0.tar.bz2<br></code></pre></td></tr></table></figure>
 
 <p>解压完成以后进入到 busybox-1.29.0 目录中，此目录中的文件和文件夹如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819185909349.png" srcset="/img/loading.gif" lazyload alt="image-20200819185909349"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819185909349.png" srcset="/img/loading.gif" lazyload alt="image-20200819185909349"></p>
 <h4 id="1-、修改-Makefile-，添加编译器"><a href="#1-、修改-Makefile-，添加编译器" class="headerlink" title="1 、修改 Makefile ，添加编译器"></a>1 、修改 Makefile ，添加编译器</h4><p>同 Uboot 和 Linux 移植一样，打开 busybox 的顶层 Makefile，添加 ARCH 和CROSS_COMPILE的值，如下所示：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs"><br></code></pre></td></tr></table></figure>
 
@@ -373,43 +373,43 @@
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span><br></code></pre></td></tr></table></figure>
 
 <p>打开以后如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819191938958.png" srcset="/img/loading.gif" lazyload alt="image-20200819191938958"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819191938958.png" srcset="/img/loading.gif" lazyload alt="image-20200819191938958"></p>
 <p>配置路径如下：</p>
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livescript">Location:<br>	-&gt; Settings<br>		-&gt; Build <span class="hljs-keyword">static</span> binary (<span class="hljs-literal">no</span> shared libs)<br></code></pre></td></tr></table></figure>
 
 <p>选项“**Build static binary (no shared libs)**”用来决定是静态编译 busybox 还是动态编译，静态编译的话就不需要库文件，但是编译出来的库会很大。动态编译的话要求根文件系统中有库文件，但是编译出来的 busybox 会小很多。</p>
 <p>这里我们不能采用静态编译！因为采用静态编译的话 DNS 会出问题！无法进行域名解析，配置如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192134684.png" srcset="/img/loading.gif" lazyload alt="image-20200819192134684"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192134684.png" srcset="/img/loading.gif" lazyload alt="image-20200819192134684"></p>
 <p>继续配置如下路径配置项：</p>
 <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs clean">Location:<br>	-&gt; Settings<br>		-&gt; vi-style line editing commands<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192414064.png" srcset="/img/loading.gif" lazyload alt="image-20200819192414064"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192414064.png" srcset="/img/loading.gif" lazyload alt="image-20200819192414064"></p>
 <p>继续配置如下路径配置项：</p>
 <figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs coq">Location:<br>	-&gt; Linux <span class="hljs-keyword">Module</span> Utilities<br>		-&gt; Simplified modutils<br></code></pre></td></tr></table></figure>
 
 <p>默认会选中“<strong>Simplified modutils</strong>”，这里我们要取消勾选！！结果如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192630679.png" srcset="/img/loading.gif" lazyload alt="image-20200819192630679"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192630679.png" srcset="/img/loading.gif" lazyload alt="image-20200819192630679"></p>
 <p>继续配置如下路径配置项：</p>
 <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs clean">Location:<br>	-&gt; Linux System Utilities<br>		-&gt; mdev (<span class="hljs-number">16</span> kb) <span class="hljs-comment">//确保下面的全部选中，默认都是选中的</span><br></code></pre></td></tr></table></figure>
 
 <p>结果如图：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819192900203.png" srcset="/img/loading.gif" lazyload alt="image-20200819192900203"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819192900203.png" srcset="/img/loading.gif" lazyload alt="image-20200819192900203"></p>
 <p>最后就是使能 busybox 的 unicode 编码以支持中文，配置路径如下：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">Location:<br>	-&gt; Settings<br>		-&gt; Support Unicode <span class="hljs-regexp">//</span>选中<br>			-&gt; Check <span class="hljs-variable">$LC_ALL</span>, <span class="hljs-variable">$LC_CTYPE</span> and <span class="hljs-variable">$LANG</span> environment variables  <span class="hljs-regexp">//</span>选中<br></code></pre></td></tr></table></figure>
 
 <p>结果如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193104374.png" srcset="/img/loading.gif" lazyload alt="image-20200819193104374"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193104374.png" srcset="/img/loading.gif" lazyload alt="image-20200819193104374"></p>
 <p>busybox 的配置就到此结束了，大家也可以根据自己的实际需求选择配置其他的选项，不过对于初学者笔者不建议再做其他的修改，可能会出现编译出错的情况发生。</p>
 <h4 id="4、编译BusyBox"><a href="#4、编译BusyBox" class="headerlink" title="4、编译BusyBox"></a>4、编译BusyBox</h4><p>配置好 busybox 以后就可以编译了，我们可以指定编译结果的存放目录，我们肯定要将编译结果存放到前面创建的 rootfs 目录中，输入如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">make<br>make install CONFIG_PREFIX=/home/firestaradmin/linux/nfs/rootfs<br></code></pre></td></tr></table></figure>
 
 <p>COFIG_PREFIX指定编译结果的存放目录，比如我存放到“&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;nfs&#x2F;rootfs”目录中，等待编译完成。</p>
 <p>编译完成以后如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193855569.png" srcset="/img/loading.gif" lazyload alt="image-20200819193855569"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193855569.png" srcset="/img/loading.gif" lazyload alt="image-20200819193855569"></p>
 <p>编译完成以后会在 busybox 的所有工具和文件就会被安装到 rootfs 目录中.</p>
 <p>rootfs 目录内容如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819193944234.png" srcset="/img/loading.gif" lazyload alt="image-20200819193944234"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819193944234.png" srcset="/img/loading.gif" lazyload alt="image-20200819193944234"></p>
 <p>从图 可以看出，rootfs 目录下有 bin、sbin 和 usr 这三个目录，以及 linuxrc 这个文件。前面说过 Linux 内核 init 进程最后会查找用户空间的 init 程序，找到以后就会运行这个用户空间的 init 程序，从而切换到用户态。</p>
 <p>如果 bootargs 设置 init&#x3D;&#x2F;linuxrc，那么 linuxrc 就是可以作为用户空间的 init 程序，所以用户态空间的 init 程序是 busybox 来生成的。</p>
 <p>busybox 的工作就完成了，但是此时的根文件系统还不能使用，还需要一些其他的文件，我<br>们继续来完善 rootfs。</p>
@@ -424,7 +424,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> *so* *.a /home/firestaradmin/linux/nfs/rootfs/lib/ -d<br></code></pre></td></tr></table></figure>
 
 <p><strong>后面的“-d”表示拷贝符号链接</strong>，这里有个比较特殊的库文件：ld-linux-armhf.so.3，此库文件也是个符号链接，相当于 Windows 下的快捷方式。会链接到库 ld-2.19-2014.08-1-git.so 上，输入命令“ls ld-linux-armhf.so.3 -l”查看此文件详细信息，如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819194904576.png" srcset="/img/loading.gif" lazyload alt="image-20200819194904576"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819194904576.png" srcset="/img/loading.gif" lazyload alt="image-20200819194904576"></p>
 <p>从图  可以看出，<strong>ld-linux-armhf.so.3</strong> 后面有个“-&gt;”，表示其是个软连接文件，链接到文件 <strong>ld-2.19-2014.08-1-git.so</strong>，因为其是一个“快捷方式”，因此大小只有 24B。但是，ld-linux-armhf.so.3 不能作为符号链接，否则的话在根文件系统中执行程序无法执行！所以我们需要 ld-linux-armhf.so.3 完成逆袭，由“快捷方式”变为“本尊”，方法很简单，那就是重新复制 ld-linux-armhf.so.3，只是不复制软链接即可，先将 rootfs&#x2F;lib 中的 ld-linux-armhf.so.3 文件删除掉，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> ld-linux-armhf.so.3<br></code></pre></td></tr></table></figure>
 
@@ -432,7 +432,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> ld-linux-armhf.so.3 /home/firestaradmin/linux/nfs/rootfs/lib/<br></code></pre></td></tr></table></figure>
 
 <p>拷贝完成以后再到 rootfs&#x2F;lib 目录下查看 ld-linux-armhf.so.3 文件详细信息，如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195259649.png" srcset="/img/loading.gif" lazyload alt="image-20200819195259649"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195259649.png" srcset="/img/loading.gif" lazyload alt="image-20200819195259649"></p>
 <p>从图 可以看出，此时 ld-linux-armhf.so.3 已经不是软连接了，而是实实在在的一个库文件，而且文件大小为 724392B。</p>
 <p>继续进入如下目录中：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/arm/g</span>cc-linaro-<span class="hljs-number">4.9</span>.<span class="hljs-number">4</span>-<span class="hljs-number">2017.01</span>-x86_64_arm-linux-gnueabihf<span class="hljs-regexp">/arm-linux-gnueabihf/</span>lib<br></code></pre></td></tr></table></figure>
@@ -441,7 +441,7 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">cp *so* *.a <span class="hljs-regexp">/home/</span>zuozhongkai<span class="hljs-regexp">/linux/</span>nfs<span class="hljs-regexp">/rootfs/</span>lib/ -d<br></code></pre></td></tr></table></figure>
 
 <p>rootfs&#x2F;lib 目录的库文件就这些了，完成以后的 rootfs&#x2F;lib 目录如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195519385.png" srcset="/img/loading.gif" lazyload alt="image-20200819195519385"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195519385.png" srcset="/img/loading.gif" lazyload alt="image-20200819195519385"></p>
 <h5 id="2-、向-rootfs-的“usr-x2F-lib-”目录添加库文件"><a href="#2-、向-rootfs-的“usr-x2F-lib-”目录添加库文件" class="headerlink" title="2 、向 rootfs  的“usr&#x2F;lib ”目录添加库文件"></a>2 、向 rootfs  的“usr&#x2F;lib ”目录添加库文件</h5><p>在 rootfs 的 usr 目录下创建一个名为 lib 的目录，将如下目录中的库文件拷贝到 <strong>rootfs&#x2F;usr&#x2F;lib</strong>目录下：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/arm/g</span>cc-linaro-<span class="hljs-number">4.9</span>.<span class="hljs-number">4</span>-<span class="hljs-number">2017.01</span>-x86_64_arm-linux-gnueabihf<span class="hljs-regexp">/arm-linux-gnueabihf/</span>libc<span class="hljs-regexp">/usr/</span>lib<br></code></pre></td></tr></table></figure>
 
@@ -449,20 +449,20 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> *so* *.a /home/firestaradmin/linux/nfs/rootfs/usr/lib/ -d<br></code></pre></td></tr></table></figure>
 
 <p>完成以后的 rootfs&#x2F;usr&#x2F;lib 目录如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819195915564.png" srcset="/img/loading.gif" lazyload alt="image-20200819195915564"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819195915564.png" srcset="/img/loading.gif" lazyload alt="image-20200819195915564"></p>
 <p>至此，根文件系统的库文件就全部添加好了，可以使用“du”命令来查看一下 <strong>rootfs&#x2F;lib</strong> 和<strong>rootfs&#x2F;usr&#x2F;lib</strong> 这两个目录的大小，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> rootfs <br><span class="hljs-built_in">du</span> ./lib ./usr/lib/ -sh <br></code></pre></td></tr></table></figure>
 
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200024505.png" srcset="/img/loading.gif" lazyload alt="image-20200819200024505"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200024505.png" srcset="/img/loading.gif" lazyload alt="image-20200819200024505"></p>
 <p>可以看出lib和usr&#x2F;lib这两个文件的大小分别为57MB和67MB，加起来就是57+67&#x3D;124MB。非常大！</p>
 <h5 id="3、创建其他文件夹"><a href="#3、创建其他文件夹" class="headerlink" title="3、创建其他文件夹"></a>3、创建其他文件夹</h5><p>在根文件系统中创建其他文件夹，如 dev、proc、mnt、sys、tmp 和 root 等，创建完成以后如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200209958.png" srcset="/img/loading.gif" lazyload alt="image-20200819200209958"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200209958.png" srcset="/img/loading.gif" lazyload alt="image-20200819200209958"></p>
 <p>目前来看，这个根文件系统好像已经准备好了，究竟有没有准备好，直接测一下就知道了！</p>
 <h2 id="三、根文件系统初步测试"><a href="#三、根文件系统初步测试" class="headerlink" title="三、根文件系统初步测试"></a>三、根文件系统初步测试</h2><p>接下来我们使用测试一下前面创建好的根文件系统 rootfs，测试方法就是使用 <strong>NFS 挂载</strong>。</p>
 <p>uboot 里面的 bootargs 环境变量会设置“root”的值，所以我们将 root 的值改为 NFS 挂载即可。在 Linux 内核源码里面有相应的文档讲解如何设置，文档为Documentation&#x2F;filesystems&#x2F;nfs&#x2F;nfsroot.txt，格式如下：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby">root=<span class="hljs-regexp">/dev/nfs</span> nfsroot=[&lt;server-ip&gt;<span class="hljs-symbol">:</span>]&lt;root-dir&gt;[,&lt;nfs-options&gt;] ip=&lt;client-ip&gt;<span class="hljs-symbol">:&lt;server-ip&gt;</span><span class="hljs-symbol">:&lt;gw-ip&gt;</span><span class="hljs-symbol">:&lt;netmask&gt;</span><span class="hljs-symbol">:&lt;hostname&gt;</span><span class="hljs-symbol">:&lt;device&gt;</span><span class="hljs-symbol">:&lt;autoconf&gt;</span><span class="hljs-symbol">:&lt;dns0-ip&gt;</span><span class="hljs-symbol">:&lt;dns1-ip&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819200416444.png" srcset="/img/loading.gif" lazyload alt="image-20200819200416444"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819200416444.png" srcset="/img/loading.gif" lazyload alt="image-20200819200416444"></p>
 <p>根据上面的格式 bootargs 环境变量的 root 值如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">root=/dev/nfs nfsroot=192.168.0.111:/home/firestaradmin/linux/nfs/rootfs,proto=tcp rw ip=192.168.0.112:192.168.0.111:192.168.0.1:255.255.255.0::eth0:off<br></code></pre></td></tr></table></figure>
 
@@ -472,7 +472,7 @@
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">saveenv</span><br></code></pre></td></tr></table></figure>
 
 <p>设置好以后使用“boot”命令启动 Linux 内核，结果如图  所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819221525029.png" srcset="/img/loading.gif" lazyload alt="image-20200819221525029"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819221525029.png" srcset="/img/loading.gif" lazyload alt="image-20200819221525029"></p>
 <p>从图可以看出，我们进入了根文件系统，说明我们的根文件系统工作了！如果没有启动进入根文件系统的话可以重启一次开发板试试。</p>
 <p>大家注意，在进入根文件系统的时候会有下面这一行错误提示：</p>
 <p><code>can&#39;t run &#39;/etc/init.d/rcS&#39;: No such file or directory</code></p>
@@ -485,7 +485,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 rcS<br></code></pre></td></tr></table></figure>
 
 <p>重启内核：如图：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819223835685.png" srcset="/img/loading.gif" lazyload alt="image-20200819223835685"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819223835685.png" srcset="/img/loading.gif" lazyload alt="image-20200819223835685"></p>
 <p>从图可以看到，提示找不到&#x2F;etc&#x2F;fstab 文件，还有一些其他的错误，我们先把&#x2F;etc&#x2F;fstab这个错误解决了。说不定把这个问题解决以后其他的错误也就解决了。</p>
 <p>前面我们说了“mount -a”挂载所有根文件系统的时候需要读取&#x2F;etc&#x2F;fstab，因为&#x2F;etc、fstab 里面定义了该挂载哪些文件，好了，接下来就是创建&#x2F;etc&#x2F;fstab 文件。</p>
 <h3 id="2、创建-x2F-etc-x2F-fstab-文件"><a href="#2、创建-x2F-etc-x2F-fstab-文件" class="headerlink" title="2、创建&#x2F;etc&#x2F;fstab 文件"></a>2、创建&#x2F;etc&#x2F;fstab 文件</h3><p>在 rootfs中创建&#x2F;etc&#x2F;fstab 文件，fstab在Linux开机以后自动配置哪些需要自动挂载的分区，格式如下：</p>
@@ -501,14 +501,14 @@
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">1 </span>#&lt;file <span class="hljs-keyword">system</span>&gt;  &lt;mount <span class="hljs-keyword">point</span>&gt;   &lt;type&gt;  &lt;options&gt;   &lt;dump&gt;  &lt;pass&gt;<br><span class="hljs-symbol">2 </span>proc            /proc           proc    defaults    <span class="hljs-number">0</span>       <span class="hljs-number">0</span><br><span class="hljs-symbol">3 </span>tmpfs          /tmp            	tmpfs  	defaults    <span class="hljs-number">0</span>       <span class="hljs-number">0</span><br><span class="hljs-symbol">4 </span>sysfs           /sys            sysfs   defaults    <span class="hljs-number">0</span>       <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
 
 <p>fstab 文件创建完成以后重新启动 Linux，结果如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819224700923.png" srcset="/img/loading.gif" lazyload alt="image-20200819224700923"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819224700923.png" srcset="/img/loading.gif" lazyload alt="image-20200819224700923"></p>
 <p>从图可以看出，启动成功，而且没有任何错误提示。但是我们要还需要创建一个文件&#x2F;etc&#x2F;inittab。</p>
 <h3 id="3、创建-x2F-etc-x2F-inittab-文件"><a href="#3、创建-x2F-etc-x2F-inittab-文件" class="headerlink" title="3、创建&#x2F;etc&#x2F;inittab 文件"></a>3、创建&#x2F;etc&#x2F;inittab 文件</h3><p>inittab 的详细内容可以参考 busybox 下的文件 examples&#x2F;inittab。init 程序会读取**&#x2F;etc&#x2F;inittab**这个文件，inittab 由若干条指令组成。每条指令的结构都是一样的，由以“:”分隔的 4 个段组成，格式如下：</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir">&lt;id&gt;<span class="hljs-symbol">:&lt;runlevels&gt;</span><span class="hljs-symbol">:&lt;action&gt;</span><span class="hljs-symbol">:&lt;process&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p><code>&lt;id&gt;</code>：每个指令的标识符，不能重复。但是对于 busybox 的 init 来说，<code>&lt;id&gt;</code>有着特殊意义。对于 busybox 而言<code>&lt;id&gt;</code>用来指定启动进程的控制 tty，一般我们将串口或者 LCD 屏幕设置为控制 tty。<br><code>&lt;runlevels&gt;</code> ：对 busybox 来说此项完全没用，所以空着。<br><code>&lt;action&gt;</code>：动作，用于指定<code>&lt;process&gt;</code>可能用到的动作。</p>
 <p>busybox 支持的动作如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819231003064.png" srcset="/img/loading.gif" lazyload alt="image-20200819231003064"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819231003064.png" srcset="/img/loading.gif" lazyload alt="image-20200819231003064"></p>
 <p><code>&lt;process&gt;</code> ：具体的动作，比如程序、脚本或命令等。<br>参考 busybox 的 examples&#x2F;inittab 文件，我们也创建一个&#x2F;etc&#x2F;inittab，在里面输入如下内容：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">1 <span class="hljs-comment">#etc/inittab</span><br>2 ::sysinit:/etc/init.d/rcS<br>3 console::askfirst:-/bin/sh<br>4 ::restart:/sbin/init<br>5 ::ctrlaltdel:/sbin/reboot<br>6 ::shutdown:/bin/umount -a -r<br>7 ::shutdown:/sbin/swapoff -a<br></code></pre></td></tr></table></figure>
 
@@ -524,29 +524,29 @@
 <p>使用 arm-linux-gnueabihf-gcc 将 hello.c 编译为 hello 可执行文件。这个 hello 可执行文件究<br>竟是不是 ARM 使用的呢？使用“file”命令查看文件类型以及编码格式：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">file hello<br></code></pre></td></tr></table></figure>
 
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232015712.png" srcset="/img/loading.gif" lazyload alt="image-20200819232015712"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232015712.png" srcset="/img/loading.gif" lazyload alt="image-20200819232015712"></p>
 <p>从图  可以看出，输入“file hello”输入了如下所示信息：<br><code>hello: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked……</code><br>hello 是个 32 位的 LSB 可执行文件，ARM 架构的，并且是动态链接的。所以我们编译出来的 hello 文件没有问题。将其拷贝到 rootfs&#x2F;drivers 目录下，在开发板中输入如下命令来执行这<br>个可执行文件：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /drivers  <br>./hello <br></code></pre></td></tr></table></figure>
 
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232131493.png" srcset="/img/loading.gif" lazyload alt="image-20200819232131493"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232131493.png" srcset="/img/loading.gif" lazyload alt="image-20200819232131493"></p>
 <p>可以看出，hello 这个软件运行正常，说明我们的根文件系统中的共享库是没问题的，要想终止 hello 的运行，按下“ctrl+c”组合键即可。</p>
 <p>此时大家应该能感觉到，hello 执行的时候终端是没法用的，除非使用“ctrl+c”来关闭 hello，那么有没有办法既能让 hello 正常运行，而且终端能够正常使用？那肯定是有的，让 hello 进入后台运行就行了，让一个软件进入后台的方法很简单，运行软件的时候加上“&amp;”即可，比如<strong>“.&#x2F;hello &amp;”</strong>就是让 hello 在后台运行。</p>
 <p>在后台运行的软件可以使用<strong>“kill -9 pid(进程 ID)”</strong>命令来关闭掉，首先使用<strong>“ps”</strong>命令查看要关闭的软件 PID 是多少，ps 命令用于查看所有当前正在运行的进程，并且会给出进程的 PID。</p>
 <h4 id="2、中文字符测试"><a href="#2、中文字符测试" class="headerlink" title="2、中文字符测试"></a>2、中文字符测试</h4><p>在 ubuntu 中向在 rootfs 目录新建一个名为“中文测试”的文件夹，然后在串口终端 下查看中文名能不能显示正确。输入“ls”命令，结果如图所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232935309.png" srcset="/img/loading.gif" lazyload alt="image-20200819232935309"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232935309.png" srcset="/img/loading.gif" lazyload alt="image-20200819232935309"></p>
 <p>可以看出“中文测试”这个文件夹显示正常，接着“touch”命令在“中文测试”文件夹中新建一个名为“测试文档.txt”的文件，并且使用 vim 编辑器在其中输入“这是一个中文测试文件”，借此来测试一下中文文件名和中文内容显示是否正常。结果如图 38.5.2.3 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819232952811.png" srcset="/img/loading.gif" lazyload alt="image-20200819232952811"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819232952811.png" srcset="/img/loading.gif" lazyload alt="image-20200819232952811"></p>
 <p>从图  可以看出，“测试文档.txt”的中文内容显示正确，而且中文路径也完全正常，说明我们的根文件系统已经完美支持中文了！</p>
 <h4 id="3、开机自启动测试"><a href="#3、开机自启动测试" class="headerlink" title="3、开机自启动测试"></a>3、开机自启动测试</h4><p>在前面测试 hello 软件的时候都是等 Linux 启动进入根文件系统以后手动输入命令“.&#x2F;hello”来完成的。我们一般做好产品以后都是需要开机自动启动相应的软件，本节我们就以hello 这个软件为例，讲解一下如何实现开机自启动。前面我们说过了，进入根文件系统的时候会运行&#x2F;etc&#x2F;init.d&#x2F;rcS 这个 shell 脚本，因此我们可以在这个脚本里面添加自启动相关内容。添加<br>完成以后的&#x2F;etc&#x2F;init.d&#x2F;rcS 文件内容如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh"> 1 <span class="hljs-comment">#!/bin/sh</span><br> 2 PATH=/sbin:/bin:/usr/sbin:/usr/bin:<span class="hljs-variable">$PATH</span><br> 3 LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:/lib:/usr/lib<br> 4 <span class="hljs-built_in">export</span> PATH LD_LIBRARY_PATH<br> 5 <br> 6 mount -a<br> 7 <span class="hljs-built_in">mkdir</span> /dev/pts<br> 8 mount -t devpts devpts /dev/pts<br> 9 <br>10 <span class="hljs-built_in">echo</span> /sbin/mdev &gt; /proc/sys/kernel/hotplug<br>11 mdev -s<br>12 <br>13 <span class="hljs-comment">#开机自启动</span><br>14 <span class="hljs-built_in">cd</span> /drivers<br>15 ./hello &amp;<br>16 <span class="hljs-built_in">cd</span> /<br></code></pre></td></tr></table></figure>
 
 <p>自启动代码添加完成以后就可以重启开发板，看看 hello 这个软件会不会自动运行。结果如图 所示:</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233330591.png" srcset="/img/loading.gif" lazyload alt="image-20200819233330591"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233330591.png" srcset="/img/loading.gif" lazyload alt="image-20200819233330591"></p>
 <p>从图可以看出，hello 开机自动运行了，说明开机自启动成功。</p>
 <h4 id="4、连接外网测试"><a href="#4、连接外网测试" class="headerlink" title="4、连接外网测试"></a>4、连接外网测试</h4><p>这里说的外网不是外国哪些 404 网站的连接测试，而是百度、淘宝等这些网站的测试。也就是说看看我们的开发板能不能上网，能不能和我们的局域网外的这些网站进行通信。测试方法很简单，就是通过 ping 命令来 ping 一下百度的官网：<code>www.baidu.com</code>。输入如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ping www.baidu.com<br></code></pre></td></tr></table></figure>
 
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233513402.png" srcset="/img/loading.gif" lazyload alt="image-20200819233513402"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233513402.png" srcset="/img/loading.gif" lazyload alt="image-20200819233513402"></p>
 <p>可以看出，测试失败，提示 <code>www.baidu.com</code> 是个“bad address”，也就是地址不对，显然我们的地址是正确的。之所以出现这个错误提示是因为<code> www.baidu.com</code> 的地址解析失败了，并没有解析出其对应的 IP 地址。</p>
 <p>我们需要配置域名解析服务器的 IP 地址，一般域名解析地址可以设置为所处网络的网关地址，比如 192.168.0.1。也可以设置为 114.114.1144.114，这个是运营商的域名解析服务器地址。</p>
 <p>在 rootfs 中新建文件**&#x2F;etc&#x2F;resolv.conf**，然后在里面输入如下内容：</p>
@@ -556,7 +556,7 @@
 <p><code>114.114.114.114</code> 和 <code>192.168.0.1</code></p>
 <p>大家也可以改为其他的域名服务器试试。如果使用“udhcpc”命令自动获取 IP 地址，“udhcpc”命令会修改 nameserver 的值，一般是将其设置为对应的网关地址。</p>
 <p>修改好以后保存退出，重启开发板！重启以后重新 ping 一下百度官网，结果如图 所示：</p>
-<p><img src="/9.rootfs%E5%88%B6%E4%BD%9C/image-20200819233819089.png" srcset="/img/loading.gif" lazyload alt="image-20200819233819089"></p>
+<p><img src="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9/image-20200819233819089.png" srcset="/img/loading.gif" lazyload alt="image-20200819233819089"></p>
 <p>可以看出 ping 百度官网成功了！域名也成功的解析了，至此！我们的根文件系统就彻底的制作完成，这个根文件系统最好打包保存一下，防止以后做实验不小心破坏了根文件系统而功亏一篑，又得从头制作根文件系统。</p>
 <p>uboot、Linux kernel、rootfs 这三个共同构成了一个完整的Linux 系统，现在的系统至少是一个可以正常运行的系统，后面我们就可以在这个系统上完成Linux 驱动开发的学习。</p>
 

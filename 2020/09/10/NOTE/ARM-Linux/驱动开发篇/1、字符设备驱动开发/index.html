@@ -23,33 +23,33 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="字符设备驱动开发入门字符设备驱动是Linux 驱动开发中最基础的开始，本章会以一个虚拟的设备为例，讲解如何进行字符设备驱动开发，以及如何编写测试 APP 来测试驱动工作是否正常，为以后的学习打下坚实的基础。 一、字符设备驱动简介字符设备是 Linux 驱动中最基本的一类设备驱动，字符设备就是一个一个字节，按照字节流进行读写操作的设备，读写数据是分先后顺序的。比如我们最常见的点灯、按键、IIC、SP">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820131839783.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820132050798.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820134453560.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820141213153.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820141458574.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820145926694.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820150054066.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820151835351.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152045899.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152529602.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152622765.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152702937.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152749421.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152847237.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153138996.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153332666.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153515594.png">
-<meta property="og:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153622245.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820131839783.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820132050798.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820134453560.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820141213153.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820141458574.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820145926694.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820150054066.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820151835351.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152045899.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152529602.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152622765.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152702937.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152749421.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820152847237.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820153138996.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820153332666.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820153515594.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200820153622245.png">
 <meta property="article:published_time" content="2020-09-09T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-09T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820131839783.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200820131839783.png">
   
   
   <title>1| 字符设备驱动开发入门 - Hexo</title>
@@ -263,12 +263,12 @@
               <h1 id="字符设备驱动开发入门"><a href="#字符设备驱动开发入门" class="headerlink" title="字符设备驱动开发入门"></a>字符设备驱动开发入门</h1><p>字符设备驱动是Linux 驱动开发中最基础的开始，本章会以一个虚拟的设备为例，讲解如何进行字符设备驱动开发，以及如何编写测试 APP 来测试驱动工作是否正常，为以后的学习打下坚实的基础。</p>
 <h2 id="一、字符设备驱动简介"><a href="#一、字符设备驱动简介" class="headerlink" title="一、字符设备驱动简介"></a>一、字符设备驱动简介</h2><p>字符设备是 Linux 驱动中最基本的一类设备驱动，<strong>字符设备就是一个一个字节，按照字节流进行读写操作的设备</strong>，读写数据是分先后顺序的。比如我们最常见的点灯、按键、IIC、SPI，LCD 等等都是字符设备，这些设备的驱动就叫做字符设备驱动。</p>
 <p>在详细的学习字符设备驱动架构之前，我们先来简单的了解一下 Linux 下的应用程序是如何调用驱动程序的，Linux 应用程序对驱动程序的调用如图  所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820131839783.png" srcset="/img/loading.gif" lazyload alt="image-20200820131839783"></p>
+<p><img src="/.top:888//image-20200820131839783.png" srcset="/img/loading.gif" lazyload alt="image-20200820131839783"></p>
 <p>在 Linux 中一切皆为文件，驱动加载成功以后会在“&#x2F;dev”目录下生成一个相应的文件，应用程序通过对这个名为“&#x2F;dev&#x2F;xxx”(xxx 是具体的驱动文件名字)的文件进行相应的操作即可实现对硬件的操作。</p>
 <p>比如现在有个叫做**&#x2F;dev&#x2F;led** 的驱动文件，此文件是 led 灯的驱动文件。应用程序使用 open 函数来打开文件&#x2F;dev&#x2F;led，使用完成以后使用 close 函数关闭&#x2F;dev&#x2F;led 这个文件。open和 close 就是打开和关闭 led 驱动的函数，如果要点亮或关闭 led，那么就使用 write 函数来操作，也就是向此驱动写入数据，这个数据就是要关闭还是要打开 led 的控制参数。如果要获取led 灯的状态，就用 read 函数从驱动中读取相应的状态。</p>
 <p><strong>应用程序运行在用户空间，而 Linux 驱动属于内核的一部分，因此驱动运行于内核空间</strong>。当我们在用户空间想要实现对内核的操作，比如使用 open 函数打开&#x2F;dev&#x2F;led 这个驱动，因为用户空间不能直接对内核进行操作，因此必须使用一个叫做“系统调用”的方法来实现从用户空间“陷入”到内核空间，这样才能实现对底层驱动的操作。</p>
 <p>open、close、write 和 read 等这些函数是由 C 库提供的，在 Linux 系统中，系统调用作为 C 库的一部分。当我们调用 open 函数的时候流程如图  所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820132050798.png" srcset="/img/loading.gif" lazyload alt="image-20200820132050798"></p>
+<p><img src="/.top:888//image-20200820132050798.png" srcset="/img/loading.gif" lazyload alt="image-20200820132050798"></p>
 <p>其中关于 C 库以及如何通过系统调用“陷入”到内核空间这个我们不用去管，我们重点关注的是应用程序和具体的驱动，应用程序使用到的函数在具体驱动程序中都有与之对应的函数，比如应用程序中调用了 open 这个函数，那么在驱动程序中也得有一个名为 open 的函数。每一个系统调用，在驱动中都有与之对应的一个驱动函数，在 Linux 内核文件 include&#x2F;linux&#x2F;fs.h 中有个叫做 file_operations 的结构体，此结构体就是 Linux 内核驱动操作函数集合，内容如下所示：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1588</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> &#123;</span><br><span class="hljs-number">1589</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>;</span><br><span class="hljs-number">1590</span> <span class="hljs-type">loff_t</span> (*llseek) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">loff_t</span>, <span class="hljs-type">int</span>);<br><span class="hljs-number">1591</span> <span class="hljs-type">ssize_t</span> (*read) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">char</span> __user *, <span class="hljs-type">size_t</span>, <span class="hljs-type">loff_t</span> *);<br><span class="hljs-number">1592</span> <span class="hljs-type">ssize_t</span> (*write) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">const</span> <span class="hljs-type">char</span> __user *, <span class="hljs-type">size_t</span>, <span class="hljs-type">loff_t</span> *);<br><span class="hljs-number">1593</span> <span class="hljs-type">ssize_t</span> (*read_iter) (<span class="hljs-keyword">struct</span> kiocb *, <span class="hljs-keyword">struct</span> iov_iter *);<br><span class="hljs-number">1594</span> <span class="hljs-type">ssize_t</span> (*write_iter) (<span class="hljs-keyword">struct</span> kiocb *, <span class="hljs-keyword">struct</span> iov_iter *);<br><span class="hljs-number">1595</span> <span class="hljs-type">int</span> (*iterate) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-keyword">struct</span> dir_context *);<br><span class="hljs-number">1596</span> <span class="hljs-type">unsigned</span> <span class="hljs-title function_">int</span> <span class="hljs-params">(*poll)</span> <span class="hljs-params">(<span class="hljs-keyword">struct</span> file *, <span class="hljs-keyword">struct</span> poll_table_struct *)</span>;<br><span class="hljs-number">1597</span> <span class="hljs-type">long</span> (*unlocked_ioctl) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>);<br><span class="hljs-number">1598</span> <span class="hljs-type">long</span> (*compat_ioctl) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>);<br><span class="hljs-number">1599</span> <span class="hljs-type">int</span> (*mmap) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-keyword">struct</span> vm_area_struct *);<br><span class="hljs-number">1600</span> <span class="hljs-type">int</span> (*mremap)(<span class="hljs-keyword">struct</span> file *, <span class="hljs-keyword">struct</span> vm_area_struct *);<br><span class="hljs-number">1601</span> <span class="hljs-type">int</span> (*open) (<span class="hljs-keyword">struct</span> inode *, <span class="hljs-keyword">struct</span> file *);<br><span class="hljs-number">1602</span> <span class="hljs-type">int</span> (*flush) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">fl_owner_t</span> id);<br><span class="hljs-number">1603</span> <span class="hljs-type">int</span> (*release) (<span class="hljs-keyword">struct</span> inode *, <span class="hljs-keyword">struct</span> file *);<br><span class="hljs-number">1604</span> <span class="hljs-type">int</span> (*fsync) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">loff_t</span>, <span class="hljs-type">loff_t</span>, <span class="hljs-type">int</span> datasync);<br><span class="hljs-number">1605</span> <span class="hljs-type">int</span> (*aio_fsync) (<span class="hljs-keyword">struct</span> kiocb *, <span class="hljs-type">int</span> datasync);<br><span class="hljs-number">1606</span> <span class="hljs-type">int</span> (*fasync) (<span class="hljs-type">int</span>, <span class="hljs-keyword">struct</span> file *, <span class="hljs-type">int</span>);<br><span class="hljs-number">1607</span> <span class="hljs-type">int</span> (*lock) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">int</span>, <span class="hljs-keyword">struct</span> file_lock *);<br><span class="hljs-number">1608</span> <span class="hljs-type">ssize_t</span> (*sendpage) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-keyword">struct</span> page *, <span class="hljs-type">int</span>, <span class="hljs-type">size_t</span>, <span class="hljs-type">loff_t</span> *, 			<span class="hljs-type">int</span>);<br><span class="hljs-number">1609</span> <span class="hljs-type">unsigned</span> <span class="hljs-title function_">long</span> <span class="hljs-params">(*get_unmapped_area)</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>)</span>;<br><span class="hljs-number">1610</span> <span class="hljs-type">int</span> (*check_flags)(<span class="hljs-type">int</span>);<br><span class="hljs-number">1611</span> <span class="hljs-type">int</span> (*flock) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">int</span>, <span class="hljs-keyword">struct</span> file_lock *);<br><span class="hljs-number">1612</span> <span class="hljs-type">ssize_t</span> (*splice_write)(<span class="hljs-keyword">struct</span> pipe_inode_info *, <span class="hljs-keyword">struct</span> file *, <span class="hljs-type">loff_t</span> *, 		<span class="hljs-type">size_t</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>);<br><span class="hljs-number">1613</span> <span class="hljs-type">ssize_t</span> (*splice_read)(<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">loff_t</span> *, <span class="hljs-keyword">struct</span> pipe_inode_info *, 			<span class="hljs-type">size_t</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>);<br><span class="hljs-number">1614</span> <span class="hljs-type">int</span> (*setlease)(<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">long</span>, <span class="hljs-keyword">struct</span> file_lock **, <span class="hljs-type">void</span> **);<br><span class="hljs-number">1615</span> <span class="hljs-type">long</span> (*fallocate)(<span class="hljs-keyword">struct</span> file *file, <span class="hljs-type">int</span> mode, <span class="hljs-type">loff_t</span> offset,<br><span class="hljs-number">1616</span> <span class="hljs-type">loff_t</span> len);<br><span class="hljs-number">1617</span> <span class="hljs-type">void</span> (*show_fdinfo)(<span class="hljs-keyword">struct</span> seq_file *m, <span class="hljs-keyword">struct</span> file *f);<br><span class="hljs-number">1618</span> <span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> CONFIG_MMU</span><br><span class="hljs-number">1619</span> <span class="hljs-type">unsigned</span> (*mmap_capabilities)(<span class="hljs-keyword">struct</span> file *);<br><span class="hljs-number">1620</span> <span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-number">1621</span> &#125;;<br></code></pre></td></tr></table></figure>
 
@@ -317,7 +317,7 @@
 <p><strong>第 1 行</strong>，定义了一个 file_operations 结构体变量 test_fops，test_fops 就是设备的操作函数集合，只是此时我们还没有初始化 test_fops 中的 open、release 等这些成员变量，所以这个操作函数集合还是空的。<br><strong>第 10 行</strong>，调用函数 register_chrdev 注册字符设备，主设备号为 200，设备名字为“chrtest”，设备操作函数集合就是第 1 行定义的 test_fops。</p>
 <p><strong>第 21 行</strong>，调用函数 unregister_chrdev 注销主设备号为 200 的这个设备。</p>
 <p>要注意的一点就是，选择没有被使用的主设备号，输入命令“cat &#x2F;proc&#x2F;devices”可以查看当前已经被使用掉的设备号，如图 所示(限于篇幅原因，只展示一部分)：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820134453560.png" srcset="/img/loading.gif" lazyload alt="image-20200820134453560"></p>
+<p><img src="/.top:888//image-20200820134453560.png" srcset="/img/loading.gif" lazyload alt="image-20200820134453560"></p>
 <p>在图中可以列出当前系统中所有的字符设备和块设备，其中第 1 列就是设备对应的主设备号。200 这个主设备号在我的开发板中并没有被使用，所以我这里就用了 200 这个主设备号。</p>
 <h3 id="3、实现设备的具体操作函数"><a href="#3、实现设备的具体操作函数" class="headerlink" title="3、实现设备的具体操作函数"></a>3、实现设备的具体操作函数</h3><p><strong>file_operations 结构体就是设备的具体操作函数</strong>，在前面示例代码中我们定义了file_operations结构体类型的变量test_fops，但是还没对其进行初始化，也就是初始化其中的open、release、read 和 write 等具体的设备操作函数。</p>
 <p>本节我们就完成变量 test_fops 的初始化，设置好针对 chrtest 设备的操作函数。在初始化 test_fops 之前我们要分析一下需求，也就是要对chrtest 这个设备进行哪些操作，只有确定了需求以后才知道我们应该实现哪些操作函数。</p>
@@ -370,12 +370,12 @@
 <h3 id="1、实验程序编写"><a href="#1、实验程序编写" class="headerlink" title="1、实验程序编写"></a>1、实验程序编写</h3><p>应用程序调用 open 函数打开 chrdevbase 这个设备，打开以后可以使用 write 函数向chrdevbase 的写缓冲区 writebuf 中写入数据(不超过 100 个字节)，也可以使用 read 函数读取读缓冲区 readbuf 中的数据操作，操作完成以后应用程序使用 close 函数关闭 chrdevbase 设备。</p>
 <h4 id="1、建立VSCode工程"><a href="#1、建立VSCode工程" class="headerlink" title="1、建立VSCode工程"></a>1、建立VSCode工程</h4><p>在 Ubuntu 中创建一个目录用来存放 Linux 驱动程序，比如我创建了一个名为 linux_drivers的目录来存放所有的 Linux 驱动。在 linux_drivers 目录下新建一个名为 1_chrdevbase 的子目录来存放本实验所有文件.</p>
 <p>之后在 1_chrdevbase 目录中新建 VSCode 工程，并且新建 chrdevbase.c 文件、chrdevbaseAPP.c、Makefile文件，完成以后1_chrdevbase 目录中的文件如图所示</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820141213153.png" srcset="/img/loading.gif" lazyload alt="image-20200820141213153"></p>
+<p><img src="/.top:888//image-20200820141213153.png" srcset="/img/loading.gif" lazyload alt="image-20200820141213153"></p>
 <h4 id="2、添加头文件路径"><a href="#2、添加头文件路径" class="headerlink" title="2、添加头文件路径"></a>2、添加头文件路径</h4><p>因为是编写Linux 驱动，因此会用到Linux 源码中的函数。我们需要在VSCode中添加Linux源码中的头文件路径。</p>
 <p>打开 VSCode，按下“Crtl+Shift+P”打开 VSCode 的控制台，然后输入</p>
 <p><code>C/C++: Edit configurations(JSON) </code></p>
 <p>打开 C&#x2F;C++编辑配置文件，如图所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820141458574.png" srcset="/img/loading.gif" lazyload alt="image-20200820141458574"></p>
+<p><img src="/.top:888//image-20200820141458574.png" srcset="/img/loading.gif" lazyload alt="image-20200820141458574"></p>
 <p>打开以后会自动在.vscode 目录下生成一个名为 <strong>c_cpp_properties.json</strong> 的文件，此文件默认内容如下所示：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;configurations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Linux&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;includePath&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>                <span class="hljs-string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span><br>            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;defines&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;compilerPath&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/usr/bin/gcc&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;cStandard&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;c11&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;cppStandard&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;c++17&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;intelliSenseMode&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;gcc-x64&quot;</span><br>        <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
@@ -408,12 +408,12 @@
 <p><strong>pathname</strong>：要打开的设备或者文件名。<br><strong>flags</strong> ：文件打开模式，以下三种模式必选其一：</p>
 <ul>
 <li><p>O_RDONLY         只读模式<br>O_WRONLY         只写模式<br>O_RDWR             读写模式<br>因为我们要对 chrdevbase 这个设备进行读写操作，所以选择 O_RDWR。除了上述三种<br>模式以外还有其他的可选模式，通过逻辑或来选择多种模式：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820145926694.png" srcset="/img/loading.gif" lazyload alt="image-20200820145926694"></p>
+<p><img src="/.top:888//image-20200820145926694.png" srcset="/img/loading.gif" lazyload alt="image-20200820145926694"></p>
 </li>
 </ul>
 <p><strong>返回值</strong>：如果文件打开成功的话返回文件的文件描述符.</p>
 <p>在 Ubuntu 中输入<code>man 2 open</code>即可查看 open 函数的详细内容，如图  所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820150054066.png" srcset="/img/loading.gif" lazyload alt="image-20200820150054066"></p>
+<p><img src="/.top:888//image-20200820150054066.png" srcset="/img/loading.gif" lazyload alt="image-20200820150054066"></p>
 <hr>
 <p><strong>②、read  函数</strong></p>
 <p>read 函数原型如下：</p>
@@ -453,7 +453,7 @@
 <p><strong>obj-m</strong> 表示将 chrdevbase.c 这个文件编译为 chrdevbase.ko 模块。</p>
 <p><strong>$(MAKE) -C $(KERNEL_DIR) M&#x3D;$(CURRENT_PATH) modules</strong>具体的编译命令，后面的 modules 表示编译模块，**-C 表示将当前的工作目录切换到指定目录中<strong>，也就是 KERNERLDIR 目录。M 表示模块源码目录，“make modules”命令中</strong>加入 M&#x3D;dir 以后程序会自动到指定的 dir 目录中读取模块的源码并将其编译为.ko 文件**。</p>
 <p>Makefile 编写好以后输入“make”命令编译驱动模块，编译过程如图  所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820151835351.png" srcset="/img/loading.gif" lazyload alt="image-20200820151835351"></p>
+<p><img src="/.top:888//image-20200820151835351.png" srcset="/img/loading.gif" lazyload alt="image-20200820151835351"></p>
 <p>编译成功以后就会生成一个叫做 chrdevbaes.ko 的文件，此文件就是 chrdevbase 设备的驱动模块。至此，chrdevbase 设备的驱动就编译成功。</p>
 <h4 id="2、编译测试-APP"><a href="#2、编译测试-APP" class="headerlink" title="2、编译测试 APP"></a>2、编译测试 APP</h4><p>测试 APP 比较简单，只有一个文件，因此就不需要编写 Makefile 了，直接输入命令编译。因为测试 APP 是要在 ARM 开发板上运行的，所以需要使用 arm-linux-gnueabihf-gcc 来编译，输入如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc chrdevbaseApp.c -o chrdevbaseApp<br></code></pre></td></tr></table></figure>
@@ -462,7 +462,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">file chrdevbaseApp<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152045899.png" srcset="/img/loading.gif" lazyload alt="image-20200820152045899"></p>
+<p><img src="/.top:888//image-20200820152045899.png" srcset="/img/loading.gif" lazyload alt="image-20200820152045899"></p>
 <p>从图可以看出，chrdevbaseAPP 这个可执行文件是 32 位 LSB 格式，ARM 版本的，因此 chrdevbaseAPP 只能在 ARM 芯片下运行。</p>
 <h3 id="4、运行测试"><a href="#4、运行测试" class="headerlink" title="4、运行测试"></a>4、运行测试</h3><h4 id="1、加载模块驱动"><a href="#1、加载模块驱动" class="headerlink" title="1、加载模块驱动"></a>1、加载模块驱动</h4><p>通过 NFS 将 Ubuntu 中的 rootfs(制作好的根文件系统)目录挂载为根文件系统，所以可以很方便的将chrdevbase.ko 和 chrdevbaseAPP 复制到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15 目录中.</p>
 <p>输入如下命令加载 chrdevbase.ko 驱动文件：</p>
@@ -472,40 +472,40 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">modprobe chrdevbase.ko<br></code></pre></td></tr></table></figure>
 
 <p>如果使用 modprobe 加载驱动的话，可能会出现如图 所示的提示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152529602.png" srcset="/img/loading.gif" lazyload alt="image-20200820152529602"></p>
+<p><img src="/.top:888//image-20200820152529602.png" srcset="/img/loading.gif" lazyload alt="image-20200820152529602"></p>
 <p>从图可以看出，modprobe 提示无法打开“modules.dep”这个文件，因此驱动挂载失败了。我们不用手动创建 modules.dep 这个文件，直接输入 depmod 命令即可自动生成modules.dep，有些根文件系统可能没有 depmod 这个命令，如果没有这个命令就只能重新配置busybox，使能此命令，然后重新编译 busybox。</p>
 <p>输入“depmod”命令以后会自动生成 modules.alias、modules.symbols 和 modules.dep 这三个文件，如图所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152622765.png" srcset="/img/loading.gif" lazyload alt="image-20200820152622765"></p>
+<p><img src="/.top:888//image-20200820152622765.png" srcset="/img/loading.gif" lazyload alt="image-20200820152622765"></p>
 <p>重新使用 modprobe 加载 chrdevbase.ko，结果如图所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152702937.png" srcset="/img/loading.gif" lazyload alt="image-20200820152702937"></p>
+<p><img src="/.top:888//image-20200820152702937.png" srcset="/img/loading.gif" lazyload alt="image-20200820152702937"></p>
 <p>从图可以看到“chrdevbase init！”这一行，这一行正是 chrdevbase.c 中模块入口函数 chrdevbase_init 输出的信息，说明模块加载成功！<br>输入“lsmod”命令即可查看当前系统中存在的模块，结果如图 所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152749421.png" srcset="/img/loading.gif" lazyload alt="image-20200820152749421"></p>
+<p><img src="/.top:888//image-20200820152749421.png" srcset="/img/loading.gif" lazyload alt="image-20200820152749421"></p>
 <p>从图可以看出，当前系统只有“chrdevbase”这一个模块。输入如下命令查看当前系统中有没有 chrdevbase 这个设备：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/devices<br></code></pre></td></tr></table></figure>
 
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152847237.png" srcset="/img/loading.gif" lazyload alt="image-20200820152847237"></p>
+<p><img src="/.top:888//image-20200820152847237.png" srcset="/img/loading.gif" lazyload alt="image-20200820152847237"></p>
 <p>从图 可以看出，当前系统存在 chrdevbase 这个设备，主设备号为 200，跟我们设置的主设备号一致。</p>
 <h4 id="2-、创建设备节点文件"><a href="#2-、创建设备节点文件" class="headerlink" title="2 、创建设备节点文件"></a>2 、创建设备节点文件</h4><p>驱动加载成功需要在&#x2F;dev 目录下创建一个与之对应的设备节点文件，应用程序就是通过操作这个设备节点文件来完成对具体设备的操作。输入如下命令创建&#x2F;dev&#x2F;chrdevbase 这个设备节点文件：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mknod</span> /dev/chrdevbase c 200 0<br></code></pre></td></tr></table></figure>
 
 <p>其中“mknod”是创建节点命令，“&#x2F;dev&#x2F;chrdevbase”是要创建的节点文件，“c”表示这是个字符设备，“200”是设备的主设备号，“0”是设备的次设备号。</p>
 <p>创建完成以后就会存在&#x2F;dev&#x2F;chrdevbase 这个文件，可以使用<code>ls /dev/chrdevbase -l</code>命令查看，结果如图所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153138996.png" srcset="/img/loading.gif" lazyload alt="image-20200820153138996"></p>
+<p><img src="/.top:888//image-20200820153138996.png" srcset="/img/loading.gif" lazyload alt="image-20200820153138996"></p>
 <p>如果 chrdevbaseAPP 想要读写 chrdevbase 设备，直接对&#x2F;dev&#x2F;chrdevbase 进行读写操作即可。相当于&#x2F;dev&#x2F;chrdevbase 这个文件是 chrdevbase 设备在用户空间中的实现。前面一直说 Linux 下一切皆文件，包括设备也是文件，现在大家应该是有这个概念了吧？</p>
 <h4 id="3、chrdevbase设备操作测试"><a href="#3、chrdevbase设备操作测试" class="headerlink" title="3、chrdevbase设备操作测试"></a>3、chrdevbase设备操作测试</h4><p>使用 chrdevbaseApp 软件操作 chrdevbase 这个设备，看看读写是否正常，首先进行读操作，输入如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 1<br></code></pre></td></tr></table></figure>
 
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153332666.png" srcset="/img/loading.gif" lazyload alt="image-20200820153332666"></p>
+<p><img src="/.top:888//image-20200820153332666.png" srcset="/img/loading.gif" lazyload alt="image-20200820153332666"></p>
 <p>从图可以看出，首先输出“kernel senddata ok!”这一行信息，这是驱动程序中chrdevbase_read 函数输出的信息，因为 chrdevbaseAPP 使用 read 函数从 chrdevbase 设备读取数据，因此 chrdevbase_read 函数就会执行。chrdevbase_read 函数向 chrdevbaseAPP 发送“kerneldata!”数据，chrdevbaseAPP 接收到以后就打印出来，“read data:kernel data!”就是 chrdevbaseAPP打印出来的接收到的数据。说明对 chrdevbase 的读操作正常，接下来测试对 chrdevbase 设备的写操作，输入如下命令</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 2<br></code></pre></td></tr></table></figure>
 
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153515594.png" srcset="/img/loading.gif" lazyload alt="image-20200820153515594"></p>
+<p><img src="/.top:888//image-20200820153515594.png" srcset="/img/loading.gif" lazyload alt="image-20200820153515594"></p>
 <p> chrdevbase 的写操作正常，既然读写都没问题，说明我们编写的 chrdevbase 驱动是没有问题的。</p>
 <h4 id="4、卸载驱动模块"><a href="#4、卸载驱动模块" class="headerlink" title="4、卸载驱动模块"></a>4、卸载驱动模块</h4><p>如果不再使用某个设备的话可以将其驱动卸载掉，比如输入如下命令卸载掉 chrdevbase 这个设备：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">rmmod chrdevbase.ko<br></code></pre></td></tr></table></figure>
 
 <p>卸载以后使用 lsmod 命令查看 chrdevbase 这个模块还存不存在，结果如图  所示：</p>
-<p><img src="/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153622245.png" srcset="/img/loading.gif" lazyload alt="image-20200820153622245"></p>
+<p><img src="/.top:888//image-20200820153622245.png" srcset="/img/loading.gif" lazyload alt="image-20200820153622245"></p>
 <p>从图可以看出，模块成功推出，此时系统已经没有任何模块了，chrdevbase 这个模块也不存在了，<br>说明模块卸载成功。至此，chrdevbase 这个设备的整个驱动就验证完成了，驱动工作正常。本章我们详细的讲解了字符设备驱动的开发步骤，并且以一个虚拟的 chrdevbase 设备为例，带领大家完成了第一个字符设备驱动的开发，掌握了字符设备驱动的开发框架以及测试方法，以后的字符设备驱动实验基本都以此为蓝本。</p>
 
             </div>
@@ -530,9 +530,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

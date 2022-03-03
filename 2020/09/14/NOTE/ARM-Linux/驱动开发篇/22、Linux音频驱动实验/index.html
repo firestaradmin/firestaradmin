@@ -23,46 +23,46 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux 音频驱动一、音频接口简介1| 为何需要音频编解码芯片？处理器要想“听到”外界的声音必须要把外界的声音转化为自己能够理解的“语言”，处理器能理解的就是 0 和 1，也就是二进制数据。所以我们需要先把外界的声音转换为处理器能理解的 0 和 1，在信号处理领域，外界的声音是模拟信号，处理器能理解的是数字信号，因此这里就涉及到一个模拟信号转换为数字信号的过程，而完成这个功能的就是 ADC 芯片">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907161531045.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162620883.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162658396.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162754213.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162904361.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907163008088.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907165744149.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907165845744.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170423473.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170550815.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170616116.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170812231.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907171829579.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907172030992.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907172142141.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907174836127.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175325585.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175501178.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175532792.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175630338.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907180428743.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181151417.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181517384.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181757589.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181902945.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182057667.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182313324.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182326254.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182411920.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182452001.png">
-<meta property="og:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182600316.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907161531045.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907162620883.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907162658396.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907162754213.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907162904361.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907163008088.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907165744149.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907165845744.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907170423473.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907170550815.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907170616116.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907170812231.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907171829579.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907172030992.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907172142141.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907174836127.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907175325585.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907175501178.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907175532792.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907175630338.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907180428743.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907181151417.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907181517384.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907181757589.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907181902945.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182057667.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182313324.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182326254.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182411920.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182452001.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200907182600316.png">
 <meta property="article:published_time" content="2020-09-13T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-13T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907161531045.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200907161531045.png">
   
   
   <title>22| Linux 音频驱动 - Hexo</title>
@@ -290,7 +290,7 @@
 <li>……</li>
 </ul>
 <p>WM8960 整体框图如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907161531045.png" srcset="/img/loading.gif" lazyload alt="image-20200907161531045"></p>
+<p><img src="/.top:888//image-20200907161531045.png" srcset="/img/loading.gif" lazyload alt="image-20200907161531045"></p>
 <p>依次来看一下图中这四部分接口都是什么功能：</p>
 <ul>
 <li><p>①、此部分是 WM8960 提供的输入接口，作为立体声音频输入源，一共提供了三路，分别为 LINPUT1&#x2F;RINPUT1、LINPUT2&#x2F;RINPUT2、LINPUT3&#x2F;RINPUT3。麦克风或线路输入就连接到此接口上，这部分是需要硬件工程师重点关心的，因为音频选择从哪一路进入需要在画 PCB 的时候就应该定好。</p>
@@ -323,10 +323,10 @@
 <li><strong>SD</strong>： ：串行数据信号，也就是我们实际的音频数据，如果要同时实现放音和录音，那么就需要 2 根数据线，比如 WM8960 的 ADCDAT 和 DACDAT，就是分别用于录音和放音。不管音频数据是多少位的，数据的最高位都是最先传输的。数据的最高位总是出现在一帧开始后(LRCK变化)的第 2 个 SCK 脉冲处。</li>
 </ul>
 <p>另外，有时候为了使音频 CODEC 芯片与主控制器之间能够更好的同步，会引入另外一个叫做 MCLK 的信号，也叫做主时钟或系统时钟，一般是采样率的 256 倍或 384 倍。下图 就是一帧立体声音频时序图：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162620883.png" srcset="/img/loading.gif" lazyload alt="image-20200907162620883"></p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162658396.png" srcset="/img/loading.gif" lazyload alt="image-20200907162658396"></p>
+<p><img src="/.top:888//image-20200907162620883.png" srcset="/img/loading.gif" lazyload alt="image-20200907162620883"></p>
+<p><img src="/.top:888//image-20200907162658396.png" srcset="/img/loading.gif" lazyload alt="image-20200907162658396"></p>
 <p>图 65.1.3.2 中通道 0 是 LRCK 时钟，通道 1 为 BCLK，通道 2 是 DACDATA，通道 3 是MCLK。随着技术的发展，在统一的 I2S 接口下，出现了不同的数据格式，根据 DATA 数据相对于 LRCK 和 SCLK 位置的不同，出现了 Left Justified(左对齐)和 Right Justified(右对齐)两种格式，这两种格式的时序图如下图所示</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162754213.png" srcset="/img/loading.gif" lazyload alt="image-20200907162754213"></p>
+<p><img src="/.top:888//image-20200907162754213.png" srcset="/img/loading.gif" lazyload alt="image-20200907162754213"></p>
 <h3 id="4-I-MX6ULL-SAI-简介"><a href="#4-I-MX6ULL-SAI-简介" class="headerlink" title="4| I.MX6ULL SAI  简介"></a>4| I.MX6ULL SAI  简介</h3><p>音频 CODEC 支持 I2S 协议，那么主控制器也必须支持 I2S 协议，大家如果学过STM32F4&#x2F;F7&#x2F;H7 的话应该知道 SAI 接口，因为在 STM32 中就是通过 SAI 接口来连接音频CODEC。I.MX6ULL 也提供了一个叫做 SAI 的外设，全称为 Synchronous Audio Interface，翻译过来就是同步音频接口。</p>
 <p>I.MX6ULL 的 SAI 是一个全双工、支持帧同步的串行接口，支持 I2S、AC97、TDM 和音频DSP，SAI 主要特性如下：</p>
 <ul>
@@ -336,10 +336,10 @@
 <li>④、FIFO 错误以后支持平滑重启。</li>
 </ul>
 <p>I.MX6ULL 的 SAI 框图如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907162904361.png" srcset="/img/loading.gif" lazyload alt="image-20200907162904361"></p>
+<p><img src="/.top:888//image-20200907162904361.png" srcset="/img/loading.gif" lazyload alt="image-20200907162904361"></p>
 <p>图中右侧“SAI_TX”和“SAI_RX”开头的就是 SAI 外设提供给外部连接音频CODEC 的信号线，具体连接方法查看下一节的原理图。</p>
 <h2 id="二、硬件原理图分析"><a href="#二、硬件原理图分析" class="headerlink" title="二、硬件原理图分析"></a>二、硬件原理图分析</h2><p>正点原子 ALPHA 开发板音频原理图如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907163008088.png" srcset="/img/loading.gif" lazyload alt="image-20200907163008088"></p>
+<p><img src="/.top:888//image-20200907163008088.png" srcset="/img/loading.gif" lazyload alt="image-20200907163008088"></p>
 <p>图中我们重点关注两个接口，SAI 和 I2C，我们依次来看一下这两个接口：</p>
 <ul>
 <li>①、SAI 接口一共用到了 6 根数据线，这 6 根数据线用于 I.MX6ULL 与 WM8960 之间的音频数据收发。</li>
@@ -404,18 +404,18 @@
 <h4 id="1-、取消-ALSA-模拟-OSS-API"><a href="#1-、取消-ALSA-模拟-OSS-API" class="headerlink" title="1 、取消 ALSA  模拟 OSS API"></a>1 、取消 ALSA  模拟 OSS API</h4><p>首先取消 ALSA 模拟 OSS，进入如下路径：</p>
 <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs clean">-&gt; Device Drivers<br>    -&gt; Sound card support (SOUND [=y])<br>        -&gt; Advanced Linux Sound Architecture (SND [=y])<br>            -&gt; &lt;&gt; OSS Mixer API <span class="hljs-comment">//不选择</span><br>            -&gt; &lt;&gt; OSS PCM (digital audio) API <span class="hljs-comment">//不选择</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907165744149.png" srcset="/img/loading.gif" lazyload alt="image-20200907165744149"></p>
+<p><img src="/.top:888//image-20200907165744149.png" srcset="/img/loading.gif" lazyload alt="image-20200907165744149"></p>
 <h4 id="2-、使能-I-MX6ULL-的-的-WM8960-驱动"><a href="#2-、使能-I-MX6ULL-的-的-WM8960-驱动" class="headerlink" title="2 、使能 I.MX6ULL 的 的 WM8960 驱动"></a>2 、使能 I.MX6ULL 的 的 WM8960 驱动</h4><p>接下来使能 WM8960 驱动，进入如下路径：</p>
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs livescript">-&gt; Device Drivers<br>    -&gt; Sound card support <span class="hljs-function"><span class="hljs-params">(SOUND [=y])</span></span><br><span class="hljs-function">        -&gt;</span> Advanced Linux Sound Architecture <span class="hljs-function"><span class="hljs-params">(SND [=y])</span></span><br><span class="hljs-function">            -&gt;</span> ALSA <span class="hljs-keyword">for</span> SoC audio support <span class="hljs-function"><span class="hljs-params">(SND_SOC [=y])</span></span><br><span class="hljs-function">            	-&gt;</span> SoC Audio <span class="hljs-keyword">for</span> Freescale CPUs<br>                    -&gt; &lt;*&gt; Asynchronous Sample Rate Converter (ASRC) module support <span class="hljs-regexp">//选中</span><br><span class="hljs-regexp">                    -&gt; &lt;*&gt; SoC Audio support for i.MX boards with wm8960 //</span>选中<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907165845744.png" srcset="/img/loading.gif" lazyload alt="image-20200907165845744"></p>
+<p><img src="/.top:888//image-20200907165845744.png" srcset="/img/loading.gif" lazyload alt="image-20200907165845744"></p>
 <p>驱动使能以后重新编译 linux 内核，编译完成以后使用新的 zImage 和.dtb 文件启动，如果设备树和驱动都使能的话系统启动过程中就会如图所示的 log 信息：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170423473.png" srcset="/img/loading.gif" lazyload alt="image-20200907170423473"></p>
+<p><img src="/.top:888//image-20200907170423473.png" srcset="/img/loading.gif" lazyload alt="image-20200907170423473"></p>
 <p>系统最终启动以后会打印出 ALSA 设备列表，现在的音频 CODEC 驱动基本都是 ALSA 架构的，本章的 WM8960 驱动也是根据 ALSA 架构编写的。因此在 ALSA 设备列表中就会找到“wm8960-audio”这个声卡，如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170550815.png" srcset="/img/loading.gif" lazyload alt="image-20200907170550815"></p>
+<p><img src="/.top:888//image-20200907170550815.png" srcset="/img/loading.gif" lazyload alt="image-20200907170550815"></p>
 <p>进入系统以后查看一下&#x2F;dev&#x2F;snd 目录，看看有没有如图 所示文件：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170616116.png" srcset="/img/loading.gif" lazyload alt="image-20200907170616116"></p>
+<p><img src="/.top:888//image-20200907170616116.png" srcset="/img/loading.gif" lazyload alt="image-20200907170616116"></p>
 <p>图中的这些文件就是ALSA音频驱动框架对应的设备文件，这些文件的作用如下：</p>
 <ul>
 <li>controlC0：用于声卡控制，C0 表示声卡 0。</li>
@@ -426,7 +426,7 @@
 <p>音频驱动使能以后还不能直接播放音乐或录音，我们还需要移植 alsa-lib 和 alsa-utils 这两个东西。</p>
 <h2 id="四、alsa-lib-和-和-alsa-utils-移植"><a href="#四、alsa-lib-和-和-alsa-utils-移植" class="headerlink" title="四、alsa-lib 和 和 alsa-utils 移植"></a>四、alsa-lib 和 和 alsa-utils 移植</h2><p>首 选 下 载 alsa-lib 和 alsa-utils 源 码 ， 下 载 地 址 为 ： <a target="_blank" rel="noopener" href="http://www.alsa-project.org/main/index.php/Main_Page%E3%80%82">http://www.alsa-project.org/main/index.php/Main_Page。</a></p>
 <p>当前最新版本为 1.2.2，如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170812231.png" srcset="/img/loading.gif" lazyload alt="image-20200907170812231"></p>
+<p><img src="/.top:888//image-20200907170812231.png" srcset="/img/loading.gif" lazyload alt="image-20200907170812231"></p>
 <h3 id="1-alsa-lib-移植"><a href="#1-alsa-lib-移植" class="headerlink" title="1| alsa-lib 移植"></a>1| alsa-lib 移植</h3><p>注意 alsa-lib 编译过程中会生成一些配置文件，而这些配置信息的路径都是绝对路径，因此为了保证 ubuntu 和开发板根文件系统中的路径一致！我们需要在 ubuntu 和开发板中各创建一个路径和名字完全一样的目录，这里我们都创建一个&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录，ubuntu 中创建命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /usr/share 			//进入 ubuntu 的/usr/share 目录<br>sudo <span class="hljs-built_in">mkdir</span> arm-alsa  	//创建 arm-alsa 目录 <br></code></pre></td></tr></table></figure>
 
@@ -444,14 +444,14 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">make  //编译<br>sudo make install //安装<br></code></pre></td></tr></table></figure>
 
 <p>可能会出现如图所示的错误提示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907171829579.png" srcset="/img/loading.gif" lazyload alt="image-20200907171829579"></p>
+<p><img src="/.top:888//image-20200907171829579.png" srcset="/img/loading.gif" lazyload alt="image-20200907171829579"></p>
 <p>图中提示 libatopology.la 编译失败，这是因为 sudo 会切换到 root 用户下，但是此时 root用户下的环境变量中没有交叉编译器路径，因此会提示找不到“arm-linux-gnueabihf-gcc”，从而导致 libatopology.la 编译失败。解决方法就是先切换到 root 用户，重新执行一下&#x2F;etc&#x2F;profile文件，然后直接 make install 即可，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo -s  				//切换到 root 用户<br><span class="hljs-built_in">source</span> /etc/profile 	//执行/etc/profile<br>make install  			//安装，此时已经工作在 root 下，因此不需要加“sudo”<br>su firestaradmin  		//编译完成以后回原来的用户<br></code></pre></td></tr></table></figure>
 
 <p>编译完成以后前面创建的“alsa-lib”目录就会保存相应的编译结果，如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907172030992.png" srcset="/img/loading.gif" lazyload alt="image-20200907172030992"></p>
+<p><img src="/.top:888//image-20200907172030992.png" srcset="/img/loading.gif" lazyload alt="image-20200907172030992"></p>
 <p>ubuntu 中&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下的内容如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907172142141.png" srcset="/img/loading.gif" lazyload alt="image-20200907172142141"></p>
+<p><img src="/.top:888//image-20200907172142141.png" srcset="/img/loading.gif" lazyload alt="image-20200907172142141"></p>
 <p>将上上图中alsa-lib&#x2F;lib 目录下的所有文件拷贝到开发板根文件系统的&#x2F;usr&#x2F;lib 目录下，再将上图中&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下的所有文件拷贝到开发板的&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-lib <br>sudo <span class="hljs-built_in">cp</span> lib/* /home/firestardmin/linux/nfs/rootfs/lib/ -af<br><span class="hljs-built_in">cd</span> /usr/share/arm-alsa<br>sudo <span class="hljs-built_in">cp</span> * /home/firestardmin/linux/nfs/rootfs/usr/share/arm-alsa/ -raf<br></code></pre></td></tr></table></figure>
 
@@ -468,7 +468,7 @@
 
 <p>解决办法是自己创建一个空文件 ~&#x2F;alsa-utils-xxx&#x2F;alsaconf&#x2F;po&#x2F;t-ja.gmo 然后重新 make, 之后又提示另一个文件没有，用同样的办法创建空文件再次 make，就能成功了。</p>
 <p>编译完成以后就会在前面创建的“alsa-utils”目录下生成 bin、sbin 和 share 三个文件夹，如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907174836127.png" srcset="/img/loading.gif" lazyload alt="image-20200907174836127"></p>
+<p><img src="/.top:888//image-20200907174836127.png" srcset="/img/loading.gif" lazyload alt="image-20200907174836127"></p>
 <p>将图中 bin、sbin 和 share 这三个目录中的所有文件分别拷贝到开发板根目录下的&#x2F;bin、&#x2F;sbin 和&#x2F;usr&#x2F;share&#x2F;alsa 目录下，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-utils<br>sudo <span class="hljs-built_in">cp</span> bin/* /home/firestaradmin/linux/nfs/rootfs/bin/ -rfa<br>sudo <span class="hljs-built_in">cp</span> sbin/* /home/firestaradmin/linux/nfs/rootfs/sbin/ -rfa<br>sudo <span class="hljs-built_in">cp</span> share/* /home/firestaradmin/linux/nfs/rootfs/usr/share/ -rfa<br></code></pre></td></tr></table></figure>
 
@@ -480,24 +480,24 @@
 <figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">amixer <span class="hljs-comment">--help </span><br></code></pre></td></tr></table></figure>
 
 <p>结果如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175325585.png" srcset="/img/loading.gif" lazyload alt="image-20200907175325585"></p>
+<p><img src="/.top:888//image-20200907175325585.png" srcset="/img/loading.gif" lazyload alt="image-20200907175325585"></p>
 <p>从图 可以看出，amixer 软件命令分为两组，scontrols、scontents、sset 和 sget 为一组。controls、contents、cset 和 cget 为另一组。这两组的基本功能都是一样的，只不过“s”开头的是 simple(简单)组，这一组命令是简化版，本教程最终使用“s”开头的命令设置声卡，因为少输入很多字符。</p>
 <h4 id="2-、查看设置项"><a href="#2-、查看设置项" class="headerlink" title="2 、查看设置项"></a>2 、查看设置项</h4><p>我们要先看一下都有哪些设置项，先来看一下 scontrols 对应的设置项，输入如下命令：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">amixer scontrols  <span class="hljs-regexp">//</span>查看所有设置项<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175501178.png" srcset="/img/loading.gif" lazyload alt="image-20200907175501178"></p>
+<p><img src="/.top:888//image-20200907175501178.png" srcset="/img/loading.gif" lazyload alt="image-20200907175501178"></p>
 <p>再来看一下 controls 对应的设置项，输入如下命令：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">amixer controls  <span class="hljs-regexp">//</span>查看所有设置项<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175532792.png" srcset="/img/loading.gif" lazyload alt="image-20200907175532792"></p>
+<p><img src="/.top:888//image-20200907175532792.png" srcset="/img/loading.gif" lazyload alt="image-20200907175532792"></p>
 <p>图 由于篇幅原因只列出了一部分设置项，整体设置项目还是比较多的，很多设置项目我们都不知道是啥意思，毕竟不是从事音频专业的。这里我们只关注一些最常用的设置即可，比如设置耳机和喇叭音量、设置左右声道音量、设置输入音量等等。</p>
 <h4 id="3-、查看设置值-值"><a href="#3-、查看设置值-值" class="headerlink" title="3 、查看设置值 值"></a>3 、查看设置值 值</h4><p>不同的设置项对应的设置值类型不同，先查看一下scontents对应的设置值，输入如下命令：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">amixer scontents  <span class="hljs-regexp">//</span>查看设置值<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175630338.png" srcset="/img/loading.gif" lazyload alt="image-20200907175630338"></p>
+<p><img src="/.top:888//image-20200907175630338.png" srcset="/img/loading.gif" lazyload alt="image-20200907175630338"></p>
 <p>从图 可以看出“Headphone”项目就是设置耳机音量的，音量范围为 0-127，当前音量为 0。有些设置项是 bool 类型，只有 on 和 off 两种状态。关于 controls 对应的设置值大家自行输入“amixer controls”命令查看即可。</p>
 <h4 id="4、设置声卡"><a href="#4、设置声卡" class="headerlink" title="4、设置声卡"></a>4、设置声卡</h4><p>知道了设置项和设置值，那么设置声卡就很简单了，直接使用下面命令即可：</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> sset 设置项目 设置值 <br></code></pre></td></tr></table></figure>
@@ -523,7 +523,7 @@
 
 <p>如果一切设置正常的话就会开始播放音乐，因为 ALPHA 开发板支持喇叭和耳机自动切换，因此如果不插耳机的话默认从喇叭播放音乐。插上耳机以后喇叭就会停止播放音乐，改为耳机播放音乐。</p>
 <h3 id="3-MIC-录音测试"><a href="#3-MIC-录音测试" class="headerlink" title="3| MIC  录音测试"></a>3| MIC  录音测试</h3><p>ALPHA 开发板上有一个麦克风，如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907180428743.png" srcset="/img/loading.gif" lazyload alt="image-20200907180428743"></p>
+<p><img src="/.top:888//image-20200907180428743.png" srcset="/img/loading.gif" lazyload alt="image-20200907180428743"></p>
 <p>我们可以通过图 上的这个麦克风(MIC)来完成录音测试。</p>
 <h4 id="1-、使用-amixer-设置声卡-1"><a href="#1-、使用-amixer-设置声卡-1" class="headerlink" title="1 、使用 amixer  设置声卡"></a>1 、使用 amixer  设置声卡</h4><p>同样的，第一次使用声卡录音之前要先使用 amixer 设置一下声卡，这里为了方便，我们在开发板根文件系统的&#x2F;music 目录下创建一个名为“mic_in_config.sh”的 shell 脚本，然后在里面输入声卡的设置命令。mic_in_config.sh 脚本内容如下所示：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span><br><span class="hljs-comment">#设置捕获的音量</span><br>amixer cset name=<span class="hljs-string">&#x27;Capture Volume&#x27;</span> 90,90<br><br><span class="hljs-comment">#PCM</span><br>amixer sset <span class="hljs-string">&#x27;PCM Playback&#x27;</span> on<br>amixer sset <span class="hljs-string">&#x27;Playback&#x27;</span> 256<br>amixer sset <span class="hljs-string">&#x27;Right Output Mixer PCM&#x27;</span> on<br>amixer sset <span class="hljs-string">&#x27;Left Output Mixer PCM&#x27;</span> on<br><br><span class="hljs-comment">#ADC PCM</span><br>amixer sset <span class="hljs-string">&#x27;ADC PCM&#x27;</span> 200<br><br><span class="hljs-comment">#耳机/喇叭（扬声器）设置播放音量，直流/交流</span><br><span class="hljs-comment">#Turn on Headphone</span><br>amixer sset <span class="hljs-string">&#x27;Headphone Playback ZC&#x27;</span> on<br><span class="hljs-comment">#Set the volume of your headphones(98% volume，127 is the MaxVolume)</span><br>amixer sset Headphone 125,125<br><span class="hljs-comment">#Turn on the speaker</span><br>amixer sset <span class="hljs-string">&#x27;Speaker Playback ZC&#x27;</span> on<br><span class="hljs-comment">#Set the volume of your Speaker(98% volume，127 is the MaxVolume)</span><br>amixer sset Speaker 125,125<br><span class="hljs-comment">#Set the volume of your Speaker AC(80% volume，100 is the MaxVolume)</span><br>amixer sset <span class="hljs-string">&#x27;Speaker AC&#x27;</span> 4<br><span class="hljs-comment">#Set the volume of your Speaker AC(80% volume，5 is the MaxVolume)</span><br>amixer sset <span class="hljs-string">&#x27;Speaker DC&#x27;</span> 4<br><br><span class="hljs-comment">#音频输入，左声道管理</span><br><span class="hljs-comment">#Turn on Left Input Mixer Boost</span><br>amixer sset <span class="hljs-string">&#x27;Left Input Mixer Boost&#x27;</span> off<br>amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT1&#x27;</span> off<br>amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT1&#x27;</span> 0<br>amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT2&#x27;</span> on<br>amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT2&#x27;</span> 127<br><span class="hljs-comment">#Turn off Left Boost Mixer LINPUT3</span><br>amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT3&#x27;</span> off<br>amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT3&#x27;</span> 0<br><br><span class="hljs-comment">#音频输入，右声道管理，全部关闭</span><br><span class="hljs-comment">#Turn on Right Input Mixer Boost</span><br>amixer sset <span class="hljs-string">&#x27;Right Input Mixer Boost&#x27;</span> on<br>amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT1&#x27;</span> off<br>amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT2&#x27;</span> 0<br>amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT2&#x27;</span> on<br>amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT2&#x27;</span> 127<br>amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT3&#x27;</span> off<br>amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27;</span> 0<br></code></pre></td></tr></table></figure>
@@ -537,7 +537,7 @@
 <p>-f 是设置录音质量，“-f cd”表示录音质量为 cd 级别。-d 是指定录音时间，单位是 s，这条指令就是录制一段 cd 级别 10s 的 wav 音频，音频名字为 record.wav。录制的时候大家就可以对着开发板上的 MIC 说话，直到录制完成。</p>
 <p>录制完成以后使用 aplay 播放刚刚录制的 record.wav 音频，大家会发现只有左声道有声音，右声道没有任何声音，这是因为 ALPHA 开发板的 MIC 只接了左声道，因此录出来的音频只有左声道有数据。</p>
 <h4 id="3-、单声道-MIC-录制立体声音频"><a href="#3-、单声道-MIC-录制立体声音频" class="headerlink" title="3 、单声道 MIC 录制立体声音频"></a>3 、单声道 MIC 录制立体声音频</h4><p>前面测出来 MIC 录出来的只有左声道有声音，那么我们能不能让只接到左声道的 MIC 录制出来的音频是双声道的呢？这个就要去看 WM8960 的数据手册了，看看能不能配置 WM8960的右声道 ADC 直接使用左声道的数据。这样左右声道就共同使用一个 MIC，录出来的音频就是双声道的，虽然两个声道的数据是一模一样的。打开 WM8960 数据手册，找到 R23 寄存器(地址为 0X17)，R23 寄存器的 bit3:2 是设置 ADC数据的，如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181151417.png" srcset="/img/loading.gif" lazyload alt="image-20200907181151417"></p>
+<p><img src="/.top:888//image-20200907181151417.png" srcset="/img/loading.gif" lazyload alt="image-20200907181151417"></p>
 <p>从图  可以看出，R23 的 bit3:2 控制着左右声道数据来自哪里，可选设置如下：<br>00 ：左声道数据使用左 ADC，右声道数据使用右 ADC，这个是默认模式。<br>01 ：左声道数据使用左 ADC，右声道数据使用左 ADC。<br>10 ：左声道数据使用右 ADC，右声道数据使用右 ADC。<br>11：左声道数据使用右 ADC，右声道数据使用左 ADC。</p>
 <p>由于 ALPHA 开发板 MIC 接在了左声道，因此 WM8960 的 R23 寄存器 bit3:2 应该设置为01，也就是左右声道的数据都使用左 ADC。</p>
 <p>打开 linux 内核里面的 wm8960.c 这个文件，找到 wm8960_reg_defaults 数组，此数组保存着 wm8960 的默认配置值，为&lt;寄存器地址，值&gt;这样的形式。R23 寄存器地址为 0X17，因此找到 0x17 组，默认情况下 0x17 对应的值为 0X01C0，我们将 bit3:2 改为 01 以后 0x17 寄存器的值就变为了 0x01C4，修改后的 wm8960_reg_defaults 寄存器如下所示：</p>
@@ -545,7 +545,7 @@
 
 <p>第 23 行就是将 R23 寄存器的值改为 0x01c4。修改完成以后重新编译 linux 内核，然后使用新的内核启动开发板，重新测试 MIC 录音，这个时候录出来的就应该是立体音了。</p>
 <h3 id="4-LINE-IN-录音测试"><a href="#4-LINE-IN-录音测试" class="headerlink" title="4| LINE IN  录音测试"></a>4| LINE IN  录音测试</h3><p>如果在 MIC 录音实验中将 R23 的寄存器改为了 0X01C4，那么在进行 LINE IN 录音测试之前先改回原来的 0X01C0，因为 ALPHA 开发板的 LINE IN 接了双声道，不需要共用左声道数据。当然了，不修改也是可以直接做测试的！最后进行一下 Line in 测试，也就是线路输入测试，ALPHA 开发板上 Line in 接口如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181517384.png" srcset="/img/loading.gif" lazyload alt="image-20200907181517384"></p>
+<p><img src="/.top:888//image-20200907181517384.png" srcset="/img/loading.gif" lazyload alt="image-20200907181517384"></p>
 <p>注意，图  中的 Line in 不是用来连接话筒的！这里不能接话筒。使用一根 3.5mm 公对公音频线，一头连接到手机或者电脑，另外一头连接到图 中的 Line in 接口上。</p>
 <h4 id="1-、使用-amixer-设置声卡-2"><a href="#1-、使用-amixer-设置声卡-2" class="headerlink" title="1 、使用 amixer  设置声卡"></a>1 、使用 amixer  设置声卡</h4><p>同样新建一个名为“line_in_config.sh”的 shell 脚本，在此脚本里面输入如下内容：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs sh">1 <span class="hljs-comment">#!/bin/sh</span><br>2 <span class="hljs-comment">#正点原子@ALIENTEK</span><br>3 <span class="hljs-comment">#设置捕获的音量</span><br>4 amixer cset name=<span class="hljs-string">&#x27;Capture Volume&#x27;</span> 100,100<br>5<br>6 <span class="hljs-comment">#PCM</span><br>7 amixer sset <span class="hljs-string">&#x27;PCM Playback&#x27;</span> on<br>8 amixer sset <span class="hljs-string">&#x27;Playback&#x27;</span> 256<br>9 amixer sset <span class="hljs-string">&#x27;Right Output Mixer PCM&#x27;</span> on<br>10 amixer sset <span class="hljs-string">&#x27;Left Output Mixer PCM&#x27;</span> on<br>11<br>12 <span class="hljs-comment">#ADC PCM</span><br>13 amixer sset <span class="hljs-string">&#x27;ADC PCM&#x27;</span> 200<br>14<br>15 <span class="hljs-comment">#录音前应该设置耳机或者扬声器的音量为 0（下面并没有设置）防止干扰</span><br>16 <span class="hljs-comment">#耳机/喇叭（扬声器）设置播放音量，直流/交流</span><br>17 <span class="hljs-comment">#Turn on Headphone</span><br>18 amixer sset <span class="hljs-string">&#x27;Headphone Playback ZC&#x27;</span> on<br>19 <span class="hljs-comment">#Set the volume of your headphones(98% volume，127 is the MaxVolume)</span><br>20 amixer sset Headphone 125,125<br>21 <span class="hljs-comment">#Turn on the speaker</span><br>22 amixer sset <span class="hljs-string">&#x27;Speaker Playback ZC&#x27;</span> on<br>23 <span class="hljs-comment">#Set the volume of your Speaker(98% volume，127 is the MaxVolume)</span><br>24 amixer sset Speaker 125,125<br>25 <span class="hljs-comment">#Set the volume of your Speaker AC(80% volume，100 is the MaxVolume)</span><br>26 amixer sset <span class="hljs-string">&#x27;Speaker AC&#x27;</span> 4<br>27 <span class="hljs-comment">#Set the volume of your Speaker AC(80% volume，5 is the MaxVolume)</span><br>28 amixer sset <span class="hljs-string">&#x27;Speaker DC&#x27;</span> 4<br>29<br>30 <span class="hljs-comment">#音频输入，左声道管理</span><br>31 <span class="hljs-comment">#Turn off Left Input Mixer Boost</span><br>32 amixer sset <span class="hljs-string">&#x27;Left Input Mixer Boost&#x27;</span> on<br>33 <span class="hljs-comment">#关闭其他通道输入</span><br>34 amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT1&#x27;</span> off<br>35 amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT1&#x27;</span> 0<br>36 <span class="hljs-comment">#关闭麦克风左声道输入</span><br>37 amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT2&#x27;</span> on<br>38 amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT2&#x27;</span> 127<br>39 <span class="hljs-comment">#Line_in 右声道输入关闭</span><br>40 amixer sset <span class="hljs-string">&#x27;Left Boost Mixer LINPUT3&#x27;</span> off<br>41 amixer sset <span class="hljs-string">&#x27;Left Input Boost Mixer LINPUT3&#x27;</span> 0<br>42<br>43<br>44 <span class="hljs-comment">#音频输入，右声道管理</span><br>45 <span class="hljs-comment">#Turn on Right Input Mixer Boost</span><br>46 amixer sset <span class="hljs-string">&#x27;Right Input Mixer Boost&#x27;</span> on<br>47 amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT1&#x27;</span> off<br>48 amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT1&#x27;</span> 0<br>49 amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT2&#x27;</span> off<br>50 amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT2&#x27;</span> 0<br>51<br>52 <span class="hljs-comment">#要想设置成音频输入，请打开 RINPUT3,看原理图可知</span><br>53 <span class="hljs-comment">#其他的声道通过上面的配置可关闭，这样是为了避免干扰，需要的时候就打开</span><br>54 <span class="hljs-comment">#RINPUT3 打开（关键点）</span><br>55 amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT3&#x27;</span> on<br>56 amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27;</span> 127<br></code></pre></td></tr></table></figure>
@@ -565,7 +565,7 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">alsactl -f <span class="hljs-regexp">/var/</span>lib<span class="hljs-regexp">/alsa/</span>asound.state store <span class="hljs-regexp">//</span>保存声卡设置<br></code></pre></td></tr></table></figure>
 
 <p>-f 指定声卡配置文件，store 表示保存。关于 alsactl 的详细使用方法，输入“alsactl -h”即可。保存成功以后就会生成&#x2F;var&#x2F;lib&#x2F;alsa&#x2F;asound.state 这个文件，asound.state 里面就是关于声卡的各种设置信息，大家可以打开此文件查看一下里面的内容，如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181757589.png" srcset="/img/loading.gif" lazyload alt="image-20200907181757589"></p>
+<p><img src="/.top:888//image-20200907181757589.png" srcset="/img/loading.gif" lazyload alt="image-20200907181757589"></p>
 <p>如果要使用 asound.state 中的配置信息来配置声卡，执行如下命令即可：</p>
 <figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pf">alsactl -f /var/lib/alsa/asound.<span class="hljs-keyword">state</span> restore<br></code></pre></td></tr></table></figure>
 
@@ -574,7 +574,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-keyword">if</span> [ -f <span class="hljs-string">&quot;/var/lib/alsa/asound.state&quot;</span> ]; then<br><span class="hljs-number">2</span> 		echo <span class="hljs-string">&quot;ALSA: Restoring mixer setting......&quot;</span><br><span class="hljs-number">3</span> 		/sbin/alsactl -f /var/lib/alsa/asound.state restore &amp;<br><span class="hljs-number">4</span> fi<br></code></pre></td></tr></table></figure>
 
 <p>第 1 行判断&#x2F;var&#x2F;lib&#x2F;alsa&#x2F;asound.state 这个文件是否存在，存在的话就执行下面的。首先输出一行提示符：“ALSA: Restoring mixer setting……”，表示设置声卡，最后调用&#x2F;sbin&#x2F;alsactl 来执行声卡设置工作。<br>设置完成以后重启开发板，开发板开机就会自动设置声卡，会输入如图所示内容：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181902945.png" srcset="/img/loading.gif" lazyload alt="image-20200907181902945"></p>
+<p><img src="/.top:888//image-20200907181902945.png" srcset="/img/loading.gif" lazyload alt="image-20200907181902945"></p>
 <p>接使用 aplay 播放音乐测试声卡开机自动配置是否正确。</p>
 <h2 id="七、mplayer-播放器移植与使用"><a href="#七、mplayer-播放器移植与使用" class="headerlink" title="七、mplayer  播放器移植与使用"></a>七、mplayer  播放器移植与使用</h2><p>至此，linux 下的 LCD 显示和音频都已经驱动起来了，那么肯定就会有朋友想播放视频。<br>本节我们就来学习一下如何移植 mplayer 这个强大的视频播放软件。mplayer 是一款开源的多媒<br>体播放器，可以用来播放音视频，mplayer 自带多种格式的解码器，不需要我们再另外安装。</p>
 <h3 id="1-mplayer-移植"><a href="#1-mplayer-移植" class="headerlink" title="1| mplayer 移植"></a>1| mplayer 移植</h3><h4 id="1-、移植-zlib-库"><a href="#1-、移植-zlib-库" class="headerlink" title="1 、移植 zlib  库"></a>1 、移植 zlib  库</h4><p>mplayer 用到了 zlib 库，因此要先移植 zlib 库。zlib 源码下载地址为：<a target="_blank" rel="noopener" href="http://zlib.net/%EF%BC%8C%E5%BD%93%E5%89%8D%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E4%B8%BA">http://zlib.net/，当前最新版本为</a> 1.2.11。我们已经下载下来放到了开发板光盘中，</p>
@@ -584,7 +584,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs groovy">cd zlib<span class="hljs-number">-1.2</span><span class="hljs-number">.11</span><span class="hljs-regexp">/ /</span>/进去 zlib 源码<br><br>CC=arm-linux-gnueabihf-gcc  LD=arm-linux-gnueabihf-ld  AD=arm-linux-gnueabihf-<br><span class="hljs-keyword">as</span> .<span class="hljs-regexp">/configure --prefix=/</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/tools/</span>zlib <span class="hljs-comment">//配置</span><br><br>make  <span class="hljs-comment">//编译</span><br>make install<br></code></pre></td></tr></table></figure>
 
 <p>编译完成以后的 zlib 目录内容如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182057667.png" srcset="/img/loading.gif" lazyload alt="image-20200907182057667"></p>
+<p><img src="/.top:888//image-20200907182057667.png" srcset="/img/loading.gif" lazyload alt="image-20200907182057667"></p>
 <p>将图中的lib目录下的zlib库文件拷贝到开发板根文件系统的&#x2F;lib目录下，命令为：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo cp lib<span class="hljs-regexp">/* /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/</span> -rfa<br></code></pre></td></tr></table></figure>
 
@@ -597,9 +597,9 @@
 <figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs brainfuck"><span class="hljs-comment">cd</span> <span class="hljs-comment">MPlayer</span><span class="hljs-literal">-</span><span class="hljs-comment">1</span><span class="hljs-string">.</span><span class="hljs-comment">4/</span>  <span class="hljs-comment">//进去</span> <span class="hljs-comment">mplayer</span> <span class="hljs-comment">源码</span><br><br><span class="hljs-string">.</span><span class="hljs-comment">/configure</span> --<span class="hljs-comment">cc=arm</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span><span class="hljs-literal">-</span><span class="hljs-comment">gnueabihf</span><span class="hljs-literal">-</span><span class="hljs-comment">gcc</span> --<span class="hljs-comment">host</span><span class="hljs-literal">-</span><span class="hljs-comment">cc=gcc</span> --<span class="hljs-comment">target=arm</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span><span class="hljs-literal">-</span><span class="hljs-comment">gnueabihf</span> --<span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">ossaudio</span> --<span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">alsa</span> --<span class="hljs-comment">prefix=/home/zuozhongkai/linux/IMX6ULL/tool/mplayer</span> --<span class="hljs-comment">extra</span><span class="hljs-literal">-</span><span class="hljs-comment">cflags=&quot;</span><span class="hljs-literal">-</span><span class="hljs-comment">I/home/zuozhongkai/linux/IMX6ULL/tool/zlib/include</span>  <span class="hljs-literal">-</span><span class="hljs-comment">I/home/zuozhongkai/linux/IMX6ULL/tool/alsa</span><span class="hljs-literal">-</span><span class="hljs-comment">lib/include&quot;</span>  --<span class="hljs-comment">extra</span><span class="hljs-literal">-</span><span class="hljs-comment">ldflags=&quot;</span><span class="hljs-literal">-</span><span class="hljs-comment">L/home/zuozhongkai/linux/IMX6ULL/tool/zlib/lib</span>  <span class="hljs-literal">-</span><span class="hljs-comment">Iz</span>  <span class="hljs-literal">-</span><br><span class="hljs-comment">L/home/zuozhongkai/linux/IMX6ULL/tool/alsa</span><span class="hljs-literal">-</span><span class="hljs-comment">lib/lib</span> <span class="hljs-literal">-</span><span class="hljs-comment">lasound&quot;</span> --<span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">fbdev</span> --<span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">mencoder</span><br><br><span class="hljs-comment">make</span>  <span class="hljs-comment">//编译</span><br></code></pre></td></tr></table></figure>
 
 <p>–extra-cflags 指定 zlib 和 alsa-lib 的头文件路径，–extra-ldflags 指定 zlib 和 alsa-lib 的库文件路径。编译完成以后打开 config.mak 文件，找到“INSTALLSTRIP &#x3D; -s”这一行，取消掉后面的“-s”，否则“make install”命令会失败！结果如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182313324.png" srcset="/img/loading.gif" lazyload alt="image-20200907182313324"></p>
+<p><img src="/.top:888//image-20200907182313324.png" srcset="/img/loading.gif" lazyload alt="image-20200907182313324"></p>
 <p>修改完成以后使用“make install”安装，安装完成以后 mplayer 目录内容如图 所示</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182326254.png" srcset="/img/loading.gif" lazyload alt="image-20200907182326254"></p>
+<p><img src="/.top:888//image-20200907182326254.png" srcset="/img/loading.gif" lazyload alt="image-20200907182326254"></p>
 <p>图 中的 bin 目录下有一个叫做“mplayer”的可执行文件，这就是我们需要的 mplayer播放器！将其拷贝到开发板根文件系统的&#x2F;bin 目录下，命令为：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo cp bin<span class="hljs-regexp">/mplayer /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/bin/</span> -f<br></code></pre></td></tr></table></figure>
 
@@ -608,16 +608,16 @@
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">mplayer <span class="hljs-keyword">test</span>.flac<br></code></pre></td></tr></table></figure>
 
 <p>播放过程如图 所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182411920.png" srcset="/img/loading.gif" lazyload alt="image-20200907182411920"></p>
+<p><img src="/.top:888//image-20200907182411920.png" srcset="/img/loading.gif" lazyload alt="image-20200907182411920"></p>
 <p>播放过程中我们可以通过键盘控制播放器，常用的控制方法如下：<br>9 ：增加音量。<br>0：减小音量。<br>左键：倒退 10 秒<br>右键：快进 10 秒<br>上键：倒退 1 分钟<br>下键：快进 1 分钟<br>空格：暂停和播放<br>如果 mplayer 音量已经调到最大了，但是耳机音量依旧很小的话请使用 amixer 调大声卡最<br>大音量。</p>
 <h4 id="2-、视频播放测试"><a href="#2-、视频播放测试" class="headerlink" title="2 、视频播放测试"></a>2 、视频播放测试</h4><p>视频播放的方法和音频一样， “mplayer+视频名”即可，但是这样的话视频不是居中播放的，我们可以加入“-fs”参数让视频居中播放。注意！由于 I.MX6ULL 性能比较差，而且没有硬件视频解码，因此 6ULL 不能播放高分辨率、高码率和高帧率的视频，视频分辨率最好在 640*480 左右！输入如下命令播放视频：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">mplayer test.avi -fs <span class="hljs-regexp">//</span>居中播放视频<br></code></pre></td></tr></table></figure>
 
 <p>如果你所使用的芯片性能比较差的话 mplayer 会给你提示，如图  所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182452001.png" srcset="/img/loading.gif" lazyload alt="image-20200907182452001"></p>
+<p><img src="/.top:888//image-20200907182452001.png" srcset="/img/loading.gif" lazyload alt="image-20200907182452001"></p>
 <p>关于 mplayer 的更多使用请自行上网搜索，这里就不再赘述了。</p>
 <h2 id="七、alsamixer-简介"><a href="#七、alsamixer-简介" class="headerlink" title="七、alsamixer  简介"></a>七、alsamixer  简介</h2><p>前面在移植 alsa-utils 的时候说过 alsamixer是一个图形化的声卡设置工具，但是由于 ncurses库依赖的原因笔者并没有在 alsa-utils 移植的时候编译出 alsamixer，不得已放弃编译 alsa-utils 中的 alsamixer。但是笔者用了一个投机取巧的方法，那就是使用 buildroot 编译出 alsamixer，然后将其拷贝到开发板根文件系统中。因此，如果还没了解过buildroot的朋友就不需要看本小节了，直接使用 amixer 来配置声卡。从这里也可以看出 buildroot 的强大，再一次建议大家做产品的时候使用 buidroot 或 yocto 来构建根文件系统！alsamixer 是基于图形化的，直接输入“alsamixer”命令即可打开声卡配置界面，如图所示：</p>
-<p><img src="/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182600316.png" srcset="/img/loading.gif" lazyload alt="image-20200907182600316"></p>
+<p><img src="/.top:888//image-20200907182600316.png" srcset="/img/loading.gif" lazyload alt="image-20200907182600316"></p>
 <p>F1  键：查看帮助信息。<br>F2  键：查看系统信息。<br>F3  键：播放设置。<br>F4  键：录音设置。<br>F6  键：选择声卡，多声卡情况下。<br>Item ：设置项全名。</p>
 <p>图  最下面一行就是具体的设置项，比如“Headphone”、“Headphone Playback ZC”等等，通过键盘上左右键选择设置项。按下上下键来调整大小，比如设置耳机音量大小等。有些项目会显示“MM”，表示静音，按下“M”键修改为“OO”状态打开，“M”键用于修改打开或关闭某些项目。关于 alsamixer 的介绍就到这里，用起来还是很简单的。</p>
 
@@ -643,9 +643,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     
@@ -664,9 +664,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">23| Linux USB驱动实验</span>
+                        <span class="hidden-mobile">21| Linux 电容触摸实验</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -674,8 +674,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/24%E3%80%81Linux%E5%9D%97%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
-                        <span class="hidden-mobile">24| Linux 块设备驱动实验</span>
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">23| Linux USB驱动实验</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

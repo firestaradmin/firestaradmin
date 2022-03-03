@@ -23,46 +23,46 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="linux内核移植一、获取内核源码Linux 官网为 https:&#x2F;&#x2F;www.kernel.org，所以你想获取最新的Linux 版本就可以在这个网站上下载，网站界面如图所示：  从图可以看出最新的稳定版 Linux 已经到了 5.1.4，大家没必要追新，因为 4.x 版本的 Linux 和 5.x 版本没有本质上的区别，5.x 更多的是加入了一些新的平台、新的外设驱动而已。NXP 会从 http">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819114832709.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120745881.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120815125.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120827827.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121018040.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121036268.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121223952.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819122938067.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123316222.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123555197.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819130548552.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131258173.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131816436.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819133111334.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143359337.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143452149.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143815635.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144003337.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144814735.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144848532.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819145152374.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150034290.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150158116.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150756416.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819160409699.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162229077.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162256490.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162751401.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162818948.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162957546.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163450607.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163502121.png">
-<meta property="og:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163905798.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819114832709.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120745881.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120815125.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120827827.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121018040.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121036268.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121223952.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819122938067.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819123316222.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819123555197.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819130548552.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819131258173.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819131816436.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819133111334.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143359337.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143452149.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143815635.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144003337.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144814735.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144848532.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819145152374.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150034290.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150158116.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150756416.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819160409699.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162229077.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162256490.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162751401.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162818948.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162957546.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163450607.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163502121.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163905798.png">
 <meta property="article:published_time" content="2020-09-06T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-06T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819114832709.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819114832709.png">
   
   
   <title>8| linux内核移植 - Hexo</title>
@@ -274,24 +274,24 @@
             
             <div class="markdown-body">
               <h1 id="linux内核移植"><a href="#linux内核移植" class="headerlink" title="linux内核移植"></a>linux内核移植</h1><h2 id="一、获取内核源码"><a href="#一、获取内核源码" class="headerlink" title="一、获取内核源码"></a>一、获取内核源码</h2><p>Linux 官网为 <a target="_blank" rel="noopener" href="https://www.kernel.org,所以你想获取最新的linux/">https://www.kernel.org，所以你想获取最新的Linux</a> 版本就可以在这个网站上下载，网站界面如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819114832709.png" srcset="/img/loading.gif" lazyload alt="image-20200819114832709"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819114832709.png" srcset="/img/loading.gif" lazyload alt="image-20200819114832709"></p>
 <p>从图可以看出最新的稳定版 Linux 已经到了 5.1.4，大家没必要追新，因为 4.x 版本的 Linux 和 5.x 版本没有本质上的区别，5.x 更多的是加入了一些新的平台、新的外设驱动而已。NXP 会从 <a target="_blank" rel="noopener" href="https://www.kernel.org/">https://www.kernel.org</a> 下载某个版本的 Linux 内核，然后将其移植到自己的 CPU上，测试成功以后就会将其开放给 NXP 的 CPU 开发者。开发者下载 NXP 提供的 Linux 内核，然后将其移植到自己的产品上。本章的移植我们就使用 NXP 提供的Linux 源码。</p>
 <p>和uboot源码一样，从对应的开发板厂商或SOC厂商获取，具体看你的开发板参考谁的板子</p>
 <h2 id="二、内核浅析"><a href="#二、内核浅析" class="headerlink" title="二、内核浅析"></a>二、内核浅析</h2><h3 id="1、内核目录分析"><a href="#1、内核目录分析" class="headerlink" title="1、内核目录分析"></a>1、内核目录分析</h3><p>将 Linux 源码进行解压，解压完成以后的目录如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120745881.png" srcset="/img/loading.gif" lazyload alt="image-20200819120745881"></p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120815125.png" srcset="/img/loading.gif" lazyload alt="image-20200819120815125"></p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819120827827.png" srcset="/img/loading.gif" lazyload alt="image-20200819120827827"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120745881.png" srcset="/img/loading.gif" lazyload alt="image-20200819120745881"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120815125.png" srcset="/img/loading.gif" lazyload alt="image-20200819120815125"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819120827827.png" srcset="/img/loading.gif" lazyload alt="image-20200819120827827"></p>
 <ul>
 <li><p>1 、arch  目录</p>
 <p>这个目录是和架构有关的目录，比如 arm、arm64、avr32、x86 等等架构。每种架构都对应一个目录，在这些目录中又有很多子目录，比如 boot、common、configs 等等</p>
 <p>以 arch&#x2F;arm 为例，其子目录如图 35.3.2 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121018040.png" srcset="/img/loading.gif" lazyload alt="image-20200819121018040"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121018040.png" srcset="/img/loading.gif" lazyload alt="image-20200819121018040"></p>
 <p>图 35.3.2 是 arch&#x2F;arm 的一部分子目录，这些子目录用于控制系统引导、系统调用、动态调频、主频设置等。</p>
 <p>arch&#x2F;arm&#x2F;configs 目录是不同平台的默认配置文件：xxx_defconfig，如图 35.3.3所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121036268.png" srcset="/img/loading.gif" lazyload alt="image-20200819121036268"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121036268.png" srcset="/img/loading.gif" lazyload alt="image-20200819121036268"></p>
 <p>在 <strong>arch&#x2F;arm&#x2F;configs</strong> 中就包含有 I.MX6U-ALPHA 开发板的默认配置文件：imx_v7_defconfig,执行“make imx_v7_defconfig”即可完成配置。</p>
 <p><strong>arch&#x2F;arm&#x2F;boot&#x2F;dts</strong> 目录里面是对应开发平台的设备树文件，正点原子 I.MX6U-ALPHA 开发板对应的设备树文件如图 35.3.4 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819121223952.png" srcset="/img/loading.gif" lazyload alt="image-20200819121223952"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819121223952.png" srcset="/img/loading.gif" lazyload alt="image-20200819121223952"></p>
 <p><strong>arch&#x2F;arm&#x2F;boot</strong> 目录下会保存编译出来的 Image 和 zImage 镜像文件，而 zImage 就是我们要用的 linux 镜像文件。</p>
 <p><strong>arch&#x2F;arm&#x2F;mach-xxx</strong> 目录分别为相应平台的驱动和初始化文件，比如 mach-imx 目录里面就是 I.MX 系列 CPU 的驱动和初始化文件。</p>
 </li>
@@ -383,17 +383,17 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo apt-get install lzop<br></code></pre></td></tr></table></figure>
 
 <p>修改顶层 Makefile，直接在顶层 Makefile 文件里面定义 ARCH 和 CROSS_COMPILE 这两个的变量值为 arm 和 arm-linux-gnueabihf-，结果如图 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819122938067.png" srcset="/img/loading.gif" lazyload alt="image-20200819122938067"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819122938067.png" srcset="/img/loading.gif" lazyload alt="image-20200819122938067"></p>
 <p>分别设置了 ARCH 和 CROSS_COMPILE 这两个变量的值，这样在编译的时候就不用输入很长的命令了。</p>
 <p>和 uboot 一样，在编译 Linux 内核之前要先配置 Linux 内核。每个板子都有其对应的默认配置文件，这些默认配置文件保存 在 <strong>arch&#x2F;arm&#x2F;configs</strong> 目录中。 imx_v7_defconfig 和imx_v7_mfg_defconfig 都可作为 I.MX6ULL EVK 开发板所使用的默认配置文件。但是这里建议使用 imx_v7_mfg_defconfig 这个默认配置文件，首先此配置文件默认支持 I.MX6UL 这款芯片，而且重要的一点就是此文件编译出来的 zImage 可以通过 NXP 官方提供的 MfgTool 工具烧写！！imx_v7_mfg_defconfig 中的“mfg”的意思就是 MfgTool。进入到 Ubuntu 中的 Linux 源码根目录下，执行如下命令配置 Linux 内核：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">make clean  <span class="hljs-regexp">//</span>第一次编译 Linux 内核之前先清理一下<br>make imx_v7_mfg_defconfig <span class="hljs-regexp">//</span>配置 Linux 内核<br></code></pre></td></tr></table></figure>
 
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123316222.png" srcset="/img/loading.gif" lazyload alt="image-20200819123316222"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819123316222.png" srcset="/img/loading.gif" lazyload alt="image-20200819123316222"></p>
 <p>配置完成以后就可以编译了，使用如下命令编译 Linux 内核：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">make -j12  <span class="hljs-regexp">//</span>编译 Linux 内核<br></code></pre></td></tr></table></figure>
 
 <p>等待编译完成，结果如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123555197.png" srcset="/img/loading.gif" lazyload alt="image-20200819123555197"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819123555197.png" srcset="/img/loading.gif" lazyload alt="image-20200819123555197"></p>
 <p>Linux 内核编译完成以后会在 <strong>arch&#x2F;arm&#x2F;boot</strong> 目录下生成 <strong>zImage</strong> 镜像文件，如果使用设备树的话还会在 <strong>arch&#x2F;arm&#x2F;boot&#x2F;dts</strong> 目录下开发板对应的**.dtb**(设备树)文件，比如 imx6ull-14x14-evk.dtb就是 NXP 官方的 I.MX6ULL EVK 开发板对应的设备树文件。至此我们得到两个文件：<br><strong>①、Linux 内核镜像文件：zImage。</strong><br><strong>②、NXP 官方 I.MX6ULL EVK 开发板对应的设备树文件：imx6ull-14x14-evk.dtb。</strong></p>
 <h3 id="3、Linux-内核启动测试"><a href="#3、Linux-内核启动测试" class="headerlink" title="3、Linux 内核启动测试"></a>3、Linux 内核启动测试</h3><p>在上一小节我们已经得到了 NXP 官方 I.MX6ULL EVK 开发板对应的 zImage 和 imx6ull-14x14-evk.dtb 这两个文件。</p>
 <p>现在测试这两个文件能不能在正点原子的 I.MX6U-ALPHA EMMC 版开发板上启动，在测试之前确保 uboot 中的环境变量 bootargs 内容如下：<br><code>console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw</code><br>将上一小节编译出来的 zImage 和 imx6ull-14x14-evk.dtb 复制到 Ubuntu 中的 tftp 目录下，因为我们要在 uboot 中使用 tftp 命令将其下载到开发板中，拷贝命令如下：</p>
@@ -403,17 +403,17 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">tftp 80800000 zImage<br>tftp 83000000 imx6ull-14x14-evk.dtb<br>bootz 80800000 - 83000000<br></code></pre></td></tr></table></figure>
 
 <p>结果图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819130548552.png" srcset="/img/loading.gif" lazyload alt="image-20200819130548552"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819130548552.png" srcset="/img/loading.gif" lazyload alt="image-20200819130548552"></p>
 <h3 id="4、在linux内核中添加自己的开发板"><a href="#4、在linux内核中添加自己的开发板" class="headerlink" title="4、在linux内核中添加自己的开发板"></a>4、在linux内核中添加自己的开发板</h3><h4 id="1、添加默认配置文件"><a href="#1、添加默认配置文件" class="headerlink" title="1、添加默认配置文件"></a>1、添加默认配置文件</h4><p>将 arch&#x2F;arm&#x2F;configs 目 录 下 的 imx_v7_mfg_defconfig 重 新 复 制 一 份 ， 命 名 imx_lxg_emmc_defconfig，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/configs<br><span class="hljs-built_in">cp</span> imx_v7_mfg_defconfig imx_lxg_emmc_defconfig<br></code></pre></td></tr></table></figure>
 
 <p>以后 imx_lxg_emmc_defconfig就是我们的 EMMC 版开发板默认配置文件了。完成以后如图 37.3.1.1 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131258173.png" srcset="/img/loading.gif" lazyload alt="image-20200819131258173"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819131258173.png" srcset="/img/loading.gif" lazyload alt="image-20200819131258173"></p>
 <h4 id="2、添加开发板对应的设备树文件"><a href="#2、添加开发板对应的设备树文件" class="headerlink" title="2、添加开发板对应的设备树文件"></a>2、添加开发板对应的设备树文件</h4><p>添加适合正点原子 EMMC 版开发板的设备树文件，进入目录 arch&#x2F;arm&#x2F;boot&#x2F;dts 中，复制一份 imx6ull-14x14-evk.dts，然后将其重命名为 imx6ull-lxg-emmc.dts，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/boot/dts<br><span class="hljs-built_in">cp</span> imx6ull-14x14-evk.dts imx6ull-lxg-emmc.dts<br></code></pre></td></tr></table></figure>
 
 <p>.dts 是设备树源码文件，编译 Linux 的时候会将其编译为.dtb 文件。imx6ull-lxg-emmc.dts<br>创建好以后我们还需要修改arch&#x2F;arm&#x2F;boot&#x2F;dts&#x2F;Makefile，找到 “ dtb-$(CONFIG_SOC_IMX6ULL)”配置项，在此配置项中加入“imx6ull-lxg-emmc.dtb” ，如下所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131816436.png" srcset="/img/loading.gif" lazyload alt="image-20200819131816436"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819131816436.png" srcset="/img/loading.gif" lazyload alt="image-20200819131816436"></p>
 <p>这样编译 Linux 的时候就可以从 imx6ull-lxg-emmc.dts 编译出 imx6ull-lxg-emmc.dtb 文件了。</p>
 <h4 id="3、编译测试"><a href="#3、编译测试" class="headerlink" title="3、编译测试"></a>3、编译测试</h4><p>经过前面两个小节，Linux 内核里面已经添加了我们自己的I.MX6UL-LXG-EMMC 版开发板了，接下接编译测试一下，我们可以创建一个编译脚本，imx6ull_lxg_emmc.sh，脚本内容如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span><br>make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- distclean<br>make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- imx_lxg_emmc_defconfig<br>make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig<br>make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- all -j12<br></code></pre></td></tr></table></figure>
@@ -426,15 +426,15 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">tftp 80800000 zImage<br>tftp 83000000 imx6ull-lxg-emmc.dtb<br>bootz 80800000 – 83000000<br></code></pre></td></tr></table></figure>
 
 <p>只要出现如图所示内容就表示 Linux 内核启动成功：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819133111334.png" srcset="/img/loading.gif" lazyload alt="image-20200819133111334"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819133111334.png" srcset="/img/loading.gif" lazyload alt="image-20200819133111334"></p>
 <p>红框为linux内核的编译时间</p>
 <h3 id="5、部分驱动修改（CPU、NET、EMMC）"><a href="#5、部分驱动修改（CPU、NET、EMMC）" class="headerlink" title="5、部分驱动修改（CPU、NET、EMMC）"></a>5、部分驱动修改（CPU、NET、EMMC）</h3><h4 id="1、CPU主频修改"><a href="#1、CPU主频修改" class="headerlink" title="1、CPU主频修改"></a>1、CPU主频修改</h4><h5 id="1、在linux下手动修改cpu配置文件或修改linux内核配置文件"><a href="#1、在linux下手动修改cpu配置文件或修改linux内核配置文件" class="headerlink" title="1、在linux下手动修改cpu配置文件或修改linux内核配置文件"></a>1、在linux下手动修改cpu配置文件或修改linux内核配置文件</h5><p>正点原子 I.MX6U-ALPHA 开发板所使用的 I.MX6ULL 芯片主频都是 792MHz 的，也就是NXP 官方宣传的 800MHz 版本。这里以此板为例。</p>
 <p>1 、设置 I.MX6U-ALPHA  开发板工作在 792MHz<br>确保 EMMC 中的根文件系统可用！然后重新启动开发板，进入终端(可以输入命令)，如图</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/cpuinfo<br></code></pre></td></tr></table></figure>
 
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143359337.png" srcset="/img/loading.gif" lazyload alt="image-20200819143359337"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143359337.png" srcset="/img/loading.gif" lazyload alt="image-20200819143359337"></p>
 <p>在图 中有 BogoMIPS 这一条，此时 BogoMIIS 为 3.00，BogoMIPS 是 Linux 系统中衡量处理器运行速度的一个“尺子”，处理器性能越强，主频越高，BogoMIPS 值就越大。BogoMIPS 只是粗略的计算 CPU 性能，并不十分准确。但是我们可以通过 BogoMIPS 值来大致的判断当前处理器的性能。在图中并没有看到当前 CPU 的工作频率，那我们就转变另一种方法查看当前 CPU 的工作频率。进入到目录 &#x2F;sys&#x2F;bus&#x2F;cpu&#x2F;devices&#x2F;cpu0&#x2F;cpufreq 中，此目录下会有很多文件，如图 37.4.1.3 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143452149.png" srcset="/img/loading.gif" lazyload alt="image-20200819143452149"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143452149.png" srcset="/img/loading.gif" lazyload alt="image-20200819143452149"></p>
 <p>此目录中记录了 CPU 频率等信息，这些文件的含义如下：<br><strong>cpuinfo_cur_freq</strong>：当前 cpu 工作频率，从 CPU 寄存器读取到的工作频率。<br><strong>cpuinfo_max_freq</strong>：处理器所能运行的最高工作频率(单位: KHz）。<br><strong>cpuinfo_min_freq</strong> ：处理器所能运行的最低工作频率(单位: KHz）。<br><strong>cpuinfo_transition_latency</strong>：处理器切换频率所需要的时间(单位:ns)。<br><strong>scaling_available_frequencies</strong>：处理器支持的主频率列表(单位: KHz）。<br><strong>scaling_available_governors</strong>：当前内核中支持的所有 governor(调频)类型。<br><strong>scaling_cur_freq</strong>：保存着 cpufreq 模块缓存的当前 CPU 频率，不会对 CPU 硬件寄存器进行检查。<br><strong>scaling_driver</strong>：该文件保存当前 CPU 所使用的调频驱动。<br><strong>scaling_governor</strong> ：governor(调频)策略，Linux 内核一共有 5 中调频策略，</p>
 <ul>
 <li>①、Performance，最高性能，直接用最高频率，不考虑耗电。<br>②、Interactive，一开始直接用最高频率，然后根据 CPU 负载慢慢降低。<br>③、Powersave，省电模式，通常以最低频率运行，系统性能会受影响，一般不会用这个！<br>④、Userspace，可以在用户空间手动调节频率。<br>⑤、Ondemand，定时检查负载，然后根据负载来调节频率。负载低的时候降低 CPU 频率，这样省电，负载高的时候提高 CPU 频率，增加性能。</li>
@@ -442,7 +442,7 @@
 <p><strong>scaling_max_freq</strong> ：governor(调频)可以调节的最高频率。<br><strong>cpuinfo_min_freq</strong>：governor(调频)可以调节的最低频率。</p>
 <p><strong>stats 目录</strong>下给出了 CPU 各种运行频率的统计情况，比如 CPU 在各频率下的运行时间以及<br>变频次数。</p>
 <p>使用如下命令查看当前 CPU 频率：<code>cat cpuinfo_cur_freq</code><br>结果如图 37.4.1.4 所示</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143815635.png" srcset="/img/loading.gif" lazyload alt="image-20200819143815635"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819143815635.png" srcset="/img/loading.gif" lazyload alt="image-20200819143815635"></p>
 <p>从图 37.4.1.4 可以看出，当前 CPU 频率为 198MHz，工作频率很低！其他的值如下：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cpuinfo_cur_freq</span> = <span class="hljs-number">198000</span><br><span class="hljs-attribute">cpuinfo_max_freq</span> = <span class="hljs-number">792000</span><br><span class="hljs-attribute">cpuinfo_min_freq</span> = <span class="hljs-number">198000</span><br><span class="hljs-attribute">scaling_cur_freq</span> = <span class="hljs-number">198000</span><br><span class="hljs-attribute">scaling_max_freq</span> = <span class="hljs-number">792000</span><br><span class="hljs-attribute">cat</span> scaling_min_freq = <span class="hljs-number">198000</span><br><span class="hljs-attribute">scaling_available_frequencies</span> = <span class="hljs-number">198000</span> <span class="hljs-number">396000</span> <span class="hljs-number">528000</span> <span class="hljs-number">792000</span><br><span class="hljs-attribute">cat</span> scaling_governor = ondemand<br></code></pre></td></tr></table></figure>
 
@@ -450,7 +450,7 @@
 <p>查看 stats 目录下的 time_in_state 文件可以看到 CPU 在各频率下的工作时间，命令如下：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /sys/bus/cpu/devices/cpu0/cpufreq/stats/time_in_state<br></code></pre></td></tr></table></figure>
 
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144003337.png" srcset="/img/loading.gif" lazyload alt="image-20200819144003337"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144003337.png" srcset="/img/loading.gif" lazyload alt="image-20200819144003337"></p>
 <p>从图中可以看出，CPU 在 198MHz、396MHz、528MHz 和 792MHz 都工作过，其中 198MHz 的工作时间最长！假如我们想让 CPU 一直工作在 792MHz 那该怎么办？很简单，配置 Linux 内核，将调频策略选择为 performance（直接修改<strong>scaling_governor</strong> 文件的内容，将ondemand修改为performance）。</p>
 <p>或者修改 imx_lxg_emmc_defconfig 文件，此文件中有下面几行：</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND</span>=y<br><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_POWERSAVE</span>=y<br><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_USERSPACE</span>=y<br><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_INTERACTIVE</span>=y<br></code></pre></td></tr></table></figure>
@@ -461,13 +461,13 @@
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_ONDEMAND</span>=y<br></code></pre></td></tr></table></figure>
 
 <p>修改完成以后重新编译 Linux 内核，编译之前先清理一下工程！因为我们重新修改过默认配置文件了，编译完成以后使用新的 zImage 镜像文件重新启动 Linux。再次查看&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu0&#x2F;cpufreq&#x2F; cpuinfo_cur_freq 文件的值，如图 37.4.1.6 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144814735.png" srcset="/img/loading.gif" lazyload alt="image-20200819144814735"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144814735.png" srcset="/img/loading.gif" lazyload alt="image-20200819144814735"></p>
 <p>从图可以看出，当前 CPU 频率为 792MHz 了。查看 scaling_governor 文件看一下当前的调频策略，如图 37.4.1.7 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144848532.png" srcset="/img/loading.gif" lazyload alt="image-20200819144848532"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819144848532.png" srcset="/img/loading.gif" lazyload alt="image-20200819144848532"></p>
 <p>从图 可以看出当前的 CPU 调频策略为 preformance，也就是高性能模式，一直以最高主频运行。</p>
 <h5 id="2、使用linux图形化配置界面配置"><a href="#2、使用linux图形化配置界面配置" class="headerlink" title="2、使用linux图形化配置界面配置"></a>2、使用linux图形化配置界面配置</h5><p>输入<code>make menuconfig</code>打开 Linux 内核的图形化配置界面</p>
 <p>进入如下路径：<br>CPU Power Management<br>    -&gt; CPU Frequency scaling<br>        -&gt; CPU Frequency scaling<br>            -&gt; Default CPUFreq governor<br>打开默认调频策略选择界面，选择“performance”，如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819145152374.png" srcset="/img/loading.gif" lazyload alt="image-20200819145152374"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819145152374.png" srcset="/img/loading.gif" lazyload alt="image-20200819145152374"></p>
 <p>在图中选择“performance”即可，选择以后退出图形化配置界面，然后编译 Linux内核，一定不要清理工程！否则的话我们刚刚的设置就会被清理掉。编译完成以后使用新的zImage 重启 Linux，查看当前 CPU 的工作频率和调频策略。</p>
 <p>我们学习的时候为了高性能，大家可以使用 performance 模式。但是在以后的实际产品开发中，从省电的角度考虑，建议大家使用 ondemand 模式，一来可以省电，二来可以减少发热。</p>
 <h5 id="3、超频设置"><a href="#3、超频设置" class="headerlink" title="3、超频设置"></a>3、超频设置</h5><p>I.MX6ULL 有多种型号，按照工作频率可以分为 528MHz、700Mhz(实际 696MHz)，800MHz(实际 792MHz)和 900MHz(实际频率未知，应该在 900MHz 左右)。</p>
@@ -477,17 +477,17 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c">cpu0: cpu@<span class="hljs-number">0</span> &#123;<br>	compatible = <span class="hljs-string">&quot;arm,cortex-a7&quot;</span>;<br>	device_type = <span class="hljs-string">&quot;cpu&quot;</span>;<br>	reg = &lt;<span class="hljs-number">0</span>&gt;;<br>	clock-latency = &lt;<span class="hljs-number">61036</span>&gt;; <span class="hljs-comment">/* two CLK32 periods */</span><br>	operating-points = &lt;<br>		<span class="hljs-comment">/* kHz	uV */</span><br>		<span class="hljs-number">996000</span>	<span class="hljs-number">1275000</span><br>		<span class="hljs-number">792000</span>	<span class="hljs-number">1225000</span><br>		<span class="hljs-number">528000</span>	<span class="hljs-number">1175000</span><br>		<span class="hljs-number">396000</span>	<span class="hljs-number">1025000</span><br>		<span class="hljs-number">198000</span>	<span class="hljs-number">950000</span><br>	&gt;;<br>	fsl,soc-operating-points = &lt;<br>		<span class="hljs-comment">/* KHz	uV */</span><br>		<span class="hljs-number">996000</span>	<span class="hljs-number">1175000</span><br>		<span class="hljs-number">792000</span>	<span class="hljs-number">1175000</span><br>		<span class="hljs-number">528000</span>	<span class="hljs-number">1175000</span><br>		<span class="hljs-number">396000</span>	<span class="hljs-number">1175000</span><br>		<span class="hljs-number">198000</span>	<span class="hljs-number">1175000</span><br>	&gt;;<br>	fsl,low-power-run;<br>	clocks = &lt;&amp;clks IMX6UL_CLK_ARM&gt;,<br></code></pre></td></tr></table></figure>
 
 <p>想要超频的小伙伴只需要添加两行代码：如下：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150034290.png" srcset="/img/loading.gif" lazyload alt="image-20200819150034290"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150034290.png" srcset="/img/loading.gif" lazyload alt="image-20200819150034290"></p>
 <p>加入了“696000 1225000”，这个就是 696MHz 的支持。<br>加入了“696000 1175000”，也是对 696MHz 的支持。</p>
 <p>修改好以后保存，并且编译设备树，在 Linux 内核源码根目录下输入如下命令编译设备树：</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">make dtbs</span><br></code></pre></td></tr></table></figure>
 
 <p>命令“make dtbs”只编译设备树文件，也就是将.dts 编译为.dtb，编译完成以后使用新的设备树文件imx6ull-lxg_emmc.dtb 启动Linux.</p>
 <p>重启以后查看文件&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu0&#x2F;cpufreq&#x2F; scaling_available_frequencies 的内容，如图 37.4.1.10 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150158116.png" srcset="/img/loading.gif" lazyload alt="image-20200819150158116"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150158116.png" srcset="/img/loading.gif" lazyload alt="image-20200819150158116"></p>
 <p>从图可以看出，此时支持了 696MHz。如果设置调频策略为 performance，那么处理器就会一直工作在696MHz。可以对比一下工作在528MHz和696MHz下的BogoMIPS的值</p>
 <h3 id="6、使能8线EMMC驱动"><a href="#6、使能8线EMMC驱动" class="headerlink" title="6、使能8线EMMC驱动"></a>6、使能8线EMMC驱动</h3><p>正点原子 EMMC 版本核心板上的 EMMC 采用的 8 位数据线，原理图如图 37.4.2.1 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150756416.png" srcset="/img/loading.gif" lazyload alt="image-20200819150756416"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819150756416.png" srcset="/img/loading.gif" lazyload alt="image-20200819150756416"></p>
 <p>Linux 内核驱动里面 EMMC 默认是 4 线模式的，4 线模式肯定没有 8 线模式的速度快，所以本节我们将 EMMC 的驱动修改为 8 线模式。修改方法很简单，直接修改设备树即可，打开文件 imx6ull-lxg-emmc.dts，找到如下所示内容：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">&amp;usdhc2 &#123;<br>	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;<br>	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_usdhc2&gt;;<br>	non-removable;<br>	status = <span class="hljs-string">&quot;okay&quot;</span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
@@ -542,7 +542,7 @@
 
 <p>如果要在 I.MX6ULL 上使用 LAN8720A 就需要设置ENET1 和 ENET2 的 TX_CLK 引脚复位寄存器的 SION 位为 1。</p>
 <h4 id="5、配置-Linux-内核，使能-LAN8720-驱动"><a href="#5、配置-Linux-内核，使能-LAN8720-驱动" class="headerlink" title="5、配置 Linux  内核，使能 LAN8720  驱动"></a>5、配置 Linux  内核，使能 LAN8720  驱动</h4><p>输入命令“make menuconfig”，打开图形化配置界面，选择使能 LAN8720A 的驱动，路径如下：<br>-&gt; Device Drivers<br>    -&gt; Network device support<br>        -&gt; PHY Device support and infrastructure<br>            -&gt; Drivers for SMSC PHYs</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819160409699.png" srcset="/img/loading.gif" lazyload alt="image-20200819160409699"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819160409699.png" srcset="/img/loading.gif" lazyload alt="image-20200819160409699"></p>
 <p>图中选择将“Drivers for SMSC PHYs”编译到 Linux 内核中，因此“&lt;&gt;”里面变为了“*”。LAN8720A 是 SMSC 公司出品的，因此勾选这个以后就会编译 LAN8720 驱动，配置好以后退出配置界面，然后重新编译一下 Linux 内核。</p>
 <h4 id="6、修改-smsc-c-文件"><a href="#6、修改-smsc-c-文件" class="headerlink" title="6、修改 smsc.c  文件"></a>6、修改 smsc.c  文件</h4><p>在修改 smsc.c 文件之前先说点题外话，那就是我是怎么确定要修改 smsc.c 这个文件的。在写本书之前我并没有修改过 smsc.c 这个文件，都是使能 LAN8720A 驱动以后就直接使用。但是我在测试 NFS 挂载文件系统的时候发现文件系统挂载成功率很低！老是提示 NFS 服务器找不到，三四次就有一次挂载失败！很折磨人。NFS 挂载就是通过网络来挂载文件系统，这样做的好处就是方便我们后续调试 Linux 驱动。既然老是挂载失败那么可以肯定的是网络驱动有问题，网络驱动分两部分：内部 MAC+外部 PHY，内部 MAC 驱动是由 NXP 提供的，一般不会出问题，否则的话用户早就给 NXP 反馈了。而且我用 NXP 官方的开发板测试网络是一直正常的，但是 NXP 官方的开发板所使用的 PHY 芯片为KSZ8081。所以只有可能是外部 PHY，也就是LAN8720A 的驱动可能出问题了。</p>
 <p>鉴于 LAN8720A有“前车之鉴”，那就是在 uboot 中需要对LAN8720A 进行一次软复位，要设置LAN8720A 的 BMCR(寄存器地址为 0)寄存器 bit15 为 1。所以我猜测，在 Linux 中也需要对 LAN8720A 进行一次软复位。首先需要找到 LAN8720A 的驱动文件，LAN8720A 的驱动文件是 drivers&#x2F;net&#x2F;phy&#x2F;smsc.c，在此文件中有个叫做 smsc_phy_reset 的函数，看名字都知道这是 SMSC PHY 的复位函数，因此，LAN8720A 肯定也会使用到这个复位函数，修改此函数的内容，修改以后的 smsc_phy_reset函数内容如下所示：</p>
@@ -552,34 +552,34 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span><br></code></pre></td></tr></table></figure>
 
 <h4 id="7、网络驱动测试"><a href="#7、网络驱动测试" class="headerlink" title="7、网络驱动测试"></a>7、网络驱动测试</h4><p>修改好设备树和 Linux 内核以后重新编译一下，得到新的 zImage 镜像文件和 imx6ull-lxg-emmc.dtb设备树文件，使用网线将 I.MX6U-ALPHA 开发板的两个网口与路由器或者电脑连接起来，最后使用新的文件启动 Linux 内核。启动以后使用“ifconfig”命令查看一下当前活动的网卡有哪些，结果如图 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162229077.png" srcset="/img/loading.gif" lazyload alt="image-20200819162229077"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162229077.png" srcset="/img/loading.gif" lazyload alt="image-20200819162229077"></p>
 <p>从图可以看出，当前没有活动的网卡。</p>
 <p>输入命令“ifconfig -a”来查看一下开发板中存在的所有网卡，结果如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162256490.png" srcset="/img/loading.gif" lazyload alt="image-20200819162256490"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162256490.png" srcset="/img/loading.gif" lazyload alt="image-20200819162256490"></p>
 <p>图中 can0 和 can1 为 CAN 接口的网卡，eth0 和 eth1 才是网络接口的网卡，其中eth0 对应于 ENET2，eth1 对应于 ENET1。使用如下命令依次打开 eth0 和 eth1 这两个网卡：</p>
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim">ifconfig eth0 <span class="hljs-keyword">up</span><br>ifconfig eth1 <span class="hljs-keyword">up</span><br></code></pre></td></tr></table></figure>
 
 <p>网卡的打开过程如图 37.4.3.4 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162751401.png" srcset="/img/loading.gif" lazyload alt="image-20200819162751401"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162751401.png" srcset="/img/loading.gif" lazyload alt="image-20200819162751401"></p>
 <p>可以看到“SMSC LAN8710&#x2F;LAN8720”字样，说明当前的网络驱动使用的就是我们前面使能的 SMSC 驱动。再次输入“ifconfig”命令来查看一下当前活动的网卡，结果如图所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162818948.png" srcset="/img/loading.gif" lazyload alt="image-20200819162818948"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162818948.png" srcset="/img/loading.gif" lazyload alt="image-20200819162818948"></p>
 <p>可以看出，此时 eth0 和 eth1 两个网卡都已经打开，并且工作正常，但是这两个网卡都还没<br>有 IP 地址，所以不能进行 ping 等操作。使用如下命令给两个网卡配置 IP 地址：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">ifconfig eth0 192.168.0.251<br>ifconfig eth1 192.168.0.252<br></code></pre></td></tr></table></figure>
 
 <p>上述命令配置 eth0 和 eth1 这两个网卡的 IP 地址，注意 IP 地址选择的合理性，一定要和自己的电脑处于同一个网段内，并且没有被其他的设备占用！</p>
 <p>设置好以后，使用“ping”命令来 ping 一下自己的主机，如果能 ping 通那说明网络驱动修改成功！比如我的 Ubuntu 主机 IP 地址为 192.168.0.111，使用如下命令 ping 一下：ping 192.168.0.111<br>结果如图 37.4.3.6 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162957546.png" srcset="/img/loading.gif" lazyload alt="image-20200819162957546"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819162957546.png" srcset="/img/loading.gif" lazyload alt="image-20200819162957546"></p>
 <h4 id="8、保存修改后的图形化配置文件"><a href="#8、保存修改后的图形化配置文件" class="headerlink" title="8、保存修改后的图形化配置文件"></a>8、保存修改后的图形化配置文件</h4><p>在修改网络驱动的时候我们通过图形界面使能了 LAN8720A 的驱动，使能以后会在.config中存在如下代码：<br><code>CONFIG_SMSC_PHY=y</code><br>打开 drivers&#x2F;net&#x2F;phy&#x2F;Makefile，有如下代码：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">obj-$(CONFIG_SMSC_PHY) += smsc.o<br></code></pre></td></tr></table></figure>
 
 <p>当 CONFIG_SMSC_PHY&#x3D;y 的时候就会编译 smsc.c 这个文件，smsc.c 就是 LAN8720A 的驱动文件。但是当我们执行“make clean”清理工程以后.config 文件就会被删除掉，因此我们所有的配置内容都会丢失，结果就是前功尽弃，一“删”回到解放前！所以我们在配置完图形界面以后经过测试没有问题，就必须要保存一下配置文件。保存配置的方法有两个。</p>
 <h5 id="1、直接另存为-config-文件"><a href="#1、直接另存为-config-文件" class="headerlink" title="1、直接另存为.config 文件"></a>1、直接另存为.config 文件</h5><p>既然图形化界面配置后的配置项保存在.config 中，那么就简单粗暴，直接将.config 文件另存为 imx_lxg_emmc_defconfig，然后其复制到 arch&#x2F;arm&#x2F;configs 目录下，替换以前的imx_lxg_emmc_defconfig。这样以后执行“make imx_lxg_emmc_defconfig”重新配置Linux 内核的时候就会使用新的配置文件，默认就会使能 LAN8720A 的驱动。</p>
 <h5 id="2、通过图形界面保存配置文件"><a href="#2、通过图形界面保存配置文件" class="headerlink" title="2、通过图形界面保存配置文件"></a>2、通过图形界面保存配置文件</h5><p>相比于第 1 种直接另存为.config 文件，第 2 种方法就很“文雅”了，在图形界面中保存配置文件，在图形界面中会有“&lt; Save &gt;”选项，如图 37.4.4.1 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163450607.png" srcset="/img/loading.gif" lazyload alt="image-20200819163450607"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163450607.png" srcset="/img/loading.gif" lazyload alt="image-20200819163450607"></p>
 <p>通过键盘的“→”键，移动到“&lt; Save &gt;”选项，然后按下回车键，打开文件名输入对话框，<br>如图 37.4.4.2 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163502121.png" srcset="/img/loading.gif" lazyload alt="image-20200819163502121"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163502121.png" srcset="/img/loading.gif" lazyload alt="image-20200819163502121"></p>
 <p>在图 中输入要保存的文件名，可以带路径，一般是相对路径(相对于 Linux 内核源码根目录)。比如我们要将新的配置文件保存到目录 arch&#x2F;arm&#x2F;configs 下，文件名为imx_lxg_emmc_defconfig，也就是用新的配置文件替换掉老的默认配置文件。那么我们在图中输入 “arch&#x2F;arm&#x2F;configs&#x2F;imx_lxg_emmc_defconfig”即可，如图 37.4.4.3 所示：</p>
-<p><img src="/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819163905798.png" srcset="/img/loading.gif" lazyload alt="image-20200819163905798"></p>
+<p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8/image-20200819163905798.png" srcset="/img/loading.gif" lazyload alt="image-20200819163905798"></p>
 
             </div>
             <hr>

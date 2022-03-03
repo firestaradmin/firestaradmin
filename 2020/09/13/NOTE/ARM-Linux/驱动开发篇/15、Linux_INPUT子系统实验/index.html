@@ -23,24 +23,24 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux INPUT子系统实验按键、鼠标、键盘、触摸屏等都属于输入(input)设备，Linux 内核为此专门做了一个叫做 input子系统的框架来处理输入事件。 输入设备本质上还是字符设备，只是在此基础上套上了 input 框架，用户只需要负责上报输入事件，比如按键值、坐标等信息，input 核心层负责处理这些事件。本章我们就来学习一下 Linux 内核中的 input 子系统。 一、INPU">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829114244477.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829114745845.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122445514.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122604797.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122743481.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122902349.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829123547978.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829124758907.png">
-<meta property="og:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829124848591.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829114244477.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829114745845.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829122445514.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829122604797.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829122743481.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829122902349.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829123547978.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829124758907.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829124848591.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829114244477.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200829114244477.png">
   
   
   <title>15| Linux INPUT子系统实验 - Hexo</title>
@@ -254,7 +254,7 @@
               <h1 id="Linux-INPUT子系统实验"><a href="#Linux-INPUT子系统实验" class="headerlink" title="Linux INPUT子系统实验"></a>Linux INPUT子系统实验</h1><p>按键、鼠标、键盘、触摸屏等都属于输入(input)设备，Linux 内核为此专门做了一个叫做 input子系统的框架来处理输入事件。</p>
 <p>输入设备本质上还是字符设备，只是在此基础上套上了 input 框架，用户只需要负责上报输入事件，比如按键值、坐标等信息，input 核心层负责处理这些事件。本章我们就来学习一下 Linux 内核中的 input 子系统。</p>
 <h2 id="一、INPUT子系统"><a href="#一、INPUT子系统" class="headerlink" title="一、INPUT子系统"></a>一、INPUT子系统</h2><h3 id="1-input-子系统简介"><a href="#1-input-子系统简介" class="headerlink" title="1| input  子系统简介"></a>1| input  子系统简介</h3><p>input 就是输入的意思，因此 input 子系统就是管理输入的子系统，和 pinctrl 和 gpio 子系统一样，都是 Linux 内核针对某一类设备而创建的框架。比如按键输入、键盘、鼠标、触摸屏等等这些都属于输入设备，不同的输入设备所代表的含义不同，按键和键盘就是代表按键信息，鼠标和触摸屏代表坐标信息，因此在应用层的处理就不同，对于驱动编写者而言不需要去关心应用层的事情，我们只需要按照要求上报这些输入事件即可。为此 input 子系统分为 input 驱动层、input 核心层、input 事件处理层，最终给用户空间提供可访问的设备节点，input 子系统框架如图所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829114244477.png" srcset="/img/loading.gif" lazyload alt="image-20200829114244477"></p>
+<p><img src="/.top:888//image-20200829114244477.png" srcset="/img/loading.gif" lazyload alt="image-20200829114244477"></p>
 <p>图中左边就是最底层的具体设备，比如按键、USB 键盘&#x2F;鼠标等，中间部分属于Linux 内核空间，分为驱动层、核心层和事件层，最右边的就是用户空间，所有的输入设备以文件的形式供用户应用程序使用。</p>
 <p>可以看出 input 子系统用到了我们前面讲解的驱动分层模型，我们编写驱动程序的时候只需要关注中间的驱动层、核心层和事件层，这三个层的分工如下：</p>
 <ul>
@@ -266,7 +266,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1767</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> <span class="hljs-title">input_class</span> =</span> &#123;<br><span class="hljs-number">1768</span> 	.name = <span class="hljs-string">&quot;input&quot;</span>,<br><span class="hljs-number">1769</span> 	.devnode = input_devnode,<br><span class="hljs-number">1770</span> &#125;;<br>......<br><span class="hljs-number">2414</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">input_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>2415 &#123;<br><span class="hljs-number">2416</span> 	<span class="hljs-type">int</span> err;<br><span class="hljs-number">2417</span><br><span class="hljs-number">2418</span> 	err = class_register(&amp;input_class);<br><span class="hljs-number">2419</span> 	<span class="hljs-keyword">if</span> (err) &#123;<br><span class="hljs-number">2420</span> 		pr_err(<span class="hljs-string">&quot;unable to register input_dev class\n&quot;</span>);<br><span class="hljs-number">2421</span> 		<span class="hljs-keyword">return</span> err;<br><span class="hljs-number">2422</span> 	&#125;<br><span class="hljs-number">2423</span><br><span class="hljs-number">2424</span> 	err = input_proc_init();<br><span class="hljs-number">2425</span> 	<span class="hljs-keyword">if</span> (err)<br><span class="hljs-number">2426</span> 		<span class="hljs-keyword">goto</span> fail1;<br><span class="hljs-number">2427</span><br><span class="hljs-number">2428</span> 	err = register_chrdev_region(MKDEV(INPUT_MAJOR, <span class="hljs-number">0</span>),<br><span class="hljs-number">2429</span> 	INPUT_MAX_CHAR_DEVICES, <span class="hljs-string">&quot;input&quot;</span>);<br><span class="hljs-number">2430</span> 	<span class="hljs-keyword">if</span> (err) &#123;<br><span class="hljs-number">2431</span> 		pr_err(<span class="hljs-string">&quot;unable to register char major %d&quot;</span>, INPUT_MAJOR);<br><span class="hljs-number">2432</span> 		<span class="hljs-keyword">goto</span> fail2;<br><span class="hljs-number">2433</span> 	&#125;<br><span class="hljs-number">2434</span><br><span class="hljs-number">2435</span> 	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">2436</span><br><span class="hljs-number">2437</span> 	fail2: input_proc_exit();<br><span class="hljs-number">2438</span> 	fail1: class_unregister(&amp;input_class);<br><span class="hljs-number">2439</span> 	<span class="hljs-keyword">return</span> err;<br><span class="hljs-number">2440</span> &#125;<br></code></pre></td></tr></table></figure>
 
 <p>第 2418 行，注册一个 input 类，这样系统启动以后就会在&#x2F;sys&#x2F;class 目录下有一个 input 子目录，如图 所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829114745845.png" srcset="/img/loading.gif" lazyload alt="image-20200829114745845"></p>
+<p><img src="/.top:888//image-20200829114745845.png" srcset="/img/loading.gif" lazyload alt="image-20200829114745845"></p>
 <p>第 2428~2429 行，注册一个字符设备，主设备号为 INPUT_MAJOR，INPUT_MAJOR 定义在 include&#x2F;uapi&#x2F;linux&#x2F;major.h 文件中，定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MAJOR  13</span><br></code></pre></td></tr></table></figure>
 
@@ -368,23 +368,23 @@
 <p>当我们向 Linux 内核成功注册 input_dev 设备以后，会在&#x2F;dev&#x2F;input 目录下生成一个名为“eventX(X&#x3D;0….n)”的文件，这个&#x2F;dev&#x2F;input&#x2F;eventX 就是对应的 input 设备文件。我们读取这个文件就可以获取到输入事件信息，比如按键值什么的。使用read函数读取输入设备文件，也就是&#x2F;dev&#x2F;input&#x2F;eventX，读取到的数据按照 input_event 结构体组织起来。获取到输入事件以后(input_event 结构体类型)使用 switch case 语句来判断事件类型，本章实验我们设置的事件类型为 EV_KEY，因此只需要处理 EV_KEY 事件即可。比如获取按键编号(KEY_0 的编号为 11)、获取按键状态，按下还是松开的？</p>
 <h3 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4| 运行测试"></a>4| 运行测试</h3><p>编译运行。</p>
 <p>将编译出来keyinput.ko和keyinputApp这两个文件拷贝到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15目录中，在加载 keyinput.ko 驱动模块之前，先看一下&#x2F;dev&#x2F;input 目录下都有哪些文件，结果如图 所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122445514.png" srcset="/img/loading.gif" lazyload alt="image-20200829122445514"></p>
+<p><img src="/.top:888//image-20200829122445514.png" srcset="/img/loading.gif" lazyload alt="image-20200829122445514"></p>
 <p>从图 可以看出，当前&#x2F;dev&#x2F;input 目录只有 event0 和 mice 这两个文件。接下来输入如下命令加载 keyinput.ko 这个驱动模块。</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">depmod <span class="hljs-regexp">//</span>第一次加载驱动的时候需要运行此命令<br>modprobe keyinput.ko <span class="hljs-regexp">//</span>加载驱动模块<br></code></pre></td></tr></table></figure>
 
 <p>当驱动模块加载成功以后再来看一下&#x2F;dev&#x2F;input 目录下有哪些文件，结果如图所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122604797.png" srcset="/img/loading.gif" lazyload alt="image-20200829122604797"></p>
+<p><img src="/.top:888//image-20200829122604797.png" srcset="/img/loading.gif" lazyload alt="image-20200829122604797"></p>
 <p>从图可以看出，多了一个 event1 文件，因此&#x2F;dev&#x2F;input&#x2F;event1 就是我们注册的驱动所对应的设备文件。keyinputApp 就是通过读取&#x2F;dev&#x2F;input&#x2F;event1 这个文件来获取输入事件信息的，输入如下测试命令：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">./keyinputApp /dev/input/event1<br></code></pre></td></tr></table></figure>
 
 <p>然后按下开发板上的 KEY 按键，结果如图所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122743481.png" srcset="/img/loading.gif" lazyload alt="image-20200829122743481"></p>
+<p><img src="/.top:888//image-20200829122743481.png" srcset="/img/loading.gif" lazyload alt="image-20200829122743481"></p>
 <p>从图可以看出，当我们按下或者释放开发板上的按键以后都会在终端上输出相应的内容，提示我们哪个按键按下或释放了，在 Linux 内核中 KEY_0 为 11。</p>
 <p>另外，我们也可以不用 keyinputApp 来测试驱动，可以直接使用 hexdump 命令来查看&#x2F;dev&#x2F;input&#x2F;event1 文件内容，输入如下命令：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">hexdump /dev/input/event1<br></code></pre></td></tr></table></figure>
 
 <p>然后按下按键，终端输出如图 所示信息：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829122902349.png" srcset="/img/loading.gif" lazyload alt="image-20200829122902349"></p>
+<p><img src="/.top:888//image-20200829122902349.png" srcset="/img/loading.gif" lazyload alt="image-20200829122902349"></p>
 <p>图就是 input_event 类型的原始事件数据值，采用十六进制表示，这些原始数据的含义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*  编号 */</span>  <span class="hljs-comment">/* tv_sec */</span>   <span class="hljs-comment">/* tv_usec */</span> <span class="hljs-comment">/* type */</span>  <span class="hljs-comment">/* code */</span> <span class="hljs-comment">/* value */</span><br><span class="hljs-number">0000000</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		d395 <span class="hljs-number">0001</span>     <span class="hljs-number">0001</span> 	      <span class="hljs-number">000b</span> 		<span class="hljs-number">0001</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000010</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		d395 <span class="hljs-number">0001</span>     <span class="hljs-number">0000</span> 		  <span class="hljs-number">0000</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000020</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		<span class="hljs-number">3328</span> <span class="hljs-number">0003</span>     <span class="hljs-number">0001</span> 		  <span class="hljs-number">000b</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000030</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		<span class="hljs-number">3328</span> <span class="hljs-number">0003</span> 	  <span class="hljs-number">0000</span> 		  <span class="hljs-number">0000</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000040</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		<span class="hljs-number">2f</span>af <span class="hljs-number">000</span>e 	  <span class="hljs-number">0001</span> 		  <span class="hljs-number">000b</span> 		<span class="hljs-number">0001</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000050</span> 	<span class="hljs-number">106</span>a <span class="hljs-number">0000</span> 		<span class="hljs-number">2f</span>af <span class="hljs-number">000</span>e 	  <span class="hljs-number">0000</span> 		  <span class="hljs-number">0000</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000060</span> 	<span class="hljs-number">106b</span> <span class="hljs-number">0000</span> 		<span class="hljs-number">4</span>ce6 <span class="hljs-number">0000</span> 	  <span class="hljs-number">0001</span> 	   	  <span class="hljs-number">000b</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br><span class="hljs-number">0000070</span> 	<span class="hljs-number">106b</span> <span class="hljs-number">0000</span> 		<span class="hljs-number">4</span>ce6 <span class="hljs-number">0000</span> 	  <span class="hljs-number">0000</span> 		  <span class="hljs-number">0000</span> 		<span class="hljs-number">0000</span> <span class="hljs-number">0000</span><br></code></pre></td></tr></table></figure>
 
@@ -397,7 +397,7 @@
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livescript">-&gt; Device Drivers<br>    -&gt; Input device support<br>        -&gt; Generic input layer <span class="hljs-function"><span class="hljs-params">(needed <span class="hljs-keyword">for</span> keyboard, mouse, ...)</span> <span class="hljs-params">(INPUT [=y])</span></span><br><span class="hljs-function">            -&gt;</span> Keyboards <span class="hljs-function"><span class="hljs-params">(INPUT_KEYBOARD [=y])</span></span><br><span class="hljs-function">                 -&gt;</span> GPIO Buttons<br></code></pre></td></tr></table></figure>
 
 <p>选中“GPIO Buttons”选项，将其编译进 Linux 内核中，如图  所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829123547978.png" srcset="/img/loading.gif" lazyload alt="image-20200829123547978"></p>
+<p><img src="/.top:888//image-20200829123547978.png" srcset="/img/loading.gif" lazyload alt="image-20200829123547978"></p>
 <p>选中以后就会在.config 文件中出现“CONFIG_KEYBOARD_GPIO&#x3D;y”这一行，Linux 内核就会根据这一行来将 KEY 驱动文件编译进 Linux 内核。Linux 内核自带的 KEY 驱动文件为drivers&#x2F;input&#x2F;keyboard&#x2F;gpio_keys.c</p>
 <p>具体详情参考正点原子IMX6UL驱动开发手册 58.5.1节</p>
 <h3 id="2-自带按键驱动的使用"><a href="#2-自带按键驱动的使用" class="headerlink" title="2| 自带按键驱动的使用"></a>2| 自带按键驱动的使用</h3><p>要使用Linux内核自带的按键驱动程序很简单，只需要根据Documentation&#x2F;devicetree&#x2F;bindings&#x2F;input&#x2F;gpio-keys.txt 这个文件在设备树中添加指定的设备节点即可，节点要求如下：</p>
@@ -418,12 +418,12 @@
 
 <p>第 5 行，autorepeat 表示按键支持连按。<br>第 6~10 行，ALPHA 开发板 KEY 按键信息，名字设置为“GPIO Key Enter”，这里我们将开发板上的 KEY 按键设置为“EKY_ENTER”这个按键，也就是回车键，效果和键盘上的回车键一样。后面学习 LCD 驱动的时候需要用到此按键，因为 Linux 内核设计的 10 分钟以后 LCD关闭，也就是黑屏，就跟我们用电脑或者手机一样，一定时间以后关闭屏幕。这里将开发板上的 KEY 按键注册为回车键，当 LCD 黑屏以后直接按一下 KEY 按键即可唤醒屏幕，就跟当电脑熄屏以后按下回车键即可重新打开屏幕一样。</p>
 <p>最后设置 KEY 所使用的 IO 为 GPIO1_IO18，一定要检查一下设备树看看此 GPIO 有没有被用到其他外设上，如果有的话要删除掉相关代码！重新编译设备树，然后用新编译出来的 imx6ull-lxg-emmc.dtb 启动 Linux 系统，系统启动以后查看&#x2F;dev&#x2F;input 目录，看看都有哪些文件，结果如图所示：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829124758907.png" srcset="/img/loading.gif" lazyload alt="image-20200829124758907"></p>
+<p><img src="/.top:888//image-20200829124758907.png" srcset="/img/loading.gif" lazyload alt="image-20200829124758907"></p>
 <p>从图 可以看出存在 event1 这个文件，这个文件就是 KEY 对应的设备文件，使用hexdump 命令来查看&#x2F;dev&#x2F;input&#x2F;event1 文件，输入如下命令：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">hexdump <span class="hljs-regexp">/dev/i</span>nput/event1<br></code></pre></td></tr></table></figure>
 
 <p>然后按下 ALPHA 开发板上的按键，终端输出图 所示内容：</p>
-<p><img src="/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/image-20200829124848591.png" srcset="/img/loading.gif" lazyload alt="image-20200829124848591"></p>
+<p><img src="/.top:888//image-20200829124848591.png" srcset="/img/loading.gif" lazyload alt="image-20200829124848591"></p>
 <p>如果按下 KEY 按键以后会在终端上输出图 所示的信息那么就表示 Linux 内核的按键驱动工作正常。至于图 中内容的含义大家就自行分析，这个已经在前面 小节详细的分析过了，这里就不再讲解了。</p>
 <p>大家如果发现按下 KEY 按键以后没有反应，那么请检查一下三方面：<br>①、是否使能 Linux 内核 KEY 驱动。<br>②、设备树中 gpio-keys 节点是否创建成功。<br>③、在设备树中是否有其他外设也使用了 KEY 按键对应的 GPIO，但是我们并没有删除掉这些外设信息。检查 Linux 启动 log 信息，看看是否有类似下面这条信息：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">gpio-keys gpio_keys：Failed to request GPIO <span class="hljs-number">18</span>, error <span class="hljs-number">-16</span><br></code></pre></td></tr></table></figure>
@@ -452,9 +452,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

@@ -23,45 +23,45 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux USB驱动实验USB 是很常用的接口，目前大多数的设备都是 USB 接口的，比如鼠标、键盘、USB 摄像头等，我们在实际开发中也常常遇到 USB 接口的设备，本章我们就来学习一下如何使能 Linux内核自带的 USB 驱动。 注意！这里不讲解具体的 USB 开发，因为 USB 接口很复杂，不同的设备其协议也不同，这不是简简单单一章内容就能说完的，USB 驱动开发本身就是一门复杂的课程。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113120868.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113341360.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113538714.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114104439.png">
-<meta property="og:image" content="http://firestaradmin.top:888/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/23、Linux%20USB驱动实验/image-20200908114506573.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114621611.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114743254.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908115104725.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120331899.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120439199.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120732360.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121018454.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121037706.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121447983.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121426152.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121515789.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121620734.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908122624017.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908122641417.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123217600.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123346643.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123615570.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123706421.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123726925.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123912657.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908124337988.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125107043.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125942445.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908130127061.png">
-<meta property="og:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908130142916.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908113120868.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908113341360.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908113538714.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908114104439.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908114506573.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908114621611.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908114743254.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908115104725.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908120331899.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908120439199.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908120732360.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121018454.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121037706.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121447983.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121426152.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121515789.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908121620734.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908122624017.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908122641417.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123217600.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123346643.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123615570.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123706421.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123726925.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908123912657.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908124337988.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908125107043.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908125942445.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908130127061.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200908130142916.png">
 <meta property="article:published_time" content="2020-09-13T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-13T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113120868.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200908113120868.png">
   
   
   <title>23| Linux USB驱动实验 - Hexo</title>
@@ -290,21 +290,21 @@
 </ul>
 <p>如果按照接口类型划分的话 USB 就要分为很多种了，最常见的就是 USB A 插头和插座，如图  所示：</p>
 <h3 id="2-USB电气特性"><a href="#2-USB电气特性" class="headerlink" title="2| USB电气特性"></a>2| USB电气特性</h3><p>由于正点原子 I.MX6U-ALPHA 开发板使用的 Mini USB 接口，因此我们就以 Mini USB 为例讲解一下 USB 的基本电气属性。Mini USB 线一般都是一头为 USB A 插头，一头为 Mini USB插头。一共有四个触点，也就是 4 根线，这四根线的顺序如图  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113120868.png" srcset="/img/loading.gif" lazyload alt="image-20200908113120868"></p>
+<p><img src="/.top:888//image-20200908113120868.png" srcset="/img/loading.gif" lazyload alt="image-20200908113120868"></p>
 <p>如图  所示，USB A 插头从左到右线序依次为 1,2,3,4，第 1 根线为 VBUS，电压为5V，第 2 根线为 D-，第 3 根线为 D+，第 4 根线为 GND。USB 采用差分信号来传输数据，因此有 D-和 D+两根差分信号线。大家仔细观察的话会发现 USB A 插头的 1 和 4 这两个触点比较长，2 和 3 这两个触点比较短。1 和 4 分别为VBUS 和 GND，也就是供电引脚，当插入 USB 的时候会先供电，然后再接通数据线。拔出的时候先断开数据线，然后再断开电源线。</p>
 <p>大家再观察一下 Mini USB 插头，会发现 Mini USB 插头有 5 个触点，也就是 5 根线，线序从左往右依次是 1~5。第 1 根线为 VCC(5V)，第 2 根线为 D-，第 3 根线为 D+，第 4 根线为 ID，第 5 根线为 GND。可以看出 Mini USB 插头相比 USB A 插头多了一个 ID 线，这个 ID 线用于实现 OTG 功能，通过 ID 线来判断当前连接的是主设备(HOST)还是从设备(SLAVE)。</p>
 <p>USB 是一种支持热插拔的总线接口，使用差分线(D-和 D+)来传输数据，USB 支持两种供电模式：总线供电和自供电，总线供电就是由 USB 接口为外部设备供电，在 USB2.0 下，总线供电最大可以提供 500mA 的电流。</p>
 <h3 id="3-USB-拓扑结构"><a href="#3-USB-拓扑结构" class="headerlink" title="3| USB  拓扑结构"></a>3| USB  拓扑结构</h3><p>USB 是主从结构的，也就是分为主机和从机两部分，一般主机叫做 Host，从机叫做 Device。主机就是提供 USB A 插座来连接外部的设备，比如电脑作为主机，对外提供 USB A 插座，我们可以通过 USB 线来连接一些 USB 设备，比如声卡、手机等。因此电脑带的 USB A 插座数量就决定了你能外接多少个 USB 设备，如果不够用的话我们可以购买 USB 集线器来扩展电脑的USB 插口，USB 集线器也叫做 USB HUB，USB HUB如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113341360.png" srcset="/img/loading.gif" lazyload alt="image-20200908113341360"></p>
+<p><img src="/.top:888//image-20200908113341360.png" srcset="/img/loading.gif" lazyload alt="image-20200908113341360"></p>
 <p>图 是一个一拖四的 USB HUB，也就是将一个 USB 接口扩展为 4 个。主机一般会带几个原生的 USB 主控制器，比如 I.MX6ULL 就有两个原生的 USB 主控制器，因此 I.MX6ULL对外提供两个 USB 接口，这两个接口肯定不够用，正点原子的 ALPHA 开发板上有 4 个 HOST接口，其中一路是 USB1 的 OTG 接口，其他的三路就是 USB2 通过 USB HUB 芯片扩展出来的，稍后我们会讲解其原理图。</p>
 <p>虽然我们可以对原生的 USB 口数量进行扩展，但是我们不能对原生 USB 口的带宽进行扩展，比如I.MX6ULL 的两个原生 USB 口都是 USB2.0 的，带宽最大为 480Mbps，因此接到下面的所有 USB 设备总带宽最大为 480Mbps。</p>
 <p>USB 只能主机与设备之间进行数据通信，USB 主机与主机、设备与设备之间是不能通信的。因此两个正常通信的 USB 接口之间必定有一个主机，一个设备。为此使用了不同的插头和插座来区分主机与设备，比如主机提供 USB A 插座，从机提供 Mini USB、Micro USB 等插座。在一个 USB 系统中，仅有一个 USB 主机，但是可以有多个 USB 设备，包括 USB 功能设备和 USB HUB，最多支持 127 个设备。一个 USB 主控制器支持 128 个地址，地址 0 是默认地址，只有在设备枚举的时候才会使用，地址 0 不会分配给任何一个设备。所以一个 USB 主控制器最多可以分配 127 个地址。整个 USB 的拓扑结构就是一个分层的金字塔形，如图 所示(参考自USB2.0 协议中文版.pdf)：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908113538714.png" srcset="/img/loading.gif" lazyload alt="image-20200908113538714"></p>
+<p><img src="/.top:888//image-20200908113538714.png" srcset="/img/loading.gif" lazyload alt="image-20200908113538714"></p>
 <p>图中可以看出从 Root Hub 开始，一共有 7 层，金字塔顶部是 Root Hub，这个是USB 控制器内部的。图中的 Hub 就是连接的 USB 集线器，Func 就是具体的 USB 设备。USB 主机和从机之间的通信通过管道(Pipe)来完成，管道是一个逻辑概念，任何一个 USB设备一旦上电就会存在一个管道，也就是默认管道，USB 主机通过管道来获取从机的描述符、配置等信息。在主机端管道其实就是一组缓冲区，用来存放主机数据，在设备端管道对应一个特定的端点。</p>
 <h3 id="4-什么是-USB-OTG-？"><a href="#4-什么是-USB-OTG-？" class="headerlink" title="4| 什么是 USB OTG ？"></a>4| 什么是 USB OTG ？</h3><p>前面我们讲了，USB 分为 HOST(主机)和从机(或 DEVICE)，有些设备可能有时候需要做HOST，有时候又需要做 DEVICE，配两个 USB 口当然可以实现，但是太浪费资源了。如果一个 USB 接口既可以做 HOST 又可以做 DEVICE 那就太好了，使用起来就方便很多。为此，USB OTG 应运而生，OTG 是 On-The-Go 的缩写，支持 USB OTG 功能的 USB 接口既可以做 HOST，也可以做 DEVICE。那么问题来了，一个 USB 接口如何知道应该工作在 HOST 还是 DEVICE呢？这里就引入了 ID 线这个概念，前面讲解 USB 电气属性的时候已经说过了，Mini USB 插头有 5 根线，其中一条就是 ID 线。ID 线的高低电平表示 USB 口工作在 HOST 还是 DEVICE 模式：</p>
 <p>ID&#x3D;1 ：OTG 设备工作在从机模式。<br>ID&#x3D;0：OTG 设备工作在主机模式。</p>
 <p>支持 OTG 模式的 USB 接口一般都是 Mini USB 或 Micro USB 等这些带有 ID 线的接口，比如正点原子的 I.MX6ULL-ALPHA 开发板的 USB_OTG 接口就是支持 OTG 模式的，USB_OTG连接到了 I.MX6ULL 的 USB1 接口上。如果只有一个 Mini USB 或者 Micro USB 接口的话如果要使用 OTG 的主机模式，那么就需要一根 OTG 线，Mini USB 的 OTG 线如图  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114104439.png" srcset="/img/loading.gif" lazyload alt="image-20200908114104439"></p>
+<p><img src="/.top:888//image-20200908114104439.png" srcset="/img/loading.gif" lazyload alt="image-20200908114104439"></p>
 <p>可以看出，Mini USB OTG 线一头是 USB A 插座，一头是 Mini USB 插头，将 Mini USB 插头插入机器的 Mini USB 口上，需要连接的 USB 设备插到另一端的 USB A 插座上，比如 U 盘啥的。USB OTG 线会将 ID 线拉低，这样机器就知道自己要做为一个主机，用来连接外部的从机设备(U 盘)。</p>
 <h3 id="5-I-MX6ULL-USB-接口简介"><a href="#5-I-MX6ULL-USB-接口简介" class="headerlink" title="5| I.MX6ULL USB  接口简介"></a>5| I.MX6ULL USB  接口简介</h3><p>I.MX6ULL 内部集成了两个独立的 USB 控制器，这两个 USB 控制器都支持 OTG 功能。I.MX6ULL 内部 USB 控制器特性如下：</p>
 <ul>
@@ -327,20 +327,20 @@
 <p>关于 I.MX6ULL 的 USB 控制器就简单的讲解到这里，至于更详细的内容请参考 I.MX6ULL参考手册中的“Chapter 56 Universal Serial Bus Controller(USB)”章节。</p>
 <h2 id="二、硬件原理图分析"><a href="#二、硬件原理图分析" class="headerlink" title="二、硬件原理图分析"></a>二、硬件原理图分析</h2><p>正点原子的 I.MX6ULL-ALPHA 开发板 USB 部分原理图可以分为两部分：USB HUB 以及USB OTG，我们依次来看一下这两部分的硬件原理图。</p>
 <h3 id="USB-HUB-原理图分析"><a href="#USB-HUB-原理图分析" class="headerlink" title="USB HUB  原理图分析"></a>USB HUB  原理图分析</h3><p>首先来看一下 USB HUB 原理图，I.MX6ULL-ALPHA 使用 GL850G 这个 HUB 芯片将I.MX6ULL 的 USB OTG2 扩展成了 4 路 HOST 接口，其中一路供 4G 模块使用，因此就剩下了三个通用的 USB A 插座，原理图如图 所示：</p>
-<img src="23、Linux USB驱动实验/image-20200908114506573.png" srcset="/img/loading.gif" lazyload alt="image-20200908114506573" style="zoom:80%;" />
+<img src="/.top:888//image-20200908114506573.png" srcset="/img/loading.gif" lazyload alt="image-20200908114506573" style="zoom:80%;">
 
 <p>图中 U10 就是 USB HUB 芯片 GL850G，GL850G 是一款符合 USB2.0 标准的 USBHUB 芯片，支持一拖四扩展，可以将一路 USB 扩展为 4 路 USB HOST 接口。这里我们将I.MX6ULL 的 USB OTG2 扩展出了 4 路 USB HOST 接口，分别为 HUB_DP1&#x2F;DM1、HUB_DP2&#x2F;DM2、HUB_DP3&#x2F;DM3 和 HUB_DP4&#x2F;DM4。其中 HUB_DP4&#x2F;DM4 用于 4G 模块，因此对外提供的只有三个 USB HOST 接口，这三个 USB HOST 接口如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114621611.png" srcset="/img/loading.gif" lazyload alt="image-20200908114621611"></p>
+<p><img src="/.top:888//image-20200908114621611.png" srcset="/img/loading.gif" lazyload alt="image-20200908114621611"></p>
 <p>注意，使用 GL850G 扩展出来的 4 路 USB 接口只能用作 HOST！</p>
 <h3 id="USB-OTG-原理图分析"><a href="#USB-OTG-原理图分析" class="headerlink" title="USB OTG  原理图分析"></a>USB OTG  原理图分析</h3><p>I.MX6U-ALPHA 开发板上还有一路 USB OTG 接口，使用 I.MX6ULL 的 USB OTG1 接口。此路 USB OTG 既可以作为主机(HOST)，也可以作为从机(DEVICE)，从而实现完整的 OTG 功能，原理图如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908114743254.png" srcset="/img/loading.gif" lazyload alt="image-20200908114743254"></p>
+<p><img src="/.top:888//image-20200908114743254.png" srcset="/img/loading.gif" lazyload alt="image-20200908114743254"></p>
 <p>图  中左侧的为 Mini USB 插座，当 OTG 作为从机(DEVICE)的时候 USB 线接入此接口。右侧为 USB A 插座，当 OTG 作为主机的时候将 USB 设备插入到此接口中。前面我们讲了，如果只有一个 Mini USB 插座的话如果要学习 OTG 那么就需要再购买一个 OTG 线，这样不方便我们使用。为此正点原子在开发板上集成了一个 USB HOST 接口，这样在做 OTG 实验的时候就不需要再另外单独购买一根 USB OTG 线了。这里就涉及到硬件对 USB ID 线的处理，图中 R111 和 R31 就是完成此功能的，我们分两部分来分析，既 OTG 分别工作在 HOST和 DEVICE 的时候硬件工作方式：</p>
 <p>从机(DEVICE) 模式：图 中 USB_OTG_VBUS 是 Mini USB 的电源线，只有插入Mini USB 线以后 USB_OTG_VBUS 才有效(5V)。插入 Mini USB 线就表示开发板此时要做从机(此时不考虑接 OTG 线的情况)，USB_OTG_VBUS 就是电脑供的 5V 电压，由于分压电阻 R111和 R31 的作用，此时 USB_OTG1_ID 的电压就是 4.5V 左右，很明显这一个高电平。前面我们讲了，当 ID 线为高的时候就表示 OTG 工作在从机模式。</p>
 <p>主机(HOST)： 模式：主机模式下必须将 Mini USB 线拔出来，将 USB 设备连接到对应的 USBHOST 接口上。Mini USB 线拔出来以后 USB_OTG_VBUS 就没有电压了，此时 USB_OTG1_ID线就被 R31 这个 100K 电阻下拉到地，因此 USB_OTG1_ID 线的电压就为 0，当 ID 线为 0 的时候就表示 OTG 工作在主机模式。</p>
 <p>优点就是省去了购买一根 Mini USB OTG 线的麻烦，方便我们学习开发，但是在使用的时候要注意一下几点：</p>
 <p>①、我们需要软件设置 USB_OTG1_ID 这个 IO 的电气属性，默认设置为下拉，也就是默认工作在主机(HOST)模式下。</p>
 <p>②、由于我们修改了 OTG 硬件电路，因此就不能在 Mini USB 接口上接 OTG 线了，如果要使用 HOST 功能就将设备插到开发板板载的 USB HOST 接口上。I.MX6U-ALPHA 开发板上的 USB OTG 接口如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908115104725.png" srcset="/img/loading.gif" lazyload alt="image-20200908115104725"></p>
+<p><img src="/.top:888//image-20200908115104725.png" srcset="/img/loading.gif" lazyload alt="image-20200908115104725"></p>
 <p>图中上面的就是主机(HOST)接口，下面的是从机(DEVICE)接口，两个不能同时使用！</p>
 <h2 id="三、USB-协议简析"><a href="#三、USB-协议简析" class="headerlink" title="三、USB  协议简析"></a>三、USB  协议简析</h2><p>USB 协议中有很多的基础概念，本节就来看一下这些概念。</p>
 <h3 id="1-USB-描述符"><a href="#1-USB-描述符" class="headerlink" title="1| USB  描述符"></a>1| USB  描述符</h3><p>顾名思义，USB 描述符就是用来描述 USB 信息的，描述符就是一串按照一定规则构建的字符串，USB 设备使用描述符来向主机报告自己的相关属性信息，常用的描述符如表 所示：</p>
@@ -558,10 +558,10 @@
 </tr>
 </tbody></table>
 <h4 id="3-、字符串描述符"><a href="#3-、字符串描述符" class="headerlink" title="3 、字符串描述符"></a>3 、字符串描述符</h4><p>字符串描述符是可选的，字符串描述符用于描述一些方便人们阅读的信息，比如制造商、设备名称啥的。如果一个设备没有字符串描述符，那么其他描述符中和字符串有关的索引值都必须为 0，字符串描述符结构如表  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120331899.png" srcset="/img/loading.gif" lazyload alt="image-20200908120331899"></p>
+<p><img src="/.top:888//image-20200908120331899.png" srcset="/img/loading.gif" lazyload alt="image-20200908120331899"></p>
 <p><strong>wLANGID[0]~wLANGID[x]</strong> 指明了设备支持的语言，具体含义要查阅文档《USB_LANGIDs.pdf》</p>
 <p>主机会再次根据自己所需的语言向设备请求字符串描述符，这次会主机会指明要得到的字符串索引值和语言。设备返回 Unicode 编码的字符串描述符，结构如表 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120439199.png" srcset="/img/loading.gif" lazyload alt="image-20200908120439199"></p>
+<p><img src="/.top:888//image-20200908120439199.png" srcset="/img/loading.gif" lazyload alt="image-20200908120439199"></p>
 <h4 id="4-、接口描述符"><a href="#4-、接口描述符" class="headerlink" title="4 、接口描述符"></a>4 、接口描述符</h4><p>配置描述符中指定了该配置下的接口数量，配置可以提供一个或多个接口，接口描述符用于描述接口属性。接口描述符中一般记录接口编号、接口对应的端点数量、接口所述的类等，接口描述符结构如表所示：</p>
 <table>
 <thead>
@@ -638,14 +638,14 @@
 </tr>
 </tbody></table>
 <h4 id="5-、端口描述符"><a href="#5-、端口描述符" class="headerlink" title="5 、端口描述符"></a>5 、端口描述符</h4><p>接口描述符定义了其端点数量，端点是设备与主机之间进行数据传输的逻辑接口，除了端点 0 是双向端口，其他的端口都是单向的。端点描述符描述了树传输类型、方向、数据包大小、端点号等信息，端点描述符结构如表所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908120732360.png" srcset="/img/loading.gif" lazyload alt="image-20200908120732360"></p>
+<p><img src="/.top:888//image-20200908120732360.png" srcset="/img/loading.gif" lazyload alt="image-20200908120732360"></p>
 <h3 id="2-USB-数据包类型"><a href="#2-USB-数据包类型" class="headerlink" title="2| USB  数据包类型"></a>2| USB  数据包类型</h3><p>USB 是串行通信，需要一位一位的去传输数据， USB 传输的时候先将原始数据进行打包，所以 USB 中传输的基本单元就是数据包。根据用途的不同，USB 协议定义了 4 种不同的包结构：<strong>令牌(Token)包、数据(Data)包、握手(Handshake)包和特殊(Special)包</strong>。</p>
 <p>这四种包通过包标识符 PID 来区分，PID 共有 8 位，USB 协议使用低 4 位 PID3<del>PID0，另外的高四位 PID7</del>PID4 是PID3<del>PID0 的取反，传输顺序是 PID0、PID1、PID2、PID3…PID7。令牌包的 PID1</del>0 为 01，数据包的 PID1<del>0 为 11，握手包的 PID1</del>0 为 10，特殊包的 PID1~0 为 00。每种类型的包又有多种具体的包，如表所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121018454.png" srcset="/img/loading.gif" lazyload alt="image-20200908121018454"></p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121037706.png" srcset="/img/loading.gif" lazyload alt="image-20200908121037706"></p>
+<p><img src="/.top:888//image-20200908121018454.png" srcset="/img/loading.gif" lazyload alt="image-20200908121018454"></p>
+<p><img src="/.top:888//image-20200908121037706.png" srcset="/img/loading.gif" lazyload alt="image-20200908121037706"></p>
 <p>一个完整的包分为多个域，所有的数据包都是以同步域(SYNC)开始，后面紧跟着包标识符(PID)，最终都以包结束(EOP)信号结束。不同的数据包中间位域不同，一般有包目标地址(ADDR)、包目标端点(ENDP)、数据、帧索引、CRC 等，这个要具体数据包具体分析。接下来简单看一下这些数据包的结构。</p>
 <h4 id="1-、令牌包"><a href="#1-、令牌包" class="headerlink" title="1 、令牌包"></a>1 、令牌包</h4><p>令牌包结构如下 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121447983.png" srcset="/img/loading.gif" lazyload alt="image-20200908121447983"></p>
+<p><img src="/.top:888//image-20200908121447983.png" srcset="/img/loading.gif" lazyload alt="image-20200908121447983"></p>
 <p>图是一个 SETUP 令牌包结构，首先是 SYNC 同步域，包同步域为 00000001，也就是连续 7 个 0，后面跟一个 1，如果是高速设备的话就是 31 个 0 后面跟一个 1。紧跟着是 PID，这里是 SETUP 包，为 0XB4，大家可能会好奇为什么不是 0X2D(00101101)，0XB4 的原因如下：</p>
 <ul>
 <li>①、SETUP 包的 PID3<del>PID0 为 1101，因此对应的 PID7</del>PID4 就是 0010。</li>
@@ -653,14 +653,14 @@
 </ul>
 <p>PID 后面跟着地址域(ADDR)和端点域(ENDP)，为目标设备的地址和端点号。CRC5 域是 5位 CRC 值，是 ADDR 和 ENDP 这两个域的校验值。最后就是包结束域(EOP)，标记本数据包结束。其他令牌包的结构和 SETUP 基本类似，只是 SOF 令包中间没有 ADDR 和 ENDP 这两个域，而是只有一个 11 位的帧号域。</p>
 <h4 id="2-、数据包"><a href="#2-、数据包" class="headerlink" title="2 、数据包"></a>2 、数据包</h4><p>数据包结构如图  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121426152.png" srcset="/img/loading.gif" lazyload alt="image-20200908121426152"></p>
+<p><img src="/.top:888//image-20200908121426152.png" srcset="/img/loading.gif" lazyload alt="image-20200908121426152"></p>
 <p>数据包比较简单，同样的，数据包从 SYNC 同步域开始，然后紧跟着是 PID，这里就是DATA0，PID 值为 0XC3。接下来就是具体的数据，数据完了以后就是 16 位的 CRC 校验值，最后是 EOP。</p>
 <h4 id="3-、握手包"><a href="#3-、握手包" class="headerlink" title="3 、握手包"></a>3 、握手包</h4><p>握手包结构如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121515789.png" srcset="/img/loading.gif" lazyload alt="image-20200908121515789"></p>
+<p><img src="/.top:888//image-20200908121515789.png" srcset="/img/loading.gif" lazyload alt="image-20200908121515789"></p>
 <p>图 是 ACK 握手包，很简单，首先是 SYNC 同步域，然后就是 ACK 包的 PID，为0X4B，最后就是 EOP。其他的 NAK、STALL、NYET 和 ERR 握手包结构都是一样的，只是其中的 PID 不同而已。</p>
 <h3 id="3-USB-传输类型"><a href="#3-USB-传输类型" class="headerlink" title="3| USB  传输类型"></a>3| USB  传输类型</h3><p>在端点描述符中 bmAttributes 指定了端点的传输类型，一共有 4 种，本节我们来看一下这四种传输类型的区别。</p>
 <h4 id="1、-控制-传输"><a href="#1、-控制-传输" class="headerlink" title="1、 控制 传输"></a>1、 控制 传输</h4><p>控制传输一般用于特定的请求，比如枚举过程就是全部由控制传输来完成的，比如获取描述符、设置地址、设置配置等。控制传输分为三个阶段：建立阶段(SETUP)、数据阶段(DATA)和状态阶段(STATUS)，其中数据阶段是可选的。建立阶段使用 SETUP 令牌包，SETUP 使用DATA0 包。数据阶段是 0 个、1 个或多个输入(IN)&#x2F;输出(OUT)事务，数据阶段的所有输入事务必须是同一个方向的，比如都为 IN 或都为 OUT。数据阶段的第一个数据包必须是 DATA1，每次正确传输以后就在 DATA0 和 DATA1 之间进行切换。数据阶段完成以后就是状态阶段，状态阶段的传输方向要和数据阶段相反，比如数据阶段为 IN 的话状态阶段就要为 OUT，状态阶段使用 DATA1 包。比如一个读控制传输格式如图  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908121620734.png" srcset="/img/loading.gif" lazyload alt="image-20200908121620734"></p>
+<p><img src="/.top:888//image-20200908121620734.png" srcset="/img/loading.gif" lazyload alt="image-20200908121620734"></p>
 <h4 id="2-、同步传输"><a href="#2-、同步传输" class="headerlink" title="2 、同步传输"></a>2 、同步传输</h4><p>同步传输用于周期性、低时延、数据量大的场合，比如音视频传输，这些场合对于时延要求很高，但是不要求数据 100%正确，允许有少量的错误。因此，同步传输没有握手阶段，即使数据传输出错了也不会重传。</p>
 <h4 id="3-、批量传输"><a href="#3-、批量传输" class="headerlink" title="3 、批量传输"></a>3 、批量传输</h4><p>提起“批量”，我们第一反应就是“多”、“大”等，因此，批量传输就是用于大批量传输大块数据的，这些数据对实时性没有要求，比如 MSD 类设备(存储设备)，U 盘之类的。批量传输分为批量读(输入)和批量写(输出)，如果是批量读的话第一阶段的 IN 令牌包，如果是批量写那么第一阶段就是 OUT 令牌包。</p>
 <p>我们就以批量写为例简单介绍一下批量传输过程：</p>
@@ -684,42 +684,42 @@
 <p>USB 鼠标键盘属于 HID 设备，内核已经集成了相应的驱动，NXP 官方提供的 linux 内核默认已经使能了 USB 鼠标键盘驱动，但是我们还要学习一下如何手动使能这些驱动。输入<code>make menuconfig</code>打开 linux 内核配置界面，首先打开 HID 驱动，按照如下路径到相应的配置项目：</p>
 <figure class="highlight elm"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span><br>    -&gt; <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span><br>  	  	-&gt; <span class="hljs-type">HID</span> bus sup<span class="hljs-keyword">port</span> (HID [=y])<br>    		-&gt; &lt;*&gt; <span class="hljs-type">Generic</span> <span class="hljs-type">HID</span> driver  //使能通用 <span class="hljs-type">HID</span> 驱动<br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908122624017.png" srcset="/img/loading.gif" lazyload alt="image-20200908122624017"></p>
+<p><img src="/.top:888//image-20200908122624017.png" srcset="/img/loading.gif" lazyload alt="image-20200908122624017"></p>
 <p>接下来需要使能 USB 键盘和鼠标驱动，配置路径如下：</p>
 <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span><br>    -&gt; <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span><br>        -&gt; <span class="hljs-type">USB</span> <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span><br>            -&gt; &lt;*&gt; <span class="hljs-type">USB</span> <span class="hljs-type">HID</span> trans<span class="hljs-keyword">port</span> layer //USB 键盘鼠标等 HID 设备驱动<br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908122641417.png" srcset="/img/loading.gif" lazyload alt="image-20200908122641417"></p>
+<p><img src="/.top:888//image-20200908122641417.png" srcset="/img/loading.gif" lazyload alt="image-20200908122641417"></p>
 <p>大家可以将光标放到图 中“USB HID Transport layer”这一行，然后按下“?”键打开对应的帮助信息就可以看到对于这个配置项的描述，简单总结一下：</p>
 <p>此选项对应配置项就是 CONFIG_USB_HID，也就是 USB 接口的 HID 设备。如果要使用USB 接口的 keyboards(键盘)、mice(鼠标)、joysticks(摇杆)、graphic tablets(绘图板)等其他的 HID设备，那么就需要选中“USB HID Transport layer”。</p>
 <p>但是要注意一点，此驱动和 HIDBP(BootProtocol)键盘、鼠标的驱动不能一起使用！所以大家要是在网上查阅 linux 内核 USB 键盘鼠标驱动的时候，发现推荐使用“USB HIDBP Keyboard (simple Boot) support”和“USB HIDBP Mouse(simple Boot) support”这两个配置项的时候也不要觉得教程这里写错了。</p>
 <h4 id="2-、测试-USB-鼠标和键盘-盘"><a href="#2-、测试-USB-鼠标和键盘-盘" class="headerlink" title="2 、测试 USB  鼠标和键盘 盘"></a>2 、测试 USB  鼠标和键盘 盘</h4><p>完成以后重新编译 linux 内核并且使用得到的 zImage 启动开发板。启动以后插入 USB 鼠标，会有如图 所示的提示信息：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123217600.png" srcset="/img/loading.gif" lazyload alt="image-20200908123217600"></p>
+<p><img src="/.top:888//image-20200908123217600.png" srcset="/img/loading.gif" lazyload alt="image-20200908123217600"></p>
 <p>从图可以看出，系统检测到了 USB 键盘，如果成功驱动的话就会在&#x2F;dev&#x2F;input目录下生成一个名为eventX(X&#x3D;0,1,2,3…)的文件，这个就是我们前面讲的输入子系统，鼠标和键盘都是作为输入子系统设备的。笔者这里对应的就是&#x2F;dev&#x2F;input&#x2F;event3 这个设备，使用如下命令查看鼠标的原始输入值，结果如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123346643.png" srcset="/img/loading.gif" lazyload alt="image-20200908123346643"></p>
+<p><img src="/.top:888//image-20200908123346643.png" srcset="/img/loading.gif" lazyload alt="image-20200908123346643"></p>
 <p>图就是键盘作为输入子系统设备的原始输入值，这里就不去分析了，我们在移植GUI 图形库以后就可以直接使用键盘鼠标，比如 QT 等。</p>
 <p>最后再来测试一下 USB 键盘，屏幕已经驱动起来了，所以我们可以直接将屏幕作为终端，然后接上键盘直接输入命令来进行各种操作。首先将屏幕设置为控制台，打开开发板根文件系统中的&#x2F;etc&#x2F;inittab 文件，然后在里面加入下面这一行：</p>
 <figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh<br></code></pre></td></tr></table></figure>
 
 <p>完成以后重启开发板，此时屏幕就会作为终端控制台，会有“Please press Enter to activatethis console.”这样提示，如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123615570.png" srcset="/img/loading.gif" lazyload alt="image-20200908123615570"></p>
+<p><img src="/.top:888//image-20200908123615570.png" srcset="/img/loading.gif" lazyload alt="image-20200908123615570"></p>
 <p>接上键盘，然后根据图  中的提示，按下键盘上的 Enter(回车)键即可使能 LCD 屏幕控制台，然后我们就可以输入各种命令来执行相应的操作。</p>
 <h3 id="2-U-盘实验"><a href="#2-U-盘实验" class="headerlink" title="2| U  盘实验"></a>2| U  盘实验</h3><p>注意，NXP 官方的 Linux 内核默认已经使能了 U 盘！NXP 提供的 Linux 内核默认也已经是能了 U 盘驱动，因此我们可以直接插上去使用。但是我们还是需要学习一下如何手动配置 Linux 内核，使能 U 盘驱动。</p>
 <h4 id="1-、使能-U-盘驱动"><a href="#1-、使能-U-盘驱动" class="headerlink" title="1 、使能 U  盘驱动"></a>1 、使能 U  盘驱动</h4><p>U 盘使用 SCSI 协议，因此要先使能 Linux 内核中的 SCSI 协议，配置路径如下：</p>
 <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span><br>    -&gt; <span class="hljs-type">SCSI</span> device sup<span class="hljs-keyword">port</span><br>        -&gt; &lt;*&gt; <span class="hljs-type">SCSI</span> disk sup<span class="hljs-keyword">port</span> //选中此选项<br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123706421.png" srcset="/img/loading.gif" lazyload alt="image-20200908123706421"></p>
+<p><img src="/.top:888//image-20200908123706421.png" srcset="/img/loading.gif" lazyload alt="image-20200908123706421"></p>
 <p>我们还需要使能 USB Mass Storage，也就是 USB 接口的大容量存储设备，配置路径如下：</p>
 <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span><br>    -&gt; <span class="hljs-type">USB</span> sup<span class="hljs-keyword">port</span> (USB_SUPPORT [=y])<br>        -&gt; <span class="hljs-type">Support</span> for <span class="hljs-type">Host</span>-side <span class="hljs-type">USB</span> (<span class="hljs-type">USB</span> [=y])<br>            -&gt; &lt;*&gt; <span class="hljs-type">USB</span> <span class="hljs-type">Mass</span> <span class="hljs-type">Storage</span> sup<span class="hljs-keyword">port</span> //USB 大容量存储设备<br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123726925.png" srcset="/img/loading.gif" lazyload alt="image-20200908123726925"></p>
+<p><img src="/.top:888//image-20200908123726925.png" srcset="/img/loading.gif" lazyload alt="image-20200908123726925"></p>
 <h4 id="2-、U-盘测试"><a href="#2-、U-盘测试" class="headerlink" title="2 、U 盘测试"></a>2 、U 盘测试</h4><p>准备好一个 U 盘，注意 U 盘要为 FAT32 格式的！NTFS 和 exFAT 由于版权问题所以在 Linux下支持的不完善，操作的话可能会有问题，比如只能读，不能写或者无法识别等。准备好以后将 U 盘插入到开发板 USB HUB 扩展出来的 HOST 接口上，此时会输出如图 所示信息：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123912657.png" srcset="/img/loading.gif" lazyload alt="image-20200908123912657"></p>
+<p><img src="/.top:888//image-20200908123912657.png" srcset="/img/loading.gif" lazyload alt="image-20200908123912657"></p>
 <p>从图可以看出，系统检测到 U 盘插入，大小为 16GB，对应的设备文件为&#x2F;dev&#x2F;sda和&#x2F;dev&#x2F;sda1，大家可以查看一下&#x2F;dev 目录下有没有 sda 和 sda1 这两个文件。</p>
 <p>&#x2F;dev&#x2F;sda 是整个 U盘，&#x2F;dev&#x2F;sda1 是 U 盘的第一个分区，我们一般使用 U 盘的时候都是只有一个分区。要想访问 U盘我们需要先对 U 盘进行挂载，理论上挂载到任意一个目录下都可以，这里我创建一个&#x2F;mnt&#x2F;usb_disk 目录，然后将 U 盘挂载到&#x2F;mnt&#x2F;usb_disk 目录下，命令如下：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">mkdir <span class="hljs-regexp">/mnt/u</span>sb_disk -p <span class="hljs-regexp">//</span>创建目录<br>mount <span class="hljs-regexp">/dev/</span>sda1 <span class="hljs-regexp">/mnt/u</span>sb_disk<span class="hljs-regexp">/ -t vfat -o iocharset=utf8  /</span><span class="hljs-regexp">/挂载</span><br></code></pre></td></tr></table></figure>
 
 <p>-t 指定挂载所使用的文件系统类型，这里设置为 vfat，也就是 FAT 文件系统，“-o iocharset”设置硬盘编码格式为 utf8，否则的话 U 盘里面的中文会显示乱码！挂载成功以后进入到&#x2F;mnt&#x2F;usb_disk 目录下，输入 ls 命令查看 U 盘文件，如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908124337988.png" srcset="/img/loading.gif" lazyload alt="image-20200908124337988"></p>
+<p><img src="/.top:888//image-20200908124337988.png" srcset="/img/loading.gif" lazyload alt="image-20200908124337988"></p>
 <p>至此 U 盘就能正常读写操作了，直接对&#x2F;mnt&#x2F;usb_disk 目录进行操作就行了。如果要拔出 U盘要执行一个 sync 命令进行同步，然后在使用 umount 进行 U 盘卸载，命令如下所示：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">sync 		<span class="hljs-regexp">//</span>同步<br>cd <span class="hljs-regexp">/ 		/</span><span class="hljs-regexp">/如果处于/m</span>nt/usb_disk 目录的话先退出来，否则卸载的时候提示设备忙，导致卸载失败，切记！<br>umount <span class="hljs-regexp">/mnt/u</span>sb_disk 		<span class="hljs-regexp">//</span>卸载<br></code></pre></td></tr></table></figure>
 
@@ -734,7 +734,7 @@
 <h4 id="1、-模拟-U-盘实验"><a href="#1、-模拟-U-盘实验" class="headerlink" title="1、 模拟 U  盘实验"></a>1、 模拟 U  盘实验</h4><p>模拟 U 盘实验就是将开发板当做一个 U 盘，可以将开发板上的 U 盘或者 TF 卡挂载到 PC上去，首先需要配置 Linux，配置路径如下：</p>
 <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs clean">-&gt; Device Drivers<br>    -&gt; USB support (USB_SUPPORT [=y])<br>        -&gt; USB Gadget Support (USB_GADGET [=y]<br>            -&gt; [M]USB Gadget Drivers (&lt;choice&gt; [=m]) <span class="hljs-comment">//选中 USB Gadget 驱动</span><br>                -&gt;[M]Mass Storage Gadget <span class="hljs-comment">//大容量存储</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125107043.png" srcset="/img/loading.gif" lazyload alt="image-20200908125107043"></p>
+<p><img src="/.top:888//image-20200908125107043.png" srcset="/img/loading.gif" lazyload alt="image-20200908125107043"></p>
 <p>这里我们需要将驱动编译为模块！使用的时候直接输入命令加载驱动模块即可。配置好以后重新编译 Linux 内核，会得到三个.ko 驱动模块(带路径)：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko<br>drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/function/u</span>sb_f_mass_storage.ko<br>drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/legacy/g</span>_mass_storage.ko<br></code></pre></td></tr></table></figure>
 
@@ -753,7 +753,7 @@
 <h4 id="2-、USB-声卡实验"><a href="#2-、USB-声卡实验" class="headerlink" title="2 、USB  声卡实验"></a>2 、USB  声卡实验</h4><p>USB 声卡就是 USB 接口的外置声卡，一般电脑内部都自带了声卡，但是内部自带的声卡效果相对来说比较差，不能满足很多 HIFI 玩家的需求。USB 声卡通过 USB 接口来传递音频数据，具体的 ADC 和 DAC 过程由声卡完成，摆脱了电脑主板体积的限制，外置 USB 声卡就可以做的很好。ALPHA 开发板板载了音频解码芯片，因此可以将 ALPHA 开发板作为一个外置USB 声卡，配置 Linux 内核，配置路径如下：</p>
 <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs clean">-&gt; Device Drivers<br>    -&gt; USB support (USB_SUPPORT [=y])<br>        -&gt; USB Gadget Support (USB_GADGET [=y]<br>            -&gt; [M]USB Gadget Drivers <span class="hljs-comment">//选中 USB Gadget 驱动</span><br>                -&gt;[M] Audio Gadget <span class="hljs-comment">//选中音频</span><br>                    -&gt;UAC <span class="hljs-number">1.0</span> (Legacy) <span class="hljs-comment">//选中 UAC</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125942445.png" srcset="/img/loading.gif" lazyload alt="image-20200908125942445"></p>
+<p><img src="/.top:888//image-20200908125942445.png" srcset="/img/loading.gif" lazyload alt="image-20200908125942445"></p>
 <p>注意，这里也是编译为驱动模块，配置完成以后重新编译内核，得到新的 zImage 和三个.ko驱动模块文件：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko<br>drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/function/u</span>sb_f_uac1.ko<br>drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/legacy/g</span>_audio.ko<br></code></pre></td></tr></table></figure>
 
@@ -764,9 +764,9 @@
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">depmod<br>modprobe libcomposite<span class="hljs-selector-class">.ko</span><br>modprobe usb_f_uac1<span class="hljs-selector-class">.ko</span><br>modprobe g_audio.ko<br></code></pre></td></tr></table></figure>
 
 <p>加载完成以后稍等一会虚拟出一个 USB 声卡，打开电脑的设备管理器，选择“声音、视频和游戏控制器”，会发现有一个名为“AC Interface”设备，如图 所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908130127061.png" srcset="/img/loading.gif" lazyload alt="image-20200908130127061"></p>
+<p><img src="/.top:888//image-20200908130127061.png" srcset="/img/loading.gif" lazyload alt="image-20200908130127061"></p>
 <p>图 中的“AC Interface”就是开发板模拟出来的 USB 声卡，设置 windows，选择音频输出使用“AC Interface”，Windows10 设置如图  所示：</p>
-<p><img src="/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908130142916.png" srcset="/img/loading.gif" lazyload alt="image-20200908130142916"></p>
+<p><img src="/.top:888//image-20200908130142916.png" srcset="/img/loading.gif" lazyload alt="image-20200908130142916"></p>
 <p>一切设置好以后就可以从开发板上听到电脑输出的声音，此时开发板就完全是一个 USB 声卡设备了。</p>
 <p>关于 USB 驱动就讲解到这里，本章并没有深入到 USB 驱动具体编写方式，只是对 USB 的协议做了简单的介绍，后面讲解了一下 Linux 内核自带的 USB HOST 和 DEVICE 驱动的使用，Linux 内核已经集成了大量的 USB 设备驱动，至于其他特殊的就需要具体情况具体分析了，比如本教程后面讲解的 USB WIFI 和 4G 模块驱动。</p>
 
@@ -792,9 +792,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     
@@ -813,9 +813,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">21| Linux 电容触摸实验</span>
+                        <span class="hidden-mobile">22| Linux 音频驱动</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -823,8 +823,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
-                        <span class="hidden-mobile">22| Linux 音频驱动</span>
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/24%E3%80%81Linux%E5%9D%97%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">24| Linux 块设备驱动实验</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

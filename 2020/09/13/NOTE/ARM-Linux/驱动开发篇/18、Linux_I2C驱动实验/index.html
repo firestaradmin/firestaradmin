@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux I2C驱动实验I2C 是很常用的一个串行通信接口，用于连接各种外设、传感器等器件。本章我们来学习一下如何在 Linux 下开发 I2C 接口器件驱动，重点是学习 Linux 下的 I2C 驱动框架，按照指定的框架去编写 I2C 设备驱动。本章同样以 I.MX6U-ALPHA 开发板上的 AP3216C 这个三合一环境光传感器为例，通过 AP3216C 讲解一下如何编写 Linux 下的">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830150606209.png">
-<meta property="og:image" content="http://firestaradmin.top:888/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830151556292.png">
-<meta property="og:image" content="http://firestaradmin.top:888/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830151629603.png">
-<meta property="og:image" content="http://firestaradmin.top:888/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830154214853.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830150606209.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830151556292.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830151629603.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830154214853.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830150606209.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200830150606209.png">
   
   
   <title>18| Linux I2C驱动实验 - Hexo</title>
@@ -422,7 +422,7 @@
 
 <p>函数参数和返回值含义如下：<br><strong>client</strong> ：I2C 设备对应的 i2c_client。<br><strong>buf</strong>：要接收的数据。<br><strong>count</strong> ：要接收的数据字节数，要小于 64KB，以为 i2c_msg 的 len 成员变量是一个 u16(无符号 16 位)类型的数据。<br><strong>返回值</strong>：负值，失败，其他非负值，发送的字节数。</p>
 <p>关于 Linux 下 I2C 设备驱动的编写流程就讲解到这里，重点就是 i2c_msg 的构建和i2c_transfer 函数的调用，接下来我们就编写 AP3216C 这个 I2C 设备的 Linux 驱动。</p>
-<h2 id="4-硬件原理图分析"><a href="#4-硬件原理图分析" class="headerlink" title="4| 硬件原理图分析"></a>4| 硬件原理图分析</h2><p><img src="/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830150606209.png" srcset="/img/loading.gif" lazyload alt="image-20200830150606209"></p>
+<h2 id="4-硬件原理图分析"><a href="#4-硬件原理图分析" class="headerlink" title="4| 硬件原理图分析"></a>4| 硬件原理图分析</h2><p><img src="/.top:888//image-20200830150606209.png" srcset="/img/loading.gif" lazyload alt="image-20200830150606209"></p>
 <h2 id="5-实验程序编写"><a href="#5-实验程序编写" class="headerlink" title="5| 实验程序编写"></a>5| 实验程序编写</h2><h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1.修改设备树"></a>1.修改设备树</h3><h4 id="IO-修改或添加"><a href="#IO-修改或添加" class="headerlink" title="IO  修改或添加"></a>IO  修改或添加</h4><p>首先肯定是要修改 IO，AP3216C 用到了 I2C1 接口，I.MX6U-ALPHA 开发板上的 I2C1 接口使用到了 UART4_TXD 和 UART4_RXD，因此肯定要在设备树里面设置这两个 IO。如果要用到 AP3216C 的中断功能的话还需要初始化 AP_INT 对应的 GIO1_IO01 这个 IO，本章实验我们不使用中断功能。因此只需要设置 UART4_TXD 和 UART4_RXD 这两个 IO，NXP 其实已经将他这两个 IO 设置好了，打开 imx6ull-lxg-emmc.dts，然后找到如下内容：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_i2c1: i2c1grp &#123;<br><span class="hljs-number">2</span> 	fsl,pins = &lt;<br><span class="hljs-number">3</span> 		MX6UL_PAD_UART4_TX_DATA__I2C1_SCL <span class="hljs-number">0x4001b8b0</span><br><span class="hljs-number">4</span> 		MX6UL_PAD_UART4_RX_DATA__I2C1_SDA <span class="hljs-number">0x4001b8b0</span><br><span class="hljs-number">5</span> 	&gt;;<br><span class="hljs-number">6</span> &#125;;<br></code></pre></td></tr></table></figure>
 
@@ -443,9 +443,9 @@
 <p>第 8 行，设置 compatible 值为“lxg,ap3216c”。</p>
 <p>第 9 行，reg 属性也是设置 ap3216c 器件地址的，因此 reg 设置为 0x1e。</p>
 <p>设备树修改完成以后使用“make dtbs”重新编译一下，然后使用新的设备树启动 Linux 内核。&#x2F;sys&#x2F;bus&#x2F;i2c&#x2F;devices 目录下存放着所有 I2C 设备，如果设备树修改正确的话，会在&#x2F;sys&#x2F;bus&#x2F;i2c&#x2F;devices 目录下看到一个名为“0-001e”的子目录，如图所示：</p>
-<p><img src="/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830151556292.png" srcset="/img/loading.gif" lazyload alt="image-20200830151556292"></p>
+<p><img src="/.top:888//image-20200830151556292.png" srcset="/img/loading.gif" lazyload alt="image-20200830151556292"></p>
 <p>图中的“0-001e”就是 ap3216c 的设备目录，“1e”就是 ap3216c 器件地址。进入0-001e 目录，可以看到“name”文件，name 问价就保存着此设备名字，在这里就是“ap3216c”，如图  所示：</p>
-<p><img src="/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830151629603.png" srcset="/img/loading.gif" lazyload alt="image-20200830151629603"></p>
+<p><img src="/.top:888//image-20200830151629603.png" srcset="/img/loading.gif" lazyload alt="image-20200830151629603"></p>
 <h3 id="2-AP3216C-驱动编写"><a href="#2-AP3216C-驱动编写" class="headerlink" title="2.AP3216C  驱动编写"></a>2.AP3216C  驱动编写</h3><p>新建名为“21_iic”的文件夹，然后在 21_iic 文件夹里面创建 vscode 工程，工作区命名为“iic”。工程创建好以后新建 ap3216c.c 和 ap3216creg.h 这两个文件，ap3216c.c 为 AP3216C 的驱动代码，ap3216creg.h 是 AP3216C 寄存器头文件。先在 ap3216creg.h 中定义好 AP3216C 的寄存器，输入如下内容，</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> AP3216C_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_H</span><br><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_ADDR    	0X1E	<span class="hljs-comment">/* AP3216C器件地址  */</span></span><br><br><span class="hljs-comment">/* AP3316C寄存器 */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_SYSTEMCONG	0x00	<span class="hljs-comment">/* 配置寄存器       */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_INTSTATUS	0X01	<span class="hljs-comment">/* 中断状态寄存器   */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_INTCLEAR	0X02	<span class="hljs-comment">/* 中断清除寄存器   */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_IRDATALOW	0x0A	<span class="hljs-comment">/* IR数据低字节     */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_IRDATAHIGH	0x0B	<span class="hljs-comment">/* IR数据高字节     */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_ALSDATALOW	0x0C	<span class="hljs-comment">/* ALS数据低字节    */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_ALSDATAHIGH	0X0D	<span class="hljs-comment">/* ALS数据高字节    */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_PSDATALOW	0X0E	<span class="hljs-comment">/* PS数据低字节     */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_PSDATAHIGH	0X0F	<span class="hljs-comment">/* PS数据高字节     */</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
 
@@ -462,7 +462,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">./ap3216cApp /dev/ap3216c<br></code></pre></td></tr></table></figure>
 
 <p>测试 APP 会不断的从 AP3216C 中读取数据，然后输出到终端上，如图  所示：</p>
-<p><img src="/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830154214853.png" srcset="/img/loading.gif" lazyload alt="image-20200830154214853"></p>
+<p><img src="/.top:888//image-20200830154214853.png" srcset="/img/loading.gif" lazyload alt="image-20200830154214853"></p>
 
             </div>
             <hr>
@@ -486,9 +486,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

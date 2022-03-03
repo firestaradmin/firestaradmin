@@ -23,20 +23,20 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux自带的LED灯驱动前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。 1| Linu">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png">
-<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193709178.png">
-<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828201703810.png">
-<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203725010.png">
-<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203747024.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828193602935.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828193709178.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828201703810.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828203725010.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828203747024.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200828193602935.png">
   
   
   <title>13| Linux自带的LED灯驱动 - Hexo</title>
@@ -255,9 +255,9 @@
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livescript">-&gt; Device Drivers<br>	-&gt; LED Support <span class="hljs-function"><span class="hljs-params">(NEW_LEDS [=y])</span></span><br><span class="hljs-function">		-&gt;</span>LED Support <span class="hljs-keyword">for</span> GPIO connected LEDs<br></code></pre></td></tr></table></figure>
 
 <p>按照上述路径，选择“LED Support for GPIO connected LEDs”，将其编译进 Linux 内核，也即是在此选项上按下“Y”键，使此选项前面变为“&lt;*&gt;”，如图  所示</p>
-<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png" srcset="/img/loading.gif" lazyload alt="image-20200828193602935"></p>
+<p><img src="/.top:888//image-20200828193602935.png" srcset="/img/loading.gif" lazyload alt="image-20200828193602935"></p>
 <p>在“LED Support for GPIO connected LEDs”上按下可以打开此选项的帮助信息，如图 所示：</p>
-<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193709178.png" srcset="/img/loading.gif" lazyload alt="image-20200828193709178"></p>
+<p><img src="/.top:888//image-20200828193709178.png" srcset="/img/loading.gif" lazyload alt="image-20200828193709178"></p>
 <p>从图可以看出， 把 Linux 内部自带的 LED 灯 驱动编 译进内 核以后 ，<strong>CONFIG_LEDS_GPIO</strong> 就会等于‘y’，Linux 会根据 CONFIG_LEDS_GPIO 的值来选择如何编译LED 灯驱动，如果为‘y’就将其编译进 Linux 内核。</p>
 <p>重新编译 Linux 内核，然后使用新编译出来的 zImage 镜像启动开发板。</p>
 <h2 id="2-Linux-内核自带-LED-驱动简介"><a href="#2-Linux-内核自带-LED-驱动简介" class="headerlink" title="2|  Linux  内核自带 LED  驱动简介"></a>2|  Linux  内核自带 LED  驱动简介</h2><h3 id="1、LED-灯驱动框架分析"><a href="#1、LED-灯驱动框架分析" class="headerlink" title="1、LED 灯驱动框架分析"></a>1、LED 灯驱动框架分析</h3><p>LED 灯驱动文件为&#x2F;drivers&#x2F;leds&#x2F;leds-gpio.c，大家可以打开&#x2F;drivers&#x2F;leds&#x2F;Makefile 这个文件，找到如下所示内容：</p>
@@ -269,7 +269,7 @@
 
 <p>第 236~239 行，LED 驱动的匹配表，此表只有一个匹配项，compatible 内容为“gpio-leds”，因此设备树中的 LED 灯设备节点的 compatible 属性值也要为“gpio-leds”，否则设备和驱动匹配不成功，驱动就没法工作。</p>
 <p>第 290~296 行，platform_driver 驱动结构体变量，可以看出，Linux 内核自带的 LED 驱动采用了 platform 框架。第 291 行可以看出 probe 函数为 gpio_led_probe，因此当驱动和设备匹配成功以后 gpio_led_probe 函数就会执行。从 294 行可以看出，驱动名字为“leds-gpio”，因此会在&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers 目录下存在一个名为“leds-gpio”的文件，如图 所示：</p>
-<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828201703810.png" srcset="/img/loading.gif" lazyload alt="image-20200828201703810"></p>
+<p><img src="/.top:888//image-20200828201703810.png" srcset="/img/loading.gif" lazyload alt="image-20200828201703810"></p>
 <p>第 299 行通过 module_platform_driver 函数向 Linux 内核注册 gpio_led_driver 这个platform<br>驱动。</p>
 <h3 id="2、module-platform-driver-函数简析"><a href="#2、module-platform-driver-函数简析" class="headerlink" title="2、module_platform_driver 函数简析"></a>2、module_platform_driver 函数简析</h3><p>在上一小节中我们知道 LED 驱动会采用 module_platform_driver 函数向 Linux 内核注册platform 驱动，其实在 Linux 内核中会大量采用 module_platform_driver 来完成向 Linux 内核注册 platform 驱动的操作。module_platform_driver 定义在include&#x2F;linux&#x2F;platform_device.h 文件中，为一个宏，定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">221</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_platform_driver(__platform_driver) \</span><br><span class="hljs-meta">222 	module_driver(__platform_driver, platform_driver_register, \</span><br><span class="hljs-meta">223 		platform_driver_unregister)</span><br></code></pre></td></tr></table></figure>
@@ -320,9 +320,9 @@
 
 <p>因为 I.MX6U-ALPHA 开发板只有一个 LED0，因此在 dtsleds 这个节点下只有一个子节点led0，LED0 名字为 red，默认关闭。修改完成以后保存并重新编译设备树，然后用新的设备树启动开发板。</p>
 <h2 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4| 运行测试"></a>4| 运行测试</h2><p>用 新 的 zImage 和 imx6ull-lxg-emmc.dtb 启 动 开 发 板 ， 启 动 以 后 查 看&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;devices&#x2F;dtsleds 这个目录是否存在，如果存在的话就如到此目录中，如图所示：</p>
-<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203725010.png" srcset="/img/loading.gif" lazyload alt="image-20200828203725010"></p>
+<p><img src="/.top:888//image-20200828203725010.png" srcset="/img/loading.gif" lazyload alt="image-20200828203725010"></p>
 <p>进入到 leds 目录中，此目录中的内容如图所示：</p>
-<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203747024.png" srcset="/img/loading.gif" lazyload alt="image-20200828203747024"></p>
+<p><img src="/.top:888//image-20200828203747024.png" srcset="/img/loading.gif" lazyload alt="image-20200828203747024"></p>
 <p>从图 可以看出，在 leds 目录下有一个名为“red”子目录，这个子目录的名字就是我们在设备树中第 5 行设置的 label 属性值。</p>
 <p>我们的设置究竟有没有用，最终是要通过测试才能知道的，首先查看一下系统中有没有“sys&#x2F;class&#x2F;leds&#x2F;red&#x2F;brightness”这个文件，如果有的话就输入如下命令打开 RED 这个 LED 灯：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/打开 LED0</span><br></code></pre></td></tr></table></figure>
@@ -358,9 +358,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

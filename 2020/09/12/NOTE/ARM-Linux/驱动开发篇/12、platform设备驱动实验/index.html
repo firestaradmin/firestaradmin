@@ -23,25 +23,25 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Platform 设备驱动实验我们在前面几章编写的设备驱动都非常的简单，都是对IO进行最简单的读写操作。像I2C、SPI、LCD 等这些复杂外设的驱动就不能这么去写了，Linux 系统要考虑到驱动的可重用性，因此提出了驱动的分离与分层这样的软件思路，在这个思路下诞生了我们将来最常打交道的platform 设备驱动，也叫做平台设备驱动。本章我们就来学习一下 Linux 下的驱动分离与分层，以及 pl">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144020801.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144129336.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144146616.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144329833.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154257279.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154439288.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154419442.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160111754.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160034597.png">
-<meta property="og:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160050525.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828144020801.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828144129336.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828144146616.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828144329833.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828154257279.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828154439288.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828154419442.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828160111754.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828160034597.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200828160050525.png">
 <meta property="article:published_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144020801.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200828144020801.png">
   
   
   <title>12| Platform 设备驱动实验 - Hexo</title>
@@ -255,14 +255,14 @@
               <h1 id="Platform-设备驱动实验"><a href="#Platform-设备驱动实验" class="headerlink" title="Platform 设备驱动实验"></a>Platform 设备驱动实验</h1><p>我们在前面几章编写的设备驱动都非常的简单，都是对IO进行最简单的读写操作。像I2C、SPI、LCD 等这些复杂外设的驱动就不能这么去写了，Linux 系统要考虑到驱动的可重用性，因此提出了驱动的分离与分层这样的软件思路，在这个思路下诞生了我们将来最常打交道的platform 设备驱动，也叫做平台设备驱动。本章我们就来学习一下 Linux 下的驱动分离与分层，以及 platform 框架下的设备驱动该如何编写。</p>
 <h2 id="一、-Linux-驱动的分离与分层"><a href="#一、-Linux-驱动的分离与分层" class="headerlink" title="一、 Linux 驱动的分离与分层"></a>一、 Linux 驱动的分离与分层</h2><h3 id="驱动的分隔与分离"><a href="#驱动的分隔与分离" class="headerlink" title="驱动的分隔与分离"></a>驱动的分隔与分离</h3><p>对于 Linux 这样一个成熟、庞大、复杂的操作系统，代码的重用性非常重要，否则的话就会在 Linux 内核中存在大量无意义的重复代码。尤其是驱动程序，因为驱动程序占用了 Linux内核代码量的大头，如果不对驱动程序加以管理，任由重复的代码肆意增加，那么用不了多久Linux 内核的文件数量就庞大到无法接受的地步。</p>
 <p>假如现在有三个平台 A、B 和 C，这三个平台(这里的平台说的是 SOC)上都有 MPU6050 这个I2C接口的六轴传感器，按照我们写裸机I2C驱动的时候的思路，每个平台都有一个MPU6050<br>的驱动，因此编写出来的最简单的驱动框架如图  所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144020801.png" srcset="/img/loading.gif" lazyload alt="image-20200828144020801"></p>
+<p><img src="/.top:888//image-20200828144020801.png" srcset="/img/loading.gif" lazyload alt="image-20200828144020801"></p>
 <p>从图可以看出，每种平台下都有一个主机驱动和设备驱动，主机驱动肯定是必须要的，毕竟不同的平台其 I2C 控制器不同。但是右侧的设备驱动就没必要每个平台都写一个，因为不管对于那个 SOC 来说，MPU6050 都是一样，通过 I2C 接口读写数据就行了，只需要一个MPU6050 的驱动程序即可。如果再来几个 I2C 设备，比如 AT24C02、FT5206(电容触摸屏)等，如果按照图  中的写法，那么设备端的驱动将会重复的编写好几次。显然在 Linux 驱动程序中这种写法是不推荐的，最好的做法就是每个平台的 I2C 控制器都提供一个统一的接口(也叫做主机驱动)，每个设备的话也只提供一个驱动程序(设备驱动)，每个设备通过统一的 I2C接口驱动来访问，这样就可以大大简化驱动文件，比如 三种平台下的 MPU6050 驱动框架就可以简化为图  所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144129336.png" srcset="/img/loading.gif" lazyload alt="image-20200828144129336"></p>
+<p><img src="/.top:888//image-20200828144129336.png" srcset="/img/loading.gif" lazyload alt="image-20200828144129336"></p>
 <p>实际的 I2C 驱动设备肯定有很多种，不止 MPU6050 这一个，那么实际的驱动架构如图所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144146616.png" srcset="/img/loading.gif" lazyload alt="image-20200828144146616"></p>
+<p><img src="/.top:888//image-20200828144146616.png" srcset="/img/loading.gif" lazyload alt="image-20200828144146616"></p>
 <p>这个就是驱动的分隔，也就是将主机驱动和设备驱动分隔开来，比如 I2C、SPI 等等都会采用驱动分隔的方式来简化驱动的开发。</p>
 <p>在实际的驱动开发中，一般 I2C 主机控制器驱动已经由半导体厂家编写好了，而设备驱动一般也由设备器件的厂家编写好了，我们只需要提供设备信息即可，比如 I2C 设备的话提供设备连接到了哪个 I2C 接口上，I2C 的速度是多少等等。相当于将设备信息从设备驱动中剥离开来，驱动使用标准方法去获取到设备信息(比如从设备树中获取到设备信息)，然后根据获取到的设备信息来初始化设备。 这样就相当于驱动只负责驱动，设备只负责设备，想办法将两者进行匹配即可。这个就是 Linux 中的总线(bus)、驱动(driver)和设备(device)模型，也就是常说的驱动分离。总线就是驱动和设备信息的月老，负责给两者牵线搭桥，如图 所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828144329833.png" srcset="/img/loading.gif" lazyload alt="image-20200828144329833"></p>
+<p><img src="/.top:888//image-20200828144329833.png" srcset="/img/loading.gif" lazyload alt="image-20200828144329833"></p>
 <p>当我们向系统注册一个驱动的时候，总线就会在右侧的设备中查找，看看有没有与之匹配的设备，如果有的话就将两者联系起来。同样的，当向系统中注册一个设备的时候，总线就会在左侧的驱动中查找看有没有与之匹配的设备，有的话也联系起来。Linux 内核中大量的驱动程序都采用总线、驱动和设备模式，我们一会要重点讲解的 platform 驱动就是这一思想下的产物。</p>
 <h3 id="驱动的分层"><a href="#驱动的分层" class="headerlink" title="驱动的分层"></a>驱动的分层</h3><p>上一小节讲了驱动的分隔与分离，本节我们来简单看一下驱动的分层，大家应该听说过网络的 7 层模型，不同的层负责不同的内容。同样的，Linux 下的驱动往往也是分层的，分层的目的也是为了在不同的层处理不同的内容。以其他书籍或者资料常常使用到的input(输入子系统，后面会有专门的章节详细的讲解)为例，简单介绍一下驱动的分层。</p>
 <p>input 子系统负责管理所有跟输入有关的驱动，包括键盘、鼠标、触摸等，最底层的就是设备原始驱动，负责获取输入设备的原始值，获取到的输入事件上报给 input 核心层。input 核心层会处理各种 IO 模型，并且提供 file_operations 操作集合。我们在编写输入设备驱动的时候只需要处理好输入事件的上报即可，至于如何处理这些上报的输入事件那是上层去考虑的，我们不用管。可以看出借助分层模型可以极大的简化我们的驱动编写，对于驱动编写来说非常的友好。</p>
@@ -377,11 +377,11 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">depmod //第一次加载驱动的时候需要运行此命令<br>modprobe leddevice.ko //加载设备模块<br>modprobe leddriver.ko //加载驱动模块<br></code></pre></td></tr></table></figure>
 
 <p>根文件系统中&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;目录下保存着当前板子 platform 总线下的设备和驱动，其中devices 子目录为 platform 设备，drivers 子目录为 plartofm 驱动。查看&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;devices&#x2F; 目录，看看我们的设备是否存在，我们在 leddevice.c 中设置 leddevice(platform_device 类型)的name 字段为“imx6ul-led”，也就是设备名字为 imx6ul-led，因此肯定在&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;devices&#x2F;目录下存在一个名字“imx6ul-led”的文件，否则说明我们的设备模块加载失败，结果如图所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154257279.png" srcset="/img/loading.gif" lazyload alt="image-20200828154257279"></p>
+<p><img src="/.top:888//image-20200828154257279.png" srcset="/img/loading.gif" lazyload alt="image-20200828154257279"></p>
 <p>同理，查看&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers&#x2F;目录，看一下驱动是否存在，我们在 leddriver.c 中设置led_driver (platform_driver 类型)的 name 字段为“imx6ul-led”，因此会在&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers&#x2F;目录下存在名为“imx6ul-led”这个文件，结果如图 所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154439288.png" srcset="/img/loading.gif" lazyload alt="image-20200828154439288"></p>
+<p><img src="/.top:888//image-20200828154439288.png" srcset="/img/loading.gif" lazyload alt="image-20200828154439288"></p>
 <p>驱动模块和设备模块加载成功以后 platform 总线就会进行匹配，当驱动和设备匹配成功以<br>后就会输出如图 所示一行语句：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154419442.png" srcset="/img/loading.gif" lazyload alt="image-20200828154419442"></p>
+<p><img src="/.top:888//image-20200828154419442.png" srcset="/img/loading.gif" lazyload alt="image-20200828154419442"></p>
 <p>驱动和设备匹配成功以后就可以测试 LED 灯驱动了，输入如下命令打开 LED 灯：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/platled 1 /</span><span class="hljs-regexp">/打开 LED 灯</span><br></code></pre></td></tr></table></figure>
 
@@ -418,11 +418,11 @@
 <h3 id="3-编写测试-APP"><a href="#3-编写测试-APP" class="headerlink" title="3| 编写测试 APP"></a>3| 编写测试 APP</h3><p>测试 APP 就直接使用上一小节编写的 ledApp.c 即可。</p>
 <h3 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4| 运行测试"></a>4| 运行测试</h3><p>编译运行。</p>
 <p>驱动模块加载完成以后到&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers&#x2F;目录下查看驱动是否存在，我们在leddriver.c 中设置 led_driver (platform_driver 类型)的 name 字段为“imx6ul-led”，因此会在<br>&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers&#x2F;目录下存在名为“imx6ul-led”这个文件，结果如图 所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160111754.png" srcset="/img/loading.gif" lazyload alt="image-20200828160111754"></p>
+<p><img src="/.top:888//image-20200828160111754.png" srcset="/img/loading.gif" lazyload alt="image-20200828160111754"></p>
 <p>同理，在&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;devices&#x2F;目录下也存在 led 的设备文件，也就是设备树中 gpioled 这个节点，如图 所示：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160034597.png" srcset="/img/loading.gif" lazyload alt="image-20200828160034597"></p>
+<p><img src="/.top:888//image-20200828160034597.png" srcset="/img/loading.gif" lazyload alt="image-20200828160034597"></p>
 <p>驱动和模块都存在，当驱动和设备匹配成功以后就会输出如图 所示一行语句：</p>
-<p><img src="/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828160050525.png" srcset="/img/loading.gif" lazyload alt="image-20200828160050525"></p>
+<p><img src="/.top:888//image-20200828160050525.png" srcset="/img/loading.gif" lazyload alt="image-20200828160050525"></p>
 
             </div>
             <hr>
@@ -446,9 +446,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     
@@ -477,8 +477,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/8%E3%80%81Linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%AE%9E%E9%AA%8C/">
-                        <span class="hidden-mobile">8| Linux  内核定时器实验</span>
+                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">9| Linux 中断实验</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

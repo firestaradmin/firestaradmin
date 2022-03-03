@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux 中断实验不管是裸机实验还是 Linux 下的驱动实验，中断都是频繁使用的功能，在裸机中使用中断我们需要做一大堆的工作，比如配置寄存器，使能 IRQ 等等。Linux 内核提供了完善的中断框架，我们只需要申请中断，然后注册中断处理函数即可，使用非常方便，不需要一系列复杂的寄存器配置。本章我们就来学习一下如何在 Linux 下使用中断。 一、 Linux 中断简介1|Linux  中断 A">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200824142754531.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200825172109959.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200826110945181.png">
-<meta property="og:image" content="http://firestaradmin.top:888/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200826111221680.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200824142754531.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200825172109959.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826110945181.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826111221680.png">
 <meta property="article:published_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200824142754531.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200824142754531.png">
   
   
   <title>9| Linux 中断实验 - Hexo</title>
@@ -261,7 +261,7 @@
 <li><p><strong>handler</strong>：中断处理函数，当中断发生以后就会执行此中断处理函数。</p>
 </li>
 <li><p><strong>flags</strong>：中断标志，可以在文件 include&#x2F;linux&#x2F;interrupt.h 里面查看所有的中断标志，这里我们介绍几个常用的中断标志，如表所示：</p>
-<p><img src="/Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200824142754531.png" srcset="/img/loading.gif" lazyload alt="image-20200824142754531"></p>
+<p><img src="/.top:888//image-20200824142754531.png" srcset="/img/loading.gif" lazyload alt="image-20200824142754531"></p>
 <p>比如 I.MX6U-ALPHA 开发板上的 KEY0 使用 GPIO1_IO18，按下 KEY0 以后为低电平，因此可以设置为下降沿触发，也就是将 flags 设置为 IRQF_TRIGGER_FALLING。表 中的这些标志可以通过“|”来实现多种组合。</p>
 </li>
 <li><p><strong>name</strong>：中断名字，设置以后可以在&#x2F;proc&#x2F;interrupts 文件中看到对应的中断名字。</p>
@@ -429,7 +429,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">gpio_to_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> gpio)</span><br></code></pre></td></tr></table></figure>
 
 <p>函数参数和返回值含义如下：<br><strong>gpio</strong> ：要获取的 GPIO 编号。<br><strong>返回值</strong>：GPIO 对应的中断号。</p>
-<h2 id="二、硬件原理分析"><a href="#二、硬件原理分析" class="headerlink" title="二、硬件原理分析"></a>二、硬件原理分析</h2><p><img src="/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200825172109959.png" srcset="/img/loading.gif" lazyload alt="image-20200825172109959"></p>
+<h2 id="二、硬件原理分析"><a href="#二、硬件原理分析" class="headerlink" title="二、硬件原理分析"></a>二、硬件原理分析</h2><p><img src="/.top:888//image-20200825172109959.png" srcset="/img/loading.gif" lazyload alt="image-20200825172109959"></p>
 <h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><p>本章实验我们驱动 I.MX6U-ALPHA 开发板上的 KEY0 按键，不过我们采用中断的方式，并且采用定时器来实现按键消抖，应用程序读取按键值并且通过终端打印出来。通过本章我们可以学习到 Linux 内核中断的使用方法，以及对 Linux 内核定时器的回顾。</p>
 <h3 id="1-修改设备树文件"><a href="#1-修改设备树文件" class="headerlink" title="1|修改设备树文件"></a>1|修改设备树文件</h3><p>本章实验使用到了按键 KEY0，按键 KEY0 使用中断模式，因此需要在“key”节点下添加中断相关属性，添加完成以后的“key”节点内容如下所示：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> key &#123;<br><span class="hljs-number">2</span> 		<span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span><br><span class="hljs-number">3</span> 		<span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;1&gt;</span>;</span><br><span class="hljs-number">4</span> 		compatible = <span class="hljs-string">&quot;atkalpha-key&quot;</span>;<br><span class="hljs-number">5</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;<br><span class="hljs-number">6</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_key&gt;;<br><span class="hljs-number">7</span> 		key-gpio = &lt;&amp;gpio1 <span class="hljs-number">18</span> GPIO_ACTIVE_LOW&gt;; <span class="hljs-comment">/* KEY0 */</span><br><span class="hljs-number">8</span> 		interrupt-parent = &lt;&amp;gpio1&gt;;<br><span class="hljs-number">9</span> 		interrupts = &lt;<span class="hljs-number">18</span> IRQ_TYPE_EDGE_BOTH&gt;; <span class="hljs-comment">/* FALLING RISING */</span><br><span class="hljs-number">10</span> 		status = <span class="hljs-string">&quot;okay&quot;</span>;<br><span class="hljs-number">11</span> &#125;;<br></code></pre></td></tr></table></figure>
@@ -470,9 +470,9 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/interrupts<br></code></pre></td></tr></table></figure>
 
 <p>结果如图 所示：</p>
-<p><img src="/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200826110945181.png" srcset="/img/loading.gif" lazyload alt="image-20200826110945181"></p>
+<p><img src="/.top:888//image-20200826110945181.png" srcset="/img/loading.gif" lazyload alt="image-20200826110945181"></p>
 <p>按下按键 如图：</p>
-<p><img src="/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200826111221680.png" srcset="/img/loading.gif" lazyload alt="image-20200826111221680"></p>
+<p><img src="/.top:888//image-20200826111221680.png" srcset="/img/loading.gif" lazyload alt="image-20200826111221680"></p>
 
             </div>
             <hr>
@@ -496,9 +496,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     
@@ -517,9 +517,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/8%E3%80%81Linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">8| Linux  内核定时器实验</span>
+                        <span class="hidden-mobile">12| Platform 设备驱动实验</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -527,8 +527,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/">
-                        <span class="hidden-mobile">4| Linux  设备树</span>
+                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/8%E3%80%81Linux%E5%86%85%E6%A0%B8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">8| Linux  内核定时器实验</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

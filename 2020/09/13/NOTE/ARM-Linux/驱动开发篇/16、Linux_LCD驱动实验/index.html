@@ -23,22 +23,22 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux LCD驱动实验LCD 是很常用的一个外设，在裸机篇中我们讲解了如何编写 LCD 裸机驱动，在 Linux 下LCD 的使用更加广泛，在搭配 QT 这样的 GUI 库下可以制作出非常精美的 UI 界面。本章我们就来学习一下如何在 Linux 下驱动 LCD 屏幕。 一、Linux 下 LCD  驱动简析1| Framebuffer 设备先来回顾一下裸机的时候 LCD 驱动是怎么编写的，裸">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829171727766.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829173052061.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829175456646.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829175529252.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829180715010.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181040258.png">
-<meta property="og:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181118422.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829171727766.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829173052061.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829175456646.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829175529252.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829180715010.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829181040258.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200829181118422.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829171727766.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200829171727766.png">
   
   
   <title>16| Linux LCD驱动实验 - Hexo</title>
@@ -256,7 +256,7 @@
 <p>为了解决上述问题，Framebuffer 诞生了， Framebuffer 翻译过来就是帧缓冲，简称 fb，因此大家在以后的 Linux 学习中见到“Framebuffer”或者“fb”的话第一反应应该想到 RGBLCD或者显示设备。</p>
 <p>fb 是一种机制，将系统中所有跟显示有关的硬件以及软件集合起来，虚拟出一个 fb 设备，当我们编写好 LCD 驱动以后会生成一个名为&#x2F;dev&#x2F;fbX(X&#x3D;0~n)的设备，应用程序通过访问&#x2F;dev&#x2F;fbX 这个设备就可以访问 LCD。</p>
 <p>NXP 官方的 Linux 内核默认已经开启了 LCD 驱动，因此我们是可以看到&#x2F;dev&#x2F;fb0 这样一个设备，如图所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829171727766.png" srcset="/img/loading.gif" lazyload alt="image-20200829171727766"></p>
+<p><img src="/.top:888//image-20200829171727766.png" srcset="/img/loading.gif" lazyload alt="image-20200829171727766"></p>
 <p>图中的&#x2F;dev&#x2F;fb0 就是 LCD 对应的设备文件，&#x2F;dev&#x2F;fb0 是个字符设备，因此肯定有file_operations 操作集，fb 的 file_operations 操作集定义在 drivers&#x2F;video&#x2F;fbdev&#x2F;core&#x2F;fbmem.c 文件中，如下所示：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1495</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">fb_fops</span> =</span> &#123;<br><span class="hljs-number">1496</span> 	.owner = THIS_MODULE,<br><span class="hljs-number">1497</span> 	.read = fb_read,<br><span class="hljs-number">1498</span> 	.write = fb_write,<br><span class="hljs-number">1499</span> 	.unlocked_ioctl = fb_ioctl,<br><span class="hljs-number">1500</span> 	<span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_COMPAT</span><br><span class="hljs-number">1501</span> 		.compat_ioctl = fb_compat_ioctl,<br><span class="hljs-number">1502</span> 	<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-number">1503</span> 	.mmap = fb_mmap,<br><span class="hljs-number">1504</span> 	.open = fb_open,<br><span class="hljs-number">1505</span> 	.release = fb_release,<br><span class="hljs-number">1506</span> 	<span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> HAVE_ARCH_FB_UNMAPPED_AREA</span><br><span class="hljs-number">1507</span> 		.get_unmapped_area = get_fb_unmapped_area,<br><span class="hljs-number">1508</span> 	<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-number">1509</span> 	<span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_FB_DEFERRED_IO</span><br><span class="hljs-number">1510</span> 		.fsync = fb_deferred_io_fsync,<br><span class="hljs-number">1511</span> 	<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-number">1512</span> 	.llseek = default_llseek,<br><span class="hljs-number">1513</span> &#125;;<br></code></pre></td></tr></table></figure>
 
@@ -311,7 +311,7 @@
 <li><p><strong>第 1494 行</strong>，最后调用 register_framebuffer 函数向 Linux 内核注册 fb_info。<br>mxsfb.c 文件很大，还有一些其他的重要函数，比如 mxsfb_remove、mxsfb_shutdown 等，<br>这里我们就简单的介绍了一下 mxsfb_probe 函数，至于其他的函数大家自行查阅。</p>
 </li>
 </ul>
-<h2 id="二、硬件原理图分析"><a href="#二、硬件原理图分析" class="headerlink" title="二、硬件原理图分析"></a>二、硬件原理图分析</h2><p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829173052061.png" srcset="/img/loading.gif" lazyload alt="image-20200829173052061"></p>
+<h2 id="二、硬件原理图分析"><a href="#二、硬件原理图分析" class="headerlink" title="二、硬件原理图分析"></a>二、硬件原理图分析</h2><p><img src="/.top:888//image-20200829173052061.png" srcset="/img/loading.gif" lazyload alt="image-20200829173052061"></p>
 <h2 id="三、-LCD-驱动程序编写"><a href="#三、-LCD-驱动程序编写" class="headerlink" title="三、 LCD  驱动程序编写"></a>三、 LCD  驱动程序编写</h2><p>前面已经说了，6ULL 的 eLCDIF 接口驱动程序 NXP 已经编写好了，因此 LCD 驱动部分我们不需要去修改。我们需要做的就是按照所使用的 LCD 来修改设备树。重点要注意三个地方：<br>①、LCD 所使用的 IO 配置。<br>②、LCD 屏幕节点修改，修改相应的属性值，换成我们所使用的 LCD 屏幕参数。<br>③、LCD 背光节点信息修改，要根据实际所使用的背光 IO 来修改相应的设备节点信息。</p>
 <p>接下来我们依次来看一下上面这两个节点改如何去修改：</p>
 <h3 id="1-LCD-屏幕-IO-配置"><a href="#1-LCD-屏幕-IO-配置" class="headerlink" title="1| LCD  屏幕 IO  配置"></a>1| LCD  屏幕 IO  配置</h3><p>首先要检查一下设备树中 LCD 所使用的 IO 配置，这个其实 NXP 都已经给我们写好了，不需要修改，不过我们还是要看一下。打开 imx6ull-lxg-emmc.dts 文件，在 iomuxc 节点中找到如下内容：</p>
@@ -369,9 +369,9 @@
 <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span><br>    -&gt; <span class="hljs-type">Graphics</span> sup<span class="hljs-keyword">port</span><br>        -&gt; <span class="hljs-type">Bootup</span> logo (<span class="hljs-type">LOGO</span> [=y])<br>            -&gt; <span class="hljs-type">Standard</span> black and white <span class="hljs-type">Linux</span> logo<br>            -&gt; <span class="hljs-type">Standard</span> <span class="hljs-number">16</span>-color <span class="hljs-type">Linux</span> logo<br>            -&gt; <span class="hljs-type">Standard</span> <span class="hljs-number">224</span>-color <span class="hljs-type">Linux</span> logo<br></code></pre></td></tr></table></figure>
 
 <p>如图 所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829175456646.png" srcset="/img/loading.gif" lazyload alt="image-20200829175456646"></p>
+<p><img src="/.top:888//image-20200829175456646.png" srcset="/img/loading.gif" lazyload alt="image-20200829175456646"></p>
 <p>图 中这三个选项分别对应黑白、16 位、24 位色彩格式的 logo，我们把这三个都选中，都编译进 Linux 内核里面。设置好以后保存退出，重新编译 Linux 内核，编译完成以后使用新编译出来的 imx6ull-lxg-emmc.dtb 和 zImage 镜像启动系统，如果 LCD 驱动工作正常的话就会在 LCD 屏幕左上角出现一个彩色的小企鹅 logo，屏幕背景色为黑色，如图 所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829175529252.png" srcset="/img/loading.gif" lazyload alt="image-20200829175529252"></p>
+<p><img src="/.top:888//image-20200829175529252.png" srcset="/img/loading.gif" lazyload alt="image-20200829175529252"></p>
 <h3 id="2-设置-LCD-作为终端控制台"><a href="#2-设置-LCD-作为终端控制台" class="headerlink" title="2| 设置 LCD  作为终端控制台"></a>2| 设置 LCD  作为终端控制台</h3><p>我们一直使用SecureCRT作为Linux开发板终端，开发板通过串口和SecureCRT进行通信。现在我们已经驱动起来 LCD 了，所以可以设置 LCD 作为终端，也就是开发板使用自己的显示设备作为自己的终端，然后接上键盘就可以直接在开发板上敲命令了(前提是USB驱动设置好)，将 LCD 设置为终端控制台的方法如下：</p>
 <h4 id="1-、设置-uboot-中的-bootargs"><a href="#1-、设置-uboot-中的-bootargs" class="headerlink" title="1 、设置 uboot  中的 bootargs"></a>1 、设置 uboot  中的 bootargs</h4><p>重启开发板，进入 Linux 命令行，重新设置 bootargs 参数的 console 内容，命令如下所示：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> bootargs &#x27;console=tty1 console=ttymxc0,<span class="hljs-number">115200</span> root=/dev/nfs nfsroot=<span class="hljs-number">192.168.0.200</span>:/home/firestaradmin/linux/nfs/rootfs,proto=tcp rw ip=<span class="hljs-number">192.168.0.210:192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">200</span>:<span class="hljs-number">192.168.0.1:255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">0</span>::eth0:<span class="hljs-literal">off</span>&#x27;<br></code></pre></td></tr></table></figure>
@@ -381,7 +381,7 @@
 <figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh<br></code></pre></td></tr></table></figure>
 
 <p>添加完成以后的&#x2F;etc&#x2F;inittab 文件内容如图  所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829180715010.png" srcset="/img/loading.gif" lazyload alt="image-20200829180715010"></p>
+<p><img src="/.top:888//image-20200829180715010.png" srcset="/img/loading.gif" lazyload alt="image-20200829180715010"></p>
 <p>修改完成以后保存&#x2F;etc&#x2F;inittab 并退出，然后重启开发板，重启以后开发板 LCD 屏幕最后一行会显示下面一行语句：</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">Please press Enter <span class="hljs-keyword">to</span> <span class="hljs-built_in">activate</span> this console.<br></code></pre></td></tr></table></figure>
 
@@ -394,9 +394,9 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/sys/</span>devices<span class="hljs-regexp">/platform/</span>backlight<span class="hljs-regexp">/backlight/</span>backlight<br></code></pre></td></tr></table></figure>
 
 <p>此目录下的文件如图 所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181040258.png" srcset="/img/loading.gif" lazyload alt="image-20200829181040258"></p>
+<p><img src="/.top:888//image-20200829181040258.png" srcset="/img/loading.gif" lazyload alt="image-20200829181040258"></p>
 <p>图中的 brightness 表示当前亮度等级，max_bgigntness 表示最大亮度等级。当前这两个文件内容如图所示：</p>
-<p><img src="/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181118422.png" srcset="/img/loading.gif" lazyload alt="image-20200829181118422"></p>
+<p><img src="/.top:888//image-20200829181118422.png" srcset="/img/loading.gif" lazyload alt="image-20200829181118422"></p>
 <p>从图可以看出，当前屏幕亮度等级为 6，根据前面的分析可以，这个是 50%亮度。屏幕最大亮度等级为 7。如果我们要修改屏幕亮度，只需要向 brightness 写入需要设置的屏幕亮度等级即可。比如设置屏幕亮度等级为 7，那么可以使用如下命令：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-number">7</span> &gt; brightness<br></code></pre></td></tr></table></figure>
 
@@ -440,9 +440,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

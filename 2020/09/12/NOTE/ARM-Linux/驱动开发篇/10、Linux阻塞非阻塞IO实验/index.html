@@ -23,23 +23,23 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux阻塞非阻塞IO实验阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种设备访问模式，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。 一、阻塞和非阻塞IO1|阻塞和非阻塞简介这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826141315957.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826141512429.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826142839512.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826142846893.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827114714058.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827121431518.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827121452839.png">
-<meta property="og:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827124533321.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826141315957.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826141512429.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826142839512.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200826142846893.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200827114714058.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200827121431518.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200827121452839.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200827124533321.png">
 <meta property="article:published_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-11T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826141315957.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200826141315957.png">
   
   
   <title>10| Linux阻塞非阻塞IO实验 - Hexo</title>
@@ -253,10 +253,10 @@
               <h1 id="Linux阻塞非阻塞IO实验"><a href="#Linux阻塞非阻塞IO实验" class="headerlink" title="Linux阻塞非阻塞IO实验"></a>Linux阻塞非阻塞IO实验</h1><p>阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种<strong>设备访问模式</strong>，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。</p>
 <h2 id="一、阻塞和非阻塞IO"><a href="#一、阻塞和非阻塞IO" class="headerlink" title="一、阻塞和非阻塞IO"></a>一、阻塞和非阻塞IO</h2><h3 id="1-阻塞和非阻塞简介"><a href="#1-阻塞和非阻塞简介" class="headerlink" title="1|阻塞和非阻塞简介"></a>1|阻塞和非阻塞简介</h3><p>这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引脚)。这里的 IO 指的是 Input&#x2F;Output，也就是输入&#x2F;输出，是应用程序对驱动设备的输入&#x2F;输出操作。当<br>应用程序对设备驱动进行操作的时候，如果不能获取到设备资源，那么阻塞式 IO 就会将应用程序对应的线程挂起，直到设备资源可以获取为止。对于非阻塞 IO，应用程序对应的线程不会挂起，它要么一直轮询等待，直到设备资源可以使用，要么就直接放弃。</p>
 <p><strong>阻塞式 IO 如图所示：</strong></p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826141315957.png" srcset="/img/loading.gif" lazyload alt="image-20200826141315957"></p>
+<p><img src="/.top:888//image-20200826141315957.png" srcset="/img/loading.gif" lazyload alt="image-20200826141315957"></p>
 <p>图 52.1.1.1 中应用程序调用 read 函数从设备中读取数据，当设备不可用或数据未准备好的时候就会进入到休眠态。等设备可用的时候就会从休眠态唤醒，然后从设备中读取数据返回给应用程序。</p>
 <p><strong>非阻塞 IO 如图所示：</strong></p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826141512429.png" srcset="/img/loading.gif" lazyload alt="image-20200826141512429"></p>
+<p><img src="/.top:888//image-20200826141512429.png" srcset="/img/loading.gif" lazyload alt="image-20200826141512429"></p>
 <p>从图 52.1.1.2 可以看出，应用程序使用非阻塞访问方式从设备读取数据，当设备不可用或数据未准备好的时候会立即向内核返回一个错误码，表示数据读取失败。应用程序会再次重新读取数据，这样一直往复循环，直到数据读取成功。</p>
 <p>应用程序可以使用如下所示示例代码来实现阻塞访问：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">int</span> fd;<br><span class="hljs-number">2</span> <span class="hljs-type">int</span> data = <span class="hljs-number">0</span>;<br><span class="hljs-number">3</span><br><span class="hljs-number">4</span> fd = open(<span class="hljs-string">&quot;/dev/xxx_dev&quot;</span>, O_RDWR); <span class="hljs-comment">/* 阻塞方式打开 */</span><br><span class="hljs-number">5</span> ret = read(fd, &amp;data, <span class="hljs-keyword">sizeof</span>(data)); <span class="hljs-comment">/* 读取数据 */</span><br></code></pre></td></tr></table></figure>
@@ -303,8 +303,8 @@
 <p>参数 q 就是要唤醒的等待队列头，这两个函数会<strong>将这个等待队列头中的所有进程都唤醒</strong>。<strong>wake_up</strong> 函数可以唤醒处于 TASK_INTERRUPTIBLE 和 TASK_UNINTERRUPTIBLE 状态的进程，而 <strong>wake_up_interruptible</strong> 函数只能唤醒处于 TASK_INTERRUPTIBLE 状态的进程。</p>
 <hr>
 <h4 id="5-等待事件"><a href="#5-等待事件" class="headerlink" title="5.等待事件"></a><strong>5.等待事件</strong></h4><p>除了主动唤醒以外，也可以设置等待队列等待某个事件，当这个事件满足以后就自动唤醒等待队列中的进程，和等待事件有关的 API 函数如表  所示：</p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826142839512.png" srcset="/img/loading.gif" lazyload alt="image-20200826142839512"></p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200826142846893.png" srcset="/img/loading.gif" lazyload alt="image-20200826142846893"></p>
+<p><img src="/.top:888//image-20200826142839512.png" srcset="/img/loading.gif" lazyload alt="image-20200826142839512"></p>
+<p><img src="/.top:888//image-20200826142846893.png" srcset="/img/loading.gif" lazyload alt="image-20200826142846893"></p>
 <h3 id="3-轮询"><a href="#3-轮询" class="headerlink" title="3|轮询"></a>3|轮询</h3><p>如果用户应用程序以非阻塞的方式访问设备，设备驱动程序就要提供非阻塞的处理方式，也就是轮询。<strong>poll、epoll 和 select 可以用于处理轮询</strong>，应用程序通过 select、epoll 或 poll 函数来查询设备是否可以操作，如果可以操作的话就从设备读取或者向设备写入数据。当应用程序调用 select、epoll 或 poll 函数的时候设备驱动程序中的 poll 函数就会执行，因此需要在设备驱动程序中编写 poll 函数。我们先来看一下应用程序中使用的 select、poll 和 epoll这三个函数。</p>
 <h4 id="1-select-函数"><a href="#1-select-函数" class="headerlink" title="1.select  函数"></a>1.select  函数</h4><p>select 函数原型如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">select</span><span class="hljs-params">(<span class="hljs-type">int</span> nfds,</span><br><span class="hljs-params">           fd_set *readfds,</span><br><span class="hljs-params">           fd_set *writefds,</span><br><span class="hljs-params">           fd_set *exceptfds,</span><br><span class="hljs-params">           <span class="hljs-keyword">struct</span> timeval *timeout)</span><br></code></pre></td></tr></table></figure>
@@ -415,7 +415,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">./imx6uirqApp /dev/imx6uirq &amp;<br></code></pre></td></tr></table></figure>
 
 <p>测试驱动是否正常工作，如果驱动工作正常的话输入“top”命令查看 imx6uirqApp 这个应用程序的 CPU 使用率，结果如图  所示：</p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827114714058.png" srcset="/img/loading.gif" lazyload alt="image-20200827114714058"></p>
+<p><img src="/.top:888//image-20200827114714058.png" srcset="/img/loading.gif" lazyload alt="image-20200827114714058"></p>
 <p>从图可以看出，imx6uirqApp 这个应用程序的 CPU 使用率竟然高达 99.6%，这仅仅是一个读取按键值的应用程序，这么高的 CPU 使用率显然是有问题的！原因就在于我们是直接在 while 循环中通过 read 函数读取按键值，因此 imx6uirqApp 这个软件会一直运行，一直读取按键值，CPU 使用率肯定就会很高。最好的方法就是在没有有效的按键事件发生的时候，imx6uirqApp 这个应用程序应该处于休眠状态，当有按键事件发生以后 imx6uirqApp 这个应用程序才运行，打印出按键值，这样就会降低 CPU 使用率，本小节我们就使用阻塞 IO 来实现此功能。</p>
 <h3 id="1-驱动程序编写"><a href="#1-驱动程序编写" class="headerlink" title="1|驱动程序编写"></a>1|驱动程序编写</h3><p>本章实验我们在上一章的“13_irq”实验的基础上完成，主要是对其添加阻塞访问相关的代码。新建名为“14_blockio”的文件夹，然后在 14_blockio 文件夹里面创建 vscode 工程，工作区命名为“blockio”。将“13_irq”实验中的 imx6uirq.c 复制到 14_blockio 文件夹中，并重命名为 blockio.c。</p>
 <p>接下来我们就修改 blockio.c 这个文件，在其中添加阻塞相关的代码，完成以后的blockio.c 内容如下所示：</p>
@@ -436,9 +436,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">./blockioApp /dev/blockio &amp;<br></code></pre></td></tr></table></figure>
 
 <p>按下开发板上的 KEY0 按键，结果如图 所示：</p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827121431518.png" srcset="/img/loading.gif" lazyload alt="image-20200827121431518"></p>
+<p><img src="/.top:888//image-20200827121431518.png" srcset="/img/loading.gif" lazyload alt="image-20200827121431518"></p>
 <p>输入“top”命令，查看 blockioAPP 这个应用 APP 的 CPU 使用率，如图  所示：</p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827121452839.png" srcset="/img/loading.gif" lazyload alt="image-20200827121452839"></p>
+<p><img src="/.top:888//image-20200827121452839.png" srcset="/img/loading.gif" lazyload alt="image-20200827121452839"></p>
 <p>可以看出，当我们在按键驱动程序里面加入阻塞访问以后，blockioApp 这个应用程序的 CPU 使用率从 99.6%降低到了 0.0%。大家注意，这里的 0.0%并不是说 blockioApp 这个应用程序不使用 CPU 了，只是因为使用率太小了，CPU 使用率可能为0.00001%，但是图只能显示出小数点后一位，因此就显示成了 0.0%。</p>
 <h2 id="三、非阻塞-IO-实验"><a href="#三、非阻塞-IO-实验" class="headerlink" title="三、非阻塞 IO 实验"></a>三、非阻塞 IO 实验</h2><h3 id="1-驱动程序编写-1"><a href="#1-驱动程序编写-1" class="headerlink" title="1|驱动程序编写"></a>1|驱动程序编写</h3><p>本实验我们在“14_blockio”实验的基础上完成，上一小节实验我们已经在驱动中添加了阻塞 IO 的代码，本小节我们继续完善驱动，加入非阻塞 IO 驱动代码。新建名为“15_noblockio”的文件夹，然后在 15_noblockio 文件夹里面创建 vscode 工程，工作区命名为“noblockio”。将“14_blockio”实验中的 blockio.c 复制到 15_noblockio 文件夹中，并重命名为 noblockio.c。</p>
 <p>接下来我们就修改 noblockio.c 这个文件，在其中添加非阻塞相关的代码，完成以后的 noblockio.c 内容如下所示：</p>
@@ -456,7 +456,7 @@
 <p>后面一段代码使用 select 函数来实现非阻塞访问。</p>
 <h3 id="3-运行测试-1"><a href="#3-运行测试-1" class="headerlink" title="3|运行测试"></a>3|运行测试</h3><p>编译运行。</p>
 <p>输入“top”命令，查看 noblockioAPP 这个应用 APP 的 CPU 使用率，如图 所示：</p>
-<p><img src="/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/image-20200827124533321.png" srcset="/img/loading.gif" lazyload alt="image-20200827124533321"></p>
+<p><img src="/.top:888//image-20200827124533321.png" srcset="/img/loading.gif" lazyload alt="image-20200827124533321"></p>
 <p>可以看出，采用非阻塞方式读处理以后，noblockioApp 的 CPU 占用率也低至0.0%，和中的 blockioApp 一样，这里的 0.0%并不是说 noblockioApp 这个应用程序不使用 CPU 了，只是因为使用率太小了，而图中只能显示出小数点后一位，因此就显示成了0.0%。</p>
 
             </div>
@@ -481,9 +481,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     

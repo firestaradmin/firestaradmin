@@ -354,7 +354,7 @@
 
 <p>上面的例子中，$(name)中的单词会被挨个取出，并存到变量“n”中，“$(n).o”每次<br>根据“$(n)”计算出一个值，这些值以空格分隔，最后作为 foreach 函数的返回，所以，<br>$(files)的值是“a.o b.o c.o d.o”。<br>注意，foreach 中的&lt;var&gt;参数是一个临时的局部变量，foreach 函数执行完后，参数<br>&lt;var&gt;的变量将不在作用，其作用域只在 foreach 函数当中。</p>
 <h3 id="静态模式规则"><a href="#静态模式规则" class="headerlink" title="静态模式规则"></a>静态模式规则</h3><p>静态模式可以更加容易地定义多目标的规则，可以让我们的规则变得更加的有弹性和灵活。我们还是先来看一下语法：</p>
-<p>&lt;targets …&gt;: <target-pattern>: &lt;prereq-patterns …&gt;<br>　　<commands><br>…</p>
+<p>&lt;targets …&gt;: <target-pattern>: &lt;prereq-patterns …&gt;<br>　　<commands><br>…</commands></target-pattern></p>
 <p>没看明白没有关系，看下面的例子：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs makefile">objects = foo.o bar.o<br>all : <span class="hljs-variable">$(objects)</span><br>    <span class="hljs-variable">$(objects)</span>: %.o: %.c<br>    <span class="hljs-variable">$(CC)</span> -c <span class="hljs-variable">$(CFLAGS)</span> <span class="hljs-variable">$&lt;</span> -o <span class="hljs-variable">$@</span><br></code></pre></td></tr></table></figure>
 

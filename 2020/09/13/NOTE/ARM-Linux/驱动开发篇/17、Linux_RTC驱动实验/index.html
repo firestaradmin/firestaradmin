@@ -23,20 +23,20 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux RTC驱动RTC 也就是实时时钟，用于记录当前系统时间，对于 Linux 系统而言时间是非常重要的，就和我们使用 Windows 电脑或手机查看时间一样，我们在使用 Linux 设备的时候也需要查看时间。本章我们就来学习一下如何编写 Linux 下的 RTC 驱动程序。 1| Linux  内核 RTC  驱动简介RTC 设备驱动是一个标准的字符设备驱动，应用程序通过 open、rel">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png">
-<meta property="og:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141549858.png">
-<meta property="og:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141816507.png">
-<meta property="og:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141914426.png">
-<meta property="og:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830142017580.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830121424825.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830141549858.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830141816507.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830141914426.png">
+<meta property="og:image" content="http://firestaradmin.top:888/.top:888//image-20200830142017580.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Embedded">
-<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ARM">
 <meta property="article:tag" content="驱动开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top:888/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png">
+<meta name="twitter:image" content="http://firestaradmin.top:888/.top:888//image-20200830121424825.png">
   
   
   <title>17| Linux RTC驱动 - Hexo</title>
@@ -267,7 +267,7 @@
 
 <p>从示例代码 中的 32 行可以看出，__rtc_read_time 函数会通过调用 rtc_class_ops 中的read_time 来从 RTC 设备中获取当前时间。rtc_dev_ioctl 函数对其他的命令处理都是类似的，比如 RTC_ALM_READ 命令会通过 rtc_read_alarm 函数获取到闹钟值，而 rtc_read_alarm 函数经过层层调用，最终会调用rtc_class_ops 中的 read_alarm 函数来获取闹钟值。</p>
 <p>至此，Linux 内核中 RTC 驱动调用流程就很清晰了，如图  所示：</p>
-<p><img src="/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png" srcset="/img/loading.gif" lazyload alt="image-20200830121424825"></p>
+<p><img src="/.top:888//image-20200830121424825.png" srcset="/img/loading.gif" lazyload alt="image-20200830121424825"></p>
 <hr>
 <p>当 rtc_class_ops 准备好以后需要将其<strong>注册到 Linux 内核</strong>中，这里我们可以使用rtc_device_register函数完成注册工作。此函数会申请一个rtc_device并且初始化这个rtc_device，最后向调用者返回这个rtc_device，此函数原型如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">struct</span> rtc_device *<span class="hljs-title function_">rtc_device_register</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name,</span><br><span class="hljs-params">                                       <span class="hljs-keyword">struct</span> device *dev,</span><br><span class="hljs-params">                                       <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> rtc_class_ops *ops,</span><br><span class="hljs-params">                                       <span class="hljs-keyword">struct</span> module *owner)</span><br></code></pre></td></tr></table></figure>
@@ -284,17 +284,17 @@
 <h2 id="2-I-MX6U-内部-RTC-驱动分析"><a href="#2-I-MX6U-内部-RTC-驱动分析" class="headerlink" title="2| I.MX6U  内部 RTC 驱动分析"></a>2| I.MX6U  内部 RTC 驱动分析</h2><p>先直接告诉大家，I.MX6U 的 RTC 驱动我们不用自己编写，因为 NXP 已经写好了。其实对于大多数的 SOC 来讲，内部 RTC 驱动都不需要我们去编写，半导体厂商会编写好。但是这不代表我们就偷懒了，虽然不用编写 RTC 驱动，但是我们得看一下这些原厂是怎么编写 RTC 驱动的。</p>
 <p><strong>具体参考正点原子IMX6UL驱动开发手册 60.2节</strong></p>
 <h2 id="3-RTC-时间查看与设置"><a href="#3-RTC-时间查看与设置" class="headerlink" title="3| RTC  时间查看与设置"></a>3| RTC  时间查看与设置</h2><h3 id="1-、时间-RTC-查看"><a href="#1-、时间-RTC-查看" class="headerlink" title="1 、时间 RTC 查看"></a>1 、时间 RTC 查看</h3><p>RTC 是用来计时的，因此最基本的就是查看时间，Linux 内核启动的时候可以看到系统时钟设置信息，如图所示：</p>
-<p><img src="/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141549858.png" srcset="/img/loading.gif" lazyload alt="image-20200830141549858"></p>
+<p><img src="/.top:888//image-20200830141549858.png" srcset="/img/loading.gif" lazyload alt="image-20200830141549858"></p>
 <p>从图中可以看出，Linux 内核在启动的时候将 snvs_rtc 设置为 rtc0，大家的启动信息可能会和图中的不同，但是内容基本上都是一样的。如果要查看时间的话输入“date”命令即可，结果如图所示：</p>
-<p><img src="/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141816507.png" srcset="/img/loading.gif" lazyload alt="image-20200830141816507"></p>
+<p><img src="/.top:888//image-20200830141816507.png" srcset="/img/loading.gif" lazyload alt="image-20200830141816507"></p>
 <p>从图可以看出，当前时间为 1970 年 1 月 1 日 00:01:19，很明显是时间不对，我们需要重新设置 RTC 时间。</p>
 <h3 id="2-、设置-RTC-时间"><a href="#2-、设置-RTC-时间" class="headerlink" title="2 、设置 RTC  时间"></a>2 、设置 RTC  时间</h3><p>RTC 时间设置也是使用的 date 命令，输入“date –help”命令即可查看 date 命令如何设置系统时间，结果如图所示：</p>
-<p><img src="/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141914426.png" srcset="/img/loading.gif" lazyload alt="image-20200830141914426"></p>
+<p><img src="/.top:888//image-20200830141914426.png" srcset="/img/loading.gif" lazyload alt="image-20200830141914426"></p>
 <p>现在我要设置当前时间为 2020年8月30日14:19:30，因此输入如下命令：</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-built_in">date</span> -s <span class="hljs-string">&quot;2020-08-30 14:20:00&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>设置完成以后再次使用 date 命令查看一下当前时间就会发现时间改过来了，如图 所示：</p>
-<p><img src="/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830142017580.png" srcset="/img/loading.gif" lazyload alt="image-20200830142017580"></p>
+<p><img src="/.top:888//image-20200830142017580.png" srcset="/img/loading.gif" lazyload alt="image-20200830142017580"></p>
 <p>大家注意我们使用“date -s”命令仅仅是将当前系统时间设置了，此时间还没有写入到I.MX6U 内部 RTC 里面或其他的 RTC 芯片里面，因此系统重启以后时间又会丢失。我们需要将当前的时间写入到 RTC 里面，这里要用到 hwclock 命令，输入如下命令将系统时间写入到 RTC里面：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">hwclock -w  //将当前系统时间写入到 RTC 里面<br></code></pre></td></tr></table></figure>
 
@@ -322,9 +322,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
-                    
                       <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
                     
                       <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
                     
