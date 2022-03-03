@@ -1,0 +1,936 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="PyQt notes1. PyQt5 QML 界面.pyfrom PyQt5.QtGui import QGuiApplication from PyQt5 import QtQml  if __name__ &#x3D;&#x3D; &amp;#x27;__main__&amp;#x27;:      path &#x3D; &amp;#x27;QtQuick&#x2F;test&#x2F;qml&#x2F;main.qml&amp;#x27;     app &#x3D; QGuiApplic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyQt Note">
+<meta property="og:url" content="http://firestaradmin.top/2021/12/23/NOTE/QT/PyQt/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="PyQt notes1. PyQt5 QML 界面.pyfrom PyQt5.QtGui import QGuiApplication from PyQt5 import QtQml  if __name__ &#x3D;&#x3D; &amp;#x27;__main__&amp;#x27;:      path &#x3D; &amp;#x27;QtQuick&#x2F;test&#x2F;qml&#x2F;main.qml&amp;#x27;     app &#x3D; QGuiApplic">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-01T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="QT">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>PyQt Note - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="PyQt Note">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-23 00:00" pubdate>
+        2021年12月23日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      67 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">PyQt Note</h1>
+            
+            <div class="markdown-body">
+              <h1 id="PyQt-notes"><a href="#PyQt-notes" class="headerlink" title="PyQt notes"></a>PyQt notes</h1><h2 id="1-PyQt5-QML-界面"><a href="#1-PyQt5-QML-界面" class="headerlink" title="1. PyQt5 QML 界面"></a>1. PyQt5 QML 界面</h2><h3 id="py"><a href="#py" class="headerlink" title=".py"></a>.py</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtGui <span class="hljs-keyword">import</span> QGuiApplication
+<span class="hljs-keyword">from</span> PyQt5 <span class="hljs-keyword">import</span> QtQml
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+
+    path = <span class="hljs-string">&#x27;QtQuick/test/qml/main.qml&#x27;</span>
+    app = QGuiApplication([])
+    engine = QtQml.QQmlApplicationEngine()
+    engine.load(path)
+    app.exec_()
+</code></pre></div>
+
+
+
+<h3 id="main-qml"><a href="#main-qml" class="headerlink" title="main.qml"></a>main.qml</h3><div class="hljs code-wrapper"><pre><code class="hljs dts">import QtQuick <span class="hljs-number">2.12</span>
+import QtQuick.Controls <span class="hljs-number">2.12</span>
+
+
+
+<span class="hljs-title class_">ApplicationWindow</span> <span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">    id:</span> test
+<span class="hljs-symbol">    visible:</span> true
+<span class="hljs-symbol">    width:</span> <span class="hljs-number">400</span><span class="hljs-punctuation">;</span> height: <span class="hljs-number">700</span>
+<span class="hljs-symbol">    color:</span> <span class="hljs-string">&quot;#ffffff&quot;</span>
+    <span class="hljs-title class_">Text</span> <span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">        text:</span> <span class="hljs-string">&quot;hello world!&quot;</span><span class="hljs-punctuation">;</span>
+    <span class="hljs-punctuation">&#125;</span>
+
+    
+
+    Button<span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">        id:</span> btn
+        property alias cellColor1: btnColorRect.color<span class="hljs-comment">//cunstom var/property</span>
+<span class="hljs-symbol"></span>
+<span class="hljs-symbol">        text:</span> <span class="hljs-string">&quot;你好hello&quot;</span><span class="hljs-punctuation">;</span>
+        font.family: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span><span class="hljs-punctuation">;</span> 
+        font.pointSize: <span class="hljs-number">13</span><span class="hljs-punctuation">;</span> 
+        <span class="hljs-comment">// background.color: &quot;#aacccc&quot;</span>
+<span class="hljs-symbol">        background:</span> <span class="hljs-title class_">Rectangle</span> <span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">            id:</span> btnColorRect
+            anchors.fill: parent
+<span class="hljs-symbol">            color:</span> <span class="hljs-string">&quot;#8000ff&quot;</span>
+
+        <span class="hljs-punctuation">&#125;</span>
+        anchors.centerIn: parent
+        MouseArea<span class="hljs-punctuation">&#123;</span>
+            anchors.fill: parent
+<span class="hljs-symbol">            hoverEnabled:</span> true
+<span class="hljs-symbol">            onEntered:</span><span class="hljs-punctuation">&#123;</span> 
+                btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;#0000ff&quot;</span>
+                <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-symbol">            onExited:</span> <span class="hljs-punctuation">&#123;</span>
+                btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;#8000ff&quot;</span>
+                <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-punctuation">&#125;</span>
+
+    <span class="hljs-punctuation">&#125;</span>
+
+    <span class="hljs-title class_">Grid</span> <span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">        id:</span> colorGrid
+        <span class="hljs-comment">// x: 4; </span>
+        anchors<span class="hljs-punctuation">&#123;</span>
+<span class="hljs-symbol">            horizontalCenter:</span> parent.horizontalCenter
+<span class="hljs-symbol">            bottom:</span> parent.bottom
+<span class="hljs-symbol">            bottomMargin:</span> <span class="hljs-number">4</span>
+        <span class="hljs-punctuation">&#125;</span>
+<span class="hljs-symbol">        rows:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">;</span> columns: <span class="hljs-number">3</span><span class="hljs-punctuation">;</span> spacing: <span class="hljs-number">3</span>
+
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;red&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;green&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;blue&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;yellow&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;steelblue&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+        <span class="hljs-title class_">MyColorPicLabel</span> <span class="hljs-punctuation">&#123;</span> cellColor: <span class="hljs-string">&quot;#ff0080&quot;</span><span class="hljs-punctuation">;</span> onClicked: btnColorRect.<span class="hljs-attr">color</span> <span class="hljs-operator">=</span> cellColor <span class="hljs-punctuation">&#125;</span>
+
+    <span class="hljs-punctuation">&#125;</span>
+    
+<span class="hljs-punctuation">&#125;</span></code></pre></div>
+
+
+
+
+
+<h3 id="MyColorPicLabel-qml"><a href="#MyColorPicLabel-qml" class="headerlink" title="MyColorPicLabel.qml"></a>MyColorPicLabel.qml</h3><div class="hljs code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
+
+
+Item &#123;
+    id: container
+    property <span class="hljs-built_in">alias</span> cellColor: <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">color</span>//cunstom <span class="hljs-built_in">var</span>/property
+    signal clicked(<span class="hljs-built_in">color</span> cellColor)//singal
+
+    <span class="hljs-built_in">width</span>: <span class="hljs-number">70</span>; <span class="hljs-built_in">height</span>: <span class="hljs-number">40</span>
+
+    Rectangle &#123;
+        id: <span class="hljs-built_in">rectangle</span>
+        <span class="hljs-built_in">border</span>.<span class="hljs-built_in">color</span>: <span class="hljs-string">&quot;#380071&quot;</span>
+        <span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span>: <span class="hljs-number">2</span>
+        anchors.fill: parent
+    &#125;
+
+    MouseArea &#123;
+        anchors.fill: parent
+        hoverEnabled: <span class="hljs-literal">true</span>
+        onClicked: container.clicked(container.cellColor)//触发信号
+        onEntered:&#123;
+            // console.<span class="hljs-built_in">log</span>(<span class="hljs-string">&quot;hello&quot;</span>);
+            <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span> = <span class="hljs-number">4</span>
+        &#125;
+        onExited:&#123;
+            // console.<span class="hljs-built_in">log</span>(<span class="hljs-string">&quot;no hello&quot;</span>);
+            <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span> = <span class="hljs-number">2</span>
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+
+
+<h2 id="2-QML-与-Python-Class-互通"><a href="#2-QML-与-Python-Class-互通" class="headerlink" title="2. QML 与 Python Class 互通"></a>2. QML 与 Python Class 互通</h2><h3 id="python-class-定义要点"><a href="#python-class-定义要点" class="headerlink" title="python class 定义要点"></a>python class 定义要点</h3><ul>
+<li>需要继承 QObject 类</li>
+<li><code>__init__()</code> 函数需要调用父类的 构造函数</li>
+<li>QML 里调用的函数必须是槽函数，用 @pyqtSlot(…) 修饰</li>
+</ul>
+<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyScreen</span>(<span class="hljs-title class_ inherited__">QObject</span>):
+    screens = QGuiApplication.screens()
+    screenCount = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:
+        <span class="hljs-built_in">super</span>().__init__()  <span class="hljs-comment"># 调用父类的__init__() 这样才能加载该类至 QML 里</span>
+        self.screens = QGuiApplication.screens()
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.screens:
+            self.screenCount += <span class="hljs-number">1</span>
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params"><span class="hljs-built_in">int</span>, result=QRect</span>)</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">getScreenSize</span>(<span class="hljs-params">self, <span class="hljs-built_in">id</span></span>):
+        <span class="hljs-string">&quot;&quot;&quot;[getScreenSize]</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">        Args:</span>
+<span class="hljs-string">            id ([int]): [id of screen]</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">        Returns:</span>
+<span class="hljs-string">            [QRect]: [screen&#x27;s size]</span>
+<span class="hljs-string">        &quot;&quot;&quot;</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">id</span> &gt;= self.screenCount <span class="hljs-keyword">or</span> <span class="hljs-built_in">id</span> &lt; <span class="hljs-number">0</span>):
+            <span class="hljs-keyword">return</span> QRect(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> self.screens[<span class="hljs-built_in">id</span>].geometry()
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params">result=<span class="hljs-built_in">str</span></span>) </span><span class="hljs-comment"># 使用pyqtSlot() 修饰该函数，这样 QML 里才能知道函数的参数与返回值</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;我是python槽函数传递的字符串&quot;</span>
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params"><span class="hljs-built_in">str</span></span>)</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">printlog</span>(<span class="hljs-params">self, <span class="hljs-built_in">str</span></span>):
+        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>)
+</code></pre></div>
+
+<h3 id="将python-class-加载进-QML"><a href="#将python-class-加载进-QML" class="headerlink" title="将python class 加载进 QML"></a>将python class 加载进 QML</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># create screen obejct</span>
+scr = MyScreen()
+<span class="hljs-comment"># 注册 Python 类至 QML 根节点</span>
+engine.rootContext().setContextProperty(<span class="hljs-string">&quot;scr&quot;</span>, scr)</code></pre></div>
+
+<p>这样QML 里可以使用 scr 对象了。</p>
+<h3 id="QML-信号定义和触发"><a href="#QML-信号定义和触发" class="headerlink" title="QML 信号定义和触发"></a>QML 信号定义和触发</h3><p>定义信号</p>
+<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-title">ApplicationWindow</span> &#123;
+    <span class="hljs-attribute">id:</span><span class="hljs-string"> mainWin</span>
+    <span class="hljs-comment">// signal</span>
+    <span class="hljs-keyword">signal</span><span class="hljs-string"> myLogSignal</span>(<span class="hljs-built_in">string</span> log)
+    ....
+&#125;</code></pre></div>
+
+<p>触发信号</p>
+<div class="hljs code-wrapper"><pre><code class="hljs scss"><span class="hljs-selector-tag">Button</span>&#123;
+    text: <span class="hljs-string">&quot;点我输出log&quot;</span>;
+    <span class="hljs-attribute">font</span><span class="hljs-selector-class">.family</span>: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span>; 
+    <span class="hljs-attribute">font</span><span class="hljs-selector-class">.pointSize</span>: <span class="hljs-number">13</span>; 
+    
+    anchors<span class="hljs-selector-class">.horizontalCenter</span>: parent.horizontalCenter
+    anchors.bottom: btn1.top 
+    anchors.bottomMargin: <span class="hljs-number">10</span>
+    MouseArea&#123;
+        anchors<span class="hljs-selector-class">.fill</span>: parent
+        onClicked:&#123;
+            mainWin<span class="hljs-selector-class">.myLogSignal</span>(&quot;我是QML 里信号发来的字符串&quot;)
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<h3 id="QML-信号绑定-Python-槽函数"><a href="#QML-信号绑定-Python-槽函数" class="headerlink" title="QML 信号绑定 Python 槽函数"></a>QML 信号绑定 Python 槽函数</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
+my_obj = engine.rootObjects()[<span class="hljs-number">0</span>]    <span class="hljs-comment"># 获取根节点</span>
+my_obj.myLogSignal.connect(scr.printlog)    <span class="hljs-comment"># 绑定信号和槽</span>
+</code></pre></div>
+
+<h3 id="Python-调用QML-函数"><a href="#Python-调用QML-函数" class="headerlink" title="Python 调用QML 函数"></a>Python 调用QML 函数</h3><p>定义函数</p>
+<div class="hljs code-wrapper"><pre><code class="hljs arcade">ApplicationWindow &#123;
+	...
+  	<span class="hljs-keyword">function</span> <span class="hljs-title function_">qmlLog</span>(<span class="hljs-params">str</span>)&#123;
+        <span class="hljs-built_in">console</span>.<span class="hljs-built_in">log</span>(str);
+    &#125;
+    ....
+&#125;
+</code></pre></div>
+
+<p>python 调用</p>
+<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
+my_obj = engine.rootObjects()[<span class="hljs-number">0</span>]    <span class="hljs-comment"># 获取根节点</span>
+<span class="hljs-comment"># 调用QML 函数</span>
+my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串&quot;</span>)</code></pre></div>
+
+
+
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>main.py</p>
+<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtCore <span class="hljs-keyword">import</span> QObject, QRect, pyqtSlot
+<span class="hljs-keyword">from</span> PyQt5 <span class="hljs-keyword">import</span> QtQml
+<span class="hljs-keyword">from</span> PyQt5.QtGui <span class="hljs-keyword">import</span> QGuiApplication
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyScreen</span>(<span class="hljs-title class_ inherited__">QObject</span>):
+    screens = QGuiApplication.screens()
+    screenCount = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-literal">None</span>:
+        <span class="hljs-built_in">super</span>().__init__()  <span class="hljs-comment"># 调用父类的__init__() 这样才能加载该类至 QML 里</span>
+        self.screens = QGuiApplication.screens()
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.screens:
+            self.screenCount += <span class="hljs-number">1</span>
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params"><span class="hljs-built_in">int</span>, result=QRect</span>)</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">getScreenSize</span>(<span class="hljs-params">self, <span class="hljs-built_in">id</span></span>):
+        <span class="hljs-string">&quot;&quot;&quot;[getScreenSize]</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">        Args:</span>
+<span class="hljs-string">            id ([int]): [id of screen]</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">        Returns:</span>
+<span class="hljs-string">            [QRect]: [screen&#x27;s size]</span>
+<span class="hljs-string">        &quot;&quot;&quot;</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">id</span> &gt;= self.screenCount <span class="hljs-keyword">or</span> <span class="hljs-built_in">id</span> &lt; <span class="hljs-number">0</span>):
+            <span class="hljs-keyword">return</span> QRect(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> self.screens[<span class="hljs-built_in">id</span>].geometry()
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params">result=<span class="hljs-built_in">str</span></span>) </span><span class="hljs-comment"># 使用pyqtSlot() 修饰该函数，这样 QML 里才能知道函数的参数与返回值</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;我是python槽函数传递的字符串&quot;</span>
+
+<span class="hljs-meta">    @pyqtSlot(<span class="hljs-params"><span class="hljs-built_in">str</span></span>)</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">printlog</span>(<span class="hljs-params">self, <span class="hljs-built_in">str</span></span>):
+        <span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>)
+
+
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    path = <span class="hljs-string">&#x27;QtQuick/grabImage/qml/main.qml&#x27;</span>
+    app = QGuiApplication([])
+    engine = QtQml.QQmlApplicationEngine()
+
+    <span class="hljs-comment"># create screen obejct</span>
+    scr = MyScreen()
+    <span class="hljs-comment"># 注册 Python 类至 QML 根节点</span>
+    engine.rootContext().setContextProperty(<span class="hljs-string">&quot;scr&quot;</span>, scr)
+
+    engine.load(path)
+
+    <span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
+    my_obj = engine.rootObjects()[<span class="hljs-number">0</span>]    <span class="hljs-comment"># 获取根节点</span>
+    my_obj.myLogSignal.connect(scr.printlog)    <span class="hljs-comment"># 绑定信号和槽</span>
+
+    <span class="hljs-comment"># 调用QML 函数</span>
+    my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串&quot;</span>)
+    
+    app.exec_()
+
+</code></pre></div>
+
+
+
+<p>main.qml</p>
+<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-keyword">import</span> QtQuick <span class="hljs-number">2.12</span>
+<span class="hljs-keyword">import</span> QtQuick.Controls <span class="hljs-number">2.12</span>
+
+
+
+<span class="hljs-title">ApplicationWindow</span> &#123;
+    <span class="hljs-attribute">id:</span><span class="hljs-string"> mainWin</span>
+    <span class="hljs-attribute">visible</span>: <span class="hljs-literal">true</span>
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">400</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">700</span>
+    <span class="hljs-attribute">color</span>: <span class="hljs-string">&quot;#ffffff&quot;</span>
+
+    <span class="hljs-comment">// signal</span>
+    <span class="hljs-keyword">signal</span><span class="hljs-string"> myLogSignal</span>(<span class="hljs-built_in">string</span> log)
+
+    <span class="hljs-title">Text</span> &#123;
+        <span class="hljs-attribute">text</span>: <span class="hljs-string">&quot;hello world!&quot;</span>;
+    &#125;
+
+    <span class="hljs-title">Button</span>&#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> btn</span>
+        <span class="hljs-keyword">property</span><span class="hljs-string"> alias cellColor1</span>: btnColorRect.color<span class="hljs-comment">//cunstom var/property</span>
+
+        <span class="hljs-attribute">text</span>: <span class="hljs-string">&quot;你好hello&quot;</span>;
+        <span class="hljs-attribute">font.family</span>: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span>; 
+        <span class="hljs-attribute">font.pointSize</span>: <span class="hljs-number">13</span>; 
+        <span class="hljs-comment">// background.color: &quot;#aacccc&quot;</span>
+        <span class="hljs-attribute">background</span>: <span class="hljs-title">Rectangle</span> &#123;
+            <span class="hljs-attribute">id:</span><span class="hljs-string"> btnColorRect</span>
+            <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+            <span class="hljs-attribute">color</span>: <span class="hljs-string">&quot;#8000ff&quot;</span>
+
+        &#125;
+        <span class="hljs-attribute">anchors.centerIn</span>: <span class="hljs-built_in">parent</span>
+        <span class="hljs-title">MouseArea</span>&#123;
+            <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+            <span class="hljs-attribute">hoverEnabled</span>: <span class="hljs-literal">true</span>
+            <span class="hljs-attribute">onEntered</span>:&#123; 
+                btnColorRect.color = <span class="hljs-string">&quot;#0000ff&quot;</span>
+                &#125;
+            <span class="hljs-attribute">onExited</span>: &#123;
+                btnColorRect.color = <span class="hljs-string">&quot;#8000ff&quot;</span>
+                &#125;
+            <span class="hljs-attribute">onPressed</span>: &#123;
+                btnColorRect.color = <span class="hljs-string">&quot;#800008&quot;</span>
+            &#125;
+            <span class="hljs-attribute">onClicked</span>:&#123;
+                <span class="hljs-comment">// grabWin.setFlags(Qt::FramelessWindowHint)</span>
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;hello world&quot;</span>);
+
+            &#125;
+        &#125;
+    &#125;
+
+
+    <span class="hljs-title">Button</span>&#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> btn1</span>
+        <span class="hljs-attribute">font.family</span>: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span>; 
+        <span class="hljs-attribute">font.pointSize</span>: <span class="hljs-number">13</span>; 
+        <span class="hljs-attribute">text</span>: <span class="hljs-string">&quot;点我输出屏幕2分辨率&quot;</span>;
+        <span class="hljs-keyword">property</span><span class="hljs-string"> rect sereen_size</span>: scr.getScreenSize(<span class="hljs-number">1</span>) <span class="hljs-comment">// get size of screen 2</span>
+
+        
+        <span class="hljs-attribute">anchors.horizontalCenter</span>: <span class="hljs-built_in">parent</span>.horizontalCenter
+        <span class="hljs-attribute">anchors.bottom</span>: btn.top 
+        <span class="hljs-attribute">anchors.bottomMargin</span>: <span class="hljs-number">10</span>
+        <span class="hljs-title">MouseArea</span>&#123;
+            <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+            <span class="hljs-attribute">onClicked</span>:&#123;
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;x =&quot;</span>, <span class="hljs-built_in">parent</span>.sereen_size.x)
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;y =&quot;</span>, <span class="hljs-built_in">parent</span>.sereen_size.y)
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;width =&quot;</span>, <span class="hljs-built_in">parent</span>.sereen_size.width)
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;height =&quot;</span>, <span class="hljs-built_in">parent</span>.sereen_size.height)
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-title">Button</span>&#123;
+        <span class="hljs-attribute">text</span>: <span class="hljs-string">&quot;点我输出log&quot;</span>;
+        <span class="hljs-attribute">font.family</span>: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span>; 
+        <span class="hljs-attribute">font.pointSize</span>: <span class="hljs-number">13</span>; 
+        
+        <span class="hljs-attribute">anchors.horizontalCenter</span>: <span class="hljs-built_in">parent</span>.horizontalCenter
+        <span class="hljs-attribute">anchors.bottom</span>: btn1.top 
+        <span class="hljs-attribute">anchors.bottomMargin</span>: <span class="hljs-number">10</span>
+        <span class="hljs-title">MouseArea</span>&#123;
+            <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+            <span class="hljs-attribute">onClicked</span>:&#123;
+                mainWin.myLogSignal(<span class="hljs-string">&quot;我是QML 里信号发来的字符串&quot;</span>)
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-title">Grid</span> &#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> colorGrid</span>
+        <span class="hljs-comment">// x: 4; </span>
+        <span class="hljs-title">anchors</span>&#123;
+            <span class="hljs-attribute">horizontalCenter</span>: <span class="hljs-built_in">parent</span>.horizontalCenter
+            <span class="hljs-attribute">bottom</span>: <span class="hljs-built_in">parent</span>.bottom
+            <span class="hljs-attribute">bottomMargin</span>: <span class="hljs-number">4</span>
+        &#125;
+        <span class="hljs-attribute">rows</span>: <span class="hljs-number">2</span>; <span class="hljs-attribute">columns</span>: <span class="hljs-number">3</span>; <span class="hljs-attribute">spacing</span>: <span class="hljs-number">3</span>
+
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;red&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;green&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;blue&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;yellow&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;steelblue&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+        <span class="hljs-title">MyColorPicLabel</span> &#123; <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;#ff0080&quot;</span>; <span class="hljs-attribute">onClicked</span>: btnColorRect.color = cellColor &#125;
+
+    &#125;
+
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">qmlLog</span>(<span class="hljs-params">str</span>)</span>&#123;
+        <span class="hljs-built_in">console</span>.log(str);
+    &#125;
+    
+&#125;</code></pre></div>
+
+
+
+<p>MycolorPicLabel.qml</p>
+<div class="hljs code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
+
+
+Item &#123;
+    id: container
+    property <span class="hljs-built_in">alias</span> cellColor: <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">color</span>//cunstom <span class="hljs-built_in">var</span>/property
+    signal clicked(<span class="hljs-built_in">color</span> cellColor)//singal
+
+    <span class="hljs-built_in">width</span>: <span class="hljs-number">70</span>; <span class="hljs-built_in">height</span>: <span class="hljs-number">40</span>
+
+    Rectangle &#123;
+        id: <span class="hljs-built_in">rectangle</span>
+        <span class="hljs-built_in">border</span>.<span class="hljs-built_in">color</span>: <span class="hljs-string">&quot;#380071&quot;</span>
+        <span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span>: <span class="hljs-number">2</span>
+        anchors.fill: parent
+    &#125;
+
+    MouseArea &#123;
+        anchors.fill: parent
+        hoverEnabled: <span class="hljs-literal">true</span>
+        onClicked: container.clicked(container.cellColor)//触发信号
+        onEntered:&#123;
+            // console.<span class="hljs-built_in">log</span>(<span class="hljs-string">&quot;hello&quot;</span>);
+            <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span> = <span class="hljs-number">4</span>
+        &#125;
+        onExited:&#123;
+            // console.<span class="hljs-built_in">log</span>(<span class="hljs-string">&quot;no hello&quot;</span>);
+            <span class="hljs-built_in">rectangle</span>.<span class="hljs-built_in">border</span>.<span class="hljs-built_in">width</span> = <span class="hljs-number">2</span>
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/QT/">QT</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
+                    
+                      <a class="hover-with-bg" href="/tags/QT/">QT</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/07/NOTE/Linux/Ubuntu%E5%B8%B8%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Ubuntu 常用</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/22/NOTE/Note/License%20manual/">
+                        <span class="hidden-mobile">Common License Manual</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

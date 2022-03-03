@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7| Linux按键输入驱动实验">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823175735837.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823184134402.png">
+<meta property="article:published_time" content="2020-09-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-10T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823175735837.png">
+  
+  
+  <title>7| Linux按键输入驱动实验 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="7| Linux按键输入驱动实验">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-11 00:00" pubdate>
+        2020年9月11日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      55 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">7| Linux按键输入驱动实验</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Linux按键输入驱动实验"><a href="#Linux按键输入驱动实验" class="headerlink" title="Linux按键输入驱动实验"></a>Linux按键输入驱动实验</h1><h2 id="1-设备树修改"><a href="#1-设备树修改" class="headerlink" title="1|设备树修改"></a>1|设备树修改</h2><p>I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">pinctrl_key: keygrp &#123;
+    fsl,pins = &lt;
+        MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 <span class="hljs-number">0xF080</span>
+    &gt;;
+&#125;;</code></pre></div>
+
+<p>在根节点“&#x2F;”下创建 KEY 节点，节点名为“key”，节点内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">key &#123;
+    <span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
+    <span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
+    compatible = <span class="hljs-string">&quot;atkalpha-key&quot;</span>;
+    pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
+    pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_key&gt;;
+    key-gpios = &lt;&amp;gpio1 <span class="hljs-number">18</span> GPIO_ACTIVE_LOW&gt;;
+    status = <span class="hljs-string">&quot;okay&quot;</span>;
+&#125;;</code></pre></div>
+
+
+
+<p>然后检查 PIN  是否被其他外设使用</p>
+<p>设备树编写完成以后使用“make dtbs”命令重新编译设备树，然后使用新编译出来的imx6ull-lxg-emmc.dtb 文件启动 Linux 系统。</p>
+<p>启动成功以后进入“&#x2F;proc&#x2F;device-tree”目录中查看“key”节点是否存在，如果存在的话就说明设备树基本修改成功(具体还要驱动验证)，结果如图 所示：</p>
+<p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823175735837.png" srcset="/img/loading.gif" lazyload alt="image-20200823175735837"></p>
+<h2 id="2-按键驱动程序编写"><a href="#2-按键驱动程序编写" class="headerlink" title="2|按键驱动程序编写"></a>2|按键驱动程序编写</h2><p>设备树准备好以后就可以编写驱动程序了，新建名为“11_key”的文件夹，然后在 11_key文件夹里面创建 vscode 工程，工作区命名为“key”。工程创建好以后新建 key.c 文件，在 key.c里面输入如下内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/cdev.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/device.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_address.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/slab.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/gpio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span>
+
+<span class="hljs-comment">/* 定义按键值 */</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY0VALUE 0XF0 <span class="hljs-comment">/* 按键值 */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> INVAKEY 0X00 <span class="hljs-comment">/* 无效的按键值 */</span></span>
+
+
+<span class="hljs-comment">/* 设备号个数 */</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> KEYDEV_DEV_NUM 1</span>
+
+<span class="hljs-comment">/* keydev设备结构体 */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">key_dev</span> &#123;</span>	
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span>
+	<span class="hljs-type">dev_t</span> devid;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span>
+	<span class="hljs-type">int</span> major;
+	<span class="hljs-type">int</span> minor;
+	<span class="hljs-type">char</span> *devname;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_node</span> *<span class="hljs-title">nd</span>;</span>	<span class="hljs-comment">//设备树节点</span>
+	<span class="hljs-type">int</span> key_gpio;			<span class="hljs-comment">//led所使用的GPIO编号</span>
+	<span class="hljs-type">atomic_t</span> keyvalue; 		<span class="hljs-comment">/* 按键值 */</span>
+&#125;;
+
+<span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">key_dev</span> <span class="hljs-title">keydev</span>;</span>
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">keyio_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	keydev.nd = of_find_node_by_path(<span class="hljs-string">&quot;/key&quot;</span>);
+	<span class="hljs-keyword">if</span>(keydev.nd == <span class="hljs-literal">NULL</span>)&#123;
+		<span class="hljs-keyword">return</span> -EINVAL;
+	&#125;
+
+	keydev.key_gpio = of_get_named_gpio(keydev.nd,<span class="hljs-string">&quot;key-gpios&quot;</span>, <span class="hljs-number">0</span>);
+	<span class="hljs-keyword">if</span>(keydev.key_gpio &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;kernel:can&#x27;t get key\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> -EINVAL;
+	&#125;
+	printk(<span class="hljs-string">&quot;kernel:key_gpio=%d\r\n&quot;</span>, keydev.key_gpio);
+
+	<span class="hljs-comment">/* 初始化 key 所使用的 IO */</span>
+	gpio_request(keydev.key_gpio, <span class="hljs-string">&quot;key0&quot;</span>); <span class="hljs-comment">/* 请求 IO */</span>
+	gpio_direction_input(keydev.key_gpio); <span class="hljs-comment">/* 设置为输入 */</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">key_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+&#123;
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+	filp-&gt;private_data = &amp;keydev; <span class="hljs-comment">/* 设置私有数据 */</span>
+
+	ret = keyio_init();
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		<span class="hljs-keyword">return</span> ret;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">key_read</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">char</span> __user *buf, <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span>
+&#123;
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">key_dev</span> *<span class="hljs-title">dev</span> =</span> filp-&gt;private_data;
+	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> keyvalue;
+
+	<span class="hljs-keyword">if</span> (gpio_get_value(dev-&gt;key_gpio) == <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">/* key0 按下 */</span>
+		<span class="hljs-keyword">while</span>(!gpio_get_value(dev-&gt;key_gpio)); <span class="hljs-comment">/* 等待按键释放 */</span>
+		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;keyvalue, KEY0VALUE);
+	&#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">/* 无效的按键值 */</span>
+		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;keyvalue, INVAKEY);
+	&#125;
+
+	keyvalue = <span class="hljs-type">atomic_read</span>(&amp;dev-&gt;keyvalue); <span class="hljs-comment">/* 保存按键值 */</span>
+	ret = copy_to_user(buf, &amp;keyvalue, <span class="hljs-keyword">sizeof</span>(keyvalue));
+	<span class="hljs-keyword">return</span> ret;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">key_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">const</span> <span class="hljs-type">char</span> __user *buf, <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span>
+&#123;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">key_release</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+&#123;
+	
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+
+
+
+
+
+
+<span class="hljs-comment">/* 设备操作集合 */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">key_fops</span> =</span> &#123;
+	.owner = THIS_MODULE,
+	.write = key_write,
+	.read = key_read,
+	.open = key_open,
+	.release = key_release
+
+&#125;;
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">mykey_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+	<span class="hljs-type">int</span> result = <span class="hljs-number">0</span>;
+
+
+	<span class="hljs-comment">/* 初始化原子变量 */</span>
+	<span class="hljs-type">atomic_set</span>(&amp;keydev.keyvalue, INVAKEY);
+
+	<span class="hljs-comment">/* 注册设备号 */</span>
+	keydev.devname = <span class="hljs-string">&quot;key&quot;</span>;
+	keydev.major = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span>(keydev.major)&#123;
+		keydev.devid = MKDEV(keydev.major, keydev.minor);
+		ret = register_chrdev_region(keydev.devid, KEYDEV_DEV_NUM, keydev.devname);
+	&#125;
+	<span class="hljs-keyword">else</span>&#123;
+		ret = alloc_chrdev_region(&amp;keydev.devid, <span class="hljs-number">0</span>, KEYDEV_DEV_NUM, keydev.devname);
+	&#125;
+	keydev.major = MAJOR(keydev.devid);
+	keydev.minor = MINOR(keydev.devid);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;register devid failed!\r\n&quot;</span>);
+		result = -EINVAL;
+		<span class="hljs-keyword">goto</span> fail_register_devid;
+	&#125;
+	printk(<span class="hljs-string">&quot;keydev  MAJOR:%d  MINOR:%d\r\n&quot;</span>, keydev.major, keydev.minor);
+
+	<span class="hljs-comment">/* 添加字符设备 */</span>
+	keydev.cdev.owner = key_fops.owner;
+	cdev_init(&amp;keydev.cdev, &amp;key_fops);
+	ret = cdev_add(&amp;keydev.cdev, keydev.devid, KEYDEV_DEV_NUM);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;register chrdev failed!\r\n&quot;</span>);
+		result = -EINVAL;
+		<span class="hljs-keyword">goto</span> fail_register_cdev;
+	&#125;
+	<span class="hljs-comment">/* 创建设备节点 */</span>
+	<span class="hljs-comment">/* 	1.创建类 */</span>
+	keydev.class = class_create(THIS_MODULE, keydev.devname);
+	<span class="hljs-keyword">if</span>(IS_ERR(keydev.class))&#123;
+		printk(<span class="hljs-string">&quot;fail to create class!\r\n&quot;</span>);
+		result = PTR_ERR(keydev.class);
+		<span class="hljs-keyword">goto</span> fail_class;
+	&#125;
+	<span class="hljs-comment">/*	2.创建设备*/</span>
+	keydev.device = device_create(keydev.class, <span class="hljs-literal">NULL</span>, keydev.devid, <span class="hljs-literal">NULL</span>, keydev.devname);
+	<span class="hljs-keyword">if</span>(IS_ERR(keydev.device))&#123;
+		printk(<span class="hljs-string">&quot;fail to create device!\r\n&quot;</span>);
+		result = PTR_ERR(keydev.device);
+		<span class="hljs-keyword">goto</span> fail_device;
+	&#125;
+	
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+
+fail_device:
+	<span class="hljs-comment">/* 摧毁类 */</span>
+	class_destroy(keydev.class);
+fail_class:
+	<span class="hljs-comment">/* 注销字符设备 */</span>
+	cdev_del(&amp;keydev.cdev);
+fail_register_cdev:
+	<span class="hljs-comment">/* 注销设备号 */</span>
+	unregister_chrdev_region(keydev.devid, KEYDEV_DEV_NUM);
+fail_register_devid:
+	<span class="hljs-keyword">return</span> result;
+&#125;
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">mykey_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+
+	<span class="hljs-comment">/* 摧毁设备 */</span>
+	device_destroy(keydev.class, keydev.devid);
+	<span class="hljs-comment">/* 摧毁类 */</span>
+	class_destroy(keydev.class);
+	<span class="hljs-comment">/* 注销字符设备 */</span>
+	cdev_del(&amp;keydev.cdev);
+	<span class="hljs-comment">/* 注销设备号 */</span>
+	unregister_chrdev_region(keydev.devid, KEYDEV_DEV_NUM);
+
+&#125;
+
+<span class="hljs-comment">/* 驱动入口和出口 */</span>
+module_init(mykey_init);
+module_exit(mykey_exit);
+
+<span class="hljs-comment">/* 许可 */</span>
+MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);
+<span class="hljs-comment">/* 作者信息 */</span>
+MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</code></pre></div>
+
+<p>结构体 key_dev 为按键的设备结构体，原子变量 keyvalue 用于记录按键值。</p>
+<p>函数 keyio_init 用于初始化按键，从设备树中获取按键的 gpio 信息，然后设置为输入。将按键的初始化代码提取出来，将其作为独立的一个函数有利于提高程序的模块化设计。</p>
+<p>key_open 函数通过调用 keyio_init 函数来始化按键所使用的 IO，应用程序每次打开按键驱动文件的时候都会初始化一次按键 IO。</p>
+<p>key_read 函数，应用程序通过 read 函数读取按键值的时候此函数就会执行。读取按键 IO 的电平，如果为 0 的话就表示按键按下了，如果按键按下的话就等待按键释放。按键释放以后标记按键值</p>
+<p>驱动入口函数，调用 atomic_set 函数初始化原子变量默认为无效值。</p>
+<p>key.c 文件代码很简单，重点就是 key_read 函数读取按键值，要对 keyvalue 进行保护。</p>
+<h2 id="3-测试APP编写"><a href="#3-测试APP编写" class="headerlink" title="3|测试APP编写"></a>3|测试APP编写</h2><p>新建名为 keyApp.c 的文件，然后输入如下所示内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY0VALUE 0XF0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> INVAKEY 0X00</span>
+
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">* @description : main 主程序</span>
+<span class="hljs-comment">* @param - argc : argv 数组元素个数</span>
+<span class="hljs-comment">* @param - argv : 具体参数</span>
+<span class="hljs-comment">* @return : 0 成功;其他 失败</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span>
+&#123;
+    <span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>, fd = <span class="hljs-number">0</span>;
+    <span class="hljs-type">char</span> *filename;
+    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> keyvalue;
+    
+
+    <span class="hljs-keyword">if</span>(argc != <span class="hljs-number">2</span>)
+    &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;bad usage!\r\n&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;usage:\r\n./keyApp     &lt;openFileName&gt;  \r\n&quot;</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    filename = argv[<span class="hljs-number">1</span>];
+    <span class="hljs-comment">/* 打开 key 驱动 */</span>
+    fd =  open(filename, O_RDWR);
+    <span class="hljs-keyword">if</span>(fd &lt; <span class="hljs-number">0</span>)&#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;can&#x27;t open file %s\r\n&quot;</span>, filename);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-comment">/* 循环读取按键值数据！ */</span>
+    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;
+        read(fd, &amp;keyvalue, <span class="hljs-keyword">sizeof</span>(keyvalue));
+        <span class="hljs-keyword">if</span>(keyvalue == KEY0VALUE)&#123;  <span class="hljs-comment">/* KEY0 */</span>
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;KEY0 Press, value = %#X\r\n&quot;</span>, keyvalue);    <span class="hljs-comment">/* 按下 */</span>
+        &#125;
+    &#125;
+
+
+    <span class="hljs-comment">/* 关闭 */</span>
+    ret = close(fd);
+    <span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;close file %s failed！\r\n&quot;</span>, filename);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<p>循环读取&#x2F;dev&#x2F;key 文件，也就是循环读取按键值，并且将按键值打印出来。</p>
+<h2 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4|运行测试"></a>4|运行测试</h2><p>编译，加载，运行。</p>
+<p>驱动加载成功以后如下命令来测试：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/keyApp /</span>dev/key</code></pre></div>
+
+<p>输入上述命令以后,按下开发板的KEY0按键， 终端显示如图 49.4.2.1 所示：</p>
+<p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823184134402.png" srcset="/img/loading.gif" lazyload alt="image-20200823184134402"></p>
+<p>当我们按下 KEY0 以后就会打印出“KEY0 Press, value &#x3D; 0XF0”，表示按键按下。</p>
+<p>但是大家可能会发现，有时候按下一次 KEY0 但是会输出好几行“KEY0 Press,value &#x3D; 0XF0”，这是因为我们的代码没有做按键消抖处理。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">5| pinctrl 和 gpio 子系统实验</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/">
+                        <span class="hidden-mobile">6| Linux 并发与竞争</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、FTP(File Transfer Protocol)开启 linux下的 FTP 服务sudo apt-get install vsftpd sudo vi &#x2F;etc&#x2F;vsftpd.conf  打开 vsftpd.conf 文件以后找到如下两行： local_enable&#x3D;YES write_enable&#x3D;YES  确保上面两行前面没有“#”，有的话就取消掉 保存退出后，重启服务 sudo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1| 开发环境搭建">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="一、FTP(File Transfer Protocol)开启 linux下的 FTP 服务sudo apt-get install vsftpd sudo vi &#x2F;etc&#x2F;vsftpd.conf  打开 vsftpd.conf 文件以后找到如下两行： local_enable&#x3D;YES write_enable&#x3D;YES  确保上面两行前面没有“#”，有的话就取消掉 保存退出后，重启服务 sudo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20200820013608568.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/2222.png">
+<meta property="article:published_time" content="2020-08-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-31T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20200820013608568.png">
+  
+  
+  <title>1| 开发环境搭建 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="1| 开发环境搭建">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-01 00:00" pubdate>
+        2020年9月1日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1| 开发环境搭建</h1>
+            
+            <div class="markdown-body">
+              <h1 id="一、FTP-File-Transfer-Protocol"><a href="#一、FTP-File-Transfer-Protocol" class="headerlink" title="一、FTP(File Transfer Protocol)"></a>一、FTP(File Transfer Protocol)</h1><h2 id="开启-linux下的-FTP-服务"><a href="#开启-linux下的-FTP-服务" class="headerlink" title="开启 linux下的 FTP 服务"></a>开启 linux下的 FTP 服务</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install vsftpd
+sudo vi /etc/vsftpd.conf</code></pre></div>
+
+<p>打开 vsftpd.conf 文件以后找到如下两行：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">local_enable</span>=<span class="hljs-literal">YES</span>
+<span class="hljs-attr">write_enable</span>=<span class="hljs-literal">YES</span></code></pre></div>
+
+<p>确保上面两行前面没有“#”，有的话就取消掉</p>
+<p>保存退出后，重启服务</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/vsftpd restart</code></pre></div>
+
+
+
+<h2 id="windows-下连接FTP"><a href="#windows-下连接FTP" class="headerlink" title="windows 下连接FTP:"></a>windows 下连接FTP:</h2><p>​    FTP软件中填写对应终端的IP 输入用户名和密码即可</p>
+<h1 id="二、NFS-Network-File-System"><a href="#二、NFS-Network-File-System" class="headerlink" title="二、NFS(Network File System)"></a>二、NFS(Network File System)</h1><h2 id="NFS-服务端"><a href="#NFS-服务端" class="headerlink" title="NFS 服务端"></a>NFS 服务端</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
+
+<p>安装完成后创建一个nfs文件夹，以后需要通过网络用的文件都放这里.<code>xxxx/nfs</code></p>
+<p>之后配置文件&#x2F;etc&#x2F;exports：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo vi /etc/exports</code></pre></div>
+
+<p>在文件末尾添加如下所示内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">xxxx/nfs *(rw,<span class="hljs-built_in">sync</span>,no_root_squash)</code></pre></div>
+
+<p>重启 NFS 服务</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
+
+<h2 id="NFS客户端"><a href="#NFS客户端" class="headerlink" title="NFS客户端"></a>NFS客户端</h2><p>安装客户端应用：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">apt-get install -y nfs-common</code></pre></div>
+
+<p>用mkdir命令创建一个文件夹xxx&#x2F;nfs-mount。</p>
+<p>将NFS服务器的xxx&#x2F;nfs 目录挂载到NFS客户端的xxx&#x2F;nfs-mount 目录，执行以下命令：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs shell">mount 192.168.119.128:xxx/nfs  xxx/nfs-mount</code></pre></div>
+
+
+
+<h2 id="连接失败情况解决："><a href="#连接失败情况解决：" class="headerlink" title="连接失败情况解决："></a>连接失败情况解决：</h2><p>如果出现以下情况</p>
+<p><img src="/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20200820013608568.png" srcset="/img/loading.gif" lazyload alt="image-20200820013608568"></p>
+<p>ARM-Linux NFS挂载不上，是由于高版本的NFS服务，默认不支持nfs v2的连接，而uboot中nfs服务是 V2版本的，所以需要修改<code>/etc/default/nfs-kernel-server </code>文件以支持v2 nfs。</p>
+<p>修改完内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># Number of servers to start up</span>
+<span class="hljs-comment">#RPCNFSDCOUNT=8</span>
+RPCNFSDCOUNT=<span class="hljs-string">&#x27;-V 2 8&#x27;</span>
+
+<span class="hljs-comment"># Runtime priority of server (see nice(1))</span>
+RPCNFSDPRIORITY=0
+
+<span class="hljs-comment"># Options for rpc.mountd.</span>
+<span class="hljs-comment"># If you have a port-based firewall, you might want to set up</span>
+<span class="hljs-comment"># a fixed port here using the --port option. For more information, </span>
+<span class="hljs-comment"># see rpc.mountd(8) or http://wiki.debian.org/SecuringNFS</span>
+<span class="hljs-comment"># To disable NFSv4 on the server, specify &#x27;--no-nfs-version 4&#x27; here</span>
+<span class="hljs-comment">#RPCMOUNTDOPTS=&quot;--manage-gids&quot;</span>
+RPCMOUNTDOPTS=<span class="hljs-string">&quot;-V 2 --manage-gids&quot;</span>
+
+<span class="hljs-comment"># Do you want to start the svcgssd daemon? It is only required for Kerberos</span>
+<span class="hljs-comment"># exports. Valid alternatives are &quot;yes&quot; and &quot;no&quot;; the default is &quot;no&quot;.</span>
+NEED_SVCGSSD=<span class="hljs-string">&quot;&quot;</span>
+
+<span class="hljs-comment"># Options for rpc.svcgssd.</span>
+RPCSVCGSSDOPTS=<span class="hljs-string">&quot;--nfs-version 2,3,4 --debug --syslog&quot;</span>
+</code></pre></div>
+
+
+
+
+
+
+
+<h1 id="三、SSH安全外壳协议-Secure-Shell"><a href="#三、SSH安全外壳协议-Secure-Shell" class="headerlink" title="三、SSH安全外壳协议 (Secure Shell)"></a>三、SSH安全外壳协议 (Secure Shell)</h1><h2 id="SSH-服务开启"><a href="#SSH-服务开启" class="headerlink" title="SSH 服务开启"></a>SSH 服务开启</h2><p>安装 ssh 服务</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install openssh-server</code></pre></div>
+
+<p>ssh 的配置文件为&#x2F;etc&#x2F;ssh&#x2F;sshd_config，使用默认配置即可</p>
+<h1 id="四、交叉编译工具链"><a href="#四、交叉编译工具链" class="headerlink" title="四、交叉编译工具链"></a>四、交叉编译工具链</h1><p>编译 ARM 架构的代码，我们需要一个在 X86 架构的 PC 上运行，可以编译 ARM 架构代码的 GCC 编译器，这个编译器就叫做交叉编译器.</p>
+<h2 id="Linaro-GCC-编译工具链-编译器-安装"><a href="#Linaro-GCC-编译工具链-编译器-安装" class="headerlink" title="Linaro GCC 编译工具链(编译器)安装"></a>Linaro GCC 编译工具链(编译器)安装</h2><p>下载地址：</p>
+<p><a target="_blank" rel="noopener" href="https://releases.linaro.org/components/toolchain/binaries/latest-7/arm-linux-gnueabihf/">https://releases.linaro.org/components/toolchain/binaries/latest-7/arm-linux-gnueabihf/</a></p>
+<p><img src="/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/2222.png" srcset="/img/loading.gif" lazyload alt="2222"></p>
+<p>有很多种 GCC 交叉编译工具链，因为我们所使用的 I.MX6U-ALPHA 开发板是一个 Cortex-A7 内核的开发板，因此选择 arm-linux-gnueabihf，点击后面的“Binaries”进入可执行文件下载</p>
+<p>创建目录：&#x2F;usr&#x2F;local&#x2F;arm：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo <span class="hljs-built_in">mkdir</span> /usr/local/arm</code></pre></div>
+
+<p>将下载的文件放至该目录进行解压</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo tar -vxf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz</code></pre></div>
+
+<p>解压完成以后会生成一个名为“gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf”的文件夹，这个文件夹里面就是我们的交叉编译工具链.</p>
+<p>修改环境变量，使用 VI 打开&#x2F;etc&#x2F;profile 文件，命令如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo vi /etc/profile</code></pre></div>
+
+<p>打开&#x2F;etc&#x2F;profile 以后，在最后面输入如下所示内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs elixir">export PATH=<span class="hljs-variable">$PATH</span><span class="hljs-symbol">:/usr/local/arm/gcc-linaro-</span><span class="hljs-number">4.9</span>.<span class="hljs-number">4</span><span class="hljs-number">-2017.01</span>-x86_64_arm-linux-gnueabihf/bin</code></pre></div>
+
+<p>重启 Ubuntu 系统，交叉编译工具链(编译器)就安装成功了</p>
+<p>查看版本号</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">arm-linux-gnueabihf-gcc -v</code></pre></div>
+
+<p>如果交叉编译器安装正确的话就会显示版本号</p>
+<h1 id="五、TFTP服务"><a href="#五、TFTP服务" class="headerlink" title="五、TFTP服务"></a>五、TFTP服务</h1><p>tftp 命令的作用和 nfs 命令一样，都是用于通过网络下载东西到 DRAM 中，只是 tftp 命令使用的 TFTP 协议，Ubuntu 主机作为 TFTP 服务器。因此需要在 Ubuntu 上搭建 TFTP 服务器，需要安装 tftp-hpa 和 tftpd-hpa，命令如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install tftp-hpa tftpd-hpa
+sudo apt-get install xinetd</code></pre></div>
+
+<p>和 NFS 一样，TFTP 也需要一个文件夹来存放文件，在用户目录下新建一个目录，命令如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /home/firestaradmin/linux/tftpboot
+<span class="hljs-built_in">chmod</span> 777 /home/firestaradmin/linux/tftpboot</code></pre></div>
+
+<p>这 样 我 就 在 我 的 电 脑 上 创 建 了 一 个 名 为 tftpboot 的目录 ( 文 件 夹 )，路径为**&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;tftpboot**</p>
+<p>注意！我们要给 tftpboot 文件夹权限，否则的话 uboot 不能从tftpboot 文件夹里面下载文件。最后配置 tftp，安装完成以后新建文件&#x2F;etc&#x2F;xinetd.d&#x2F;tftp，如果没有&#x2F;etc&#x2F;xinetd.d 目录的话自行创建，然后在里面输入如下内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">server tftp
+&#123;
+    socket_type = dgram
+    protocol = udp
+    wait = yes
+    user = root
+    server = /usr/sbin/in.tftpd
+    server_args = -s /home/firestaradmin/linux/tftpboot/
+    disable = no
+    per_source = <span class="hljs-number">11</span>
+    cps = <span class="hljs-number">100</span> <span class="hljs-number">2</span>
+    flags = IPv4
+&#125;</code></pre></div>
+
+<p> 完了以后启动 tftp 服务<code>sudo service tftpd-hpa start</code></p>
+<p>之后打开**&#x2F;etc&#x2F;default&#x2F;tftpd-hpa** 文件，将其修改为如下所示内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-comment"># /etc/default/tftpd-hpa</span>
+
+<span class="hljs-attr">TFTP_USERNAME</span>=<span class="hljs-string">&quot;tftp&quot;</span>
+<span class="hljs-attr">TFTP_DIRECTORY</span>=<span class="hljs-string">&quot;/home/firestaradmin/linux/tftpboot&quot;</span>
+<span class="hljs-attr">TFTP_ADDRESS</span>=<span class="hljs-string">&quot;:69&quot;</span>
+<span class="hljs-attr">TFTP_OPTIONS</span>=<span class="hljs-string">&quot;-l -c -s&quot;</span></code></pre></div>
+
+<p>TFTP_DIRECTORY 就是我们上面创建的 tftp 文件夹目录，以后我们就将所有需要通过TFTP 传输的文件都放到这个文件夹里面，并且要给予这些文件相应的权限。</p>
+<p>最后输入如下命令， 重启 tftp 服务器：<br><code>sudo service tftpd-hpa restart</code></p>
+<p>tftp 服务器已经搭建好了，接下来就是使用了。将 zImage 镜像文件拷贝到 tftpboot 文件夹中，并且给予 zImage 相应的权限，命令如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> zImage /home/firestaradmin/linux/tftpboot/
+<span class="hljs-built_in">cd</span> /home/firestaradmin/linux/tftpboot/
+<span class="hljs-built_in">chmod</span> 777 zImage</code></pre></div>
+
+<p>万事俱备，只剩验证了，uboot 中的 tftp 命令格式如下：<br><code>tftpboot [loadAddress] [[hostIPaddr:]bootfilename]</code></p>
+<p>看起来和 nfs 命令格式一样的，loadAddress 是文件在 DRAM 中的存放地址，**[[hostIPaddr:]bootfilename]**是要从 Ubuntu 中下载的文件。</p>
+<p>但是和 nfs 命令的区别在于，tftp 命令不需要输入文件在 Ubuntu 中的完整路径，只需要输入文件名即可。比如我们现在将 tftpboot 文件夹里面的 zImage 文件下载到开发板 DRAM 的 0X80800000 地址处，命令如下：<br><code>tftp 80800000 zImage</code></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/">环境搭建系统移植篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/02/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/2.ARM%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2| ARM交叉编译器的使用</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/08/16/NOTE/C&amp;C++/Makefile%E7%9A%84%E7%AE%80%E5%8D%95%E7%BC%96%E5%86%99/">
+                        <span class="hidden-mobile">Makefile的简单编写</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

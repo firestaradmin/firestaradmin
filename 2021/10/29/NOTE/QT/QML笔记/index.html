@@ -1,0 +1,717 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="QML Notes1. 自定义控件新建MyItem.qml 文件，自定义 如下（文件名就是控件名，第一个字母大写） import QtQuick 2.4   Item &amp;#123;     id: container     property alias cellColor: rectangle.color&#x2F;&#x2F;cunstom var&#x2F;property     signal clicked(colo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QML Note">
+<meta property="og:url" content="http://firestaradmin.top/2021/10/29/NOTE/QT/QML%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="QML Notes1. 自定义控件新建MyItem.qml 文件，自定义 如下（文件名就是控件名，第一个字母大写） import QtQuick 2.4   Item &amp;#123;     id: container     property alias cellColor: rectangle.color&#x2F;&#x2F;cunstom var&#x2F;property     signal clicked(colo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-01T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="QT">
+<meta property="article:tag" content="QML">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>QML Note - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="QML Note">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-29 00:00" pubdate>
+        2021年10月29日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">QML Note</h1>
+            
+            <div class="markdown-body">
+              <h1 id="QML-Notes"><a href="#QML-Notes" class="headerlink" title="QML Notes"></a>QML Notes</h1><h2 id="1-自定义控件"><a href="#1-自定义控件" class="headerlink" title="1. 自定义控件"></a>1. 自定义控件</h2><p>新建MyItem.qml 文件，自定义 如下（文件名就是控件名，第一个字母大写）</p>
+<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-keyword">import</span> QtQuick <span class="hljs-number">2.4</span>
+
+
+<span class="hljs-title">Item</span> &#123;
+    <span class="hljs-attribute">id:</span><span class="hljs-string"> container</span>
+    <span class="hljs-keyword">property</span><span class="hljs-string"> alias cellColor</span>: rectangle.color<span class="hljs-comment">//cunstom var/property</span>
+    <span class="hljs-keyword">signal</span><span class="hljs-string"> clicked</span>(<span class="hljs-built_in">color</span> cellColor)<span class="hljs-comment">//singal</span>
+
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">40</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">25</span>
+
+    <span class="hljs-title">Rectangle</span> &#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> rectangle</span>
+        <span class="hljs-attribute">border.color</span>: <span class="hljs-string">&quot;white&quot;</span>
+        <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+    &#125;
+
+    <span class="hljs-title">MouseArea</span> &#123;
+        <span class="hljs-attribute">anchors.fill</span>: <span class="hljs-built_in">parent</span>
+        <span class="hljs-attribute">onClicked</span>: container.clicked(container.cellColor)<span class="hljs-comment">//触发信号</span>
+    &#125;
+&#125;</code></pre></div>
+
+<p>使用：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-keyword">import</span> QtQuick <span class="hljs-number">2.9</span>
+<span class="hljs-keyword">import</span> QtQuick.Controls <span class="hljs-number">2.2</span>
+
+
+<span class="hljs-title">ApplicationWindow</span> &#123;
+    <span class="hljs-attribute">visible</span>: <span class="hljs-literal">true</span>
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">640</span>
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">480</span>
+    <span class="hljs-attribute">color</span>: <span class="hljs-string">&quot;#e9e9e9&quot;</span>
+    <span class="hljs-attribute">title</span>: qsTr(<span class="hljs-string">&quot;TestWin&quot;</span>)
+
+    <span class="hljs-keyword">property</span><span class="hljs-string"> string ar</span>: <span class="hljs-string">&quot;value&quot;</span>
+    <span class="hljs-keyword">property</span><span class="hljs-string"> string strvalue</span>: <span class="hljs-string">&quot;helloworld&quot;</span>
+
+    <span class="hljs-title">Text</span> &#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> text1</span>
+        <span class="hljs-attribute">text</span>: strvalue
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">30</span>
+        <span class="hljs-attribute">anchors.horizontalCenter</span>: <span class="hljs-built_in">parent</span>.horizontalCenter
+        <span class="hljs-attribute">font.pointSize</span>: <span class="hljs-number">24</span>; <span class="hljs-attribute">font.bold</span>: <span class="hljs-literal">true</span>
+
+    &#125;
+
+
+    <span class="hljs-title">MyItem</span> &#123;
+        <span class="hljs-attribute">id:</span><span class="hljs-string"> cell</span>
+        <span class="hljs-attribute">x</span>: <span class="hljs-number">47</span>
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">240</span>
+        <span class="hljs-attribute">width</span>: <span class="hljs-number">55</span>
+        <span class="hljs-attribute">height</span>: <span class="hljs-number">40</span>
+        <span class="hljs-attribute">cellColor</span>: <span class="hljs-string">&quot;red&quot;</span>
+        <span class="hljs-attribute">onClicked</span>: text1.color = cellColor
+    &#125;
+
+&#125;
+</code></pre></div>
+
+
+
+<h2 id="2-Grid-组件"><a href="#2-Grid-组件" class="headerlink" title="2. Grid 组件"></a>2. Grid 组件</h2><p>配合 上面的自定义控件使用如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs css">import QtQuick <span class="hljs-number">2.9</span>
+import QtQuick<span class="hljs-selector-class">.Controls</span> <span class="hljs-number">2.2</span>
+
+
+ApplicationWindow &#123;
+    visible: true
+    width: <span class="hljs-number">640</span>
+    height: <span class="hljs-number">480</span>
+    color: <span class="hljs-string">&quot;#e9e9e9&quot;</span>
+    title: <span class="hljs-built_in">qsTr</span>(<span class="hljs-string">&quot;TestWin&quot;</span>)
+
+    Text &#123;
+        id: text1
+        text: strvalue
+        y: <span class="hljs-number">30</span>
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pointSize: <span class="hljs-number">24</span>; <span class="hljs-attribute">font</span><span class="hljs-selector-class">.bold</span>: true
+
+    &#125;
+
+
+    <span class="hljs-attribute">Grid</span> &#123;
+        id: colorPicker
+        x: <span class="hljs-number">4</span>; anchors<span class="hljs-selector-class">.bottom</span>: parent.bottom; anchors<span class="hljs-selector-class">.bottomMargin</span>: <span class="hljs-number">4</span>
+        rows: <span class="hljs-number">2</span>; <span class="hljs-attribute">columns</span>: <span class="hljs-number">3</span>; spacing: <span class="hljs-number">3</span>
+
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;red&quot;</span>; onClicked: text1.color = cellColor &#125;
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;green&quot;</span>; onClicked: text1.color = cellColor &#125;
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;blue&quot;</span>; onClicked: text1.color = cellColor &#125;
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;yellow&quot;</span>; onClicked: text1.color = cellColor &#125;
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;steelblue&quot;</span>; onClicked: text1.color = cellColor &#125;
+        MyItem &#123; cellColor: <span class="hljs-string">&quot;black&quot;</span>; onClicked: text1.color = cellColor &#125;
+
+    &#125;
+
+&#125;</code></pre></div>
+
+
+
+<h2 id="3-QML-与-C-Class-互通"><a href="#3-QML-与-C-Class-互通" class="headerlink" title="3. QML 与 C++ Class 互通"></a>3. QML 与 C++ Class 互通</h2><p>新建 tempClass 类：</p>
+<p>这里定义两个槽函数：</p>
+<ul>
+<li>QString getStr();    &#x2F;&#x2F; 返回字符串</li>
+<li>void setqml();     &#x2F;&#x2F;C++ 直接修改qml 控件属性</li>
+</ul>
+<p>“tempClass.h”</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> GETARRAYDATA_H</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> GETARRAYDATA_H</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QByteArray&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QDebug&gt;</span></span>
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">TempClass</span> : <span class="hljs-keyword">public</span> QObject
+&#123;
+    Q_OBJECT
+<span class="hljs-keyword">public</span>:
+
+<span class="hljs-keyword">public</span> slots:
+
+    <span class="hljs-function">QString <span class="hljs-title">getStr</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setqml</span><span class="hljs-params">()</span></span>;
+
+
+
+&#125;;
+
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">// GETARRAYDATA_H</span></span>
+</code></pre></div>
+
+<p>“tempClass.cpp”</p>
+<p>这里 <code>extern QObject *qmlObj;</code> 全局变量，在main.cpp 里声明</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;tempClass.h&quot;</span></span>
+
+
+<span class="hljs-keyword">extern</span> QObject *qmlObj;
+
+
+<span class="hljs-function">QString <span class="hljs-title">TempClass::getStr</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;I am cool boy&quot;</span>;
+&#125;
+
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">TempClass::setqml</span><span class="hljs-params">()</span></span>&#123;
+
+    qmlObj-&gt;<span class="hljs-built_in">setProperty</span>(<span class="hljs-string">&quot;strvalue&quot;</span>,<span class="hljs-string">&quot;setqml hello&quot;</span>);
+    <span class="hljs-comment">// 要访问其子对象 使用 qmlObj-&gt;findChild();</span>
+<span class="hljs-comment">//     QObject *obj = qmlObj-&gt;findChild&lt;QObject*&gt;(&quot;qmlText&quot;);</span>
+<span class="hljs-comment">//     obj-&gt;setProperty(&quot;text&quot;,&quot;setqml hello&quot;);</span>
+<span class="hljs-comment">//     qDebug() &lt;&lt; obj-&gt;property(&quot;text&quot;);</span>
+
+&#125;
+</code></pre></div>
+
+
+
+
+
+<p>“main.cpp”</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QGuiApplication&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QQmlApplicationEngine&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QQmlContext&gt;</span></span>
+
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;tempClass.h&quot;</span></span>
+
+QObject *qmlObj;
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span></span>
+<span class="hljs-function"></span>&#123;
+    QCoreApplication::<span class="hljs-built_in">setAttribute</span>(Qt::AA_EnableHighDpiScaling);
+
+    <span class="hljs-function">QGuiApplication <span class="hljs-title">app</span><span class="hljs-params">(argc, argv)</span></span>;
+
+    QQmlApplicationEngine engine;
+
+    engine.<span class="hljs-built_in">rootContext</span>()-&gt;<span class="hljs-built_in">setContextProperty</span>(<span class="hljs-string">&quot;tempClass&quot;</span>, <span class="hljs-keyword">new</span> TempClass);
+
+
+
+    engine.<span class="hljs-built_in">load</span>(<span class="hljs-built_in">QUrl</span>(<span class="hljs-built_in">QStringLiteral</span>(<span class="hljs-string">&quot;qrc:/main.qml&quot;</span>)));
+    <span class="hljs-keyword">if</span> (engine.<span class="hljs-built_in">rootObjects</span>().<span class="hljs-built_in">isEmpty</span>())
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+
+    qmlObj=engine.<span class="hljs-built_in">rootObjects</span> ().<span class="hljs-built_in">at</span> (<span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">return</span> app.<span class="hljs-built_in">exec</span>();
+
+&#125;</code></pre></div>
+
+<p>“main.qml”</p>
+<div class="hljs code-wrapper"><pre><code class="hljs xml">import QtQuick 2.9
+import QtQuick.Controls 2.2
+
+
+ApplicationWindow &#123;
+    visible: true
+    width: 640
+    height: 480
+    color: &quot;#e9e9e9&quot;
+    title: qsTr(&quot;TestWin&quot;)
+
+    property string vTextValue: &quot;value&quot;
+    property string strvalue: &quot;helloworld&quot;
+
+    Text &#123;
+        objectName: &quot;qmlText&quot; //用于cpp查找对象
+        id: text1
+        text: strvalue
+        y: 30
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pointSize: 24; font.bold: true
+
+    &#125;
+
+
+    Text&#123;
+        id: vtext
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: 200
+        text: vTextValue
+        font: &#123;family:&quot;arial&quot;&#125;
+
+    &#125;
+
+    Button&#123;
+        id: btn
+        anchors.horizontalCenter: parent.horizontalCenter
+        y:100
+        text: &quot;点我&quot;
+        onClicked: &#123;vTextValue = tempClass.getStr(); tempClass.setqml()&#125;
+    &#125;
+
+&#125;
+</code></pre></div>
+
+
+
+<h3 id="1-qml-使用-C-类"><a href="#1-qml-使用-C-类" class="headerlink" title="1. qml 使用 C++ 类"></a>1. qml 使用 C++ 类</h3><p> <code>engine.rootContext()-&gt;setContextProperty(&quot;tempClass&quot;, new TempClass);</code> 给qml 根对象 添加类。</p>
+<h3 id="2-C-直接调用qml-对象"><a href="#2-C-直接调用qml-对象" class="headerlink" title="2. C++ 直接调用qml 对象"></a>2. C++ 直接调用qml 对象</h3><div class="hljs code-wrapper"><pre><code class="hljs c++">QObject *qmlObj;	<span class="hljs-comment">//定义QObject指针</span>
+qmlObj=engine.<span class="hljs-built_in">rootObjects</span> ().<span class="hljs-built_in">at</span> (<span class="hljs-number">0</span>);	<span class="hljs-comment">// 取其根 对象</span></code></pre></div>
+
+<p>找到对应的Object 调用</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c++">qmlObj-&gt;<span class="hljs-built_in">setProperty</span>(<span class="hljs-string">&quot;strvalue&quot;</span>,<span class="hljs-string">&quot;setqml hello&quot;</span>);
+<span class="hljs-comment">// 要访问其子对象 使用 qmlObj-&gt;findChild();</span>
+<span class="hljs-comment">//     QObject *obj = qmlObj-&gt;findChild&lt;QObject*&gt;(&quot;qmlText&quot;);</span>
+<span class="hljs-comment">//     obj-&gt;setProperty(&quot;text&quot;,&quot;setqml hello&quot;);</span>
+<span class="hljs-comment">//     qDebug() &lt;&lt; obj-&gt;property(&quot;text&quot;);</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/QT/">QT</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/QT/">QT</a>
+                    
+                      <a class="hover-with-bg" href="/tags/QML/">QML</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/10/NOTE/C&amp;C++/%E5%AE%8F%E5%AE%9A%E4%B9%89log%E8%BE%93%E5%87%BA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">宏定义log输出</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/27/NOTE/QT/QT%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6ini%E4%BD%BF%E7%94%A8/">
+                        <span class="hidden-mobile">QT ini配置文件</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

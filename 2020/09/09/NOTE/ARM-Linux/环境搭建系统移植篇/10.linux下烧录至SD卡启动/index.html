@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动[假设识别u盘为设备&#x2F;dev&#x2F;sdb] @author:firestaradmin 2020年4月28日19:15:33 0.清除SD卡前1024KB的数据 dd命令（可选步骤）dd if&#x3D;&#x2F;dev&#x2F;zero of&#x3D;&#x2F;dev&#x2F;sdb bs&#x3D;1024 count&#x3D;1024   if&#x3D;文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="10| linux下烧录至SD卡启动">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/09/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/10.linux%E4%B8%8B%E7%83%A7%E5%BD%95%E8%87%B3SD%E5%8D%A1%E5%90%AF%E5%8A%A8/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动[假设识别u盘为设备&#x2F;dev&#x2F;sdb] @author:firestaradmin 2020年4月28日19:15:33 0.清除SD卡前1024KB的数据 dd命令（可选步骤）dd if&#x3D;&#x2F;dev&#x2F;zero of&#x3D;&#x2F;dev&#x2F;sdb bs&#x3D;1024 count&#x3D;1024   if&#x3D;文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-08T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>10| linux下烧录至SD卡启动 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="10| linux下烧录至SD卡启动">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-09 00:00" pubdate>
+        2020年9月9日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">10| linux下烧录至SD卡启动</h1>
+            
+            <div class="markdown-body">
+              <h1 id="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动"><a href="#linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动" class="headerlink" title="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动"></a>linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动</h1><p><strong>[假设识别u盘为设备&#x2F;dev&#x2F;sdb]</strong></p>
+<p>@author:firestaradmin 2020年4月28日19:15:33</p>
+<h2 id="0-清除SD卡前1024KB的数据-dd命令（可选步骤）"><a href="#0-清除SD卡前1024KB的数据-dd命令（可选步骤）" class="headerlink" title="0.清除SD卡前1024KB的数据 dd命令（可选步骤）"></a>0.清除SD卡前1024KB的数据 dd命令（可选步骤）</h2><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024</code></pre></div>
+
+<ul>
+<li><p><strong>if&#x3D;文件名</strong>：输入文件名，默认为标准输入。即指定源文件。</p>
+<p><strong>&#x2F;dev&#x2F;zero</strong>，是一个输入设备，你可你用它来初始化文件。该设备无穷尽地提供0，可以使用任何你需要的数目——设备提供的要多的多。他可以用于向设备或文件写入字符串0。 </p>
+</li>
+<li><p><strong>of&#x3D;文件名</strong>：输出文件名，默认为标准输出。即指定目的文件。 </p>
+</li>
+<li><p><strong>ibs&#x3D;bytes</strong>：一次读入bytes个字节，即指定一个块大小为bytes个字节。</p>
+<p><strong>obs&#x3D;bytes</strong>：一次输出bytes个字节，即指定一个块大小为bytes个字节。 </p>
+<p><strong>bs&#x3D;bytes</strong>：同时设置读入&#x2F;输出的块大小为bytes个字节。</p>
+</li>
+<li><p><strong>count&#x3D;blocks</strong>：仅拷贝blocks个块，块大小等于ibs指定的字节数。</p>
+</li>
+</ul>
+<h2 id="1-插入SD卡并分区-fdisk命令"><a href="#1-插入SD卡并分区-fdisk命令" class="headerlink" title="1. 插入SD卡并分区 fdisk命令"></a>1. 插入SD卡并分区 fdisk命令</h2><p>Linux下使用fdisk命令进行分区：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">fdisk /dev/sdb</code></pre></div>
+
+<p>需要建立两个分区：  </p>
+<ul>
+<li><p>p1为fat32 用于存放linux-kernel和dtb文件（一般64MB）</p>
+</li>
+<li><p>p2为ext4 用于存放根文件系统（一般剩余空间都给它）</p>
+</li>
+</ul>
+<p>（注意，第一个分区起始扇区需要为uboot保留一定空间 所以在扇区大小为512B时，一般第一个起始扇区地址为8192即512*8192B&#x3D;4MB保留给uboot）</p>
+<h2 id="2-使用mkfs命令进行分区的格式化"><a href="#2-使用mkfs命令进行分区的格式化" class="headerlink" title="2. 使用mkfs命令进行分区的格式化"></a>2. 使用mkfs命令进行分区的格式化</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs.vfat -F 32 -n <span class="hljs-string">&quot;boot&quot;</span> /dev/sdb1</code></pre></div>
+
+<p>将sd卡分区1格式化为FAT32</p>
+<p><strong>-n</strong> “boot” 设置卷标为boot</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs.ext4 -F -L <span class="hljs-string">&quot;rootfs&quot;</span> /dev/sdb2</code></pre></div>
+
+<p>将sd卡分区2格式化为ext4</p>
+<p><strong>-L</strong> “rootfs” 设置卷标为rootfs</p>
+<p>格式化前需要先取消挂载，使用umount命令</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">umount /dev/sdb1</code></pre></div>
+
+<h2 id="3-使用dd命令烧写uboot-imx到sd卡起始位置"><a href="#3-使用dd命令烧写uboot-imx到sd卡起始位置" class="headerlink" title="3. 使用dd命令烧写uboot.imx到sd卡起始位置"></a>3. 使用dd命令烧写uboot.imx到sd卡起始位置</h2><p>在uboot目录下打开终端 </p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=uboot.imx of=/dev/sdb bs=1024 seek=1 conv=fsync</code></pre></div>
+
+<ul>
+<li><p>if&#x3D;文件名：输入文件名，默认为标准输入。即指定源文件。 </p>
+</li>
+<li><p>of&#x3D;文件名：输出文件名，默认为标准输出。即指定目的文件。 </p>
+</li>
+<li><p>ibs&#x3D;bytes：一次读入bytes个字节，即指定一个块大小为bytes个字节。</p>
+<p>obs&#x3D;bytes：一次输出bytes个字节，即指定一个块大小为bytes个字节。</p>
+<p>bs&#x3D;bytes：同时设置读入&#x2F;输出的块大小为bytes个字节。</p>
+</li>
+<li><p>seek&#x3D;blocks：从输出文件开头跳过blocks个块后再开始复制。</p>
+</li>
+<li><p>conv&#x3D;&lt;关键字&gt;，关键字可以有以下11种：</p>
+<ul>
+<li><p>sync：将每个输入块填充到ibs个字节，不足部分用空（NUL）字符补齐。</p>
+<p>……</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-将zImage和dtb设备树文件拷贝到第一个分区"><a href="#4-将zImage和dtb设备树文件拷贝到第一个分区" class="headerlink" title="4. 将zImage和dtb设备树文件拷贝到第一个分区"></a>4. 将zImage和dtb设备树文件拷贝到第一个分区</h2><p>将p1挂载到某个地方</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/boot
+mount /dev/sdb1 /media/boot/
+<span class="hljs-built_in">cp</span> zImage *.dtb /media/boot/</code></pre></div>
+
+<h2 id="5-拷贝根文件系统至第二个分区"><a href="#5-拷贝根文件系统至第二个分区" class="headerlink" title="5. 拷贝根文件系统至第二个分区"></a><strong>5.</strong> <strong>拷贝根文件系统至第二个分区</strong></h2><h3 id="1-压缩根文件系统"><a href="#1-压缩根文件系统" class="headerlink" title="1.压缩根文件系统"></a>1.压缩根文件系统</h3><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> rootfs/
+tar -vcjf rootfs.tar.bz2 *</code></pre></div>
+
+<h3 id="2-挂载设备并解压"><a href="#2-挂载设备并解压" class="headerlink" title="2.挂载设备并解压"></a>2.挂载设备并解压</h3><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/rootfs
+mount /dev/sdb2 /media/rootfs/
+tar jxfm \**rootfs.tar.bz2\** -C /media/rootfs/</code></pre></div>
+
+<h2 id="6-同步和卸载u盘"><a href="#6-同步和卸载u盘" class="headerlink" title="6.同步和卸载u盘"></a>6.同步和卸载u盘</h2><p>输入<code>sync</code>同步数据，然后<code>umount /run/media/sda1/</code>去卸载一个目录，</p>
+<p>然后用<code>df</code> 指令查看 sda1 这个目录已经不存在了，表明已经卸载了，U 盘可以正常拔出了！</p>
+<h2 id="7-插入开发板，并修改bootcmd和bootargs启动系统进行测试"><a href="#7-插入开发板，并修改bootcmd和bootargs启动系统进行测试" class="headerlink" title="7. 插入开发板，并修改bootcmd和bootargs启动系统进行测试"></a>7. 插入开发板，并修改bootcmd和bootargs启动系统进行测试</h2><h1 id="命令附录："><a href="#命令附录：" class="headerlink" title="命令附录："></a>命令附录：</h1><h2 id="fdisk命令："><a href="#fdisk命令：" class="headerlink" title="fdisk命令："></a>fdisk命令：</h2><p>磁盘操作命令</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><div class="hljs code-wrapper"><pre><code class="hljs css">fdisk <span class="hljs-selector-attr">[必要参数]</span><span class="hljs-selector-attr">[选择参数]</span></code></pre></div>
+
+<h3 id="必要参数："><a href="#必要参数：" class="headerlink" title="必要参数："></a>必要参数：</h3><ul>
+<li><p>-l 列出素所有分区表</p>
+</li>
+<li><p>-u 与”-l”搭配使用，显示分区数目</p>
+</li>
+</ul>
+<h3 id="选择参数："><a href="#选择参数：" class="headerlink" title="选择参数："></a>选择参数：</h3><ul>
+<li><p>-s&lt;分区编号&gt; 指定分区</p>
+</li>
+<li><p>-v 版本信息</p>
+</li>
+</ul>
+<h3 id="菜单操作说明"><a href="#菜单操作说明" class="headerlink" title="菜单操作说明"></a>菜单操作说明</h3><ul>
+<li><p>m ：显示菜单和帮助信息</p>
+</li>
+<li><p>a ：活动分区标记&#x2F;引导分区</p>
+</li>
+<li><p>d ：删除分区</p>
+</li>
+<li><p>l ：显示分区类型</p>
+</li>
+<li><p>n ：新建分区</p>
+</li>
+<li><p>p ：显示分区信息</p>
+</li>
+<li><p>q ：退出不保存</p>
+</li>
+<li><p>t ：设置分区号</p>
+</li>
+<li><p>v ：进行分区检查</p>
+</li>
+<li><p>w ：保存修改</p>
+</li>
+<li><p>x ：扩展应用，高级功能</p>
+</li>
+</ul>
+<h2 id="mkfs命令："><a href="#mkfs命令：" class="headerlink" title="mkfs命令："></a>mkfs命令：</h2><p>Linux mkfs命令用于在特定的分区上建立 linux 文件系统</p>
+<p>使用方式 : </p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs [-V] [-t fstype] [fs-options] filesys [blocks]</code></pre></div>
+
+<h3 id="参数-："><a href="#参数-：" class="headerlink" title="参数 ："></a>参数 ：</h3><ul>
+<li><p>device ： 预备检查的硬盘分区，例如：&#x2F;dev&#x2F;sda1</p>
+</li>
+<li><p>-V : 详细显示模式</p>
+</li>
+<li><p>-t : 给定档案系统的型式，Linux 的预设值为 ext2</p>
+</li>
+<li><p>-c : 在制做档案系统前，检查该partition 是否有坏轨</p>
+</li>
+<li><p>-l bad_blocks_file : 将有坏轨的block资料加到 bad_blocks_file 里面</p>
+</li>
+<li><p>block : 给定 block 的大小</p>
+</li>
+</ul>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ul>
+<li><p>在 &#x2F;dev&#x2F;hda5 上建一个 msdos 的档案系统，同时检查是否有坏轨存在，并且将过程详细列出来 :</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs -V -t msdos -c /dev/hda5</code></pre></div>
+</li>
+<li><p>将sda6分区格式化为ext3格式</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash">mfks -t ext3 /dev/sda6</code></pre></div>
+
+<p><strong>注意：这里的文件系统是要指定的，比如 ext3 ；reiserfs ；ext2 ；fat32 ；msdos 等。</strong></p>
+</li>
+</ul>
+<h2 id="dd命令："><a href="#dd命令：" class="headerlink" title="dd命令："></a>dd命令：</h2><p>Linux dd命令用于读取、转换并输出数据。</p>
+<p>dd可从标准输入或文件中读取数据，根据指定的格式来转换数据，再输出到文件、设备或标准输出。</p>
+<p>如我们上面使用的命令</p>
+<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024
+<span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=uboot.imx of=/dev/sdb bs=1024 seek=1 conv=fsync</code></pre></div>
+
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明:"></a>参数说明:</h3><p>  if&#x3D;文件名：输入文件名，默认为标准输入。即指定源文件。</p>
+<p>  of&#x3D;文件名：输出文件名，默认为标准输出。即指定目的文件。</p>
+<p>  ibs&#x3D;bytes：一次读入bytes个字节，即指定一个块大小为bytes个字节。</p>
+<p>  obs&#x3D;bytes：一次输出bytes个字节，即指定一个块大小为bytes个字节。</p>
+<p>  bs&#x3D;bytes：同时设置读入&#x2F;输出的块大小为bytes个字节。</p>
+<p>  cbs&#x3D;bytes：一次转换bytes个字节，即指定转换缓冲区大小。</p>
+<p>  skip&#x3D;blocks：从输入文件开头跳过blocks个块后再开始复制。</p>
+<p>  seek&#x3D;blocks：从输出文件开头跳过blocks个块后再开始复制。</p>
+<p>  count&#x3D;blocks：仅拷贝blocks个块，块大小等于ibs指定的字节数。</p>
+<p>  conv&#x3D;&lt;关键字&gt;，关键字可以有以下11种：</p>
+<p>​    conversion：用指定的参数转换文件。</p>
+<p>​    ascii：转换ebcdic为ascii</p>
+<p>​    ebcdic：转换ascii为ebcdic</p>
+<p>​    ibm：转换ascii为alternate ebcdic</p>
+<p>​    block：把每一行转换为长度为cbs，不足部分用空格填充</p>
+<p>​    unblock：使每一行的长度都为cbs，不足部分用空格填充</p>
+<p>​    lcase：把大写字符转换为小写字符</p>
+<p>​    ucase：把小写字符转换为大写字符</p>
+<p>​    swab：交换输入的每对字节</p>
+<p>​    noerror：出错时不停止</p>
+<p>​    notrunc：不截短输出文件</p>
+<p>​    sync：将每个输入块填充到ibs个字节，不足部分用空（NUL）字符补齐。</p>
+<p>​    –help：显示帮助信息</p>
+<p>​    –version：显示版本信息</p>
+<h2 id="tar命令"><a href="#tar命令" class="headerlink" title="tar命令:"></a>tar命令:</h2><h3 id="1．命令格式："><a href="#1．命令格式：" class="headerlink" title="1．命令格式："></a>1．命令格式：</h3><p>tar [必要参数] [选择参数] [文件] </p>
+<h3 id="2．命令功能："><a href="#2．命令功能：" class="headerlink" title="2．命令功能："></a>2．命令功能：</h3><p>用来压缩和解压文件。tar本身不具有压缩功能。他是调用压缩功能实现的 </p>
+<h3 id="3．命令参数："><a href="#3．命令参数：" class="headerlink" title="3．命令参数："></a>3．命令参数：</h3><p>必要参数有如下：</p>
+<p>-A 新增压缩文件到已存在的压缩</p>
+<p>-B 设置区块大小</p>
+<p>-c 建立新的压缩文件</p>
+<p>-d 记录文件的差别</p>
+<p>-r 添加文件到已经压缩的文件</p>
+<p>-u 添加改变了和现有的文件到已经存在的压缩文件</p>
+<p>-x 从压缩的文件中提取文件</p>
+<p>-t 显示压缩文件的内容</p>
+<p>-z 支持gzip解压文件</p>
+<p>-j 支持bzip2解压文件</p>
+<p>-Z 支持compress解压文件</p>
+<p>-v 显示操作过程</p>
+<p>-l 文件系统边界设置</p>
+<p>-k 保留原有文件不覆盖</p>
+<p>-m 保留文件不被覆盖</p>
+<p>-W 确认压缩文件的正确性</p>
+<p>可选参数如下：</p>
+<p>-b 设置区块数目</p>
+<p>-C 切换到指定目录</p>
+<p>-f 指定压缩文件</p>
+<p>–help 显示帮助信息</p>
+<p>–version 显示版本信息</p>
+<h3 id="4．常见解压-x2F-压缩命令"><a href="#4．常见解压-x2F-压缩命令" class="headerlink" title="4．常见解压&#x2F;压缩命令"></a>4．常见解压&#x2F;压缩命令</h3><ul>
+<li><p>tar </p>
+<p>解包：tar xvf FileName.tar</p>
+<p>打包：tar cvf FileName.tar DirName</p>
+<p><strong>（注：tar是打包，不是压缩！）</strong></p>
+</li>
+<li><p>.gz</p>
+<p>解压1：gunzip FileName.gz</p>
+<p>解压2：gzip -d FileName.gz</p>
+<p>压缩：gzip FileName</p>
+</li>
+<li><p>.tar.gz 和 .tgz</p>
+<p>解压：tar zxvf FileName.tar.gz</p>
+<p>压缩：tar zcvf FileName.tar.gz DirName</p>
+</li>
+<li><p>.bz2</p>
+<p>解压1：bzip2 -d FileName.bz2</p>
+<p>解压2：bunzip2 FileName.bz2</p>
+<p>压缩： bzip2 -z FileName</p>
+</li>
+<li><p>.tar.bz2</p>
+<p>解压：tar jxvf FileName.tar.bz2</p>
+<p>压缩：tar jcvf FileName.tar.bz2 DirName</p>
+</li>
+<li><p>.bz</p>
+<p>解压1：bzip2 -d FileName.bz</p>
+<p>解压2：bunzip2 FileName.bz</p>
+<p>压缩：未知</p>
+</li>
+<li><p>.tar.bz</p>
+<p>解压：tar jxvf FileName.tar.bz</p>
+<p>压缩：未知</p>
+</li>
+<li><p>.Z</p>
+<p>解压：uncompress FileName.Z</p>
+<p>压缩：compress FileName</p>
+</li>
+<li><p>.tar.Z</p>
+<p>解压：tar Zxvf FileName.tar.Z</p>
+<p>压缩：tar Zcvf FileName.tar.Z DirName</p>
+</li>
+<li><p>.zip</p>
+<p>解压：unzip FileName.zip</p>
+<p>压缩：zip FileName.zip DirName</p>
+</li>
+<li><p>.rar</p>
+<p>解压：rar x FileName.rar</p>
+<p>压缩：rar a FileName.rar DirName</p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/">环境搭建系统移植篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/Linux%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">内核常用函数</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/08/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/9.rootfs%E5%88%B6%E4%BD%9C/">
+                        <span class="hidden-mobile">9| BusyBox根文件系统rootfs构建</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

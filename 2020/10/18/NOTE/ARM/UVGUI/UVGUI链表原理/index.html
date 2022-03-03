@@ -1,0 +1,1254 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="@firestaradmin 2020年10月17日22:08:27 UVGUI 的链表实现原理 UVGUI的链表是参考LVGL GUI库写的，在此做一下记录。 一、数据结构分析&#x2F;** Dummy type to make handling easier*&#x2F; typedef uint8_t ug_ll_node_t;   &#x2F;** Description of a linked list*&#x2F; typ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVGUI链表实现原理">
+<meta property="og:url" content="http://firestaradmin.top/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E9%93%BE%E8%A1%A8%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="@firestaradmin 2020年10月17日22:08:27 UVGUI 的链表实现原理 UVGUI的链表是参考LVGL GUI库写的，在此做一下记录。 一、数据结构分析&#x2F;** Dummy type to make handling easier*&#x2F; typedef uint8_t ug_ll_node_t;   &#x2F;** Description of a linked list*&#x2F; typ">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-17T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="UVGUI">
+<meta property="article:tag" content="linklist">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>UVGUI链表实现原理 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="UVGUI链表实现原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-10-18 00:00" pubdate>
+        2020年10月18日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      18k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      148 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">UVGUI链表实现原理</h1>
+            
+            <div class="markdown-body">
+              <p>@firestaradmin 2020年10月17日22:08:27</p>
+<h1 id="UVGUI-的链表实现原理"><a href="#UVGUI-的链表实现原理" class="headerlink" title="UVGUI 的链表实现原理"></a>UVGUI 的链表实现原理</h1><hr>
+<p>UVGUI的链表是参考LVGL GUI库写的，在此做一下记录。</p>
+<h2 id="一、数据结构分析"><a href="#一、数据结构分析" class="headerlink" title="一、数据结构分析"></a>一、数据结构分析</h2><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/** Dummy type to make handling easier*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-type">uint8_t</span> <span class="hljs-type">ug_ll_node_t</span>;
+
+
+<span class="hljs-comment">/** Description of a linked list*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+    <span class="hljs-type">uint32_t</span> n_size;        <span class="hljs-comment">/* node size in bytes */</span>
+    <span class="hljs-type">ug_ll_node_t</span> * head;
+    <span class="hljs-type">ug_ll_node_t</span> * tail;
+&#125; <span class="hljs-type">ug_ll_t</span>;</code></pre></div>
+
+<p>UVGUI 的链表通过结构体<code>ug_ll_t</code> 表示。</p>
+<p>节点则是<code>typedef uint8_t ug_ll_node_t</code>  定义，这只是虚假类型，只是为了处理时更方便。而实际储存的节点类型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* in fact, the node type is as follows  */</span>
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">struct _ug_ll_node&#123;</span>
+<span class="hljs-comment">    uint8_t node[node_size];</span>
+<span class="hljs-comment">    ug_ll_node_t * prev;</span>
+<span class="hljs-comment">    ug_ll_node_t * next;</span>
+<span class="hljs-comment">&#125;</span>
+<span class="hljs-comment">*/</span></code></pre></div>
+
+<p>UVGUI 的链表使用时，先声明一个链表变量，用于储存链表信息，每创建一个节点，都会申请相应大小的内存块用于储存节点（即链表节点大小是固定的等于节点数据大小）。</p>
+<h2 id="二、初始化"><a href="#二、初始化" class="headerlink" title="二、初始化"></a>二、初始化</h2><p>初始化函数，根据指定的节点大小来初始化一个链表。将链表的头节点指针和尾节点指针设为NULL，然后设置节点大小。</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Initialize linked list</span>
+<span class="hljs-comment"> * @param ll_dsc pointer to ll_dsc variable</span>
+<span class="hljs-comment"> * @param node_size the size of 1 node in bytes</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_init(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">uint32_t</span> node_size)
+&#123;
+    ll_p-&gt;head = <span class="hljs-literal">NULL</span>;
+    ll_p-&gt;tail = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/*Round the size up to 4*/</span>
+    node_size = (node_size + <span class="hljs-number">3</span>) &amp; (~<span class="hljs-number">0x3</span>);
+
+    ll_p-&gt;n_size = node_size;
+&#125;</code></pre></div>
+
+
+
+<h2 id="三、API"><a href="#三、API" class="headerlink" title="三、API"></a>三、API</h2><h3 id="1-插入节点"><a href="#1-插入节点" class="headerlink" title="1|插入节点"></a>1|插入节点</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new head to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_head(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+
+    <span class="hljs-keyword">if</span>(n_new != <span class="hljs-literal">NULL</span>) &#123;
+        node_set_prev(ll_p, n_new, <span class="hljs-literal">NULL</span>);       <span class="hljs-comment">/*No prev. before the new head*/</span>
+        node_set_next(ll_p, n_new, ll_p-&gt;head); <span class="hljs-comment">/*After new comes the old head*/</span>
+
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head != <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is old head then before it goes the new*/</span>
+            node_set_prev(ll_p, ll_p-&gt;head, n_new);
+        &#125;
+
+        ll_p-&gt;head = n_new;      <span class="hljs-comment">/*Set the new head in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no tail (1. node) set the tail too*/</span>
+            ll_p-&gt;tail = n_new;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Insert a new node in front of the n_act node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_prev(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * n_act)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> == ll_p || <span class="hljs-literal">NULL</span> == n_act) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">if</span>(_ug_ll_get_head(ll_p) == n_act) &#123;
+        n_new = _ug_ll_ins_head(ll_p);
+        <span class="hljs-keyword">if</span>(n_new == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    &#125;
+    <span class="hljs-keyword">else</span> &#123;
+        n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+        <span class="hljs-keyword">if</span>(n_new == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+        <span class="hljs-type">ug_ll_node_t</span> * n_prev;
+        n_prev = _ug_ll_get_prev(ll_p, n_act);
+        node_set_next(ll_p, n_prev, n_new);
+        node_set_prev(ll_p, n_new, n_prev);
+        node_set_prev(ll_p, n_act, n_new);
+        node_set_next(ll_p, n_new, n_act);
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new tail to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new tail</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_tail(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+
+    <span class="hljs-keyword">if</span>(n_new != <span class="hljs-literal">NULL</span>) &#123;
+        node_set_next(ll_p, n_new, <span class="hljs-literal">NULL</span>);       <span class="hljs-comment">/*No next after the new tail*/</span>
+        node_set_prev(ll_p, n_new, ll_p-&gt;tail); <span class="hljs-comment">/*The prev. before new is the old tail*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail != <span class="hljs-literal">NULL</span>) &#123;                <span class="hljs-comment">/*If there is old tail then the new comes after it*/</span>
+            node_set_next(ll_p, ll_p-&gt;tail, n_new);
+        &#125;
+
+        ll_p-&gt;tail = n_new;      <span class="hljs-comment">/*Set the new tail in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no head (1. node) set the head too*/</span>
+            ll_p-&gt;head = n_new;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;</code></pre></div>
+
+<p>上述为三个插入节点的函数，插入的位置不同而已。</p>
+<p>其中<code>LL_NODE_META_SIZE</code> 宏定义为两个节点指针的大小，如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NODE_META_SIZE (sizeof(ug_ll_node_t *) + sizeof(ug_ll_node_t *))</span></code></pre></div>
+
+<p>其中有两个辅助函数<code>node_set_prev</code> , <code>node_set_next</code>  ，用来设置节点的指针，使其指向相应的节点。定义如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Set the previous node pointer of a node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param act pointer to a node which prev. node pointer should be set</span>
+<span class="hljs-comment"> * @param prev pointer to a node which should be the previous node before &#x27;act&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_prev</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * prev)</span>
+&#123;
+    <span class="hljs-keyword">if</span>(act == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Can&#x27;t set the prev node of `NULL`*/</span>
+
+    <span class="hljs-type">uint8_t</span> * act8 = (<span class="hljs-type">uint8_t</span> *) act;
+
+    act8 += LL_PREV_P_OFFSET(ll_p);
+
+    <span class="hljs-type">ug_ll_node_t</span> ** act_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) act8;
+    <span class="hljs-type">ug_ll_node_t</span> ** prev_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) &amp;prev;
+
+    *act_node_p = *prev_node_p;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Set the &#x27;next node pointer&#x27; of a node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param act pointer to a node which next node pointer should be set</span>
+<span class="hljs-comment"> * @param next pointer to a node which should be the next node before &#x27;act&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_next</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * next)</span>
+&#123;
+    <span class="hljs-keyword">if</span>(act == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Can&#x27;t set the next node of `NULL`*/</span>
+    <span class="hljs-type">uint8_t</span> * act8 = (<span class="hljs-type">uint8_t</span> *) act;
+
+    act8 += LL_NEXT_P_OFFSET(ll_p);
+    <span class="hljs-type">ug_ll_node_t</span> ** act_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) act8;
+    <span class="hljs-type">ug_ll_node_t</span> ** next_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) &amp;next;
+
+    *act_node_p = *next_node_p;
+&#125;</code></pre></div>
+
+<p>上述有两个宏定义，是根据节点结构计算指针的位置，如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_PREV_P_OFFSET(ll_p) (ll_p-&gt;n_size)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NEXT_P_OFFSET(ll_p) (ll_p-&gt;n_size + sizeof(ug_ll_node_t *))</span></code></pre></div>
+
+
+
+<h3 id="2-删除节点"><a href="#2-删除节点" class="headerlink" title="2|删除节点"></a>2|删除节点</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove the node &#x27;node_p&#x27; from &#x27;ll_p&#x27; linked list.</span>
+<span class="hljs-comment"> * It does not free the the memory of node.</span>
+<span class="hljs-comment"> * @param ll_p pointer to the linked list of &#x27;node_p&#x27;</span>
+<span class="hljs-comment"> * @param node_p pointer to node in &#x27;ll_p&#x27; linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_remove(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * node_p)
+&#123;
+    <span class="hljs-keyword">if</span>(_ug_ll_get_head(ll_p) == node_p) &#123;
+        <span class="hljs-comment">/*The new head will be the node after &#x27;n_act&#x27;*/</span>
+        ll_p-&gt;head = _ug_ll_get_next(ll_p, node_p);
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head == <span class="hljs-literal">NULL</span>) &#123;
+            ll_p-&gt;tail = <span class="hljs-literal">NULL</span>;
+        &#125;
+        <span class="hljs-keyword">else</span> &#123;
+            node_set_prev(ll_p, ll_p-&gt;head, <span class="hljs-literal">NULL</span>);
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(_ug_ll_get_tail(ll_p) == node_p) &#123;
+        <span class="hljs-comment">/*The new tail will be the  node before &#x27;n_act&#x27;*/</span>
+        ll_p-&gt;tail = _ug_ll_get_prev(ll_p, node_p);
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail == <span class="hljs-literal">NULL</span>) &#123;
+            ll_p-&gt;head = <span class="hljs-literal">NULL</span>;
+        &#125;
+        <span class="hljs-keyword">else</span> &#123;
+            node_set_next(ll_p, ll_p-&gt;tail, <span class="hljs-literal">NULL</span>);
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-type">ug_ll_node_t</span> * n_prev = _ug_ll_get_prev(ll_p, node_p);
+        <span class="hljs-type">ug_ll_node_t</span> * n_next = _ug_ll_get_next(ll_p, node_p);
+
+        node_set_next(ll_p, n_prev, n_next);
+        node_set_prev(ll_p, n_next, n_prev);
+    &#125;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove and free all elements from a linked list. The list remain valid but become empty.</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_clear(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">void</span> * i;
+    <span class="hljs-type">void</span> * i_next;
+
+    i      = _ug_ll_get_head(ll_p);
+    i_next = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">while</span>(i != <span class="hljs-literal">NULL</span>) &#123;
+        i_next = _ug_ll_get_next(ll_p, i);
+
+        _ug_ll_remove(ll_p, i);
+        ug_mem_free(i);
+
+        i = i_next;
+    &#125;
+&#125;</code></pre></div>
+
+<hr>
+<p>其他相关函数请看源码。</p>
+<h2 id="四、源码"><a href="#四、源码" class="headerlink" title="四、源码"></a>四、源码</h2><h3 id="File-“ug-ll-h”"><a href="#File-“ug-ll-h”" class="headerlink" title="File “ug_ll.h”"></a>File “ug_ll.h”</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __UG_LL_H__</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> __UG_LL_H__</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_type.h&quot;</span></span>
+
+<span class="hljs-comment">/**********************</span>
+<span class="hljs-comment"> *      MACROS</span>
+<span class="hljs-comment"> **********************/</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> _UG_LL_READ(list, i) for(i = _ug_ll_get_head(&amp;list); i != NULL; i = _ug_ll_get_next(&amp;list, i))</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> _UG_LL_READ_BACK(list, i) for(i = _ug_ll_get_tail(&amp;list); i != NULL; i = _ug_ll_get_prev(&amp;list, i))</span>
+
+
+
+<span class="hljs-comment">/** Dummy type to make handling easier*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-type">uint8_t</span> <span class="hljs-type">ug_ll_node_t</span>;
+<span class="hljs-comment">/* in fact, the node type is as follows  */</span>
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">struct _ug_ll_node&#123;</span>
+<span class="hljs-comment">    uint8_t node[node_size];</span>
+<span class="hljs-comment">    ug_ll_node_t * prev;</span>
+<span class="hljs-comment">    ug_ll_node_t * next;</span>
+<span class="hljs-comment">&#125;</span>
+<span class="hljs-comment">*/</span>
+
+<span class="hljs-comment">/** Description of a linked list*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+    <span class="hljs-type">uint32_t</span> n_size;        <span class="hljs-comment">/* node size in bytes */</span>
+    <span class="hljs-type">ug_ll_node_t</span> * head;
+    <span class="hljs-type">ug_ll_node_t</span> * tail;
+&#125; <span class="hljs-type">ug_ll_t</span>;
+
+
+
+
+<span class="hljs-comment">/**********************</span>
+<span class="hljs-comment"> * GLOBAL PROTOTYPES</span>
+<span class="hljs-comment"> **********************/</span>
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Initialize linked list</span>
+<span class="hljs-comment"> * @param ll_dsc pointer to ll_dsc variable</span>
+<span class="hljs-comment"> * @param node_size the size of 1 node in bytes</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_init(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">uint32_t</span> node_size);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new head to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_head(<span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Insert a new node in front of the n_act node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_prev(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * n_act);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new tail to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new tail</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_tail(<span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove the node &#x27;node_p&#x27; from &#x27;ll_p&#x27; linked list.</span>
+<span class="hljs-comment"> * It does not free the the memory of node.</span>
+<span class="hljs-comment"> * @param ll_p pointer to the linked list of &#x27;node_p&#x27;</span>
+<span class="hljs-comment"> * @param node_p pointer to node in &#x27;ll_p&#x27; linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_remove(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * node_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove and free all elements from a linked list. The list remain valid but become empty.</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_clear(<span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Move a node to a new linked list</span>
+<span class="hljs-comment"> * @param ll_ori_p pointer to the original (old) linked list</span>
+<span class="hljs-comment"> * @param ll_new_p pointer to the new linked list</span>
+<span class="hljs-comment"> * @param node pointer to a node</span>
+<span class="hljs-comment"> * @param head true: be the head in the new list</span>
+<span class="hljs-comment"> *             false be the head in the new list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_chg_list(<span class="hljs-type">ug_ll_t</span> * ll_ori_p, <span class="hljs-type">ug_ll_t</span> * ll_new_p, <span class="hljs-type">void</span> * node, <span class="hljs-type">bool</span> head);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with head node of the linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the head of &#x27;ll_p&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_head(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with tail node of the linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the head of &#x27;ll_p&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_tail(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with the pointer of the next node after &#x27;n_act&#x27;</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the next node</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_next(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">const</span> <span class="hljs-type">void</span> * n_act);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with the pointer of the previous node after &#x27;n_act&#x27;</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the previous node</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_prev(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">const</span> <span class="hljs-type">void</span> * n_act);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return the length of the linked list.</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return length of the linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">uint32_t</span> _ug_ll_get_len(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * TODO</span>
+<span class="hljs-comment"> * @param ll_p</span>
+<span class="hljs-comment"> * @param n1_p</span>
+<span class="hljs-comment"> * @param n2_p</span>
+<span class="hljs-comment">void ug_ll_swap(ug_ll_t * ll_p, void * n1_p, void * n2_p);</span>
+<span class="hljs-comment"> */</span>
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Move a node before an other node in the same linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to a linked list</span>
+<span class="hljs-comment"> * @param n_act pointer to node to move</span>
+<span class="hljs-comment"> * @param n_after pointer to a node which should be after `n_act`</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_move_before(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * n_act, <span class="hljs-type">void</span> * n_after);
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Check if a linked list is empty</span>
+<span class="hljs-comment"> * @param ll_p pointer to a linked list</span>
+<span class="hljs-comment"> * @return true: the linked list is empty; false: not empty</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">bool</span> _ug_ll_is_empty(<span class="hljs-type">ug_ll_t</span> * ll_p);
+
+
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">// !__UG_LL_H__</span></span>
+</code></pre></div>
+
+<h3 id="File-“ug-ll-c”"><a href="#File-“ug-ll-c”" class="headerlink" title="File “ug_ll.c”"></a>File “ug_ll.c”</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_ll.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_mem.h&quot;</span></span>
+<span class="hljs-comment">/*********************</span>
+<span class="hljs-comment"> *      DEFINES</span>
+<span class="hljs-comment"> *********************/</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NODE_META_SIZE (sizeof(ug_ll_node_t *) + sizeof(ug_ll_node_t *))</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_PREV_P_OFFSET(ll_p) (ll_p-&gt;n_size)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NEXT_P_OFFSET(ll_p) (ll_p-&gt;n_size + sizeof(ug_ll_node_t *))</span>
+
+<span class="hljs-comment">/**********************</span>
+<span class="hljs-comment"> *      TYPEDEFS</span>
+<span class="hljs-comment"> **********************/</span>
+
+<span class="hljs-comment">/**********************</span>
+<span class="hljs-comment"> *  STATIC PROTOTYPES</span>
+<span class="hljs-comment"> **********************/</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_prev</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * prev)</span>;
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_next</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * next)</span>;
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Initialize linked list</span>
+<span class="hljs-comment"> * @param ll_dsc pointer to ll_dsc variable</span>
+<span class="hljs-comment"> * @param node_size the size of 1 node in bytes</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_init(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">uint32_t</span> node_size)
+&#123;
+    ll_p-&gt;head = <span class="hljs-literal">NULL</span>;
+    ll_p-&gt;tail = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/*Round the size up to 4*/</span>
+    node_size = (node_size + <span class="hljs-number">3</span>) &amp; (~<span class="hljs-number">0x3</span>);
+
+    ll_p-&gt;n_size = node_size;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new head to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_head(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+
+    <span class="hljs-keyword">if</span>(n_new != <span class="hljs-literal">NULL</span>) &#123;
+        node_set_prev(ll_p, n_new, <span class="hljs-literal">NULL</span>);       <span class="hljs-comment">/*No prev. before the new head*/</span>
+        node_set_next(ll_p, n_new, ll_p-&gt;head); <span class="hljs-comment">/*After new comes the old head*/</span>
+
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head != <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is old head then before it goes the new*/</span>
+            node_set_prev(ll_p, ll_p-&gt;head, n_new);
+        &#125;
+
+        ll_p-&gt;head = n_new;      <span class="hljs-comment">/*Set the new head in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no tail (1. node) set the tail too*/</span>
+            ll_p-&gt;tail = n_new;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;
+
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Insert a new node in front of the n_act node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the new head</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_prev(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * n_act)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> == ll_p || <span class="hljs-literal">NULL</span> == n_act) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">if</span>(_ug_ll_get_head(ll_p) == n_act) &#123;
+        n_new = _ug_ll_ins_head(ll_p);
+        <span class="hljs-keyword">if</span>(n_new == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    &#125;
+    <span class="hljs-keyword">else</span> &#123;
+        n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+        <span class="hljs-keyword">if</span>(n_new == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+        <span class="hljs-type">ug_ll_node_t</span> * n_prev;
+        n_prev = _ug_ll_get_prev(ll_p, n_act);
+        node_set_next(ll_p, n_prev, n_new);
+        node_set_prev(ll_p, n_new, n_prev);
+        node_set_prev(ll_p, n_act, n_new);
+        node_set_next(ll_p, n_new, n_act);
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Add a new tail to a linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the new tail</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_ins_tail(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">ug_ll_node_t</span> * n_new;
+
+    n_new = ug_mem_alloc(ll_p-&gt;n_size + LL_NODE_META_SIZE);
+
+    <span class="hljs-keyword">if</span>(n_new != <span class="hljs-literal">NULL</span>) &#123;
+        node_set_next(ll_p, n_new, <span class="hljs-literal">NULL</span>);       <span class="hljs-comment">/*No next after the new tail*/</span>
+        node_set_prev(ll_p, n_new, ll_p-&gt;tail); <span class="hljs-comment">/*The prev. before new is the old tail*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail != <span class="hljs-literal">NULL</span>) &#123;                <span class="hljs-comment">/*If there is old tail then the new comes after it*/</span>
+            node_set_next(ll_p, ll_p-&gt;tail, n_new);
+        &#125;
+
+        ll_p-&gt;tail = n_new;      <span class="hljs-comment">/*Set the new tail in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no head (1. node) set the head too*/</span>
+            ll_p-&gt;head = n_new;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> n_new;
+&#125;
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove the node &#x27;node_p&#x27; from &#x27;ll_p&#x27; linked list.</span>
+<span class="hljs-comment"> * It does not free the the memory of node.</span>
+<span class="hljs-comment"> * @param ll_p pointer to the linked list of &#x27;node_p&#x27;</span>
+<span class="hljs-comment"> * @param node_p pointer to node in &#x27;ll_p&#x27; linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_remove(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * node_p)
+&#123;
+    <span class="hljs-keyword">if</span>(_ug_ll_get_head(ll_p) == node_p) &#123;
+        <span class="hljs-comment">/*The new head will be the node after &#x27;n_act&#x27;*/</span>
+        ll_p-&gt;head = _ug_ll_get_next(ll_p, node_p);
+        <span class="hljs-keyword">if</span>(ll_p-&gt;head == <span class="hljs-literal">NULL</span>) &#123;
+            ll_p-&gt;tail = <span class="hljs-literal">NULL</span>;
+        &#125;
+        <span class="hljs-keyword">else</span> &#123;
+            node_set_prev(ll_p, ll_p-&gt;head, <span class="hljs-literal">NULL</span>);
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(_ug_ll_get_tail(ll_p) == node_p) &#123;
+        <span class="hljs-comment">/*The new tail will be the  node before &#x27;n_act&#x27;*/</span>
+        ll_p-&gt;tail = _ug_ll_get_prev(ll_p, node_p);
+        <span class="hljs-keyword">if</span>(ll_p-&gt;tail == <span class="hljs-literal">NULL</span>) &#123;
+            ll_p-&gt;head = <span class="hljs-literal">NULL</span>;
+        &#125;
+        <span class="hljs-keyword">else</span> &#123;
+            node_set_next(ll_p, ll_p-&gt;tail, <span class="hljs-literal">NULL</span>);
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-type">ug_ll_node_t</span> * n_prev = _ug_ll_get_prev(ll_p, node_p);
+        <span class="hljs-type">ug_ll_node_t</span> * n_next = _ug_ll_get_next(ll_p, node_p);
+
+        node_set_next(ll_p, n_prev, n_next);
+        node_set_prev(ll_p, n_next, n_prev);
+    &#125;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Remove and free all elements from a linked list. The list remain valid but become empty.</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_clear(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">void</span> * i;
+    <span class="hljs-type">void</span> * i_next;
+
+    i      = _ug_ll_get_head(ll_p);
+    i_next = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">while</span>(i != <span class="hljs-literal">NULL</span>) &#123;
+        i_next = _ug_ll_get_next(ll_p, i);
+
+        _ug_ll_remove(ll_p, i);
+        ug_mem_free(i);
+
+        i = i_next;
+    &#125;
+&#125;
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Move a node to a new linked list</span>
+<span class="hljs-comment"> * @param ll_ori_p pointer to the original (old) linked list</span>
+<span class="hljs-comment"> * @param ll_new_p pointer to the new linked list</span>
+<span class="hljs-comment"> * @param node pointer to a node</span>
+<span class="hljs-comment"> * @param head true: be the head in the new list</span>
+<span class="hljs-comment"> *             false be the head in the new list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_chg_list(<span class="hljs-type">ug_ll_t</span> * ll_ori_p, <span class="hljs-type">ug_ll_t</span> * ll_new_p, <span class="hljs-type">void</span> * node, <span class="hljs-type">bool</span> head)
+&#123;
+    _ug_ll_remove(ll_ori_p, node);
+
+    <span class="hljs-keyword">if</span>(head) &#123;
+        <span class="hljs-comment">/*Set node as head*/</span>
+        node_set_prev(ll_new_p, node, <span class="hljs-literal">NULL</span>);
+        node_set_next(ll_new_p, node, ll_new_p-&gt;head);
+
+        <span class="hljs-keyword">if</span>(ll_new_p-&gt;head != <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is old head then before it goes the new*/</span>
+            node_set_prev(ll_new_p, ll_new_p-&gt;head, node);
+        &#125;
+
+        ll_new_p-&gt;head = node;       <span class="hljs-comment">/*Set the new head in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_new_p-&gt;tail == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no tail (first node) set the tail too*/</span>
+            ll_new_p-&gt;tail = node;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-comment">/*Set node as tail*/</span>
+        node_set_prev(ll_new_p, node, ll_new_p-&gt;tail);
+        node_set_next(ll_new_p, node, <span class="hljs-literal">NULL</span>);
+
+        <span class="hljs-keyword">if</span>(ll_new_p-&gt;tail != <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is old tail then after it goes the new*/</span>
+            node_set_next(ll_new_p, ll_new_p-&gt;tail, node);
+        &#125;
+
+        ll_new_p-&gt;tail = node;       <span class="hljs-comment">/*Set the new tail in the dsc.*/</span>
+        <span class="hljs-keyword">if</span>(ll_new_p-&gt;head == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/*If there is no head (first node) set the head too*/</span>
+            ll_new_p-&gt;head = node;
+        &#125;
+    &#125;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with head node of the linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the head of &#x27;ll_p&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_head(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">void</span> * head = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">if</span>(ll_p != <span class="hljs-literal">NULL</span>) &#123;
+        head = ll_p-&gt;head;
+    &#125;
+
+    <span class="hljs-keyword">return</span> head;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with tail node of the linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return pointer to the head of &#x27;ll_p&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_tail(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">void</span> * tail = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">if</span>(ll_p != <span class="hljs-literal">NULL</span>) &#123;
+        tail = ll_p-&gt;tail;
+    &#125;
+
+    <span class="hljs-keyword">return</span> tail;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with the pointer of the next node after &#x27;n_act&#x27;</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the next node</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_next(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">const</span> <span class="hljs-type">void</span> * n_act)
+&#123;
+    <span class="hljs-keyword">if</span>(ll_p == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/* Pointer to the next node is stored in the end of this node.</span>
+<span class="hljs-comment">     * Go there and return the address found there */</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">ug_ll_node_t</span> * n_act_d = n_act;
+    n_act_d += LL_NEXT_P_OFFSET(ll_p);
+    <span class="hljs-keyword">return</span> *((<span class="hljs-type">ug_ll_node_t</span> **)n_act_d);
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return with the pointer of the previous node after &#x27;n_act&#x27;</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param n_act pointer a node</span>
+<span class="hljs-comment"> * @return pointer to the previous node</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> * _ug_ll_get_prev(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">const</span> <span class="hljs-type">void</span> * n_act)
+&#123;
+    <span class="hljs-keyword">if</span>(ll_p == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/* Pointer to the prev. node is stored in the end of this node.</span>
+<span class="hljs-comment">     * Go there and return the address found there */</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">ug_ll_node_t</span> * n_act_d = n_act;
+    n_act_d += LL_PREV_P_OFFSET(ll_p);
+    <span class="hljs-keyword">return</span> *((<span class="hljs-type">ug_ll_node_t</span> **)n_act_d);
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Return the length of the linked list.</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @return length of the linked list</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">uint32_t</span> _ug_ll_get_len(<span class="hljs-type">const</span> <span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-type">uint32_t</span> len = <span class="hljs-number">0</span>;
+    <span class="hljs-type">void</span> * node;
+
+    <span class="hljs-keyword">for</span>(node = _ug_ll_get_head(ll_p); node != <span class="hljs-literal">NULL</span>; node = _ug_ll_get_next(ll_p, node)) &#123;
+        len++;
+    &#125;
+
+    <span class="hljs-keyword">return</span> len;
+&#125;
+
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Move a node before an other node in the same linked list</span>
+<span class="hljs-comment"> * @param ll_p pointer to a linked list</span>
+<span class="hljs-comment"> * @param n_act pointer to node to move</span>
+<span class="hljs-comment"> * @param n_after pointer to a node which should be after `n_act`</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">void</span> _ug_ll_move_before(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">void</span> * n_act, <span class="hljs-type">void</span> * n_after)
+&#123;
+    <span class="hljs-keyword">if</span>(n_act == n_after) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Can&#x27;t move before itself*/</span>
+
+    <span class="hljs-type">void</span> * n_before;
+    <span class="hljs-keyword">if</span>(n_after != <span class="hljs-literal">NULL</span>)
+        n_before = _ug_ll_get_prev(ll_p, n_after);
+    <span class="hljs-keyword">else</span>
+        n_before = _ug_ll_get_tail(ll_p); <span class="hljs-comment">/*if `n_after` is NULL `n_act` should be the new tail*/</span>
+
+    <span class="hljs-keyword">if</span>(n_act == n_before) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Already before `n_after`*/</span>
+
+    <span class="hljs-comment">/*It&#x27;s much easier to remove from the list and add again*/</span>
+    _ug_ll_remove(ll_p, n_act);
+
+    <span class="hljs-comment">/*Add again by setting the prev. and next nodes*/</span>
+    node_set_next(ll_p, n_before, n_act);
+    node_set_prev(ll_p, n_act, n_before);
+    node_set_prev(ll_p, n_after, n_act);
+    node_set_next(ll_p, n_act, n_after);
+
+    <span class="hljs-comment">/*If `n_act` was moved before NULL then it become the new tail*/</span>
+    <span class="hljs-keyword">if</span>(n_after == <span class="hljs-literal">NULL</span>) ll_p-&gt;tail = n_act;
+
+    <span class="hljs-comment">/*If `n_act` was moved before `NULL` then it&#x27;s the new head*/</span>
+    <span class="hljs-keyword">if</span>(n_before == <span class="hljs-literal">NULL</span>) ll_p-&gt;head = n_act;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Check if a linked list is empty</span>
+<span class="hljs-comment"> * @param ll_p pointer to a linked list</span>
+<span class="hljs-comment"> * @return true: the linked list is empty; false: not empty</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">bool</span> _ug_ll_is_empty(<span class="hljs-type">ug_ll_t</span> * ll_p)
+&#123;
+    <span class="hljs-keyword">if</span>(ll_p == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">if</span>(ll_p-&gt;head == <span class="hljs-literal">NULL</span> &amp;&amp; ll_p-&gt;tail == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+&#125;
+
+<span class="hljs-comment">/**********************</span>
+<span class="hljs-comment"> *   STATIC FUNCTIONS</span>
+<span class="hljs-comment"> **********************/</span>
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Set the previous node pointer of a node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param act pointer to a node which prev. node pointer should be set</span>
+<span class="hljs-comment"> * @param prev pointer to a node which should be the previous node before &#x27;act&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_prev</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * prev)</span>
+&#123;
+    <span class="hljs-keyword">if</span>(act == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Can&#x27;t set the prev node of `NULL`*/</span>
+
+    <span class="hljs-type">uint8_t</span> * act8 = (<span class="hljs-type">uint8_t</span> *) act;
+
+    act8 += LL_PREV_P_OFFSET(ll_p);
+
+    <span class="hljs-type">ug_ll_node_t</span> ** act_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) act8;
+    <span class="hljs-type">ug_ll_node_t</span> ** prev_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) &amp;prev;
+
+    *act_node_p = *prev_node_p;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Set the &#x27;next node pointer&#x27; of a node</span>
+<span class="hljs-comment"> * @param ll_p pointer to linked list</span>
+<span class="hljs-comment"> * @param act pointer to a node which next node pointer should be set</span>
+<span class="hljs-comment"> * @param next pointer to a node which should be the next node before &#x27;act&#x27;</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">node_set_next</span><span class="hljs-params">(<span class="hljs-type">ug_ll_t</span> * ll_p, <span class="hljs-type">ug_ll_node_t</span> * act, <span class="hljs-type">ug_ll_node_t</span> * next)</span>
+&#123;
+    <span class="hljs-keyword">if</span>(act == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">/*Can&#x27;t set the next node of `NULL`*/</span>
+    <span class="hljs-type">uint8_t</span> * act8 = (<span class="hljs-type">uint8_t</span> *) act;
+
+    act8 += LL_NEXT_P_OFFSET(ll_p);
+    <span class="hljs-type">ug_ll_node_t</span> ** act_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) act8;
+    <span class="hljs-type">ug_ll_node_t</span> ** next_node_p = (<span class="hljs-type">ug_ll_node_t</span> **) &amp;next;
+
+    *act_node_p = *next_node_p;
+&#125;
+
+</code></pre></div>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/UVGUI/">UVGUI</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/UVGUI/">UVGUI</a>
+                    
+                      <a class="hover-with-bg" href="/tags/linklist/">linklist</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">UVGUI动态内存分配实现原理</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/18/PROJECT/hardware/Kite_V1/">
+                        <span class="hidden-mobile">Kite_V1.0 [ESP32开发板]</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

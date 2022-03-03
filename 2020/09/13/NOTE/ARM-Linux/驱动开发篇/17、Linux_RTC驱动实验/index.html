@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux RTC驱动RTC 也就是实时时钟，用于记录当前系统时间，对于 Linux 系统而言时间是非常重要的，就和我们使用 Windows 电脑或手机查看时间一样，我们在使用 Linux 设备的时候也需要查看时间。本章我们就来学习一下如何编写 Linux 下的 RTC 驱动程序。 1| Linux  内核 RTC  驱动简介RTC 设备驱动是一个标准的字符设备驱动，应用程序通过 open、rel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="17| Linux RTC驱动">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="Linux RTC驱动RTC 也就是实时时钟，用于记录当前系统时间，对于 Linux 系统而言时间是非常重要的，就和我们使用 Windows 电脑或手机查看时间一样，我们在使用 Linux 设备的时候也需要查看时间。本章我们就来学习一下如何编写 Linux 下的 RTC 驱动程序。 1| Linux  内核 RTC  驱动简介RTC 设备驱动是一个标准的字符设备驱动，应用程序通过 open、rel">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141549858.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141816507.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141914426.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830142017580.png">
+<meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png">
+  
+  
+  <title>17| Linux RTC驱动 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="17| Linux RTC驱动">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-13 00:00" pubdate>
+        2020年9月13日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      51 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">17| Linux RTC驱动</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Linux-RTC驱动"><a href="#Linux-RTC驱动" class="headerlink" title="Linux RTC驱动"></a>Linux RTC驱动</h1><p>RTC 也就是实时时钟，用于记录当前系统时间，对于 Linux 系统而言时间是非常重要的，就和我们使用 Windows 电脑或手机查看时间一样，我们在使用 Linux 设备的时候也需要查看时间。本章我们就来学习一下如何编写 Linux 下的 RTC 驱动程序。</p>
+<h2 id="1-Linux-内核-RTC-驱动简介"><a href="#1-Linux-内核-RTC-驱动简介" class="headerlink" title="1| Linux  内核 RTC  驱动简介"></a>1| Linux  内核 RTC  驱动简介</h2><p>RTC 设备驱动是一个标准的字符设备驱动，应用程序通过 open、release、read、write 和 ioctl等函数完成对 RTC 设备的操作，Linux 内核将 RTC 设备抽象为 rtc_device 结构体，因此 RTC 设备驱动就是申请并初始化 rtc_device，最后将 rtc_device 注册到 Linux 内核里面，这样 Linux 内核就有一个 RTC 设备的。</p>
+<p>至于 RTC 设备的操作肯定是用一个操作集合(结构体)来表示的，我们先来看一下 rtc_device 结构体，此结构体定义在 include&#x2F;linux&#x2F;rtc.h 文件中，结构体内容如下(删除条件编译)：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">104</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_device</span></span>
+<span class="hljs-class">105 &#123;</span>
+<span class="hljs-number">106</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> <span class="hljs-title">dev</span>;</span> <span class="hljs-comment">/* 设备 */</span>
+<span class="hljs-number">107</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>;</span>
+<span class="hljs-number">108</span>
+<span class="hljs-number">109</span> 	<span class="hljs-type">int</span> id; <span class="hljs-comment">/* ID */</span>
+<span class="hljs-number">110</span> 	<span class="hljs-type">char</span> name[RTC_DEVICE_NAME_SIZE]; <span class="hljs-comment">/* 名字 */</span>
+<span class="hljs-number">111</span>
+<span class="hljs-number">112</span> 	<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_class_ops</span> *<span class="hljs-title">ops</span>;</span> <span class="hljs-comment">/* RTC 设备底层操作函数 */</span>
+<span class="hljs-number">113</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mutex</span> <span class="hljs-title">ops_lock</span>;</span>
+<span class="hljs-number">114</span>
+<span class="hljs-number">115</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">char_dev</span>;</span> <span class="hljs-comment">/* 字符设备 */</span>
+<span class="hljs-number">116</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> flags;
+<span class="hljs-number">117</span>
+<span class="hljs-number">118</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> irq_data;
+<span class="hljs-number">119</span> 	<span class="hljs-type">spinlock_t</span> irq_lock;
+<span class="hljs-number">120</span> 	<span class="hljs-type">wait_queue_head_t</span> irq_queue;
+<span class="hljs-number">121</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fasync_struct</span> *<span class="hljs-title">async_queue</span>;</span>
+<span class="hljs-number">122</span>
+<span class="hljs-number">123</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_task</span> *<span class="hljs-title">irq_task</span>;</span>
+<span class="hljs-number">124</span> 	<span class="hljs-type">spinlock_t</span> irq_task_lock;
+<span class="hljs-number">125</span> 	<span class="hljs-type">int</span> irq_freq;
+<span class="hljs-number">126</span> 	<span class="hljs-type">int</span> max_user_freq;
+<span class="hljs-number">127</span>
+<span class="hljs-number">128</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timerqueue_head</span> <span class="hljs-title">timerqueue</span>;</span>
+<span class="hljs-number">129</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_timer</span> <span class="hljs-title">aie_timer</span>;</span>
+<span class="hljs-number">130</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_timer</span> <span class="hljs-title">uie_rtctimer</span>;</span>
+<span class="hljs-number">131</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hrtimer</span> <span class="hljs-title">pie_timer</span>;</span> <span class="hljs-comment">/* sub second exp, so needs hrtimer */</span>
+<span class="hljs-number">132</span> 	<span class="hljs-type">int</span> pie_enabled;
+<span class="hljs-number">133</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">work_struct</span> <span class="hljs-title">irqwork</span>;</span>
+<span class="hljs-number">134</span> 	<span class="hljs-comment">/* Some hardware can&#x27;t support UIE mode */</span>
+<span class="hljs-number">135</span> 	<span class="hljs-type">int</span> uie_unsupported;
+......
+<span class="hljs-number">147</span> &#125;;</code></pre></div>
+
+<p>我们需要重点关注的是 ops 成员变量，这是一个 rtc_class_ops 类型的指针变量，rtc_class_ops为 RTC 设备的最底层操作函数集合，包括从 RTC 设备中读取时间、向 RTC 设备写入新的时间值等。因此，rtc_class_ops 是需要用户根据所使用的 RTC 设备编写的，此结构体定义在include&#x2F;linux&#x2F;rtc.h 文件中，内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">71</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_class_ops</span> &#123;</span>
+<span class="hljs-number">72</span> 	<span class="hljs-type">int</span> (*open)(<span class="hljs-keyword">struct</span> device *);
+<span class="hljs-number">73</span> 	<span class="hljs-type">void</span> (*release)(<span class="hljs-keyword">struct</span> device *);
+<span class="hljs-number">74</span> 	<span class="hljs-type">int</span> (*ioctl)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>);
+<span class="hljs-number">75</span> 	<span class="hljs-type">int</span> (*read_time)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-keyword">struct</span> rtc_time *);
+<span class="hljs-number">76</span> 	<span class="hljs-type">int</span> (*set_time)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-keyword">struct</span> rtc_time *);
+<span class="hljs-number">77</span> 	<span class="hljs-type">int</span> (*read_alarm)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-keyword">struct</span> rtc_wkalrm *);
+<span class="hljs-number">78</span> 	<span class="hljs-type">int</span> (*set_alarm)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-keyword">struct</span> rtc_wkalrm *);
+<span class="hljs-number">79</span> 	<span class="hljs-type">int</span> (*proc)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-keyword">struct</span> seq_file *);
+<span class="hljs-number">80</span> 	<span class="hljs-type">int</span> (*set_mmss64)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-type">time64_t</span> secs);
+<span class="hljs-number">81</span> 	<span class="hljs-type">int</span> (*set_mmss)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> secs);
+<span class="hljs-number">82</span> 	<span class="hljs-type">int</span> (*read_callback)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-type">int</span> data);
+<span class="hljs-number">83</span> 	<span class="hljs-type">int</span> (*alarm_irq_enable)(<span class="hljs-keyword">struct</span> device *, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> enabled);
+<span class="hljs-number">84</span> &#125;;</code></pre></div>
+
+<p>看名字就知道 rtc_class_ops 操作集合中的这些函数是做什么的了，但是我们要注意，rtc_class_ops 中的这些函数只是最底层的 RTC 设备操作函数，并不是提供给应用层的file_operations 函数操作集。RTC 是个字符设备，那么肯定有字符设备的 file_operations 函数操作集，Linux 内核提供了一个 RTC 通用字符设备驱动文件，文件名为 drivers&#x2F;rtc&#x2F;rtc-dev.c，rtc-dev.c 文件提供了所有 RTC 设备共用的 file_operations 函数操作集，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">448</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">rtc_dev_fops</span> =</span> &#123;
+<span class="hljs-number">449</span> 	.owner = THIS_MODULE,
+<span class="hljs-number">450</span> 	.llseek = no_llseek,
+<span class="hljs-number">451</span> 	.read = rtc_dev_read,
+<span class="hljs-number">452</span> 	.poll = rtc_dev_poll,
+<span class="hljs-number">453</span> 	.unlocked_ioctl = rtc_dev_ioctl,
+<span class="hljs-number">454</span> 	.open = rtc_dev_open,
+<span class="hljs-number">455</span> 	.release = rtc_dev_release,
+<span class="hljs-number">456</span> 	.fasync = rtc_dev_fasync,
+<span class="hljs-number">457</span> &#125;;</code></pre></div>
+
+<p>看到示例代码是不是很熟悉了，标准的字符设备操作集。应用程序可以通过 ioctl 函数来设置&#x2F;读取时间、设置&#x2F;读取闹钟的操作，那么对应的 rtc_dev_ioctl 函数就会执行，rtc_dev_ioctl 最终会通过操作 rtc_class_ops 中的 read_time、set_time 等函数来对具体 RTC 设备的读写操作。我们简单来看一下 rtc_dev_ioctl 函数，函数内容如下(有省略)：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">218</span> <span class="hljs-type">static</span> <span class="hljs-type">long</span> <span class="hljs-title function_">rtc_dev_ioctl</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *file,</span>
+<span class="hljs-params"><span class="hljs-number">219</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cmd, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> arg)</span>
+220 &#123;
+<span class="hljs-number">221</span> 	<span class="hljs-type">int</span> err = <span class="hljs-number">0</span>;
+<span class="hljs-number">222</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_device</span> *<span class="hljs-title">rtc</span> =</span> file-&gt;private_data;
+<span class="hljs-number">223</span> 	<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_class_ops</span> *<span class="hljs-title">ops</span> =</span> rtc-&gt;ops;
+<span class="hljs-number">224</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_time</span> <span class="hljs-title">tm</span>;</span>
+<span class="hljs-number">225</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rtc_wkalrm</span> <span class="hljs-title">alarm</span>;</span>
+<span class="hljs-number">226</span> 	<span class="hljs-type">void</span> __user *uarg = (<span class="hljs-type">void</span> __user *) arg;
+<span class="hljs-number">227</span>
+<span class="hljs-number">228</span> 	err = mutex_lock_interruptible(&amp;rtc-&gt;ops_lock);
+<span class="hljs-number">229</span> 	<span class="hljs-keyword">if</span> (err)
+<span class="hljs-number">230</span> 		<span class="hljs-keyword">return</span> err;
+......
+<span class="hljs-number">269</span> 	<span class="hljs-keyword">switch</span> (cmd) &#123;
+......
+<span class="hljs-number">333</span> 	<span class="hljs-keyword">case</span> RTC_RD_TIME: <span class="hljs-comment">/*  读取时间 */</span>
+<span class="hljs-number">334</span> 		mutex_unlock(&amp;rtc-&gt;ops_lock);
+<span class="hljs-number">335</span>
+<span class="hljs-number">336</span> 		err = rtc_read_time(rtc, &amp;tm);
+<span class="hljs-number">337</span> 		<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
+<span class="hljs-number">338</span> 			<span class="hljs-keyword">return</span> err;
+<span class="hljs-number">339</span>
+<span class="hljs-number">340</span> 		<span class="hljs-keyword">if</span> (copy_to_user(uarg, &amp;tm, <span class="hljs-keyword">sizeof</span>(tm)))
+<span class="hljs-number">341</span> 			err = -EFAULT;
+<span class="hljs-number">342</span> 		<span class="hljs-keyword">return</span> err;
+<span class="hljs-number">343</span>
+<span class="hljs-number">344</span> 	<span class="hljs-keyword">case</span> RTC_SET_TIME: <span class="hljs-comment">/* 设置时间 */</span>
+<span class="hljs-number">345</span> 		mutex_unlock(&amp;rtc-&gt;ops_lock);
+<span class="hljs-number">346</span>
+<span class="hljs-number">347</span> 		<span class="hljs-keyword">if</span> (copy_from_user(&amp;tm, uarg, <span class="hljs-keyword">sizeof</span>(tm)))
+<span class="hljs-number">348</span> 			<span class="hljs-keyword">return</span> -EFAULT;
+<span class="hljs-number">349</span>
+<span class="hljs-number">350</span> 		<span class="hljs-keyword">return</span> rtc_set_time(rtc, &amp;tm);
+......
+<span class="hljs-number">401</span> 	<span class="hljs-keyword">default</span>:
+<span class="hljs-number">402</span> 	<span class="hljs-comment">/* Finally try the driver&#x27;s ioctl interface */</span>
+<span class="hljs-number">403</span> 		<span class="hljs-keyword">if</span> (ops-&gt;ioctl) &#123;
+<span class="hljs-number">404</span> 			err = ops-&gt;ioctl(rtc-&gt;dev.parent, cmd, arg);
+<span class="hljs-number">405</span> 		<span class="hljs-keyword">if</span> (err == -ENOIOCTLCMD)
+<span class="hljs-number">406</span> 			err = -ENOTTY;
+<span class="hljs-number">407</span> 		&#125; <span class="hljs-keyword">else</span>
+<span class="hljs-number">408</span> 			err = -ENOTTY;
+<span class="hljs-number">409</span> 		<span class="hljs-keyword">break</span>;
+<span class="hljs-number">410</span> 	&#125;
+<span class="hljs-number">411</span>
+<span class="hljs-number">412</span> done:
+<span class="hljs-number">413</span> 	mutex_unlock(&amp;rtc-&gt;ops_lock);
+<span class="hljs-number">414</span> 	<span class="hljs-keyword">return</span> err;
+<span class="hljs-number">415</span> &#125;</code></pre></div>
+
+<p>第 333 行，RTC_RD_TIME 为时间读取命令。</p>
+<p>第 336 行，如果是读取时间命令的话就调用 rtc_read_time 函数获取当前 RTC 时钟，rtc_read_time 函数，rtc_read_time 会调用__rtc_read_time 函数，__rtc_read_time 函数内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">23</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> __rtc_read_time(<span class="hljs-keyword">struct</span> rtc_device *rtc, <span class="hljs-keyword">struct</span> rtc_time *tm)
+<span class="hljs-number">24</span> &#123;
+<span class="hljs-number">25</span> 		<span class="hljs-type">int</span> err;
+<span class="hljs-number">26</span> 		<span class="hljs-keyword">if</span> (!rtc-&gt;ops)
+<span class="hljs-number">27</span> 			err = -ENODEV;
+<span class="hljs-number">28</span> 		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!rtc-&gt;ops-&gt;read_time)
+<span class="hljs-number">29</span> 			err = -EINVAL;
+<span class="hljs-number">30</span> 		<span class="hljs-keyword">else</span> &#123;
+<span class="hljs-number">31</span> 			<span class="hljs-built_in">memset</span>(tm, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> rtc_time));
+<span class="hljs-number">32</span> 			err = rtc-&gt;ops-&gt;read_time(rtc-&gt;dev.parent, tm);
+<span class="hljs-number">33</span> 			<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>) &#123;
+<span class="hljs-number">34</span>	 			dev_dbg(&amp;rtc-&gt;dev, <span class="hljs-string">&quot;read_time: fail to read: %d\n&quot;</span>,
+<span class="hljs-number">35</span> 																	err);
+<span class="hljs-number">36</span> 				<span class="hljs-keyword">return</span> err;
+<span class="hljs-number">37</span> 			&#125;
+<span class="hljs-number">38</span>
+<span class="hljs-number">39</span> 			err = rtc_valid_tm(tm);
+<span class="hljs-number">40</span> 			<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
+<span class="hljs-number">41</span> 				dev_dbg(&amp;rtc-&gt;dev, <span class="hljs-string">&quot;read_time: rtc_time isn&#x27;t valid\n&quot;</span>);
+<span class="hljs-number">42</span> 		&#125;
+<span class="hljs-number">43</span> 		<span class="hljs-keyword">return</span> err;
+<span class="hljs-number">44</span> &#125;</code></pre></div>
+
+<p>从示例代码 中的 32 行可以看出，__rtc_read_time 函数会通过调用 rtc_class_ops 中的read_time 来从 RTC 设备中获取当前时间。rtc_dev_ioctl 函数对其他的命令处理都是类似的，比如 RTC_ALM_READ 命令会通过 rtc_read_alarm 函数获取到闹钟值，而 rtc_read_alarm 函数经过层层调用，最终会调用rtc_class_ops 中的 read_alarm 函数来获取闹钟值。</p>
+<p>至此，Linux 内核中 RTC 驱动调用流程就很清晰了，如图  所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830121424825.png" srcset="/img/loading.gif" lazyload alt="image-20200830121424825"></p>
+<hr>
+<p>当 rtc_class_ops 准备好以后需要将其<strong>注册到 Linux 内核</strong>中，这里我们可以使用rtc_device_register函数完成注册工作。此函数会申请一个rtc_device并且初始化这个rtc_device，最后向调用者返回这个rtc_device，此函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">struct</span> rtc_device *<span class="hljs-title function_">rtc_device_register</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name,</span>
+<span class="hljs-params">                                       <span class="hljs-keyword">struct</span> device *dev,</span>
+<span class="hljs-params">                                       <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> rtc_class_ops *ops,</span>
+<span class="hljs-params">                                       <span class="hljs-keyword">struct</span> module *owner)</span></code></pre></div>
+
+<p>函数参数和返回值含义如下：<br><strong>name</strong>：设备名字。<br><strong>dev</strong> ：设备。<br><strong>ops</strong> ：RTC 底层驱动函数集。<br><strong>owner</strong>：驱动模块拥有者。<br><strong>返回值</strong>：注册成功的话就返回 rtc_device，错误的话会返回一个负值。</p>
+<hr>
+<p>当<strong>卸载 RTC 驱动</strong>的时候需要调用 rtc_device_unregister 函数来注销注册的 rtc_device，函数型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">rtc_device_unregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> rtc_device *rtc)</span></code></pre></div>
+
+<p>函数参数和返回值含义如下：<br><strong>rtc</strong>：要删除的 rtc_device。<br><strong>返回值</strong>：无。</p>
+<hr>
+<p>还有另外一对 rtc_device 注册函数 devm_rtc_device_register 和 devm_rtc_device_unregister，分别为注册和注销 rtc_device。</p>
+<hr>
+<h2 id="2-I-MX6U-内部-RTC-驱动分析"><a href="#2-I-MX6U-内部-RTC-驱动分析" class="headerlink" title="2| I.MX6U  内部 RTC 驱动分析"></a>2| I.MX6U  内部 RTC 驱动分析</h2><p>先直接告诉大家，I.MX6U 的 RTC 驱动我们不用自己编写，因为 NXP 已经写好了。其实对于大多数的 SOC 来讲，内部 RTC 驱动都不需要我们去编写，半导体厂商会编写好。但是这不代表我们就偷懒了，虽然不用编写 RTC 驱动，但是我们得看一下这些原厂是怎么编写 RTC 驱动的。</p>
+<p><strong>具体参考正点原子IMX6UL驱动开发手册 60.2节</strong></p>
+<h2 id="3-RTC-时间查看与设置"><a href="#3-RTC-时间查看与设置" class="headerlink" title="3| RTC  时间查看与设置"></a>3| RTC  时间查看与设置</h2><h3 id="1-、时间-RTC-查看"><a href="#1-、时间-RTC-查看" class="headerlink" title="1 、时间 RTC 查看"></a>1 、时间 RTC 查看</h3><p>RTC 是用来计时的，因此最基本的就是查看时间，Linux 内核启动的时候可以看到系统时钟设置信息，如图所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141549858.png" srcset="/img/loading.gif" lazyload alt="image-20200830141549858"></p>
+<p>从图中可以看出，Linux 内核在启动的时候将 snvs_rtc 设置为 rtc0，大家的启动信息可能会和图中的不同，但是内容基本上都是一样的。如果要查看时间的话输入“date”命令即可，结果如图所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141816507.png" srcset="/img/loading.gif" lazyload alt="image-20200830141816507"></p>
+<p>从图可以看出，当前时间为 1970 年 1 月 1 日 00:01:19，很明显是时间不对，我们需要重新设置 RTC 时间。</p>
+<h3 id="2-、设置-RTC-时间"><a href="#2-、设置-RTC-时间" class="headerlink" title="2 、设置 RTC  时间"></a>2 、设置 RTC  时间</h3><p>RTC 时间设置也是使用的 date 命令，输入“date –help”命令即可查看 date 命令如何设置系统时间，结果如图所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830141914426.png" srcset="/img/loading.gif" lazyload alt="image-20200830141914426"></p>
+<p>现在我要设置当前时间为 2020年8月30日14:19:30，因此输入如下命令：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs applescript"><span class="hljs-built_in">date</span> -s <span class="hljs-string">&quot;2020-08-30 14:20:00&quot;</span></code></pre></div>
+
+<p>设置完成以后再次使用 date 命令查看一下当前时间就会发现时间改过来了，如图 所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/17%E3%80%81Linux_RTC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830142017580.png" srcset="/img/loading.gif" lazyload alt="image-20200830142017580"></p>
+<p>大家注意我们使用“date -s”命令仅仅是将当前系统时间设置了，此时间还没有写入到I.MX6U 内部 RTC 里面或其他的 RTC 芯片里面，因此系统重启以后时间又会丢失。我们需要将当前的时间写入到 RTC 里面，这里要用到 hwclock 命令，输入如下命令将系统时间写入到 RTC里面：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">hwclock -w  //将当前系统时间写入到 RTC 里面</code></pre></div>
+
+<p>时间写入到 RTC 里面以后就不怕系统重启以后时间丢失了，如果 I.MX6U-ALPHA 开发板底板接了纽扣电池，那么开发板即使断电了时间也不会丢失。大家可以尝试一下不断电重启和断电重启这两种情况下开发板时间会不会丢失。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">16| Linux LCD驱动实验</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">18| Linux I2C驱动实验</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,896 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="新字符设备驱动实验经过前两实验的实战操作，我们已经掌握了 Linux 字符设备驱动开发的基本步骤，字符设备驱动开发重点是使用 register_chrdev 函数注册字符设备，当不再使用设备的时候就使用unregister_chrdev 函数注销字符设备，驱动模块加载成功以后还需要手动使用 mknod 命令创建设备节点。 register_chrdev 和 unregister_chrdev 这两">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3| 新字符设备驱动实验">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="新字符设备驱动实验经过前两实验的实战操作，我们已经掌握了 Linux 字符设备驱动开发的基本步骤，字符设备驱动开发重点是使用 register_chrdev 函数注册字符设备，当不再使用设备的时候就使用unregister_chrdev 函数注销字符设备，驱动模块加载成功以后还需要手动使用 mknod 命令创建设备节点。 register_chrdev 和 unregister_chrdev 这两">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/image-20200820181615173.png">
+<meta property="article:published_time" content="2020-09-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-09T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/image-20200820181615173.png">
+  
+  
+  <title>3| 新字符设备驱动实验 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="3| 新字符设备驱动实验">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-10 00:00" pubdate>
+        2020年9月10日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      11k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      89 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">3| 新字符设备驱动实验</h1>
+            
+            <div class="markdown-body">
+              <h1 id="新字符设备驱动实验"><a href="#新字符设备驱动实验" class="headerlink" title="新字符设备驱动实验"></a>新字符设备驱动实验</h1><p>经过前两实验的实战操作，我们已经掌握了 Linux 字符设备驱动开发的基本步骤，字符设备驱动开发重点是使用 register_chrdev 函数注册字符设备，当不再使用设备的时候就使用unregister_chrdev 函数注销字符设备，驱动模块加载成功以后还需要手动使用 mknod 命令创建设备节点。</p>
+<p><strong>register_chrdev</strong> 和 <strong>unregister_chrdev</strong> 这两个函数是老版本驱动使用的函数，现在新的字符设备驱动已经不再使用这两个函数，而是使用Linux内核推荐的新字符设备驱动API函数。</p>
+<p>本节我们就来学习一下如何编写新字符设备驱动，并且在驱动模块加载的时候自动创建设备节点文件。</p>
+<h2 id="一、新字符设备驱动原理"><a href="#一、新字符设备驱动原理" class="headerlink" title="一、新字符设备驱动原理"></a>一、新字符设备驱动原理</h2><h3 id="1-分配和释放设备号"><a href="#1-分配和释放设备号" class="headerlink" title="1|分配和释放设备号"></a>1|分配和释放设备号</h3><p>使用 register_chrdev 函数注册字符设备的时候只需要给定一个主设备号即可，但是这样会带来两个问题：</p>
+<p>①、需要我们事先确定好哪些主设备号没有使用。<br>②、会将一个主设备号下的所有次设备号都使用掉，比如现在设置 LED 这个主设备号为200，那么0~1048575(2^20-1)这个区间的次设备号就全部都被 LED 一个设备分走了。这样太浪费次设备号了！一个 LED 设备肯定只能有一个主设备号，一个次设备号。</p>
+<p>解决这两个问题最好的方法就是要使用设备号的时候向 Linux 内核申请，需要几个就申请几个，由 Linux 内核分配设备可以使用的设备号。</p>
+<p>如果没有指定设备号的话就使用如下函数来申请设备号：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">alloc_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> *dev, <span class="hljs-type">unsigned</span> baseminor, <span class="hljs-type">unsigned</span> count, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name)</span></code></pre></div>
+
+<p>如果给定了设备的主设备号和次设备号就使用如下所示函数来注册设备号即可：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">register_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> from, <span class="hljs-type">unsigned</span> count, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name)</span></code></pre></div>
+
+<p>参数 <strong>from</strong> 是要申请的起始设备号，也就是给定的设备号；</p>
+<p>参数 <strong>count</strong> 是要申请的数量，一般都是一个；</p>
+<p>参数 <strong>name</strong> 是设备名字。</p>
+<p>注销字符设备之后要释放掉设备号，不管是通过 alloc_chrdev_region 函数还是register_chrdev_region 函数申请的设备号，统一使用如下释放函数：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">unregister_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> from, <span class="hljs-type">unsigned</span> count)</span></code></pre></div>
+
+<p>新字符设备驱动下，设备号分配示例代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">int</span> major; <span class="hljs-comment">/* 主设备号 */</span>
+<span class="hljs-number">2</span> <span class="hljs-type">int</span> minor; <span class="hljs-comment">/* 次设备号 */</span>
+<span class="hljs-number">3</span> <span class="hljs-type">dev_t</span> devid; <span class="hljs-comment">/* 设备号 */</span>
+<span class="hljs-number">4</span>
+<span class="hljs-number">5</span> <span class="hljs-keyword">if</span> (major) &#123; <span class="hljs-comment">/* 定义了主设备号 */</span>
+<span class="hljs-number">6</span> 		devid = MKDEV(major, <span class="hljs-number">0</span>); <span class="hljs-comment">/* 大部分驱动次设备号都选择 0 */</span>
+<span class="hljs-number">7</span> 		register_chrdev_region(devid, <span class="hljs-number">1</span>, <span class="hljs-string">&quot;test&quot;</span>);
+<span class="hljs-number">8</span> &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">/* 没有定义设备号 */</span>
+<span class="hljs-number">9</span> 		alloc_chrdev_region(&amp;devid, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-string">&quot;test&quot;</span>); <span class="hljs-comment">/* 申请设备号 */</span>
+<span class="hljs-number">10</span> 		major = MAJOR(devid); <span class="hljs-comment">/* 获取分配号的主设备号 */</span>
+<span class="hljs-number">11</span> 		minor = MINOR(devid); <span class="hljs-comment">/* 获取分配号的次设备号 */</span>
+<span class="hljs-number">12</span> &#125;</code></pre></div>
+
+<p>如果要注销设备号的话，使用如下代码即可：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">unregister_chrdev_region(devid, <span class="hljs-number">1</span>); <span class="hljs-comment">/* 注销设备号 */</span></code></pre></div>
+
+<p>注销设备号的代码很简单。</p>
+<h3 id="2-新的字符设备注册方法"><a href="#2-新的字符设备注册方法" class="headerlink" title="2|新的字符设备注册方法"></a>2|新的字符设备注册方法</h3><h4 id="1-、字符设备结构"><a href="#1-、字符设备结构" class="headerlink" title="1 、字符设备结构"></a>1 、字符设备结构</h4><p>在 Linux 中使用 cdev 结构体表示一个字符设备，cdev 结构体在 include&#x2F;linux&#x2F;cdev.h 文件中的定义如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> &#123;</span>
+<span class="hljs-number">2</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kobject</span> <span class="hljs-title">kobj</span>;</span>
+<span class="hljs-number">3</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>;</span>
+<span class="hljs-number">4</span> 		<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> *<span class="hljs-title">ops</span>;</span>
+<span class="hljs-number">5</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">list</span>;</span>
+<span class="hljs-number">6</span>		<span class="hljs-type">dev_t</span> dev;
+<span class="hljs-number">7</span> 		<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> count;
+<span class="hljs-number">8</span> &#125;;</code></pre></div>
+
+<p>在 cdev 中有两个重要的成员变量：<strong>ops</strong> 和 <strong>dev</strong>，这两个就是字符设备文件操作函数集合file_operations 以及设备号 dev_t。</p>
+<p>编写字符设备驱动之前需要定义一个 cdev 结构体变量，这个变量就表示一个字符设备，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">test_cdev</span>;</span></code></pre></div>
+
+<h4 id="2-、cdev-init-函数"><a href="#2-、cdev-init-函数" class="headerlink" title="2 、cdev_init  函数"></a>2 、cdev_init  函数</h4><p>定义好 cdev 变量以后就要使用 cdev_init 函数对其进行初始化，cdev_init 函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">cdev_init</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cdev *cdev, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> file_operations *fops)</span></code></pre></div>
+
+<p>参数 cdev 就是要初始化的 cdev 结构体变量，参数 fops 就是字符设备文件操作函数集合。使用 cdev_init 函数初始化 cdev 变量的示例代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">testcdev</span>;</span>
+<span class="hljs-number">2</span>
+<span class="hljs-number">3</span> <span class="hljs-comment">/* 设备操作函数 */</span>
+<span class="hljs-number">4</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">test_fops</span> =</span> &#123;
+<span class="hljs-number">5</span> 		.owner = THIS_MODULE,
+<span class="hljs-number">6</span> 		<span class="hljs-comment">/* 其他具体的初始项 */</span>
+<span class="hljs-number">7</span> &#125;;
+<span class="hljs-number">8</span>
+<span class="hljs-number">9</span> testcdev.owner = THIS_MODULE;
+<span class="hljs-number">10</span> cdev_init(&amp;testcdev, &amp;test_fops); <span class="hljs-comment">/* 初始化 cdev 结构体变量 */</span></code></pre></div>
+
+<h4 id="3-、cdev-add-函数"><a href="#3-、cdev-add-函数" class="headerlink" title="3 、cdev_add  函数"></a>3 、cdev_add  函数</h4><p>cdev_add 函数用于向 Linux 系统添加字符设备(cdev 结构体变量)，首先使用 cdev_init 函数完成对 cdev 结构体变量的初始化，然后使用 cdev_add 函数向 Linux 系统添加这个字符设备。</p>
+<p>cdev_add 函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">cdev_add</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cdev *p, <span class="hljs-type">dev_t</span> dev, <span class="hljs-type">unsigned</span> count)</span></code></pre></div>
+
+<p>参数 <strong>p</strong> 指向要添加的字符设备(cdev 结构体变量)</p>
+<p>参数 <strong>dev</strong> 就是设备所使用的设备号，</p>
+<p>参数 <strong>count</strong> 是要添加的设备数量。</p>
+<p>完善示例代码，加入 cdev_add 函数，内容如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">testcdev</span>;</span>
+<span class="hljs-number">2</span>
+<span class="hljs-number">3</span> <span class="hljs-comment">/* 设备操作函数 */</span>
+<span class="hljs-number">4</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">test_fops</span> =</span> &#123;
+<span class="hljs-number">5</span> 		.owner = THIS_MODULE,
+<span class="hljs-number">6</span> 		<span class="hljs-comment">/* 其他具体的初始项 */</span>
+<span class="hljs-number">7</span> &#125;;
+<span class="hljs-number">8</span>
+<span class="hljs-number">9</span> testcdev.owner = THIS_MODULE;
+<span class="hljs-number">10</span> cdev_init(&amp;testcdev, &amp;test_fops); <span class="hljs-comment">/* 初始化 cdev 结构体变量  */</span>
+<span class="hljs-number">11</span> cdev_add(&amp;testcdev, devid, <span class="hljs-number">1</span>); <span class="hljs-comment">/*  添加字符设备 */</span></code></pre></div>
+
+<p>以上示例代码  就是新的注册字符设备代码段，Linux 内核中大量的字符设备驱动都是采用这种方法向 Linux 内核添加字符设备。</p>
+<p><strong>如果在加上之前示例代码中分配设备号的程序，那么就它们一起实现的就是函数 register_chrdev 的功能。</strong></p>
+<h4 id="4-、cdev-del-函数"><a href="#4-、cdev-del-函数" class="headerlink" title="4 、cdev_del  函数"></a>4 、cdev_del  函数</h4><p>卸载驱动的时候一定要使用 cdev_del 函数从 Linux 内核中删除相应的字符设备，cdev_del函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">cdev_del</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cdev *p)</span></code></pre></div>
+
+<p>参数 p 就是要删除的字符设备。如果要删除字符设备，参考如下代码：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">cdev_del(&amp;testcdev);  <span class="hljs-comment">/* 删除 cdev */</span></code></pre></div>
+
+<p><strong>cdev_del</strong> 和 <strong>unregister_chrdev_region</strong> 这两个函数合起来的功能相当于 <strong>unregister_chrdev</strong> 函数。</p>
+<h2 id="二、自动创建设备节点"><a href="#二、自动创建设备节点" class="headerlink" title="二、自动创建设备节点"></a>二、自动创建设备节点</h2><p>在前面的 Linux 驱动实验中，当我们使用 modprobe 加载驱动程序以后还需要使用命令<code>mknod</code>手动创建设备节点。本节就来讲解一下<strong>如何实现自动创建设备节点</strong>，在驱动中实现自动创建设备节点的功能以后，使用 <code>modprobe</code> 加载驱动模块成功的话就会自动在&#x2F;dev 目录下创建对应的设备文件。</p>
+<h3 id="1-mdev-机制"><a href="#1-mdev-机制" class="headerlink" title="1|mdev  机制"></a>1|mdev  机制</h3><p>udev 是一个用户程序，在 Linux 下通过 udev 来实现设备文件的创建与删除，udev 可以检测系统中硬件设备状态，可以根据系统中硬件设备状态来创建或者删除设备文件。比如使用modprobe 命令成功加载驱动模块以后就自动在&#x2F;dev 目录下创建对应的设备节点文件,使用 rmmod 命令卸载驱动模块以后就删除掉&#x2F;dev 目录下的设备节点文件。</p>
+<p>使用 busybox 构建根文件系统的时候，busybox 会创建一个 udev 的<strong>简化版本—mdev</strong>，所以在嵌入式 Linux 中我们使用 mdev 来实现设备节点文件的自动创建与删除，Linux 系统中的热插拔事件也由 mdev 管理，在&#x2F;etc&#x2F;init.d&#x2F;rcS 文件中有如下语句：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">echo</span> /sbin/mdev &gt; /proc/sys/kernel/hotplug</code></pre></div>
+
+<p>上述命令设置热插拔事件由 mdev 来管理，关于 udev 或 mdev 更加详细的工作原理这里就不详细探讨了，我们重点来学习一下如何通过 mdev 来实现设备文件节点的自动创建与删除。</p>
+<h3 id="2-创建和删除类"><a href="#2-创建和删除类" class="headerlink" title="2|创建和删除类"></a>2|创建和删除类</h3><p>自动创建设备节点的工作是在驱动程序的入口函数中完成的，一般在 cdev_add 函数后面添加自动创建设备节点相关代码。</p>
+<p>首先要创建一个 class 类，class 是个结构体，定义在文件include&#x2F;linux&#x2F;device.h 里面。class_create 是类创建函数，class_create 是个宏定义，内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> class_create(owner, name) \</span>
+<span class="hljs-meta">2 (&#123; \</span>
+<span class="hljs-meta">3 		static struct lock_class_key __key; \</span>
+<span class="hljs-meta">4 		__class_create(owner, name, &amp;__key); \</span>
+<span class="hljs-meta">5 &#125;)</span>
+<span class="hljs-number">6</span>
+<span class="hljs-number">7</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *__<span class="hljs-title">class_create</span>(<span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>, <span class="hljs-title">const</span> <span class="hljs-title">char</span> *<span class="hljs-title">name</span>,</span>
+<span class="hljs-class">8	 						   <span class="hljs-keyword">struct</span> <span class="hljs-title">lock_class_key</span> *<span class="hljs-title">key</span>)</span></code></pre></div>
+
+<p>class_create 一共有两个参数，<strong>参数 owner</strong> 一般为 THIS_MODULE，<strong>参数 name</strong> 是类名字。<strong>返回值</strong>是个指向结构体 class 的指针，也就是创建的类。</p>
+<p>卸载驱动程序的时候需要删除掉类，类删除函数为 class_destroy，函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">class_destroy</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> class *cls)</span>;</code></pre></div>
+
+<p><strong>参数 cls</strong> 就是要删除的类。</p>
+<h3 id="3-创建设备"><a href="#3-创建设备" class="headerlink" title="3|创建设备"></a>3|创建设备</h3><p>上一小节创建好类以后还不能实现自动创建设备节点，我们还需要在这个类下创建一个设<br>备。使用 device_create 函数在类下面创建设备，device_create 函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">struct</span> device *<span class="hljs-title function_">device_create</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> class *class,</span>
+<span class="hljs-params">                             <span class="hljs-keyword">struct</span> device *parent,</span>
+<span class="hljs-params">                             <span class="hljs-type">dev_t</span> devt,</span>
+<span class="hljs-params">                             <span class="hljs-type">void</span> *drvdata,</span>
+<span class="hljs-params">                             <span class="hljs-type">const</span> <span class="hljs-type">char</span> *fmt, ...)</span></code></pre></div>
+
+<p><strong>device_create</strong> 是个可变参数函数</p>
+<ul>
+<li><p><strong>参数 class</strong> 就是设备要创建哪个类下面；</p>
+<p><strong>参数 parent</strong> 是父设备，一般为 NULL，也就是没有父设备；</p>
+<p><strong>参数 devt</strong> 是设备号；</p>
+<p><strong>参数 drvdata</strong> 是设备可能会使用的一些数据，一般为 NULL；</p>
+<p><strong>参数 fmt</strong> 是设备名字，如果设置 fmt&#x3D;xxx 的话，就会生成&#x2F;dev&#x2F;xxx这个设备文件。</p>
+<p><strong>返回值</strong>就是创建好的设备。</p>
+</li>
+</ul>
+<p>同样的，卸载驱动的时候需要删除掉创建的设备，设备删除函数为 device_destroy，函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">device_destroy</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> class *class, <span class="hljs-type">dev_t</span> devt)</span></code></pre></div>
+
+<p>参数 classs 是要删除的设备所处的类，参数 devt 是要删除的设备号。</p>
+<h3 id="4-参考示例"><a href="#4-参考示例" class="headerlink" title="4|参考示例"></a>4|参考示例</h3><p>在驱动入口函数里面创建类和设备，在驱动出口函数里面删除类和设备，参考示例如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span> <span class="hljs-comment">/* 类 */</span>
+<span class="hljs-number">2</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span> <span class="hljs-comment">/* 设备 */</span>
+<span class="hljs-number">3</span> <span class="hljs-type">dev_t</span> devid; <span class="hljs-comment">/* 设备号 */</span>
+<span class="hljs-number">4</span>
+<span class="hljs-number">5</span> <span class="hljs-comment">/* 驱动入口函数 */</span>
+<span class="hljs-number">6</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">xxx_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+7 &#123;
+<span class="hljs-number">8</span> 		<span class="hljs-comment">/* 创建类 */</span>
+<span class="hljs-number">9</span> 		<span class="hljs-class"><span class="hljs-keyword">class</span> =</span> class_create(THIS_MODULE, <span class="hljs-string">&quot;xxx&quot;</span>);
+<span class="hljs-number">10</span> 		<span class="hljs-comment">/* 创建设备 */</span>
+<span class="hljs-number">11</span> 		device = device_create(class, <span class="hljs-literal">NULL</span>, devid, <span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;xxx&quot;</span>);
+<span class="hljs-number">12</span> 		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-number">13</span> &#125;
+<span class="hljs-number">14</span>
+<span class="hljs-number">15</span> <span class="hljs-comment">/* 驱动出口函数 */</span>
+<span class="hljs-number">16</span> <span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">led_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+17 &#123;
+<span class="hljs-number">18</span> 		<span class="hljs-comment">/* 删除设备 */</span>
+<span class="hljs-number">19</span> 		device_destroy(class, newchrled.devid);
+<span class="hljs-number">20</span> 		<span class="hljs-comment">/* 删除类 */</span>
+<span class="hljs-number">21</span> 		class_destroy(class);
+<span class="hljs-number">22</span> &#125;
+<span class="hljs-number">23</span>
+<span class="hljs-number">24</span> module_init(led_init);
+<span class="hljs-number">25</span> module_exit(led_exit);</code></pre></div>
+
+
+
+<h2 id="三、设置文件私有数据"><a href="#三、设置文件私有数据" class="headerlink" title="三、设置文件私有数据"></a>三、设置文件私有数据</h2><p>每个硬件设备都有一些属性，比如主设备号(dev_t)，类(class)、设备(device)、开关状态(state)等等，在编写驱动的时候你可以将这些属性全部写成变量的形式，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">dev_t</span> devid; 			<span class="hljs-comment">/* 设备号 */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span> 		<span class="hljs-comment">/* cdev */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span> 	<span class="hljs-comment">/* 类 */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span> 	<span class="hljs-comment">/* 设备 */</span>
+<span class="hljs-type">int</span> major; 				<span class="hljs-comment">/* 主设备号 */</span>
+<span class="hljs-type">int</span> minor; 				<span class="hljs-comment">/* 次设备号 */</span></code></pre></div>
+
+<p>这样写肯定没有问题，但是这样写不专业！对于一个设备的所有属性信息我们最好将其做成一个结构体。编写驱动 open 函数的时候将设备结构体作为私有数据添加到设备文件中，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">	<span class="hljs-comment">/* 设备结构体 */</span>
+<span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">test_dev</span>&#123;</span>
+<span class="hljs-number">2</span> 		<span class="hljs-type">dev_t</span> devid; <span class="hljs-comment">/* 设备号 */</span>
+<span class="hljs-number">3</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span> <span class="hljs-comment">/* cdev */</span>
+<span class="hljs-number">4</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span> <span class="hljs-comment">/* 类 */</span>
+<span class="hljs-number">5</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span> <span class="hljs-comment">/* 设备 */</span>
+<span class="hljs-number">6</span> 		<span class="hljs-type">int</span> major; <span class="hljs-comment">/* 主设备号 */</span>
+<span class="hljs-number">7</span> 		<span class="hljs-type">int</span> minor; <span class="hljs-comment">/* 次设备号 */</span>
+<span class="hljs-number">8</span> &#125;;
+<span class="hljs-number">9</span>
+<span class="hljs-number">10</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">test_dev</span> <span class="hljs-title">testdev</span>;</span>
+<span class="hljs-number">11</span>
+<span class="hljs-number">12</span> <span class="hljs-comment">/* open 函数 */</span>
+<span class="hljs-number">13</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">test_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+14 &#123;
+<span class="hljs-number">15</span> 		filp-&gt;private_data = &amp;testdev; <span class="hljs-comment">/* 设置私有数据 */</span>
+<span class="hljs-number">16</span> 		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-number">17</span> &#125;</code></pre></div>
+
+<p><strong>在 open 函数里面设置好私有数据以后，在 write、read、close 等函数中直接读取 private_data即可得到设备结构体。</strong></p>
+<h2 id="四、硬件原理图"><a href="#四、硬件原理图" class="headerlink" title="四、硬件原理图"></a>四、硬件原理图</h2><p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/image-20200820181615173.png" srcset="/img/loading.gif" lazyload alt="image-20200820181615173"></p>
+<h2 id="五、实验程序编写"><a href="#五、实验程序编写" class="headerlink" title="五、实验程序编写"></a>五、实验程序编写</h2><p>本章实验在上一章实验的基础上完成，重点是使用了新的字符设备驱动、设置了文件私有数据、添加了自动创建设备节点相关内容。</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/cdev.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/device.h&gt;</span></span>
+
+
+
+<span class="hljs-comment">// #define LED_ON 	1</span>
+<span class="hljs-comment">// #define LED_OFF 0</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">led_switch_enum</span>&#123;</span>
+	LED_OFF = <span class="hljs-number">0</span>,
+	LED_ON = !LED_OFF
+&#125;<span class="hljs-type">led_switch_t</span>;
+
+<span class="hljs-comment">/* 寄存器物理地址 */</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_CCM_CCGR1_BASE				(0X020C406C)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_SW_MUX_GPIO1_IO03_BASE		(0X020E0068)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_SW_PAD_GPIO1_IO03_BASE		(0X020E02F4)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_GPIO1_DR_BASE 				(0X0209C000)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_GPIO1_GDIR_BASE 				(0X0209C004)</span>
+
+<span class="hljs-comment">/* 寄存器虚拟地址 */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_CCM_CCGR1;
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_SW_MUX_GPIO1_IO03;
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_SW_PAD_GPIO1_IO03;
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_GPIO1_DR;
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_GPIO1_GDIR;
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">led_switch</span><span class="hljs-params">(<span class="hljs-type">led_switch_t</span> sw)</span>
+&#123;
+	<span class="hljs-type">int</span> val = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span>(sw == LED_ON)
+	&#123;
+		<span class="hljs-comment">/* 设置GPIO电平为低电平 默认点亮LED */</span>
+		val = readl(VA_GPIO1_DR);
+		val &amp;= ~(<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);
+		writel(val, VA_GPIO1_DR);
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		<span class="hljs-comment">/* 设置GPIO电平为高电平 关闭LED */</span>
+		val = readl(VA_GPIO1_DR);
+		val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);
+		writel(val, VA_GPIO1_DR);
+	&#125;
+&#125;
+
+
+
+<span class="hljs-comment">/* LED设备结构体 */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">newchrled_dev</span> &#123;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span>		<span class="hljs-comment">//字符设备</span>
+	<span class="hljs-type">dev_t</span> devid;			<span class="hljs-comment">//设备号</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span>	<span class="hljs-comment">//类</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span>	<span class="hljs-comment">//设备</span>
+	<span class="hljs-type">int</span> major;
+	<span class="hljs-type">int</span> minor;
+	<span class="hljs-type">char</span> *chrdevname;
+&#125;;
+
+<span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">newchrled_dev</span> <span class="hljs-title">newchrled</span>;</span>
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">newchrled_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+&#123;
+	filp-&gt;private_data = &amp;newchrled;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">newchrled_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">const</span> <span class="hljs-type">char</span> __user *buf, <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span>
+&#123;
+	<span class="hljs-type">char</span> userDataBuf[<span class="hljs-number">1</span>];
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+	ret = copy_from_user(userDataBuf, buf, cnt);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)
+	&#123;
+		printk(<span class="hljs-string">&quot;write failed!\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+	&#125;
+	led_switch(userDataBuf[<span class="hljs-number">0</span>]);
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">newchrled_release</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+&#123;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+
+
+<span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">newchrled_fops</span> =</span> &#123;
+	.owner = THIS_MODULE,
+	.write = newchrled_write,
+	.open = newchrled_open,
+	.release = newchrled_release
+&#125;;
+
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">newchrled_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+	<span class="hljs-type">int</span> result;
+	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> val = <span class="hljs-number">0</span>;
+	printk(<span class="hljs-string">&quot;newchrled_init!\r\n&quot;</span>);
+
+	<span class="hljs-comment">/* 注册设备号 */</span>
+	newchrled.chrdevname = <span class="hljs-string">&quot;newchrdev_led&quot;</span>;
+	<span class="hljs-keyword">if</span>(newchrled.major)&#123;	<span class="hljs-comment">//如果给定了主设备号</span>
+		newchrled.devid	= MKDEV(newchrled.major, <span class="hljs-number">0</span>);
+		ret = register_chrdev_region(newchrled.devid, <span class="hljs-number">1</span>, newchrled.chrdevname);
+
+	&#125;<span class="hljs-keyword">else</span>&#123;	<span class="hljs-comment">//如果没给定主设备号</span>
+		ret = alloc_chrdev_region(&amp;newchrled.devid, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, newchrled.chrdevname);
+	&#125;
+	newchrled.major = MAJOR(newchrled.devid);
+	newchrled.minor = MINOR(newchrled.devid);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;register dev failed!\r\n&quot;</span>);
+		result = <span class="hljs-number">-1</span>;
+		<span class="hljs-keyword">goto</span> fail_register;
+	&#125;
+	printk(<span class="hljs-string">&quot;newchrled  MAJOR:%d  MINOR:%d\r\n&quot;</span>, newchrled.major, newchrled.minor);
+	
+
+	<span class="hljs-comment">/* 注册字符设备 */</span>
+	newchrled.cdev.owner = newchrled_fops.owner;
+	cdev_init(&amp;newchrled.cdev, &amp;newchrled_fops);
+	ret = cdev_add(&amp;newchrled.cdev, newchrled.devid, <span class="hljs-number">1</span>);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;register chrdev failed!\r\n&quot;</span>);
+		result = <span class="hljs-number">-2</span>;
+		<span class="hljs-keyword">goto</span> fail_cdev;
+	&#125;
+
+	<span class="hljs-comment">/* 创建设备节点 */</span>
+	<span class="hljs-comment">/* 	1.创建类 */</span>
+	newchrled.class = class_create(THIS_MODULE, newchrled.chrdevname);
+	<span class="hljs-keyword">if</span>(IS_ERR(newchrled.class))&#123;
+		result = PTR_ERR(newchrled.class);
+		<span class="hljs-keyword">goto</span> fail_class;
+	&#125;
+	<span class="hljs-comment">/*	2.创建设备*/</span>
+	newchrled.device = device_create(newchrled.class, <span class="hljs-literal">NULL</span>,
+						newchrled.devid, <span class="hljs-literal">NULL</span>, newchrled.chrdevname);
+	<span class="hljs-keyword">if</span>(IS_ERR(newchrled.device))&#123;
+		result = PTR_ERR(newchrled.device);
+		<span class="hljs-keyword">goto</span> fail_device;
+	&#125;
+
+	<span class="hljs-comment">/* LED初始化 */</span>
+	<span class="hljs-comment">/* 	-&gt;	1.地址映射 */</span>
+	VA_CCM_CCGR1 = ioremap(PA_CCM_CCGR1_BASE, <span class="hljs-number">4</span>);
+	VA_SW_MUX_GPIO1_IO03 = ioremap(PA_SW_MUX_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);
+	VA_SW_PAD_GPIO1_IO03 = ioremap(PA_SW_PAD_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);
+	VA_GPIO1_DR = ioremap(PA_GPIO1_DR_BASE, <span class="hljs-number">4</span>);
+	VA_GPIO1_GDIR = ioremap(PA_GPIO1_GDIR_BASE, <span class="hljs-number">4</span>);
+	<span class="hljs-comment">/* 	-&gt;	2.初始化 */</span>
+	<span class="hljs-comment">/* 	-&gt;	-&gt;	打开时钟 */</span>
+	val = readl(VA_CCM_CCGR1);
+	val &amp;=  ~(<span class="hljs-number">3</span> &lt;&lt; <span class="hljs-number">26</span>);
+	val |= (<span class="hljs-number">3</span> &lt;&lt; <span class="hljs-number">26</span>);
+	writel(val, VA_CCM_CCGR1);
+
+	writel(<span class="hljs-number">0x5</span>, VA_SW_MUX_GPIO1_IO03);		<span class="hljs-comment">/* 设置复用 */</span>
+	writel(<span class="hljs-number">0x10B0</span>, VA_SW_PAD_GPIO1_IO03);	<span class="hljs-comment">/* 设置电气属性 */</span>
+
+	<span class="hljs-comment">/* 	-&gt;	-&gt;	设置GPIO方向为输出*/</span>
+	val = readl(VA_GPIO1_GDIR);
+	val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);
+	writel(val, VA_GPIO1_GDIR);
+
+	<span class="hljs-comment">/* 	-&gt;	-&gt;	设置GPIO电平为高电平 默认关闭LED */</span>
+	val = readl(VA_GPIO1_DR);
+	val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);
+	writel(val, VA_GPIO1_DR);
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+
+fail_device:
+	<span class="hljs-comment">/* 摧毁类 */</span>
+	class_destroy(newchrled.class);
+fail_class:
+	<span class="hljs-comment">/* 注销字符设备 */</span>
+	cdev_del(&amp;newchrled.cdev);
+fail_cdev:
+	<span class="hljs-comment">/* 注销设备号 */</span>
+	unregister_chrdev_region(newchrled.devid, <span class="hljs-number">1</span>);
+fail_register:
+	
+	<span class="hljs-keyword">return</span> result;
+&#125;
+
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">newchrled_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	printk(<span class="hljs-string">&quot;newchrled_exit!\r\n&quot;</span>);
+	
+	<span class="hljs-comment">/* 地址映射释放 */</span>
+	iounmap(VA_CCM_CCGR1);
+	iounmap(VA_SW_MUX_GPIO1_IO03);
+	iounmap(VA_SW_PAD_GPIO1_IO03);
+	iounmap(VA_GPIO1_DR);
+	iounmap(VA_GPIO1_GDIR);
+
+	<span class="hljs-comment">/* 摧毁设备 */</span>
+	device_destroy(newchrled.class, newchrled.devid);
+
+	<span class="hljs-comment">/* 摧毁类 */</span>
+	class_destroy(newchrled.class);
+
+	<span class="hljs-comment">/* 注销字符设备 */</span>
+	cdev_del(&amp;newchrled.cdev);
+
+	<span class="hljs-comment">/* 注销设备号 */</span>
+	unregister_chrdev_region(newchrled.devid, <span class="hljs-number">1</span>);
+&#125;
+
+
+
+
+
+<span class="hljs-comment">/* 驱动入口和出口 */</span>
+module_init(newchrled_init);
+module_exit(newchrled_exit);
+
+MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);
+MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);
+</code></pre></div>
+
+
+
+<h2 id="六、运行测试"><a href="#六、运行测试" class="headerlink" title="六、运行测试"></a>六、运行测试</h2><p>和之前一样，编译运行，这边APP程序直接使用上次的即可。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2| LED灯驱动开发实验记录</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/Linux%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                        <span class="hidden-mobile">内核常用函数</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

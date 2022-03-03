@@ -1,0 +1,873 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="UVGUI屏幕刷新原理@firestaradmin 2020年12月9日17:39:32 我还在寻找回家的路。长路漫漫，唯剑作伴。        ——亚索 一、数据结构核心结构体为 ug_disp_t，UVGUI 支持同时驱动多个屏幕，每个屏幕对应一个disp 结构体，disp 定义如下： &#x2F;**  * Display structure.  * @note &#96;ug_disp_drv_t&#96; sho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVGUI屏幕刷新原理">
+<meta property="og:url" content="http://firestaradmin.top/2020/12/07/NOTE/ARM/UVGUI/UVGUI%E5%B1%8F%E5%B9%95%E5%88%B7%E6%96%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="UVGUI屏幕刷新原理@firestaradmin 2020年12月9日17:39:32 我还在寻找回家的路。长路漫漫，唯剑作伴。        ——亚索 一、数据结构核心结构体为 ug_disp_t，UVGUI 支持同时驱动多个屏幕，每个屏幕对应一个disp 结构体，disp 定义如下： &#x2F;**  * Display structure.  * @note &#96;ug_disp_drv_t&#96; sho">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-06T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="UVGUI">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>UVGUI屏幕刷新原理 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="UVGUI屏幕刷新原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-07 00:00" pubdate>
+        2020年12月7日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      11k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      92 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">UVGUI屏幕刷新原理</h1>
+            
+            <div class="markdown-body">
+              <h1 id="UVGUI屏幕刷新原理"><a href="#UVGUI屏幕刷新原理" class="headerlink" title="UVGUI屏幕刷新原理"></a>UVGUI屏幕刷新原理</h1><p>@firestaradmin 2020年12月9日17:39:32</p>
+<p><strong>我还在寻找回家的路。长路漫漫，唯剑作伴。        ——亚索</strong></p>
+<h2 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h2><p>核心结构体为 <code>ug_disp_t</code>，UVGUI 支持同时驱动多个屏幕，每个屏幕对应一个disp 结构体，disp 定义如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Display structure.</span>
+<span class="hljs-comment"> * @note `ug_disp_drv_t` should be the first member of the structure.</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">disp_t</span> &#123;</span>
+    
+    <span class="hljs-comment">/**&lt; Driver to the display*/</span>
+    <span class="hljs-type">ug_disp_drv_t</span> driver;
+
+    
+    <span class="hljs-comment">/**&lt; A task which periodically checks the dirty areas and refreshes them*/</span>
+    <span class="hljs-type">ug_task_t</span> * refr_task;
+
+    
+    <span class="hljs-comment">/** Screens of the display*/</span>
+    <span class="hljs-type">ug_ll_t</span> scr_ll;
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">ug_obj_t</span> * <span class="hljs-title">act_scr</span>;</span>   <span class="hljs-comment">/**&lt; Currently active screen on this display */</span>
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">ug_obj_t</span> * <span class="hljs-title">prev_scr</span>;</span>  <span class="hljs-comment">/**&lt; Previous screen. Used during screen animations */</span>
+
+    <span class="hljs-type">ug_color_t</span> bg_color;          <span class="hljs-comment">/**&lt; Default display color when screens are transparent*/</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">void</span> * bg_img;       <span class="hljs-comment">/**&lt; An image source to display as wallpaper*/</span>
+
+    <span class="hljs-type">ug_area_t</span> inv_areas[UG_INV_BUF_SIZE];
+    <span class="hljs-type">uint8_t</span> inv_area_joined[UG_INV_BUF_SIZE];
+    <span class="hljs-type">uint32_t</span> inv_p : <span class="hljs-number">10</span>;    <span class="hljs-comment">/* invalid parts */</span>
+
+    <span class="hljs-comment">/*Miscellaneous data*/</span>
+    <span class="hljs-type">uint8_t</span> disp_index;     <span class="hljs-comment">/* Used to select/change which physical screen to display. */</span>
+
+&#125; <span class="hljs-type">ug_disp_t</span>;</code></pre></div>
+
+<p>其中刷屏算法核心关键成员为：</p>
+<ul>
+<li>scr_ll：屏幕列表，一个物理屏幕可以有多个屏幕列表去绘制，也可理解为窗口或者页面。</li>
+<li>inv_areas[]：不合法区域数组，储存着需要重新绘制的区域。</li>
+<li>inv_area_joined[]：不合法区域的合并标志，为0 则表示该区域未合并。</li>
+<li>inc_p：不合法区域的个数。</li>
+</ul>
+<p>宏<code>UG_INV_BUF_SIZE</code>  定义了最大的不合法区域数，如果超过限制，则会重新绘制整个屏幕。</p>
+<hr>
+<p>每创建一个对象，就会根据对象的区域大小，将其储存到<code>inv_areas</code>数组中，并且inv_p 数加一。</p>
+<hr>
+<h2 id="二、核心算法"><a href="#二、核心算法" class="headerlink" title="二、核心算法"></a>二、核心算法</h2><p>算法流程：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">_ug_disp_refr_task()	<span class="hljs-comment">/* 屏幕刷新任务 */</span>
+    -&gt; ug_refr_join_area();		<span class="hljs-comment">/* 合并非法区域 */</span>
+    -&gt; ug_refr_areas();			<span class="hljs-comment">/* 刷新区域 */</span>
+		-&gt; ug_refr_area();
+			-&gt;ug_refr_area_part();
+				-&gt;ug_refr_obj_and_children();
+					-&gt;ug_refr_obj();
+				-&gt;ug_refr_vdb_flush();	<span class="hljs-comment">/* 在非真实像素显存大小模式，每次刷新都要刷屏 */</span></code></pre></div>
+
+<hr>
+<h3 id="ug-refr-join-area"><a href="#ug-refr-join-area" class="headerlink" title="ug_refr_join_area()"></a>ug_refr_join_area()</h3><p>此函数功能为 合并有相同部分的区域。 函数如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Join the areas which has got common parts</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_join_area</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+    <span class="hljs-type">uint32_t</span> join_from;
+    <span class="hljs-type">uint32_t</span> join_in;
+    <span class="hljs-type">ug_area_t</span> joined_area;
+
+    <span class="hljs-keyword">for</span>(join_in = <span class="hljs-number">0</span>; join_in &lt; disp_refr-&gt;inv_p; join_in++) &#123;  
+        <span class="hljs-comment">/* if the area is already been joined , skip. */</span>
+        <span class="hljs-keyword">if</span>(disp_refr-&gt;inv_area_joined[join_in] != <span class="hljs-number">0</span>) <span class="hljs-keyword">continue</span>;
+
+        <span class="hljs-comment">/*Check all areas to join them in &#x27;join_in&#x27;*/</span>
+        <span class="hljs-keyword">for</span>(join_from = <span class="hljs-number">0</span>; join_from &lt; disp_refr-&gt;inv_p; join_from++) &#123;    
+            <span class="hljs-comment">/*Handle only unjoined areas and ignore itself*/</span>
+            <span class="hljs-keyword">if</span>(disp_refr-&gt;inv_area_joined[join_from] != <span class="hljs-number">0</span> || join_in == join_from) &#123;
+                <span class="hljs-keyword">continue</span>;
+            &#125;
+
+            <span class="hljs-comment">/*Check if the areas are on each other*/</span>
+            <span class="hljs-keyword">if</span>(_ug_area_is_on(&amp;disp_refr-&gt;inv_areas[join_in], &amp;disp_refr-&gt;inv_areas[join_from]) == <span class="hljs-literal">false</span>) &#123;
+                <span class="hljs-keyword">continue</span>;
+            &#125;
+
+            _ug_area_join(&amp;joined_area, &amp;disp_refr-&gt;inv_areas[join_in], &amp;disp_refr-&gt;inv_areas[join_from]);
+
+            <span class="hljs-comment">/*Join two area only if the joined area size is smaller*/</span>
+            <span class="hljs-keyword">if</span>(ug_area_get_size(&amp;joined_area) &lt; (ug_area_get_size(&amp;disp_refr-&gt;inv_areas[join_in]) +
+                                                 ug_area_get_size(&amp;disp_refr-&gt;inv_areas[join_from]))) &#123;
+                ug_area_copy(&amp;disp_refr-&gt;inv_areas[join_in], &amp;joined_area);
+
+                <span class="hljs-comment">/*Mark &#x27;join_form&#x27; is joined into &#x27;join_in&#x27;*/</span>
+                disp_refr-&gt;inv_area_joined[join_from] = <span class="hljs-number">1</span>;
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p>参数说明：</p>
+<ul>
+<li>join_in：要合并进去的区域编号，即其他区域符合要求会合并到这个区域。</li>
+<li>join_from：要被合并的区域编号，即这个区域会被合并到join_in 这个区域。</li>
+<li>joined_area：合并后的区域。</li>
+</ul>
+<p>函数有循环嵌套。</p>
+<p>第一个大循环会遍历每个<strong>inv</strong> 区域，如果该区域已被合并则跳过该区域，然后进入第二个循环，再次遍历非合法区域，如果区域是自己，或者已经被合并了则跳过。</p>
+<p>然后判断，两个区域是否有相同部分，即是否有接壤，如果有 则将两个区域合并的区域储存至<strong>joined_area</strong>，然后再判断合并后的区域大小是否比之前两个区域的大小加在一起更小，如果更小则会将合并后的区域储存到 <strong>inv_area[join_in]</strong> 里，并且将<strong>inv_area_joined[join_form]</strong> 置1，来指示该区域已被合并。</p>
+<hr>
+<h3 id="ug-refr-areas"><a href="#ug-refr-areas" class="headerlink" title="ug_refr_areas()"></a>ug_refr_areas()</h3><p>此函数刷新所有非合法区域，即刷新 <code>inv_area_joined[]</code> 标志未被置 1 (即未被合并) 的 <code>inv_areas[]</code> 储存的区域。代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Refresh the joined areas</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_areas</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+    px_num = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">if</span>(disp_refr-&gt;inv_p == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;
+
+    <span class="hljs-comment">/*Find the last area which will be drawn*/</span>
+    <span class="hljs-type">int32_t</span> i;
+    <span class="hljs-type">int32_t</span> last_i = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(i = disp_refr-&gt;inv_p - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
+        <span class="hljs-keyword">if</span>(disp_refr-&gt;inv_area_joined[i] == <span class="hljs-number">0</span>) &#123;
+            last_i = i;
+            <span class="hljs-keyword">break</span>;
+        &#125;
+    &#125;
+
+    disp_refr-&gt;driver.buffer-&gt;last_area = <span class="hljs-number">0</span>;
+    disp_refr-&gt;driver.buffer-&gt;last_part = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">for</span>(i = <span class="hljs-number">0</span>; i &lt; disp_refr-&gt;inv_p; i++) &#123;
+        <span class="hljs-comment">/*Refresh the unjoined areas*/</span>
+        <span class="hljs-keyword">if</span>(disp_refr-&gt;inv_area_joined[i] == <span class="hljs-number">0</span>) &#123;
+
+            <span class="hljs-keyword">if</span>(i == last_i) disp_refr-&gt;driver.buffer-&gt;last_area = <span class="hljs-number">1</span>;
+            disp_refr-&gt;driver.buffer-&gt;last_part = <span class="hljs-number">0</span>;
+            ug_refr_area(&amp;disp_refr-&gt;inv_areas[i]);
+
+            <span class="hljs-comment">//if(disp_refr-&gt;driver.monitor_cb) px_num += ug_area_get_size(&amp;disp_refr-&gt;inv_areas[i]);</span>
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p>此函数会找到符合条件的区域并调用子函数 <code>ug_refr_area()</code> 来刷新。</p>
+<hr>
+<h3 id="ug-refr-area"><a href="#ug-refr-area" class="headerlink" title="ug_refr_area()"></a>ug_refr_area()</h3><p>此函数代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Refresh an area if there is Virtual Display Buffer</span>
+<span class="hljs-comment"> * @param area_p  pointer to an area to refresh</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_area</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">ug_area_t</span> * area_p)</span>
+&#123;
+    <span class="hljs-comment">/*True double buffering: there are two screen sized buffers. Just redraw directly into a * buffer */</span>
+    <span class="hljs-keyword">if</span>(ug_disp_is_true_double_buf(disp_refr)) &#123;
+        <span class="hljs-type">ug_disp_buf_t</span> * vdb = ug_disp_get_buf(disp_refr);
+        vdb-&gt;area.x1        = <span class="hljs-number">0</span>;
+        vdb-&gt;area.x2        = ug_disp_get_hor_res(disp_refr) - <span class="hljs-number">1</span>;
+        vdb-&gt;area.y1        = <span class="hljs-number">0</span>;
+        vdb-&gt;area.y2        = ug_disp_get_ver_res(disp_refr) - <span class="hljs-number">1</span>;
+        disp_refr-&gt;driver.buffer-&gt;last_part = <span class="hljs-number">1</span>;
+        ug_refr_area_part(area_p);
+    &#125;
+    <span class="hljs-comment">/*The buffer is smaller: refresh the area in parts*/</span>
+    <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-type">ug_disp_buf_t</span> * vdb = ug_disp_get_buf(disp_refr);
+
+        <span class="hljs-comment">/* Calculate the max row value */</span>
+        <span class="hljs-type">ug_coord_t</span> w = ug_area_get_width(area_p);
+        <span class="hljs-type">ug_coord_t</span> h = ug_area_get_height(area_p);
+        <span class="hljs-type">ug_coord_t</span> y2 = area_p-&gt;y2 &gt;= ug_disp_get_ver_res(disp_refr) ? ug_disp_get_ver_res(disp_refr) - <span class="hljs-number">1</span> : area_p-&gt;y2;
+
+        <span class="hljs-type">int32_t</span> max_row = (<span class="hljs-type">uint32_t</span>)vdb-&gt;size / w;
+
+        <span class="hljs-keyword">if</span>(max_row &gt; h) max_row = h;
+
+        <span class="hljs-comment">/*Always use the full row*/</span>
+        <span class="hljs-type">ug_coord_t</span> row;
+        <span class="hljs-type">ug_coord_t</span> row_last = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(row = area_p-&gt;y1; row + max_row - <span class="hljs-number">1</span> &lt;= y2; row += max_row) &#123;
+            <span class="hljs-comment">/*Calc. the next y coordinates of VDB*/</span>
+            vdb-&gt;area.x1 = area_p-&gt;x1;
+            vdb-&gt;area.x2 = area_p-&gt;x2;
+            vdb-&gt;area.y1 = row;
+            vdb-&gt;area.y2 = row + max_row - <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">if</span>(vdb-&gt;area.y2 &gt; y2) vdb-&gt;area.y2 = y2;
+            row_last = vdb-&gt;area.y2;
+            <span class="hljs-keyword">if</span>(y2 == row_last) disp_refr-&gt;driver.buffer-&gt;last_part = <span class="hljs-number">1</span>;
+            ug_refr_area_part(area_p);
+        &#125;
+
+        <span class="hljs-comment">/*If the last y coordinates are not handled yet ...*/</span>
+        <span class="hljs-keyword">if</span>(y2 != row_last) &#123;
+            <span class="hljs-comment">/*Calc. the next y coordinates of VDB*/</span>
+            vdb-&gt;area.x1 = area_p-&gt;x1;
+            vdb-&gt;area.x2 = area_p-&gt;x2;
+            vdb-&gt;area.y1 = row;
+            vdb-&gt;area.y2 = y2;
+
+            disp_refr-&gt;driver.buffer-&gt;last_part = <span class="hljs-number">1</span>;
+            ug_refr_area_part(area_p);
+        &#125;
+    &#125;
+&#125;
+</code></pre></div>
+
+<p>此函数会根据你设置的显存大小和刷新的区域大小进行判断，如果你的显存大小是真实屏幕的像素大小，就一次刷新完，如果显存比屏幕小，就会一部分一部分刷新，直至刷新完毕。计算好虚拟显存的区域后，会调用<code>ug_refr_area_part()</code>  函数来刷新。</p>
+<hr>
+<h3 id="ug-refr-area-part"><a href="#ug-refr-area-part" class="headerlink" title="ug_refr_area_part()"></a>ug_refr_area_part()</h3><p>此函数会刷新在当前虚拟显存上的一块区域。代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Refresh a part of an area which is on the actual Virtual Display Buffer</span>
+<span class="hljs-comment"> * @param area_p pointer to an area to refresh</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_area_part</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">ug_area_t</span> * area_p)</span>
+&#123;
+    <span class="hljs-type">ug_disp_buf_t</span> * vdb = ug_disp_get_buf(disp_refr);
+
+    <span class="hljs-comment">/*In non double buffered mode, before rendering the next part wait until the previous image is</span>
+<span class="hljs-comment">     * flushed*/</span>
+    <span class="hljs-keyword">if</span>(ug_disp_is_double_buf(disp_refr) == <span class="hljs-literal">false</span>) &#123;
+        <span class="hljs-keyword">while</span>(vdb-&gt;flushing) &#123;
+            <span class="hljs-keyword">if</span>(disp_refr-&gt;driver.wait_cb) disp_refr-&gt;driver.wait_cb(&amp;disp_refr-&gt;driver);
+        &#125;
+    &#125;
+
+    <span class="hljs-type">ug_obj_t</span> * top_act_scr = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-type">ug_obj_t</span> * top_prev_scr = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/*Get the new mask from the original area and the act. VDB</span>
+<span class="hljs-comment">     It will be a part of &#x27;area_p&#x27;*/</span>
+    <span class="hljs-type">ug_area_t</span> start_mask;
+    _ug_area_intersect(&amp;start_mask, area_p, &amp;vdb-&gt;area);
+
+    <span class="hljs-comment">/*Get the most top object which is not covered by others*/</span>
+    top_act_scr = ug_refr_get_top_obj(&amp;start_mask, ug_disp_get_actscr(disp_refr));
+    <span class="hljs-keyword">if</span>(disp_refr-&gt;prev_scr) &#123;
+        top_prev_scr = ug_refr_get_top_obj(&amp;start_mask, disp_refr-&gt;prev_scr);
+    &#125;
+
+    <span class="hljs-comment">/*Draw a display background if there is no top object*/</span>
+    <span class="hljs-keyword">if</span>(top_act_scr == <span class="hljs-literal">NULL</span> &amp;&amp; top_prev_scr == <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-keyword">if</span>(disp_refr-&gt;bg_img) &#123;
+            <span class="hljs-comment">//<span class="hljs-doctag">TODO:</span> ug_draw_img(&amp;a, &amp;start_mask, disp_refr-&gt;bg_img, &amp;dsc);</span>
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-type">ug_draw_rect_dsc_t</span> dsc;
+            ug_draw_rect_dsc_init(&amp;dsc);
+            dsc.bg_color = disp_refr-&gt;bg_color;
+            ug_draw_rect(&amp;start_mask, &amp;start_mask, &amp;dsc);
+
+        &#125;
+    &#125;
+    <span class="hljs-comment">/*Refresh the previous screen if any*/</span>
+    <span class="hljs-keyword">if</span>(disp_refr-&gt;prev_scr) &#123;
+        <span class="hljs-comment">/*Get the most top object which is not covered by others*/</span>
+        <span class="hljs-keyword">if</span>(top_prev_scr == <span class="hljs-literal">NULL</span>) &#123;
+            top_prev_scr = disp_refr-&gt;prev_scr;
+        &#125;
+        <span class="hljs-comment">/*Do the refreshing from the top object*/</span>
+        ug_refr_obj_and_children(top_prev_scr, &amp;start_mask);
+
+    &#125;
+
+
+    <span class="hljs-keyword">if</span>(top_act_scr == <span class="hljs-literal">NULL</span>) &#123;
+         top_act_scr = disp_refr-&gt;act_scr;
+     &#125;
+    <span class="hljs-comment">/*Do the refreshing from the top object*/</span>
+    ug_refr_obj_and_children(top_act_scr, &amp;start_mask);
+
+    <span class="hljs-comment">/* In true double buffered mode flush only once when all areas were rendered.</span>
+<span class="hljs-comment">     * In normal mode flush after every area */</span>
+    <span class="hljs-keyword">if</span>(ug_disp_is_true_double_buf(disp_refr) == <span class="hljs-literal">false</span>) &#123;
+        ug_refr_vdb_flush();
+    &#125;
+&#125;</code></pre></div>
+
+<p>在只有一块显存的模式下，如果正在刷屏传输中，则会等待传输完成。</p>
+<p>然后会获取当前区域的最TOP 的对象，从它开始刷新。</p>
+<blockquote>
+<p>何谓最TOP的对象呢？就是这个区域内最底层的对象，它会从屏幕这个obj 开始寻找 子obj ，找到一个完全覆盖区域的子对象。 </p>
+<p>也就是说，当屏幕中有两个正方体 A 和 B，B 是 A的儿子。A比B小并在B里面，寻找的时候就会返回B。如果A和B一样大，那么B就会遮挡住A，所以返回的时候就是返回A的儿子B。</p>
+</blockquote>
+<p>最后会调用<code>ug_refr_obj_and_children()</code> 来刷新。</p>
+<h3 id="ug-refr-obj-and-children"><a href="#ug-refr-obj-and-children" class="headerlink" title="ug_refr_obj_and_children()"></a>ug_refr_obj_and_children()</h3><p>函数代码如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c">
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Make the refreshing from an object. Draw all its children and the youngers too.</span>
+<span class="hljs-comment"> * @param top_p pointer to an objects. Start the drawing from it.</span>
+<span class="hljs-comment"> * @param mask_p pointer to an area, the objects will be drawn only here</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_obj_and_children</span><span class="hljs-params">(<span class="hljs-type">ug_obj_t</span> * top_p, <span class="hljs-type">const</span> <span class="hljs-type">ug_area_t</span> * mask_p)</span>
+&#123;
+    <span class="hljs-comment">/* Normally always will be a top_obj (at least the screen)</span>
+<span class="hljs-comment">     * but in special cases (e.g. if the screen has alpha) it won&#x27;t.</span>
+<span class="hljs-comment">     * In this case use the screen directly */</span>
+    <span class="hljs-keyword">if</span>(top_p == <span class="hljs-literal">NULL</span>) top_p = ug_disp_get_actscr(disp_refr);
+    <span class="hljs-keyword">if</span>(top_p == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>;  <span class="hljs-comment">/*Shouldn&#x27;t happen*/</span>
+
+    <span class="hljs-comment">/*Refresh the top object and its children*/</span>
+    ug_refr_obj(top_p, mask_p);
+
+    <span class="hljs-comment">/*Draw the &#x27;younger&#x27; sibling objects because they can be on top_obj */</span>
+    <span class="hljs-type">ug_obj_t</span> * par;
+    <span class="hljs-type">ug_obj_t</span> * border_p = top_p;
+
+    par = ug_obj_get_parent(top_p);
+
+    <span class="hljs-comment">/*Do until not reach the screen*/</span>
+    <span class="hljs-keyword">while</span>(par != <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-comment">/*object before border_p has to be redrawn*/</span>
+        <span class="hljs-type">ug_obj_t</span> * i = _ug_ll_get_prev(&amp;(par-&gt;child_ll), border_p);
+
+        <span class="hljs-keyword">while</span>(i != <span class="hljs-literal">NULL</span>) &#123;
+            <span class="hljs-comment">/*Refresh the objects*/</span>
+            ug_refr_obj(i, mask_p);
+            i = _ug_ll_get_prev(&amp;(par-&gt;child_ll), i);
+        &#125;
+
+        <span class="hljs-comment">/*Call the post draw design function of the parents of the to object*/</span>
+        <span class="hljs-keyword">if</span>(par-&gt;design_cb) par-&gt;design_cb(par, mask_p, UG_DESIGN_DRAW_POST);
+
+        <span class="hljs-comment">/*The new border will be there last parents,</span>
+<span class="hljs-comment">         *so the &#x27;younger&#x27; brothers of parent will be refreshed*/</span>
+        border_p = par;
+        <span class="hljs-comment">/*Go a level deeper*/</span>
+        par = ug_obj_get_parent(par);
+    &#125;
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Refresh an object and all of its children. (Called recursively)</span>
+<span class="hljs-comment"> * @param obj pointer to an object to refresh</span>
+<span class="hljs-comment"> * @param mask_ori_p pointer to an area, the objects will be drawn only here</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_obj</span><span class="hljs-params">(<span class="hljs-type">ug_obj_t</span> * obj, <span class="hljs-type">const</span> <span class="hljs-type">ug_area_t</span> * mask_ori_p)</span>
+&#123;
+    <span class="hljs-comment">/*Do not refresh hidden objects*/</span>
+    <span class="hljs-keyword">if</span>(obj-&gt;hidden != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;
+
+    <span class="hljs-type">bool</span> union_ok; <span class="hljs-comment">/* Store the return value of area_union */</span>
+    <span class="hljs-comment">/* Truncate the original mask to the coordinates of the parent</span>
+<span class="hljs-comment">     * because the parent and its children are visible only here */</span>
+    <span class="hljs-type">ug_area_t</span> obj_mask;
+    <span class="hljs-type">ug_area_t</span> obj_ext_mask;
+    <span class="hljs-type">ug_area_t</span> obj_area;
+    <span class="hljs-type">ug_coord_t</span> ext_size = obj-&gt;ext_draw_pad;
+    ug_obj_get_coords(obj, &amp;obj_area);
+    obj_area.x1 -= ext_size;
+    obj_area.y1 -= ext_size;
+    obj_area.x2 += ext_size;
+    obj_area.y2 += ext_size;
+    union_ok = _ug_area_intersect(&amp;obj_ext_mask, mask_ori_p, &amp;obj_area);
+
+    <span class="hljs-comment">/*Draw the parent and its children only if they ore on &#x27;mask_parent&#x27;*/</span>
+    <span class="hljs-keyword">if</span>(union_ok != <span class="hljs-literal">false</span>) &#123;
+
+        <span class="hljs-comment">/* Redraw the object */</span>
+        <span class="hljs-keyword">if</span>(obj-&gt;design_cb) obj-&gt;design_cb(obj, &amp;obj_ext_mask, UG_DESIGN_DRAW_MAIN);
+
+        <span class="hljs-comment">/*Create a new &#x27;obj_mask&#x27; without &#x27;ext_size&#x27; because the children can&#x27;t be visible there*/</span>
+        ug_obj_get_coords(obj, &amp;obj_area);
+        union_ok = _ug_area_intersect(&amp;obj_mask, mask_ori_p, &amp;obj_area);
+        <span class="hljs-keyword">if</span>(union_ok != <span class="hljs-literal">false</span>) &#123;
+            <span class="hljs-type">ug_area_t</span> mask_child; <span class="hljs-comment">/*Mask from obj and its child*/</span>
+            <span class="hljs-type">ug_obj_t</span> * child_p;
+            <span class="hljs-type">ug_area_t</span> child_area;
+            _UG_LL_READ_BACK(obj-&gt;child_ll, child_p) &#123;
+                ug_obj_get_coords(child_p, &amp;child_area);
+                ext_size = child_p-&gt;ext_draw_pad;
+                child_area.x1 -= ext_size;
+                child_area.y1 -= ext_size;
+                child_area.x2 += ext_size;
+                child_area.y2 += ext_size;
+                <span class="hljs-comment">/* Get the union (common parts) of original mask (from obj)</span>
+<span class="hljs-comment">                 * and its child */</span>
+                union_ok = _ug_area_intersect(&amp;mask_child, &amp;obj_mask, &amp;child_area);
+
+                <span class="hljs-comment">/*If the parent and the child has common area then refresh the child */</span>
+                <span class="hljs-keyword">if</span>(union_ok) &#123;
+                    <span class="hljs-comment">/*Refresh the next children*/</span>
+                    ug_refr_obj(child_p, &amp;mask_child);
+                &#125;
+            &#125;
+        &#125;
+
+        <span class="hljs-comment">/* If all the children are redrawn make &#x27;post draw&#x27; design */</span>
+        <span class="hljs-keyword">if</span>(obj-&gt;design_cb) obj-&gt;design_cb(obj, &amp;obj_ext_mask, UG_DESIGN_DRAW_POST);
+    &#125;
+&#125;</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/UVGUI/">UVGUI</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/UVGUI/">UVGUI</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/08/NOTE/ARM/STM32/Keil_Cpp%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%87%BA%E7%8E%B0%E7%B1%BB%E5%9E%8B%E9%94%99%E8%AF%AF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Keil_C++环境移植第三方库出现类型错误问题解决</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/07/NOTE/ARM/UVGUI/UVGUI%E6%8A%97%E9%94%AF%E9%BD%BF%E5%AD%97%E6%A8%A1%E7%AC%A6%E5%8F%B7%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">UVGUI抗锯齿字模符号显示原理</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

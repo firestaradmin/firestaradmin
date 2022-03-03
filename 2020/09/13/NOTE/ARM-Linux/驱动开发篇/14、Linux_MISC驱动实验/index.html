@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux MISC驱动实验misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。 MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。 一、MISC 设备驱动简介所有的 MISC 设备驱动的主设备号都为 10，不同的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="14| Linux MISC驱动实验">
+<meta property="og:url" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="Linux MISC驱动实验misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。 MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。 一、MISC 设备驱动简介所有的 MISC 设备驱动的主设备号都为 10，不同的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829105616026.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113754481.png">
+<meta property="og:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113851138.png">
+<meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829105616026.png">
+  
+  
+  <title>14| Linux MISC驱动实验 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="14| Linux MISC驱动实验">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-13 00:00" pubdate>
+        2020年9月13日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      65 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">14| Linux MISC驱动实验</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Linux-MISC驱动实验"><a href="#Linux-MISC驱动实验" class="headerlink" title="Linux MISC驱动实验"></a>Linux MISC驱动实验</h1><p><strong>misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动</strong>，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。</p>
+<p>MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。</p>
+<h2 id="一、MISC-设备驱动简介"><a href="#一、MISC-设备驱动简介" class="headerlink" title="一、MISC 设备驱动简介"></a>一、MISC 设备驱动简介</h2><p>所有的 MISC 设备驱动的主设备号都为 10，不同的设备使用不同的从设备号。随着 Linux字符设备驱动的不断增加，设备号变得越来越紧张，尤其是主设备号，MISC 设备驱动就用于解决此问题。<strong>MISC 设备会自动创建 cdev，不需要像我们以前那样手动创建，因此采用 MISC 设备驱动可以简化字符设备驱动的编写。</strong></p>
+<p>我们需要向 Linux 注册一个 miscdevice 设备，miscdevice是一个结构体，定义在文件include&#x2F;linux&#x2F;miscdevice.h 中，内容如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">57</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> &#123;</span>
+<span class="hljs-number">58</span> 		<span class="hljs-type">int</span> minor; <span class="hljs-comment">/* 子设备号 */</span>
+<span class="hljs-number">59</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name; <span class="hljs-comment">/* 设备名字 */</span>
+<span class="hljs-number">60</span> 		<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> *<span class="hljs-title">fops</span>;</span> <span class="hljs-comment">/* 设备操作集 */</span>
+<span class="hljs-number">61</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">list</span>;</span>
+<span class="hljs-number">62</span>	 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">parent</span>;</span>
+<span class="hljs-number">63</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">this_device</span>;</span>
+<span class="hljs-number">64</span> 		<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">attribute_group</span> **<span class="hljs-title">groups</span>;</span>
+<span class="hljs-number">65</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *nodename;
+<span class="hljs-number">66</span> 		<span class="hljs-type">umode_t</span> mode;
+<span class="hljs-number">67</span> &#125;;</code></pre></div>
+
+<p>定义一个 MISC 设备(miscdevice 类型)以后我们需要设置 minor、name 和 fops 这三个成员变量。</p>
+<p><strong>minor 表示子设备号</strong>，MISC 设备的主设备号为 10，这个是固定的，需要用户指定子设备号，Linux 系统已经预定义了一些 MISC 设备的子设备号，这些预定义的子设备号定义在include&#x2F;linux&#x2F;miscdevice.h 文件中，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">13</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> PSMOUSE_MINOR 1</span>
+<span class="hljs-number">14</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MS_BUSMOUSE_MINOR 2 <span class="hljs-comment">/* unused */</span></span>
+<span class="hljs-number">15</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ATIXL_BUSMOUSE_MINOR 3 <span class="hljs-comment">/* unused */</span></span>
+<span class="hljs-number">16</span> <span class="hljs-comment">/*#define AMIGAMOUSE_MINOR 4 FIXME OBSOLETE */</span>
+<span class="hljs-number">17</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ATARIMOUSE_MINOR 5 <span class="hljs-comment">/* unused */</span></span>
+<span class="hljs-number">18</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SUN_MOUSE_MINOR 6 <span class="hljs-comment">/* unused */</span></span>
+......
+<span class="hljs-number">52</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MISC_DYNAMIC_MINOR 255</span></code></pre></div>
+
+<p>我们在使用的时候可以从这些预定义的子设备号中挑选一个，当然也可以自己定义，只要这个子设备号没有被其他设备使用接口。</p>
+<p><strong>name 就是此 MISC 设备名字</strong>，当此设备注册成功以后就会在&#x2F;dev 目录下生成一个名为name的设备文件。</p>
+<p><strong>fops 就是字符设备的操作集合</strong>，MISC 设备驱动最终是需要使用用户提供的 fops操作集合。</p>
+<hr>
+<p>当设置好 miscdevice 以后就需要使用 misc_register 函数向系统中注册一个 MISC 设备，此函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_register</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice * misc)</span></code></pre></div>
+
+<p>函数参数和返回值含义如下：<br><strong>misc</strong>：要注册的 MISC 设备。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
+<p>以前我们需要自己调用一堆的函数去创建设备，比如在以前的字符设备驱动中我们会使用如下几个函数完成设备创建过程：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> alloc_chrdev_region(); 	<span class="hljs-comment">/* 申请设备号 */</span>
+<span class="hljs-number">2</span> cdev_init(); 				<span class="hljs-comment">/* 初始化 cdev */</span>
+<span class="hljs-number">3</span> cdev_add(); 				<span class="hljs-comment">/* 添加 cdev */</span>
+<span class="hljs-number">4</span> class_create(); 			<span class="hljs-comment">/* 创建类 */</span>
+<span class="hljs-number">5</span> device_create(); 			<span class="hljs-comment">/* 创建设备 */</span></code></pre></div>
+
+<p>现在我们可以直接使用 misc_register 一个函数来完成示例代码中的这些步骤。</p>
+<hr>
+<p>当我们卸载设备驱动模块的时候需要调用misc_deregister函数来注销掉MISC设备，函数原型如下：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_deregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice *misc)</span></code></pre></div>
+
+<p>函数参数和返回值含义如下：<br><strong>misc</strong>：要注销的 MISC 设备。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
+<p>以前注销设备驱动的时候，我们需要调用一堆的函数去删除此前创建的 cdev、设备等等内<br>容，如下所示：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> cdev_del(); 					<span class="hljs-comment">/* 删除 cdev */</span>
+<span class="hljs-number">2</span> unregister_chrdev_region(); 	<span class="hljs-comment">/* 注销设备号 */</span>
+<span class="hljs-number">3</span> device_destroy(); 			<span class="hljs-comment">/* 删除设备 */</span>
+<span class="hljs-number">4</span> class_destroy(); 				<span class="hljs-comment">/* 删除类 */</span></code></pre></div>
+
+<p>现在我们只需要一个 misc_deregister 函数即可完成示例代码 57.1.4 中的这些工作。关于MISC 设备驱动就讲解到这里，接下来我们就使用 platform 加 MISC 驱动框架来编写 beep 蜂鸣器驱动。</p>
+<h2 id="二、硬件原理分析"><a href="#二、硬件原理分析" class="headerlink" title="二、硬件原理分析"></a>二、硬件原理分析</h2><p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829105616026.png" srcset="/img/loading.gif" lazyload alt="image-20200829105616026"></p>
+<p>通过一个 PNP 型的三极管 8550 来驱动蜂鸣器，通过 SNVS_TAMPER1 这个 IO来控制三极管 Q1 的导通，当 SNVS_TAMPER1 输出低电平的时候 Q1 导通，相当于蜂鸣器的正极连接到 DCDC_3V3，蜂鸣器形成一个通路，因此蜂鸣器会鸣叫。</p>
+<h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1| 修改设备树"></a>1| 修改设备树</h3><p>本章实验我们需要用到蜂鸣器，因此需要在 imx6ull-lxg-emmc.dts 文件中创建蜂鸣器设<br>备节点.</p>
+<h3 id="2-beep-驱动程序编写"><a href="#2-beep-驱动程序编写" class="headerlink" title="2| beep 驱动程序编写"></a>2| beep 驱动程序编写</h3><p>新建名为“19_miscbeep”的文件夹，然后在 19_miscbeep 文件夹里面创建 vscode 工程，工作区命名为“miscbeep。新建名为 miscbeep.c 的驱动文件，在 miscbeep.c 中输入如下所示内容：</p>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/errno.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/gpio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/cdev.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/device.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/semaphore.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/timer.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/irq.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/wait.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/poll.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fcntl.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/platform_device.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/miscdevice.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;asm/mach/map.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;asm/uaccess.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;asm/io.h&gt;</span></span>
+
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> MISCBEEP_NAME		<span class="hljs-string">&quot;miscbeep&quot;</span>	<span class="hljs-comment">/* 名字 	*/</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> MISCBEEP_MINOR		144			<span class="hljs-comment">/* 子设备号 */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> BEEPOFF 			0			<span class="hljs-comment">/* 关蜂鸣器 */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> BEEPON 				1			<span class="hljs-comment">/* 开蜂鸣器 */</span></span>
+
+<span class="hljs-comment">/* miscbeep设备结构体 */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscbeep_dev</span>&#123;</span>
+	<span class="hljs-type">dev_t</span> devid;			<span class="hljs-comment">/* 设备号 	 */</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span>		<span class="hljs-comment">/* cdev 	*/</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span>	<span class="hljs-comment">/* 类 		*/</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span>	<span class="hljs-comment">/* 设备 	 */</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_node</span>	*<span class="hljs-title">nd</span>;</span> <span class="hljs-comment">/* 设备节点 */</span>
+	<span class="hljs-type">int</span> beep_gpio;			<span class="hljs-comment">/* beep所使用的GPIO编号		*/</span>
+&#125;;
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscbeep_dev</span> <span class="hljs-title">miscbeep</span>;</span>		<span class="hljs-comment">/* beep设备 */</span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description		: 打开设备</span>
+<span class="hljs-comment"> * @param - inode 	: 传递给驱动的inode</span>
+<span class="hljs-comment"> * @param - filp 	: 设备文件，file结构体有个叫做private_data的成员变量</span>
+<span class="hljs-comment"> * 					  一般在open的时候将private_data指向设备结构体。</span>
+<span class="hljs-comment"> * @return 			: 0 成功;其他 失败</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">miscbeep_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
+&#123;
+	filp-&gt;private_data = &amp;miscbeep; <span class="hljs-comment">/* 设置私有数据 */</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description		: 向设备写数据 </span>
+<span class="hljs-comment"> * @param - filp 	: 设备文件，表示打开的文件描述符</span>
+<span class="hljs-comment"> * @param - buf 	: 要写给设备写入的数据</span>
+<span class="hljs-comment"> * @param - cnt 	: 要写入的数据长度</span>
+<span class="hljs-comment"> * @param - offt 	: 相对于文件首地址的偏移</span>
+<span class="hljs-comment"> * @return 			: 写入的字节数，如果为负值，表示写入失败</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">miscbeep_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">const</span> <span class="hljs-type">char</span> __user *buf, <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span>
+&#123;
+	<span class="hljs-type">int</span> retvalue;
+	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> databuf[<span class="hljs-number">1</span>];
+	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> beepstat;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscbeep_dev</span> *<span class="hljs-title">dev</span> =</span> filp-&gt;private_data;
+
+	retvalue = copy_from_user(databuf, buf, cnt);
+	<span class="hljs-keyword">if</span>(retvalue &lt; <span class="hljs-number">0</span>) &#123;
+		printk(<span class="hljs-string">&quot;kernel write failed!\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> -EFAULT;
+	&#125;
+
+	beepstat = databuf[<span class="hljs-number">0</span>];		<span class="hljs-comment">/* 获取状态值 */</span>
+	<span class="hljs-keyword">if</span>(beepstat == BEEPON) &#123;	
+		gpio_set_value(dev-&gt;beep_gpio, <span class="hljs-number">0</span>);	<span class="hljs-comment">/* 打开蜂鸣器 */</span>
+	&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(beepstat == BEEPOFF) &#123;
+		gpio_set_value(dev-&gt;beep_gpio, <span class="hljs-number">1</span>);	<span class="hljs-comment">/* 关闭蜂鸣器 */</span>
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+
+
+<span class="hljs-comment">/* 设备操作函数 */</span>
+<span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">miscbeep_fops</span> =</span> &#123;
+	.owner = THIS_MODULE,
+	.open = miscbeep_open,
+	.write = miscbeep_write,
+&#125;;
+
+<span class="hljs-comment">/* MISC设备结构体 */</span>
+<span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> <span class="hljs-title">beep_miscdev</span> =</span> &#123;
+	.minor = MISCBEEP_MINOR,
+	.name = MISCBEEP_NAME,
+	.fops = &amp;miscbeep_fops,
+&#125;;
+ <span class="hljs-comment">/*</span>
+<span class="hljs-comment">  * @description     : platform驱动的probe函数，当驱动与</span>
+<span class="hljs-comment">  *                    设备匹配以后此函数就会执行</span>
+<span class="hljs-comment">  * @param - dev     : platform设备</span>
+<span class="hljs-comment">  * @return          : 0，成功;其他负值,失败</span>
+<span class="hljs-comment">  */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">miscbeep_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *dev)</span>
+&#123;
+	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;
+
+	printk(<span class="hljs-string">&quot;k:beep driver and device was matched!\r\n&quot;</span>);
+	<span class="hljs-comment">/* 设置BEEP所使用的GPIO */</span>
+	<span class="hljs-comment">/* 1、获取设备节点：beep */</span>
+	miscbeep.nd = of_find_node_by_path(<span class="hljs-string">&quot;/beep&quot;</span>);
+	<span class="hljs-keyword">if</span>(miscbeep.nd == <span class="hljs-literal">NULL</span>) &#123;
+		printk(<span class="hljs-string">&quot;k:beep node not find!\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> -EINVAL;
+	&#125; 
+
+	<span class="hljs-comment">/* 2、 获取设备树中的gpio属性，得到BEEP所使用的BEEP编号 */</span>
+	miscbeep.beep_gpio = of_get_named_gpio(miscbeep.nd, <span class="hljs-string">&quot;beep-gpios&quot;</span>, <span class="hljs-number">0</span>);
+	<span class="hljs-keyword">if</span>(miscbeep.beep_gpio &lt; <span class="hljs-number">0</span>) &#123;
+		printk(<span class="hljs-string">&quot;k:can&#x27;t get beep-gpio&quot;</span>);
+		<span class="hljs-keyword">return</span> -EINVAL;
+	&#125;
+
+	<span class="hljs-comment">/* 3、设置GPIO5_IO01为输出，并且输出高电平，默认关闭BEEP */</span>
+	ret = gpio_direction_output(miscbeep.beep_gpio, <span class="hljs-number">1</span>);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>) &#123;
+		printk(<span class="hljs-string">&quot;k:can&#x27;t set gpio!\r\n&quot;</span>);
+	&#125;
+	
+	<span class="hljs-comment">/* 一般情况下会注册对应的字符设备，但是这里我们使用MISC设备</span>
+<span class="hljs-comment">  	 * 所以我们不需要自己注册字符设备驱动，只需要注册misc设备驱动即可</span>
+<span class="hljs-comment">	 */</span>
+	ret = misc_register(&amp;beep_miscdev);
+	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;
+		printk(<span class="hljs-string">&quot;k:misc device register failed!\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> -EFAULT;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description     : platform驱动的remove函数，移除platform驱动的时候此函数会执行</span>
+<span class="hljs-comment"> * @param - dev     : platform设备</span>
+<span class="hljs-comment"> * @return          : 0，成功;其他负值,失败</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">miscbeep_remove</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *dev)</span>
+&#123;
+	<span class="hljs-comment">/* 注销设备的时候关闭LED灯 */</span>
+	gpio_set_value(miscbeep.beep_gpio, <span class="hljs-number">1</span>);
+
+	<span class="hljs-comment">/* 注销misc设备 */</span>
+	misc_deregister(&amp;beep_miscdev);
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">/* 匹配列表 */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">beep_of_match</span>[] =</span> &#123;
+	&#123; .compatible = <span class="hljs-string">&quot;lxg,beep&quot;</span> &#125;,
+	&#123; <span class="hljs-comment">/* Sentinel */</span> &#125;
+&#125;;
+
+ <span class="hljs-comment">/* platform驱动结构体 */</span>
+<span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_driver</span> <span class="hljs-title">beep_driver</span> =</span> &#123;
+     .driver     = &#123;
+         .name   = <span class="hljs-string">&quot;imx6ul-beep&quot;</span>,         <span class="hljs-comment">/* 驱动名字，用于和设备匹配 */</span>
+         .of_match_table = beep_of_match, <span class="hljs-comment">/* 设备树匹配表          */</span>
+     &#125;,
+     .probe      = miscbeep_probe,
+     .remove     = miscbeep_remove,
+&#125;;
+		
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description	: 驱动出口函数</span>
+<span class="hljs-comment"> * @param 		: 无</span>
+<span class="hljs-comment"> * @return 		: 无</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">miscbeep_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	<span class="hljs-keyword">return</span> platform_driver_register(&amp;beep_driver);
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description	: 驱动出口函数</span>
+<span class="hljs-comment"> * @param 		: 无</span>
+<span class="hljs-comment"> * @return 		: 无</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">miscbeep_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+&#123;
+	platform_driver_unregister(&amp;beep_driver);
+&#125;
+
+
+module_init(miscbeep_init);
+module_exit(miscbeep_exit);
+MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);
+MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</code></pre></div>
+
+
+
+<h3 id="3-编写测试APP"><a href="#3-编写测试APP" class="headerlink" title="3| 编写测试APP"></a>3| 编写测试APP</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;unistd.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/types.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/stat.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;fcntl.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdlib.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;string.h&quot;</span></span>
+
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> BEEPOFF 	0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> BEEPON 		1</span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * @description		: main主程序</span>
+<span class="hljs-comment"> * @param - argc 	: argv数组元素个数</span>
+<span class="hljs-comment"> * @param - argv 	: 具体参数</span>
+<span class="hljs-comment"> * @return 			: 0 成功;其他 失败</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span>
+&#123;
+	<span class="hljs-type">int</span> fd, retvalue;
+	<span class="hljs-type">char</span> *filename;
+	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> databuf[<span class="hljs-number">1</span>];
+	
+	<span class="hljs-keyword">if</span>(argc != <span class="hljs-number">3</span>)&#123;
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Error Usage!\r\n&quot;</span>);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+	&#125;
+
+	filename = argv[<span class="hljs-number">1</span>];
+
+	<span class="hljs-comment">/* 打开led驱动 */</span>
+	fd = open(filename, O_RDWR);
+	<span class="hljs-keyword">if</span>(fd &lt; <span class="hljs-number">0</span>)&#123;
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;file %s open failed!\r\n&quot;</span>, argv[<span class="hljs-number">1</span>]);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+	&#125;
+	
+	databuf[<span class="hljs-number">0</span>] = atoi(argv[<span class="hljs-number">2</span>]);	<span class="hljs-comment">/* 要执行的操作：打开或关闭 */</span>
+	retvalue = write(fd, databuf, <span class="hljs-keyword">sizeof</span>(databuf));
+	<span class="hljs-keyword">if</span>(retvalue &lt; <span class="hljs-number">0</span>)&#123;
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;BEEP Control Failed!\r\n&quot;</span>);
+		close(fd);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+	&#125;
+
+	retvalue = close(fd); <span class="hljs-comment">/* 关闭文件 */</span>
+	<span class="hljs-keyword">if</span>(retvalue &lt; <span class="hljs-number">0</span>)&#123;
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;file %s close failed!\r\n&quot;</span>, argv[<span class="hljs-number">1</span>]);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+
+
+<h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><p>编译运行。</p>
+<p>当驱动模块加载成功以后我们可以在&#x2F;sys&#x2F;class&#x2F;misc 这个目录下看到一个名为“miscbeep”的子目录，如图  所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113754481.png" srcset="/img/loading.gif" lazyload alt="image-20200829113754481"></p>
+<p>所有的 misc 设备都属于同一个类，&#x2F;sys&#x2F;class&#x2F;misc 目录下就是 misc 这个类的所有设备，每个设备对应一个子目录。</p>
+<p>驱动与设备匹配成功以后就会生成&#x2F;dev&#x2F;miscbeep 这个设备驱动文件，<strong>输入如下命令查看这个文件的主次设备号：</strong></p>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">ls</span> /dev/miscbeep -l</code></pre></div>
+
+<p>结果如图 所示：</p>
+<p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113851138.png" srcset="/img/loading.gif" lazyload alt="image-20200829113851138"></p>
+<p>从图 可以看出，&#x2F;dev&#x2F;miscbeep 这个设备的主设备号为 10，次设备号为 144，和我们驱动程序里面设置的一致。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">13| Linux自带的LED灯驱动</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">15| Linux INPUT子系统实验</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

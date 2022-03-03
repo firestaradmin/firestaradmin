@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cn" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="@firestaradmin   Creation is the most precious thing of my life.  AD宝典菜单项快捷键设置：CTRL + 鼠标左键点击菜单项  画面操作平移：鼠标右键拖动  缩放：鼠标中键拖动 | CTRL + 鼠标右键拖动 旋转：SHIFT+ 鼠标右键拖动   SCH走线：CTRL + W  对齐到栅格：CTRL + SHIFT + D  器件翻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AD宝典">
+<meta property="og:url" content="http://firestaradmin.top/2020/12/18/NOTE/Note/AD%E5%AE%9D%E5%85%B8/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="@firestaradmin   Creation is the most precious thing of my life.  AD宝典菜单项快捷键设置：CTRL + 鼠标左键点击菜单项  画面操作平移：鼠标右键拖动  缩放：鼠标中键拖动 | CTRL + 鼠标右键拖动 旋转：SHIFT+ 鼠标右键拖动   SCH走线：CTRL + W  对齐到栅格：CTRL + SHIFT + D  器件翻">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-02T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Altium Design">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>AD宝典 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-dark.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="AD宝典">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-18 00:00" pubdate>
+        2020年12月18日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">AD宝典</h1>
+            
+            <div class="markdown-body">
+              <p>@firestaradmin </p>
+<blockquote>
+<p>Creation is the most precious thing of my life.</p>
+</blockquote>
+<h1 id="AD宝典"><a href="#AD宝典" class="headerlink" title="AD宝典"></a>AD宝典</h1><p>菜单项快捷键设置：CTRL + 鼠标左键点击菜单项</p>
+<hr>
+<h2 id="画面操作"><a href="#画面操作" class="headerlink" title="画面操作"></a>画面操作</h2><p><strong>平移</strong>：鼠标右键拖动 </p>
+<p><strong>缩放</strong>：鼠标中键拖动 | CTRL + 鼠标右键拖动</p>
+<p><strong>旋转</strong>：SHIFT+ 鼠标右键拖动 </p>
+<hr>
+<h2 id="SCH"><a href="#SCH" class="headerlink" title="SCH"></a>SCH</h2><p><strong>走线</strong>：CTRL + W </p>
+<p><strong>对齐到栅格</strong>：CTRL + SHIFT + D </p>
+<p><strong>器件翻转</strong>：选中该器件，拖动，鼠标呈十字状，X 键水平左右翻转；Y 键为垂直上下翻转。</p>
+<p><strong>批量标注</strong>：点击工具 -&gt; 标注 -&gt; 原理图标注</p>
+<hr>
+<h4 id="设置Net-作用范围："><a href="#设置Net-作用范围：" class="headerlink" title="设置Net 作用范围："></a>设置Net 作用范围：</h4><p><strong>Projct（工程） -&gt; Project Option（工程参数） -&gt; Options标签，在Net Identifier Scope(网络标示符范围)中选择。</strong></p>
+<p><strong>Net Label 的四种作用范围：</strong></p>
+<ul>
+<li><strong>“Automatic”</strong>是缺省选项，表示系统会检测项目图纸内容，从而自动调整网络标识的范围。检测及自动调整的过程如下：<ul>
+<li>如果原理图里有Sheet Entry标识，则网络标识的范围调整为Hierarchical。如果原理图里没有Sheet  Entry标识。但是有Port标识，则网络标识的范围调整为Flat。如果原理图里既没有Sheet Entry标识，又没有Port标识，则Net  Label的范围调整为Global。</li>
+</ul>
+</li>
+<li><strong>“Flat”</strong>代表扁平式图纸结构，这种情况下，Net Label的作用范围仍是单张图纸以内。而Port的作用范围扩大到所有图纸，各图纸只要有相同的Port名，就可以发生信号传递。</li>
+<li><strong>“Hierarchical”</strong>代表层次式结构，这种情况下，Net Label，Port的作用范围是单张图纸以内。当然，Port可以与上层的Sheet Entry连接，以纵向方式在图纸之间传递信号。</li>
+<li><strong>“Global”</strong>是最开放的连接方式，这种情况下，Net Label、Port的作用范围都扩大到所有图纸。各图纸只要有相同的Port或相同的Net Label，就可以发生信号传递。</li>
+</ul>
+<hr>
+<h2 id="PCB"><a href="#PCB" class="headerlink" title="PCB"></a>PCB</h2><p><strong>切换单位</strong>：Q</p>
+<p><strong>层 视图选项</strong>：L  </p>
+<p><strong>网络高亮</strong>：CTRL + 鼠标单击需要高亮的网络</p>
+<p><strong>层显示模式</strong> [单层、多层、其它层灰色模式]：SHIFT+ S</p>
+<p><strong>更改走线模式</strong>：SHIFT+ 空格</p>
+<p><strong>翻转选中的元件</strong>：M + I</p>
+<p><strong>翻转电路板</strong>：CTRL + F       </p>
+<p><strong>切换布线层</strong>：NUM* | L</p>
+<p><strong>布线时切换层并放置过孔</strong>：CTRL + SHIFT+ 滚轮</p>
+<p><strong>布线过程中放置过孔</strong>：NUM* | 2(大键盘上的数字2)</p>
+<p><strong>哪里要测点哪里</strong>：CTRL + M</p>
+<p><strong>测量边距</strong>：R + P</p>
+<p><strong>选中整条线</strong>：CTRL + H</p>
+<p><strong>切换线宽</strong>：SHIFT+ w | 3</p>
+<p><strong>切换栅格大小：</strong>G</p>
+<p><strong>忽略栅格捕捉</strong>：按住CTRL</p>
+<p><strong>快速布局选中的元器件</strong>：选中元件后 T + O + L 左键拖拽</p>
+<p><strong>固定间距的等间距走线</strong>：T + T + M</p>
+<p><strong>可更改间距的等间距走线</strong>：P + M</p>
+<p><strong>走线时显示走线长度</strong>：SHIFT+ G</p>
+<p><strong>显示或关闭坐标显示信息</strong>：SHIFT+ H</p>
+<p><strong>显示或关闭放大镜</strong>：SHIFT+ M</p>
+<p><strong>局部自动走线</strong>：SHIFT+ A</p>
+<p><strong>复位错误标志</strong>：T + M</p>
+<hr>
+<p> <strong>PCB 设计时的技巧：</strong></p>
+<ul>
+<li>PCB设计时，交叉选择是个好东西</li>
+<li>PCB设计时，可为网络建立Net Class 分组，来设计规则，和显示隐藏飞线</li>
+<li>PCB设计时，分组的网络显示和隐藏，在右下角panels 里的PCB框设置</li>
+<li>PCB设计时，设置好规则 记得复位错误标志 快捷键 T + M</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Note/">Note</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Altium-Design/">Altium Design</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/18/NOTE/C&amp;C++/CMAKE%E7%AE%80%E6%98%8E%E6%95%99%E7%A8%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CMAKE简明教程</span>
+                        <span class="visible-mobile">Vorheriger</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/15/NOTE/Python/%E9%80%9A%E7%94%A8%E8%84%9A%E6%9C%AC%E6%A8%A1%E5%9D%97API/">
+                        <span class="hidden-mobile">Python 脚本基础模块</span>
+                        <span class="visible-mobile">Nächster</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Suchen</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">Stichwort</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
