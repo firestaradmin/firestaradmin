@@ -941,23 +941,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="7| Linux按键输入驱动实验">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="5| pinctrl 和 gpio 子系统实验">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          7| Linux按键输入驱动实验
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
+          5| pinctrl 和 gpio 子系统实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
           
-          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
+          pinctrl 和 gpio 子系统实验上次我们编写了基于设备树的 LED 驱动，但是驱动的本质还是没变，都是配置 LED 灯所使用的 GPIO 寄存器，驱动开发方式和裸机基本没啥区别。 Linux 是一个庞大而完善的系统，尤其是驱动框架，像 GPIO 这种最基本的驱动不可能采用“原始”的裸机驱动开发方式，否则就相当于你买了一辆车，结果每天推着车去上班。Linux 内核提供了 pinctrl 和
         </a>
       </p>
 
@@ -993,6 +993,8 @@
               <a href="/tags/Linux/">Linux</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
@@ -1069,6 +1071,69 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="7| Linux按键输入驱动实验">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          7| Linux按键输入驱动实验
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          
+          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-11 00:00" pubdate>
+              2020-09-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Embedded/">Embedded</a>
+            
+              <a href="/tags/ARM/">ARM</a>
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/" target="_self">
           <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="6| Linux 并发与竞争">
         </a>
@@ -1121,71 +1186,6 @@
               <a href="/tags/Linux/">Linux</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="5| pinctrl 和 gpio 子系统实验">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          5| pinctrl 和 gpio 子系统实验
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          
-          pinctrl 和 gpio 子系统实验上次我们编写了基于设备树的 LED 驱动，但是驱动的本质还是没变，都是配置 LED 灯所使用的 GPIO 寄存器，驱动开发方式和裸机基本没啥区别。 Linux 是一个庞大而完善的系统，尤其是驱动框架，像 GPIO 这种最基本的驱动不可能采用“原始”的裸机驱动开发方式，否则就相当于你买了一辆车，结果每天推着车去上班。Linux 内核提供了 pinctrl 和
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-11 00:00" pubdate>
-              2020-09-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Embedded/">Embedded</a>
-            
-              <a href="/tags/ARM/">ARM</a>
-            
-              <a href="/tags/Linux/">Linux</a>
-            
-              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
