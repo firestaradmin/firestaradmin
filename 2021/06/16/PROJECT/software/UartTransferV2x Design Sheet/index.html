@@ -16,24 +16,23 @@
   <meta name="author" content="firestaradmin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Keil Compile Option1. One ELF Section per Function 选项One ELF Section per Function 的主要功能是对冗余函数的优化。通过这个选项，可以在最后生成的二进制文件中将冗余函数排除掉(虽然其所在的文件已经参与了编译链接),以便最大程度地优化最后生成的二进制代码。 而该选项实现的机制是将每一个函数作为一个优化的单元，而并非整个文件">
+    <meta name="description" content="UartTransferV20 Design Sheet STM32串口烧录BIN&#x2F;HEX文件 设计书   @author firestaradmin 2021年6月16日  [TOC] 0 BriefUartTransfer Lib is for transfering data by UART, and it is all programmed in C. Can use in em">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VSCode编译调试STM32的环境搭建">
-<meta property="og:url" content="http://firestaradmin.top/2021/05/13/NOTE/ARM/STM32/Keil%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9/index.html">
+<meta property="og:title" content="UartTransferV20 Design Sheet">
+<meta property="og:url" content="http://firestaradmin.top/2021/06/16/PROJECT/software/UartTransferV2x%20Design%20Sheet/index.html">
 <meta property="og:site_name" content="firestaradmin&#39;s Fortune">
-<meta property="og:description" content="Keil Compile Option1. One ELF Section per Function 选项One ELF Section per Function 的主要功能是对冗余函数的优化。通过这个选项，可以在最后生成的二进制文件中将冗余函数排除掉(虽然其所在的文件已经参与了编译链接),以便最大程度地优化最后生成的二进制代码。 而该选项实现的机制是将每一个函数作为一个优化的单元，而并非整个文件">
+<meta property="og:description" content="UartTransferV20 Design Sheet STM32串口烧录BIN&#x2F;HEX文件 设计书   @author firestaradmin 2021年6月16日  [TOC] 0 BriefUartTransfer Lib is for transfering data by UART, and it is all programmed in C. Can use in em">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://firestaradmin.top/2021/05/13/NOTE/ARM/STM32/Keil%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9/image-20211203145225371.png">
-<meta property="article:published_time" content="2021-05-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-05-13T16:00:00.000Z">
+<meta property="article:published_time" content="2021-06-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-02T16:00:00.000Z">
 <meta property="article:author" content="firestaradmin">
-<meta property="article:tag" content="STM32">
-<meta property="article:tag" content="VSCode">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="C&amp;C++">
+<meta property="article:tag" content="Protocol">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://firestaradmin.top/2021/05/13/NOTE/ARM/STM32/Keil%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9/image-20211203145225371.png">
   
   
-  <title>VSCode编译调试STM32的环境搭建 - firestaradmin&#39;s Fortune</title>
+  <title>UartTransferV20 Design Sheet - firestaradmin&#39;s Fortune</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -179,7 +178,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="VSCode编译调试STM32的环境搭建">
+            <span class="h2" id="subtitle" title="UartTransferV20 Design Sheet">
               
             </span>
 
@@ -194,8 +193,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-05-13 00:00" pubdate>
-        2021年5月13日 凌晨
+      <time datetime="2021-06-16 00:00" pubdate>
+        2021年6月16日 凌晨
       </time>
     </span>
   
@@ -205,7 +204,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      239 字
+      2.4k 字
     </span>
   
 
@@ -214,7 +213,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2 分钟
+      21 分钟
     </span>
   
 
@@ -243,13 +242,183 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">VSCode编译调试STM32的环境搭建</h1>
+            <h1 style="display: none">UartTransferV20 Design Sheet</h1>
             
             <div class="markdown-body">
-              <h1 id="Keil-Compile-Option"><a href="#Keil-Compile-Option" class="headerlink" title="Keil Compile Option"></a>Keil Compile Option</h1><h3 id="1-One-ELF-Section-per-Function"><a href="#1-One-ELF-Section-per-Function" class="headerlink" title="1. One ELF Section per Function"></a>1. One ELF Section per Function</h3><p><img src="/2021/05/13/NOTE/ARM/STM32/Keil%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9/image-20211203145225371.png" srcset="/img/loading.gif" lazyload alt="image-20211203145225371"></p>
-<p>选项<strong>One ELF Section per Function</strong> 的主要功能是对冗余函数的优化。通过这个选项，可以在最后生成的二进制文件中将冗余函数排除掉(虽然其所在的文件已经参与了编译链接),以便最大程度地优化最后生成的二进制代码。</p>
-<p>而该选项实现的机制是将每一个函数作为一个优化的单元，而并非整个文件作为参与优化的单元。</p>
-<p>该选项勾选后，表现为在 Compiler Option里 为 <code>--split_sections</code></p>
+              <h1 id="UartTransferV20-Design-Sheet"><a href="#UartTransferV20-Design-Sheet" class="headerlink" title="UartTransferV20 Design Sheet"></a>UartTransferV20 Design Sheet</h1><blockquote>
+<p>STM32串口烧录BIN&#x2F;HEX文件 设计书</p>
+</blockquote>
+<blockquote>
+<p>@author firestaradmin 2021年6月16日</p>
+</blockquote>
+<p>[TOC]</p>
+<h2 id="0-Brief"><a href="#0-Brief" class="headerlink" title="0 Brief"></a>0 Brief</h2><p><u><strong>UartTransfer Lib</strong></u> is for transfering data by UART, and it is all programmed in C.</p>
+<p>Can use in embeded-device or other C application.</p>
+<h2 id="1-Protocol-Frame-Format"><a href="#1-Protocol-Frame-Format" class="headerlink" title="1 Protocol Frame Format"></a>1 Protocol Frame Format</h2><h3 id="1-1-Frame-Format"><a href="#1-1-Frame-Format" class="headerlink" title="1.1 Frame Format"></a>1.1 Frame Format</h3><p>{&lt;Frame head: 2Byte&gt; &lt;Command: 1Byte&gt; &lt;Lenth: 2Byte&gt; &lt;Data: xByte&gt; &lt;BCC: 1Byte&gt; &lt;Frame tail: 2Byte&gt;}</p>
+<table>
+<thead>
+<tr>
+<th align="left">Byte Index</th>
+<th align="left">Content (HEX)</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">BYTE 1</td>
+<td align="left">0xC5</td>
+<td>Frame head</td>
+</tr>
+<tr>
+<td align="left">BYTE 2</td>
+<td align="left">0x5C</td>
+<td>Frame head</td>
+</tr>
+<tr>
+<td align="left">BYTE 3</td>
+<td align="left"><COMMAND></COMMAND></td>
+<td>Command byte</td>
+</tr>
+<tr>
+<td align="left">BYTE 4</td>
+<td align="left"><LENTH msb></LENTH></td>
+<td>Data lenth MSB [uint16_t : 8-15bit]</td>
+</tr>
+<tr>
+<td align="left">BYTE 5</td>
+<td align="left"><LENTH lsb></LENTH></td>
+<td>Data lenth LSB [uint16_t : 0-7bit]</td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left"><Data></Data></td>
+<td>Concrete data (if <LENTH> is zero, the frame can have no data.)</LENTH></td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left"><Data></Data></td>
+<td>Concrete data (if <LENTH> is zero, the frame can have no data.)</LENTH></td>
+</tr>
+<tr>
+<td align="left">BYTE N-2</td>
+<td align="left"><BCC check code></BCC></td>
+<td>The XOR of all bytes except the head and the tail of frame and the BCC code self.</td>
+</tr>
+<tr>
+<td align="left">BYTE N-1</td>
+<td align="left">0x5A</td>
+<td>Frame tail</td>
+</tr>
+<tr>
+<td align="left">BYTE N</td>
+<td align="left">0xA5</td>
+<td>Frame tail</td>
+</tr>
+</tbody></table>
+<ul>
+<li><h4 id="COMMAND"><a href="#COMMAND" class="headerlink" title="COMMAND"></a>COMMAND</h4><p>Command byte decides the type and the content of the frame.</p>
+<table>
+<thead>
+<tr>
+<th>Command byte</th>
+<th>Meaning</th>
+<th>note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>Data</td>
+<td>Represent the <Data> contnet of the farme is the data of the BIN file which will be transfered.</Data></td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>Transfer begin</td>
+<td>Represent the BIN file is going to be transfered.</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>Transfer end</td>
+<td>Represent the BIN file is finished to be transfered.</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>reserved</td>
+<td></td>
+</tr>
+<tr>
+<td>…</td>
+<td>reserved</td>
+<td></td>
+</tr>
+<tr>
+<td>0xFF</td>
+<td>ACK of client</td>
+<td>Each time the client receives a frame of data, it needs to return an ACK.</td>
+</tr>
+</tbody></table>
+<hr>
+</li>
+<li><h4 id="LENTH"><a href="#LENTH" class="headerlink" title="LENTH"></a>LENTH</h4><p>  Lenth is a uint16_t variable, which is the lenth of the data in the frame. Unit: Byte, Big endian.</p>
+<p>  If <LENTH> is equal zero, it indicates the frame has no data.</LENTH></p>
+<hr>
+</li>
+<li><h4 id="DATA"><a href="#DATA" class="headerlink" title="DATA"></a>DATA</h4><p>  Data is the data of the BIN file which will be transfered.</p>
+<hr>
+</li>
+<li><h4 id="BCC-Code"><a href="#BCC-Code" class="headerlink" title="BCC Code"></a>BCC Code</h4><p>  The BCC code is used to verify the frame received is correct.</p>
+<p>  BCC is the XOR of all bytes except the head and the tail of frame and the BCC code self.</p>
+<p>  <strong>sample</strong>: a frame is <u><strong>C5 5C 00 00 04 AA BB CC DD XX 5A A5</strong></u> , the XX term is BCC Code.</p>
+<p>  <u>XX &#x3D; 00 ^ 00 ^ 04 ^ AA ^ BB ^ CC ^ DD &#x3D; 0x04</u></p>
+</li>
+</ul>
+<hr>
+<h3 id="1-2-Begin-Frame-Sample"><a href="#1-2-Begin-Frame-Sample" class="headerlink" title="1.2 Begin Frame Sample"></a>1.2 Begin Frame Sample</h3><p>Begin Frame has a 4 bytes data which indicate that the offset position of the BIN file will be stored in. Unit: Byte, Big endian.</p>
+<p><strong>sample</strong>: The file is to be stored at 0xF00 offset position of SPI-Flash.</p>
+<p>The Frame: <u><strong>C5 5C 01 00 04 00 00 0F 00 0A 5A A5</strong></u></p>
+<hr>
+<h3 id="1-3-End-Frame-Sample"><a href="#1-3-End-Frame-Sample" class="headerlink" title="1.3 End Frame Sample"></a>1.3 End Frame Sample</h3><p>End Frame has no data, so the <LENTH> of the frame is 0.</LENTH></p>
+<p><strong>sample</strong>: Indicate the file has been transfered.</p>
+<p>The Frame: <u><strong>C5 5C 02 00 00 02 5A A5</strong></u></p>
+<hr>
+<h3 id="1-4-Transfer-data-Frame-Sample"><a href="#1-4-Transfer-data-Frame-Sample" class="headerlink" title="1.4 Transfer data Frame Sample"></a>1.4 Transfer data Frame Sample</h3><p>Data Frame has uncertain lenth data. </p>
+<p><strong>smaple</strong>:  Transfer 10 Byte data: [ <u>01 02 03 04 05 06 07 08 09 0A</u> ]</p>
+<p>The Frame: <u><strong>C5 5C 00 00 0A 01 02 03 04 05 06 07 08 09 0A 0B  5A A5</strong></u></p>
+<hr>
+<h3 id="1-5-ACK-Frame-Sample"><a href="#1-5-ACK-Frame-Sample" class="headerlink" title="1.5 ACK Frame Sample"></a>1.5 ACK Frame Sample</h3><p>When the client has received a frame, it need to return an ACK Frame.</p>
+<p>The <COMMAND> of ACK Frame is 0xFF, and the <LENTH> is fixed at 0x0002 that indicates data just two byte. </LENTH></COMMAND></p>
+<p>The first byte of data is COMMAND which be responded, and the second byte of data is processing result (<PROCESS result>).</PROCESS></p>
+<ul>
+<li><h5 id="lt-PROCESS-RESULT-gt-Table"><a href="#lt-PROCESS-RESULT-gt-Table" class="headerlink" title="&lt;PROCESS RESULT&gt; Table"></a>&lt;PROCESS RESULT&gt; Table</h5><table>
+<thead>
+<tr>
+<th>&lt;PROCESS RESULT&gt;</th>
+<th>describe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>Frame verify error</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>Internal storage full error</td>
+</tr>
+<tr>
+<td>…</td>
+<td>Reserved</td>
+</tr>
+<tr>
+<td>0xFF</td>
+<td>Unkown error</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p><strong>sample</strong>:  The ACK to Transfer begin command, and the client processs it OK.</p>
+<p>The Frame: <u><strong>C5 5C FF 00 02 01 00 FC 5A A5</strong></u></p>
 
             </div>
             <hr>
@@ -259,9 +428,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                      <a class="hover-with-bg" href="/categories/PROJECT/">PROJECT</a>
                     
-                      <a class="hover-with-bg" href="/categories/NOTE/STM32/">STM32</a>
+                      <a class="hover-with-bg" href="/categories/PROJECT/software/">software</a>
                     
                   </div>
                 
@@ -269,9 +438,11 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/STM32/">STM32</a>
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
                     
-                      <a class="hover-with-bg" href="/tags/VSCode/">VSCode</a>
+                      <a class="hover-with-bg" href="/tags/C-C/">C&C++</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Protocol/">Protocol</a>
                     
                   </div>
                 
@@ -288,9 +459,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/06/16/PROJECT/software/UartTransferV2x%20Design%20Sheet/">
+                      <a href="/2021/10/27/NOTE/QT/QT%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6ini%E4%BD%BF%E7%94%A8/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">UartTransferV20 Design Sheet</span>
+                        <span class="hidden-mobile">QT ini配置文件</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -298,7 +469,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+                      <a href="/2021/05/13/NOTE/ARM/STM32/Keil%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9/">
                         <span class="hidden-mobile">VSCode编译调试STM32的环境搭建</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
