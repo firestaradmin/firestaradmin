@@ -1,0 +1,561 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处">
+<meta property="og:type" content="article">
+<meta property="og:title" content="11| Linux异步通知实验">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://firestaradmin.top:888/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/image-20200827145821350.png">
+<meta property="og:image" content="http://firestaradmin.top:888/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/image-20200827160817641.png">
+<meta property="article:published_time" content="2020-09-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-11T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top:888/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/image-20200827145821350.png">
+  
+  
+  <title>11| Linux异步通知实验 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="11| Linux异步通知实验">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-12 00:00" pubdate>
+        September 12, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      18k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      147 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">11| Linux异步通知实验</h1>
+            
+            <div class="markdown-body">
+              <h1 id="异步通知实验"><a href="#异步通知实验" class="headerlink" title="异步通知实验"></a>异步通知实验</h1><p>在前面<strong>使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的</strong>，<strong>对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询</strong>。<strong>最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断</strong>。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处理代码。</p>
+<h2 id="一、异步通知"><a href="#一、异步通知" class="headerlink" title="一、异步通知"></a>一、异步通知</h2><h3 id="1-异步通知简介"><a href="#1-异步通知简介" class="headerlink" title="1| 异步通知简介"></a>1| 异步通知简介</h3><p>我们首先来回顾一下“中断”，中断是处理器提供的一种异步机制，我们配置好中断以后就可以让处理器去处理其他的事情了，当中断发生以后会触发我们事先设置好的中断服务函数，在中断服务函数中做具体的处理。Linux 应用程序可以通过阻塞或者非阻塞这两种方式来访问驱动设备，通过阻塞方式访问的话应用程序会处于休眠态，等待驱动设备可以使用，非阻塞方式的话会通过 poll 函数来不断的轮询，查看驱动设备文件是否可以使用。这两种方式都需要应用程序主动的去查询设备的使用情况，如果能提供一种类似中断的机制，当驱动程序可以访问的时候主动告诉应用程序那就最好了。</p>
+<p>“信号”为此应运而生，信号类似于我们硬件上使用的“中断”，只不过信号是软件层次上的。算是在软件层次上对中断的一种模拟，驱动可以通过主动向应用程序发送信号的方式来报告自己可以访问了，应用程序获取到信号以后就可以从驱动设备中读取或者写入数据了。整个过程就相当于应用程序收到了驱动发送过来了的一个中断，然后应用程序去响应这个中断，在整个处理过程中应用程序并没有去查询驱动设备是否可以访问，一切都是由驱动设备自己告诉给应用程序的。</p>
+<p><strong>阻塞、非阻塞、异步通知，这三种是针对不同的场合提出来的不同的解决方法，没有优劣之分，在实际的工作和学习中，根据自己的实际需求选择合适的处理方法即可。</strong></p>
+<p>异步通知的核心就是信号，在 <strong>arch&#x2F;xtensa&#x2F;include&#x2F;uapi&#x2F;asm&#x2F;signal.h</strong> 文件中定义了 Linux 所支持的所有信号，这些信号如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">34</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGHUP 1 <span class="hljs-comment">/* 终端挂起或控制进程终止 */</span></span><br><span class="hljs-number">35</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGINT 2 <span class="hljs-comment">/* 终端中断(Ctrl+C 组合键) */</span></span><br><span class="hljs-number">36</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGQUIT 3 <span class="hljs-comment">/* 终端退出(Ctrl+\组合键) */</span></span><br><span class="hljs-number">37</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGILL 4 <span class="hljs-comment">/* 非法指令 */</span></span><br><span class="hljs-number">38</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGTRAP 5 <span class="hljs-comment">/* debug 使用，有断点指令产生  */</span></span><br><span class="hljs-number">39</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGABRT 6 <span class="hljs-comment">/* 由 abort(3)发出的退出指令 */</span></span><br><span class="hljs-number">40</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGIOT 6 <span class="hljs-comment">/* IOT 指令 */</span></span><br><span class="hljs-number">41</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGBUS 7 <span class="hljs-comment">/* 总线错误 */</span></span><br><span class="hljs-number">42</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGFPE 8 <span class="hljs-comment">/* 浮点运算错误 */</span></span><br><span class="hljs-number">43</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGKILL 9 <span class="hljs-comment">/* 杀死、终止进程 */</span></span><br><span class="hljs-number">44</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGUSR1 10 <span class="hljs-comment">/* 用户自定义信号 1 */</span></span><br><span class="hljs-number">45</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGSEGV 11 <span class="hljs-comment">/* 段违例(无效的内存段) */</span></span><br><span class="hljs-number">46</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGUSR2 12 <span class="hljs-comment">/* 用户自定义信号 2 */</span></span><br><span class="hljs-number">47</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGPIPE 13 <span class="hljs-comment">/* 向非读管道写入数据 */</span></span><br><span class="hljs-number">48</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGALRM 14 <span class="hljs-comment">/* 闹钟 */</span></span><br><span class="hljs-number">49</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGTERM 15 <span class="hljs-comment">/* 软件终止 */</span></span><br><span class="hljs-number">50</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGSTKFLT 16 <span class="hljs-comment">/* 栈异常 */</span></span><br><span class="hljs-number">51</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGCHLD 17 <span class="hljs-comment">/* 子进程结束 */</span></span><br><span class="hljs-number">52</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGCONT 18 <span class="hljs-comment">/* 进程继续 */</span></span><br><span class="hljs-number">53</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGSTOP 19 <span class="hljs-comment">/* 停止进程的执行，只是暂停 */</span></span><br><span class="hljs-number">54</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGTSTP 20 <span class="hljs-comment">/* 停止进程的运行(Ctrl+Z 组合键) */</span></span><br><span class="hljs-number">55</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGTTIN 21 <span class="hljs-comment">/* 后台进程需要从终端读取数据  */</span></span><br><span class="hljs-number">56</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGTTOU 22 <span class="hljs-comment">/* 后台进程需要向终端写数据 */</span></span><br><span class="hljs-number">57</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGURG 23 <span class="hljs-comment">/* 有&quot;紧急&quot;数据 */</span></span><br><span class="hljs-number">58</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGXCPU 24 <span class="hljs-comment">/* 超过 CPU 资源限制 */</span></span><br><span class="hljs-number">59</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGXFSZ 25 <span class="hljs-comment">/* 文件大小超额 */</span></span><br><span class="hljs-number">60</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGVTALRM 26 <span class="hljs-comment">/* 虚拟时钟信号 */</span></span><br><span class="hljs-number">61</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGPROF 27 <span class="hljs-comment">/* 时钟信号描述 */</span></span><br><span class="hljs-number">62</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGWINCH 28 <span class="hljs-comment">/* 窗口大小改变 */</span></span><br><span class="hljs-number">63</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGIO 29 <span class="hljs-comment">/* 可以进行输入/输出操作 */</span></span><br><span class="hljs-number">64</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGPOLL SIGIO</span><br><span class="hljs-number">65</span> <span class="hljs-comment">/* #define SIGLOS 29 */</span><br><span class="hljs-number">66</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGPWR 30 <span class="hljs-comment">/* 断点重启 */</span></span><br><span class="hljs-number">67</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGSYS 31 <span class="hljs-comment">/* 非法的系统调用 */</span></span><br><span class="hljs-number">68</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> SIGUNUSED 31 <span class="hljs-comment">/* 未使用信号 */</span></span><br></code></pre></td></tr></table></figure>
+
+<p>在示例代码 中的这些信号中，除了 SIGKILL(9)和 SIGSTOP(19)这两个信号不能被忽略外，其他的信号都可以忽略。这些信号就相当于中断号，不同的中断号代表了不同的中断，不同的中断所做的处理不同，因此，驱动程序可以通过向应用程序发送不同的信号来实现不同的功能。</p>
+<p>我们使用中断的时候需要设置中断处理函数，同样的，如果要在应用程序中使用信号，那么就必须设置信号所使用的信号处理函数，在应用程序中使用 signal 函数来设置指定信号的处理函数，signal 函数原型如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">sighandler_t</span> <span class="hljs-title function_">signal</span><span class="hljs-params">(<span class="hljs-type">int</span> signum, <span class="hljs-type">sighandler_t</span> handler)</span><br></code></pre></td></tr></table></figure>
+
+<p>函数参数和返回值含义如下：</p>
+<ul>
+<li><strong>signum</strong>：要设置处理函数的信号。</li>
+<li><strong>handler</strong> ：信号的处理函数。</li>
+<li><strong>返回值</strong>：设置成功的话返回信号的前一个处理函数，设置失败的话返回 SIG_ERR。</li>
+</ul>
+<p>信号处理函数原型如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-title function_">void</span> <span class="hljs-params">(*<span class="hljs-type">sighandler_t</span>)</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>我们前面讲解的使用“kill -9 PID”杀死指定进程的方法就是向指定的进程(PID)发送SIGKILL 这个信号。</p>
+<p>当按下键盘上的 CTRL+C 组合键以后会向当前正在占用终端的应用程序发出 SIGINT 信号，SIGINT 信号默认的动作是关闭当前应用程序。这里我们修改一下 SIGINT 信号的默认处理函数，当按下 CTRL+C 组合键以后先在终端上打印出“SIGINT signal！”这行字符串，然后再关闭当前应用程序。新建 signaltest.c 文件，然后输入如下所示内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">sigint_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> num)</span><br>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\r\nSIGINT signal!\r\n&quot;</span>);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    signal(SIGINT, sigint_handler);<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>        ;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在示例代码  中我们设置 SIGINT 信号的处理函数为 sigint_handler，当按下 CTRL+C向 signaltest 发送 SIGINT 信号以后 sigint_handler 函数就会执行，此函数先输出一行“SIGINT<br>signal!”字符串，然后调用 exit 函数关闭 signaltest 应用程序。使用如下命令编译 signaltest.c：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">gcc signaltest.c -o <span class="hljs-built_in">test</span><br></code></pre></td></tr></table></figure>
+
+<p>然后输入“.&#x2F;test”命令打开 test 这个应用程序，然后按下键盘上的 CTRL+C 组<br>合键，结果如图所示：</p>
+<p><img src="/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/image-20200827145821350.png" srcset="/img/loading.gif" lazyload alt="image-20200827145821350"></p>
+<p>从图  可以看出，当按下 CTRL+C 组合键以后 sigint_handler 这个 SIGINT 信号处理函数执行了，并且输出了“SIGINT signal！”这行字符串。</p>
+<h3 id="2-驱动中的信号处理"><a href="#2-驱动中的信号处理" class="headerlink" title="2| 驱动中的信号处理"></a>2| 驱动中的信号处理</h3><h4 id="1-fasync-struct-结构体"><a href="#1-fasync-struct-结构体" class="headerlink" title="1. fasync_struct 结构体"></a>1. fasync_struct 结构体</h4><p>首先我们需要在驱动程序中定义一个 fasync_struct 结构体指针变量，fasync_struct 结构体内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fasync_struct</span> &#123;</span><br>    <span class="hljs-type">spinlock_t</span> fa_lock;<br>    <span class="hljs-type">int</span> magic;<br>    <span class="hljs-type">int</span> fa_fd;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fasync_struct</span> *<span class="hljs-title">fa_next</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> *<span class="hljs-title">fa_file</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rcu_head</span> <span class="hljs-title">fa_rcu</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>一般将 fasync_struct 结构体指针变量定义到设备结构体中，比如在上一章节的imx6uirq_dev结构体中添加一个 fasync_struct 结构体指针变量。</p>
+<h4 id="2-fasync函数"><a href="#2-fasync函数" class="headerlink" title="2.fasync函数"></a>2.fasync函数</h4><p>如果要<strong>使用异步通知</strong>，<strong>需要在设备驱动中实现 file_operations 操作集中的 fasync 函数</strong>，此函数格式如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> (*fasync) (<span class="hljs-type">int</span> fd, <span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">int</span> on)<br></code></pre></td></tr></table></figure>
+
+<p>fasync 函数里面一般通过调用 fasync_helper 函数来初始化前面定义的 fasync_struct 结构体指针，fasync_helper 函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">fasync_helper</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-keyword">struct</span> file * filp, <span class="hljs-type">int</span> on, <span class="hljs-keyword">struct</span> fasync_struct **fapp)</span> <br></code></pre></td></tr></table></figure>
+
+<p>fasync_helper 函数的前三个参数就是 fasync 函数的那三个参数，第四个参数就是要初始化的 fasync_struct 结构体指针变量。</p>
+<p>当应用程序通过<code>fcntl(fd, F_SETFL, flags | FASYNC)</code>改变fasync 标记的时候，驱动程序 file_operations 操作集中的 fasync 函数就会执行。</p>
+<p>驱动程序中的 fasync 函数参考示例如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">xxx_dev</span> &#123;</span><br><span class="hljs-number">2</span> 		......<br><span class="hljs-number">3</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fasync_struct</span> *<span class="hljs-title">async_queue</span>;</span> <span class="hljs-comment">/* 异步相关结构体 */</span><br><span class="hljs-number">4</span> &#125;;<br><span class="hljs-number">5</span><br><span class="hljs-number">6</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">xxx_fasync</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">int</span> on)</span><br>7 &#123;<br><span class="hljs-number">8</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">xxx_dev</span> *<span class="hljs-title">dev</span> =</span> (xxx_dev)filp-&gt;private_data;<br><span class="hljs-number">9</span><br><span class="hljs-number">10</span> 		<span class="hljs-keyword">if</span> (fasync_helper(fd, filp, on, &amp;dev-&gt;async_queue) &lt; <span class="hljs-number">0</span>)<br><span class="hljs-number">11</span> 		<span class="hljs-keyword">return</span> -EIO;<br><span class="hljs-number">12</span> 		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">13</span> &#125;<br><span class="hljs-number">14</span><br><span class="hljs-number">15</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">xxx_ops</span> =</span> &#123;<br><span class="hljs-number">16</span> 		......<br><span class="hljs-number">17</span> 		.fasync = xxx_fasync,<br><span class="hljs-number">18</span> 		......<br><span class="hljs-number">19</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>在关闭驱动文件的时候需要在 file_operations 操作集中的 release 函数中释放fasync_struct，fasync_struct 的释放函数同样为 fasync_helper，release 函数参数参考实例如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">xxx_release</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span><br>2 &#123;<br><span class="hljs-number">3</span> 		<span class="hljs-keyword">return</span> xxx_fasync(<span class="hljs-number">-1</span>, filp, <span class="hljs-number">0</span>); <span class="hljs-comment">/*  删除异步通知 */</span><br><span class="hljs-number">4</span> &#125;<br><span class="hljs-number">5</span><br><span class="hljs-number">6</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">xxx_ops</span> =</span> &#123;<br><span class="hljs-number">7</span> 		......<br><span class="hljs-number">8</span> 		.release = xxx_release,<br><span class="hljs-number">9</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>第 3 行通过调用示例代码中的 xxx_fasync 函数来完成 fasync_struct 的释放工作，但是，其最终还是通过 fasync_helper 函数完成释放工作。</p>
+<h4 id="3-kill-fasync函数"><a href="#3-kill-fasync函数" class="headerlink" title="3.kill_fasync函数"></a>3.kill_fasync函数</h4><p>当设备可以访问的时候，驱动程序需要向应用程序发出信号，相当于产生“中断”。<strong>kill_fasync函数负责发送指定的信号</strong>，kill_fasync 函数原型如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">kill_fasync</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> fasync_struct **fp, <span class="hljs-type">int</span> sig, <span class="hljs-type">int</span> band)</span><br></code></pre></td></tr></table></figure>
+
+<p>函数参数和返回值含义如下：</p>
+<ul>
+<li><strong>fp</strong>：要操作的 fasync_struct。</li>
+<li><strong>sig</strong> ：要发送的信号。</li>
+<li><strong>band</strong> ：可读时设置为 POLL_IN，可写时设置为 POLL_OUT。</li>
+<li><strong>返回值</strong>：无。</li>
+</ul>
+<h3 id="3-应用程序对异步通知的处理"><a href="#3-应用程序对异步通知的处理" class="headerlink" title="3| 应用程序对异步通知的处理"></a>3| 应用程序对异步通知的处理</h3><p>应用程序对异步通知的处理包括以下三步：</p>
+<p><strong>1 、注册信号处理函数</strong></p>
+<p>应用程序根据驱动程序所使用的信号来设置信号的处理函数，应用程序使用 signal 函数来设置信号的处理函数。前面已经详细的讲过了，这里就不细讲了。</p>
+<p><strong>2 、将本应用程序的进程号告诉给内核</strong></p>
+<p>使用<code> fcntl(fd, F_SETOWN, getpid())</code>将本应用程序的进程号告诉给内核。</p>
+<p><strong>3 、开启异步通知</strong></p>
+<p>使用如下两行程序开启异步通知：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">flags = fcntl(fd, F_GETFL); <span class="hljs-comment">/* 获取当前的进程状态  */</span><br>fcntl(fd, F_SETFL, flags | FASYNC); <span class="hljs-comment">/* 开启当前进程异步通知功能 */</span><br></code></pre></td></tr></table></figure>
+
+<p>重点就是通过 fcntl 函数设置进程状态为 FASYNC，经过这一步，驱动程序中的 fasync 函数就会执行。</p>
+<h2 id="二、硬件原理图分析"><a href="#二、硬件原理图分析" class="headerlink" title="二、硬件原理图分析"></a>二、硬件原理图分析</h2><p>参考前面的按键实验。</p>
+<h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><p>本实验我们在上一章实验“15_noblockio”的基础上完成，在其中加入异步通知相关内容即可，当按键按下以后驱动程序向应用程序发送 SIGIO 信号，应用程序获取到 SIGIO 信号以后读取并且打印出按键值。</p>
+<h3 id="修改设备树文件"><a href="#修改设备树文件" class="headerlink" title="修改设备树文件"></a>修改设备树文件</h3><p>因为是在实验“15_noblockio”的基础上完成的，因此不需要修改设备树。</p>
+<h3 id="驱动程序编写"><a href="#驱动程序编写" class="headerlink" title="驱动程序编写"></a>驱动程序编写</h3><p>新建名为“16_asyncnoti”的文件夹，然后在 16_asyncnoti 文件夹里面创建 vscode 工程，工作区命名为“asyncnoti”。将“15_noblockio”实验中的 noblockio.c 复制到 16_asyncnoti 文件夹中，并重命名为 asyncnoti.c。</p>
+<p>接下来我们就修改 asyncnoti.c 这个文件，在其中添加异步通知关的代码，完成以后的asyncnoti.c 内容如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/errno.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/cdev.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/device.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_address.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/slab.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/gpio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/semaphore.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/timer.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_irq.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/irq.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/poll.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fcntl.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEV_CNT 	1			<span class="hljs-comment">/* 设备号个数 */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEV_NAME <span class="hljs-string">&quot;noblockio&quot;</span>		<span class="hljs-comment">/* 设备名 */</span></span><br><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY0VALUE 	0X01 <span class="hljs-comment">/* KEY0 按键值 */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> INVAKEY 	0XFF <span class="hljs-comment">/* 无效的按键值 */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY_CNT 	1 	 <span class="hljs-comment">/* 按键数量 */</span></span><br><br><br><span class="hljs-comment">/* 中断 IO 描述结构体 */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">irq_keydesc</span> &#123;</span><br>	<span class="hljs-type">int</span> gpio; 				<span class="hljs-comment">/* gpio */</span><br>	<span class="hljs-type">int</span> irqnum; 			<span class="hljs-comment">/* 中断号 */</span><br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> value; 	<span class="hljs-comment">/* 按键对应的键值  */</span><br>	<span class="hljs-type">char</span> name[<span class="hljs-number">10</span>]; 			<span class="hljs-comment">/* 名字 */</span><br>	<span class="hljs-type">irqreturn_t</span> (*handler)(<span class="hljs-type">int</span>, <span class="hljs-type">void</span> *); <span class="hljs-comment">/* 中断服务函数 */</span><br>&#125;;<br><br><br><br><br><span class="hljs-comment">/* imx6uirq设备结构体 */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> &#123;</span>	<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span><br>	<span class="hljs-type">dev_t</span> devid;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-keyword">class</span> *<span class="hljs-keyword">class</span>;</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">device</span>;</span><br>	<span class="hljs-type">int</span> major;<br>	<span class="hljs-type">int</span> minor;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_node</span> *<span class="hljs-title">nd</span>;</span>		<span class="hljs-comment">/* 设备树节点 */</span><br>	<span class="hljs-type">atomic_t</span> keyvalue; 			<span class="hljs-comment">/* 有效的按键键值 */</span><br>	<span class="hljs-type">atomic_t</span> releasekey; 		<span class="hljs-comment">/* 标记是否完成一次完成的按键*/</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timer_list</span> <span class="hljs-title">timer</span>;</span> 	<span class="hljs-comment">/* 定义一个定时器*/</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">irq_keydesc</span> <span class="hljs-title">irqkeydesc</span>[<span class="hljs-title">KEY_CNT</span>];</span> <span class="hljs-comment">/* 按键描述数组 */</span><br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> curkeynum; 	<span class="hljs-comment">/* 当前的按键号 */</span><br><br>	<span class="hljs-type">wait_queue_head_t</span> r_wait;	<span class="hljs-comment">/* 读等待对列头 */</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fasync_struct</span> *<span class="hljs-title">async_queue</span>;</span> <span class="hljs-comment">/*  异步相关结构体 */</span><br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> <span class="hljs-title">imx6uirq</span>;</span><br><br><br><span class="hljs-comment">/* @description : 中断服务函数，开启定时器，延时 10ms，</span><br><span class="hljs-comment"> * 定时器用于按键消抖。</span><br><span class="hljs-comment"> * @param - irq : 中断号</span><br><span class="hljs-comment"> * @param - dev_id : 设备结构。</span><br><span class="hljs-comment"> * @return : 中断执行结果</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">irqreturn_t</span> <span class="hljs-title function_">key0_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> irq, <span class="hljs-type">void</span> *dev_id)</span><br>&#123;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> *<span class="hljs-title">dev</span> =</span> (<span class="hljs-keyword">struct</span> imx6uirq_dev *)dev_id;<br><br>	dev-&gt;curkeynum = <span class="hljs-number">0</span>;<br>	dev-&gt;timer.data = (<span class="hljs-keyword">volatile</span> <span class="hljs-type">long</span>)dev_id;<br>	mod_timer(&amp;dev-&gt;timer, jiffies + msecs_to_jiffies(<span class="hljs-number">10</span>));<br>	<span class="hljs-keyword">return</span> IRQ_RETVAL(IRQ_HANDLED);<br>&#125;<br><br><span class="hljs-comment">/* @description : 定时器服务函数，用于按键消抖，定时器到了以后</span><br><span class="hljs-comment"> * 再次读取按键值，如果按键还是处于按下状态就表示按键有效。</span><br><span class="hljs-comment"> * @param – arg  : 设备结构变量</span><br><span class="hljs-comment"> * @return : 无</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">timer_function</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> arg)</span><br>&#123;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> value;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> num;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">irq_keydesc</span> *<span class="hljs-title">keydesc</span>;</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> *<span class="hljs-title">dev</span> =</span> (<span class="hljs-keyword">struct</span> imx6uirq_dev *)arg;<br><br>	num = dev-&gt;curkeynum;<br>	keydesc = &amp;dev-&gt;irqkeydesc[num];<br><br><br><br>	value = gpio_get_value(keydesc-&gt;gpio); <span class="hljs-comment">/* 读取 IO 值 */</span><br>	<span class="hljs-keyword">if</span>(value == <span class="hljs-number">0</span>)&#123; <span class="hljs-comment">/* 按下按键 */</span><br>		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;keyvalue, keydesc-&gt;value);<br>	&#125;<br>	<span class="hljs-keyword">else</span>&#123; 			<span class="hljs-comment">/* 按键松开 */</span><br>		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;keyvalue, <span class="hljs-number">0x80</span> | keydesc-&gt;value);<br>		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;releasekey, <span class="hljs-number">1</span>); <span class="hljs-comment">/* 标记松开按键 */</span><br>	&#125;<br><br>	<span class="hljs-keyword">if</span>(<span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey)) &#123;		<span class="hljs-comment">/* 一次完整的按键过程 */</span><br>		<span class="hljs-keyword">if</span>(dev-&gt;async_queue)<br>			kill_fasync(&amp;dev-&gt;async_queue, SIGIO, POLL_IN);	<span class="hljs-comment">/* 释放SIGIO信号 */</span><br>	&#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>	<span class="hljs-comment">/* 唤醒进程 */</span><br>	<span class="hljs-keyword">if</span>(<span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey)) &#123;	<span class="hljs-comment">/* 完成一次按键过程 */</span><br>		<span class="hljs-comment">/* wake_up(&amp;dev-&gt;r_wait); */</span><br>		wake_up_interruptible(&amp;dev-&gt;r_wait);<br>	&#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * @description : 按键 IO 初始化</span><br><span class="hljs-comment"> * @param : 无</span><br><span class="hljs-comment"> * @return : 无</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">keyio_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> i = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br><br>	imx6uirq.nd = of_find_node_by_path(<span class="hljs-string">&quot;/key&quot;</span>);<br>	<span class="hljs-keyword">if</span> (imx6uirq.nd == <span class="hljs-literal">NULL</span>)<br>	&#123;<br>		printk(<span class="hljs-string">&quot;k:key node not find!\r\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> -EINVAL;<br>	&#125;<br><br>	<span class="hljs-comment">/* 提取 GPIO */</span><br>	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; KEY_CNT; i++)<br>	&#123;<br>		imx6uirq.irqkeydesc[i].gpio = of_get_named_gpio(imx6uirq.nd,<br>														<span class="hljs-string">&quot;key-gpios&quot;</span>, i);<br>		<span class="hljs-keyword">if</span> (imx6uirq.irqkeydesc[i].gpio &lt; <span class="hljs-number">0</span>)<br>		&#123;<br>			printk(<span class="hljs-string">&quot;k:can&#x27;t get key%d\r\n&quot;</span>, i);<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-comment">/* 初始化 key 所使用的 IO，并且设置成中断模式 */</span><br>	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; KEY_CNT; i++)<br>	&#123;<br>		<span class="hljs-built_in">memset</span>(imx6uirq.irqkeydesc[i].name, <span class="hljs-number">0</span>,<br>			   <span class="hljs-keyword">sizeof</span>(imx6uirq.irqkeydesc[i].name));<br>		<span class="hljs-built_in">sprintf</span>(imx6uirq.irqkeydesc[i].name, <span class="hljs-string">&quot;KEY%d&quot;</span>, i);<br>		gpio_request(imx6uirq.irqkeydesc[i].gpio, imx6uirq.irqkeydesc[i].name);<br>		gpio_direction_input(imx6uirq.irqkeydesc[i].gpio);<br>		imx6uirq.irqkeydesc[i].irqnum = irq_of_parse_and_map(<br>			imx6uirq.nd, i);<br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>imx6uirq.irqkeydesc[i].irqnum = gpio_to_irq(<br>imx6uirq.irqkeydesc[i].gpio);<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>		printk(<span class="hljs-string">&quot;k:key%d:gpio=%d, irqnum=%d\r\n&quot;</span>, i,<br>			   imx6uirq.irqkeydesc[i].gpio,<br>			   imx6uirq.irqkeydesc[i].irqnum);<br>	&#125;<br>	<span class="hljs-comment">/* 申请中断 */</span><br>	imx6uirq.irqkeydesc[<span class="hljs-number">0</span>].handler = key0_handler;<br>	imx6uirq.irqkeydesc[<span class="hljs-number">0</span>].value = KEY0VALUE;<br><br>	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; KEY_CNT; i++)<br>	&#123;<br>		ret = request_irq(imx6uirq.irqkeydesc[i].irqnum,<br>						  imx6uirq.irqkeydesc[i].handler,<br>						  IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,<br>						  imx6uirq.irqkeydesc[i].name, &amp;imx6uirq);<br>		<span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)<br>		&#123;<br>			printk(<span class="hljs-string">&quot;k:irq %d request failed!\r\n&quot;</span>,<br>				   imx6uirq.irqkeydesc[i].irqnum);<br>			<span class="hljs-keyword">return</span> -EFAULT;<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-comment">/* 创建定时器 */</span><br>	init_timer(&amp;imx6uirq.timer);<br>	imx6uirq.timer.function = timer_function;<br><br><br>	<span class="hljs-comment">/*  初始化等待队列头 */</span><br>	init_waitqueue_head(&amp;imx6uirq.r_wait);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">imx6uirq_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span><br>&#123;<br>	filp-&gt;private_data = &amp;imx6uirq; <span class="hljs-comment">/* 设置私有数据 */</span><br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * @description : 从设备读取数据</span><br><span class="hljs-comment"> * @param – filp : 要打开的设备文件(文件描述符)</span><br><span class="hljs-comment"> * @param – buf : 返回给用户空间的数据缓冲区</span><br><span class="hljs-comment"> * @param - cnt : 要读取的数据长度</span><br><span class="hljs-comment"> * @param – offt : 相对于文件首地址的偏移</span><br><span class="hljs-comment"> * @return : 读取的字节数，如果为负值，表示读取失败</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">imx6uirq_read</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">char</span> __user *buf,</span><br><span class="hljs-params">							 <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span><br>&#123;<br>	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> keyvalue = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> releasekey = <span class="hljs-number">0</span>;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> *<span class="hljs-title">dev</span> =</span> (<span class="hljs-keyword">struct</span> imx6uirq_dev *)<br>								   filp-&gt;private_data;<br><br>	<span class="hljs-keyword">if</span> (filp-&gt;f_flags &amp; O_NONBLOCK)&#123;			<span class="hljs-comment">/*  非阻塞访问 */</span><br>		<span class="hljs-keyword">if</span> (<span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey) == <span class="hljs-number">0</span>) <span class="hljs-comment">/*  没有按键按下 */</span><br>			<span class="hljs-keyword">return</span> -EAGAIN;<br>	&#125;<br>	<span class="hljs-keyword">else</span>&#123;	<span class="hljs-comment">/* 阻塞访问 */</span><br>		<span class="hljs-comment">/* 加入等待队列，等待被唤醒,也就是有按键按下 */</span><br>		ret = wait_event_interruptible(dev-&gt;r_wait,<br>									   <span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey));<br>		<span class="hljs-keyword">if</span> (ret)<br>		&#123;<br>			<span class="hljs-keyword">goto</span> wait_error;<br>		&#125;<br>	&#125;<br><br><br>	keyvalue = <span class="hljs-type">atomic_read</span>(&amp;dev-&gt;keyvalue);<br>	releasekey = <span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey);<br><br>	<span class="hljs-keyword">if</span> (releasekey)<br>	&#123; <span class="hljs-comment">/* 有按键按下 */</span><br>		<span class="hljs-keyword">if</span> (keyvalue &amp; <span class="hljs-number">0x80</span>)<br>		&#123;<br>			keyvalue &amp;= ~<span class="hljs-number">0x80</span>;<br>			ret = copy_to_user(buf, &amp;keyvalue, <span class="hljs-keyword">sizeof</span>(keyvalue));<br>		&#125;<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			<span class="hljs-keyword">goto</span> data_error;<br>		&#125;<br>		<span class="hljs-type">atomic_set</span>(&amp;dev-&gt;releasekey, <span class="hljs-number">0</span>); <span class="hljs-comment">/* 按下标志清零 */</span><br>	&#125;<br>	<span class="hljs-keyword">else</span><br>	&#123;<br>		<span class="hljs-keyword">goto</span> data_error;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>wait_error:<br>	<span class="hljs-keyword">return</span> ret;<br><br>data_error:<br>	<span class="hljs-keyword">return</span> -EINVAL;<br>&#125;<br><br> <span class="hljs-comment">/*</span><br><span class="hljs-comment">  * @description     : poll函数，用于处理非阻塞访问</span><br><span class="hljs-comment">  * @param - filp    : 要打开的设备文件(文件描述符)</span><br><span class="hljs-comment">  * @param - wait    : 等待列表(poll_table)</span><br><span class="hljs-comment">  * @return          : 设备或者资源状态，</span><br><span class="hljs-comment">  */</span><br><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-title function_">imx6uirq_poll</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-keyword">struct</span> poll_table_struct *wait)</span><br>&#123;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> mask = <span class="hljs-number">0</span>;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> *<span class="hljs-title">dev</span> =</span> (<span class="hljs-keyword">struct</span> imx6uirq_dev *)filp-&gt;private_data;<br><br>	poll_wait(filp, &amp;dev-&gt;r_wait, wait);	<span class="hljs-comment">/* 将等待队列头添加到poll_table中 */</span><br>	<br>	<span class="hljs-keyword">if</span>(<span class="hljs-type">atomic_read</span>(&amp;dev-&gt;releasekey)) &#123;		<span class="hljs-comment">/* 按键按下 */</span><br>		mask = POLLIN | POLLRDNORM;			<span class="hljs-comment">/* 返回PLLIN */</span><br>	&#125;<br>	<span class="hljs-keyword">return</span> mask;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * @description     : fasync函数，用于处理异步通知</span><br><span class="hljs-comment"> * @param - fd		: 文件描述符</span><br><span class="hljs-comment"> * @param - filp    : 要打开的设备文件(文件描述符)</span><br><span class="hljs-comment"> * @param - on      : 模式</span><br><span class="hljs-comment"> * @return          : 负数表示函数执行失败</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">imx6uirq_fasync</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">int</span> on)</span><br>&#123;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">imx6uirq_dev</span> *<span class="hljs-title">dev</span> =</span> (<span class="hljs-keyword">struct</span> imx6uirq_dev *)filp-&gt;private_data;<br>	<span class="hljs-keyword">return</span> fasync_helper(fd, filp, on, &amp;dev-&gt;async_queue);<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * @description     : release函数，应用程序调用close关闭驱动文件的时候会执行</span><br><span class="hljs-comment"> * @param - inode	: inode节点</span><br><span class="hljs-comment"> * @param - filp    : 要打开的设备文件(文件描述符)</span><br><span class="hljs-comment"> * @return          : 负数表示函数执行失败</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">imx6uirq_release</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span><br>&#123;<br>	<span class="hljs-keyword">return</span> imx6uirq_fasync(<span class="hljs-number">-1</span>, filp, <span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-comment">/* 设备操作函数 */</span><br><span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">imx6uirq_fops</span> =</span> &#123;<br>	.owner = THIS_MODULE,<br>	.open = imx6uirq_open,<br>	.read = imx6uirq_read,<br>	.poll = imx6uirq_poll,<br>	.fasync = imx6uirq_fasync,<br>	.release = imx6uirq_release,<br>&#125;;<br><br><br><br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">imx6uirq_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">int</span> result = <span class="hljs-number">0</span>;<br><br><br>	<span class="hljs-comment">/* 注册设备号 */</span><br>	imx6uirq.major = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">if</span>(imx6uirq.major)&#123;<br>		imx6uirq.devid = MKDEV(imx6uirq.major, imx6uirq.minor);<br>		ret = register_chrdev_region(imx6uirq.devid, DEV_CNT, DEV_NAME);<br>	&#125;<br>	<span class="hljs-keyword">else</span>&#123;<br>		ret = alloc_chrdev_region(&amp;imx6uirq.devid, <span class="hljs-number">0</span>, DEV_CNT, DEV_NAME);<br>	&#125;<br>	imx6uirq.major = MAJOR(imx6uirq.devid);<br>	imx6uirq.minor = MINOR(imx6uirq.devid);<br>	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;<br>		printk(<span class="hljs-string">&quot;k:register devid failed!\r\n&quot;</span>);<br>		result = -EINVAL;<br>		<span class="hljs-keyword">goto</span> fail_register_devid;<br>	&#125;<br>	printk(<span class="hljs-string">&quot;k:imx6uirq  MAJOR:%d  MINOR:%d\r\n&quot;</span>, imx6uirq.major, imx6uirq.minor);<br><br>	<span class="hljs-comment">/* 添加字符设备 */</span><br>	imx6uirq.cdev.owner = imx6uirq_fops.owner;<br>	cdev_init(&amp;imx6uirq.cdev, &amp;imx6uirq_fops);<br>	ret = cdev_add(&amp;imx6uirq.cdev, imx6uirq.devid, DEV_CNT);<br>	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;<br>		printk(<span class="hljs-string">&quot;k:register chrdev failed!\r\n&quot;</span>);<br>		result = -EINVAL;<br>		<span class="hljs-keyword">goto</span> fail_register_cdev;<br>	&#125;<br>	<span class="hljs-comment">/* 创建设备节点 */</span><br>	<span class="hljs-comment">/* 	1.创建类 */</span><br>	imx6uirq.class = class_create(THIS_MODULE, DEV_NAME);<br>	<span class="hljs-keyword">if</span>(IS_ERR(imx6uirq.class))&#123;<br>		printk(<span class="hljs-string">&quot;k:fail to create class!\r\n&quot;</span>);<br>		result = PTR_ERR(imx6uirq.class);<br>		<span class="hljs-keyword">goto</span> fail_class;<br>	&#125;<br>	<span class="hljs-comment">/*	2.创建设备*/</span><br>	imx6uirq.device = device_create(imx6uirq.class, <span class="hljs-literal">NULL</span>, imx6uirq.devid, <span class="hljs-literal">NULL</span>, DEV_NAME);<br>	<span class="hljs-keyword">if</span>(IS_ERR(imx6uirq.device))&#123;<br>		printk(<span class="hljs-string">&quot;k:fail to create device!\r\n&quot;</span>);<br>		result = PTR_ERR(imx6uirq.device);<br>		<span class="hljs-keyword">goto</span> fail_device;<br>	&#125;<br>		<br>	<span class="hljs-comment">/* 5、初始化按键 */</span><br>	<span class="hljs-type">atomic_set</span>(&amp;imx6uirq.keyvalue, INVAKEY);<br>	<span class="hljs-type">atomic_set</span>(&amp;imx6uirq.releasekey, <span class="hljs-number">0</span>);<br>	keyio_init();<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br><br>fail_device:<br>	<span class="hljs-comment">/* 摧毁类 */</span><br>	class_destroy(imx6uirq.class);<br>fail_class:<br>	<span class="hljs-comment">/* 注销字符设备 */</span><br>	cdev_del(&amp;imx6uirq.cdev);<br>fail_register_cdev:<br>	<span class="hljs-comment">/* 注销设备号 */</span><br>	unregister_chrdev_region(imx6uirq.devid, DEV_CNT);<br>fail_register_devid:<br>	<span class="hljs-keyword">return</span> result;<br>&#125;<br><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">imx6uirq_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br><br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-comment">/* 删除定时器 */</span><br>	del_timer_sync(&amp;imx6uirq.timer);<br><br>	<span class="hljs-comment">/* 释放中断 */</span><br>	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; KEY_CNT; i++)<br>	&#123;<br>		free_irq(imx6uirq.irqkeydesc[i].irqnum, &amp;imx6uirq);<br>	&#125;<br><br>	<span class="hljs-comment">/* 摧毁设备 */</span><br>	device_destroy(imx6uirq.class, imx6uirq.devid);<br>	<span class="hljs-comment">/* 摧毁类 */</span><br>	class_destroy(imx6uirq.class);<br>	<span class="hljs-comment">/* 注销字符设备 */</span><br>	cdev_del(&amp;imx6uirq.cdev);<br>	<span class="hljs-comment">/* 注销设备号 */</span><br>	unregister_chrdev_region(imx6uirq.devid, DEV_CNT);<br><br>&#125;<br><br><span class="hljs-comment">/* 驱动入口和出口 */</span><br>module_init(imx6uirq_init);<br>module_exit(imx6uirq_exit);<br><br><span class="hljs-comment">/* 许可 */</span><br>MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);<br><span class="hljs-comment">/* 作者信息 */</span><br>MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>添加 fcntl.h 头文件，因为要用到相关的 API 函数。</li>
+<li>在设备结构体 imx6uirq_dev 中添加 fasync_struct 指针变量。</li>
+<li>如果是一次完整的按键过程，那么就通过 kill_fasync 函数发送 SIGIO 信号。</li>
+<li>imx6uirq_fasync 函数，为 file_operations 操作集中的 fasync 函数，此函数内容很简单，就是调用一下 fasync_helper。</li>
+<li>release 函数，应用程序调用 close 函数关闭驱动设备文件的时候此函数就会执行，在此函数中释放掉 fasync_struct 指针变量。</li>
+</ul>
+<h3 id="编写测试APP"><a href="#编写测试APP" class="headerlink" title="编写测试APP"></a>编写测试APP</h3><p>测试 APP 要实现的内容很简单，设置 SIGIO 信号的处理函数为 sigio_signal_func，当驱动程序向应用程序发送 SIGIO 信号以后 sigio_signal_func 函数就会执行。sigio_signal_func 函数内容很简单，就是通过 read 函数读取按键值。新建名为 asyncnotiApp.c 的文件，然后输入如下所示内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;linux/ioctl.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;poll.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/select.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/time.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;signal.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> fd = <span class="hljs-number">0</span>;	<span class="hljs-comment">/* 文件描述符 */</span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * SIGIO信号处理函数</span><br><span class="hljs-comment"> * @param - signum 	: 信号值</span><br><span class="hljs-comment"> * @return 			: 无</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">sigio_signal_func</span><span class="hljs-params">(<span class="hljs-type">int</span> signum)</span><br>&#123;<br>	<span class="hljs-type">int</span> err = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> keyvalue = <span class="hljs-number">0</span>;<br><br>	err = read(fd, &amp;keyvalue, <span class="hljs-keyword">sizeof</span>(keyvalue));<br>	<span class="hljs-keyword">if</span>(err &lt; <span class="hljs-number">0</span>) &#123;<br>		<span class="hljs-comment">/* 读取错误 */</span><br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;sigio signal! key value=%d\r\n&quot;</span>, keyvalue);<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * @description		: main主程序</span><br><span class="hljs-comment"> * @param - argc 	: argv数组元素个数</span><br><span class="hljs-comment"> * @param - argv 	: 具体参数</span><br><span class="hljs-comment"> * @return 			: 0 成功;其他 失败</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>	<span class="hljs-type">int</span> flags = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">char</span> *filename;<br><br>	<span class="hljs-keyword">if</span> (argc != <span class="hljs-number">2</span>) &#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Error Usage!\r\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>	&#125;<br><br>	filename = argv[<span class="hljs-number">1</span>];<br>	fd = open(filename, O_RDWR);<br>	<span class="hljs-keyword">if</span> (fd &lt; <span class="hljs-number">0</span>) &#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Can&#x27;t open file %s\r\n&quot;</span>, filename);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>	&#125;<br><br>	<span class="hljs-comment">/* 设置信号SIGIO的处理函数 */</span><br>	signal(SIGIO, sigio_signal_func);<br>	<br>	fcntl(fd, F_SETOWN, getpid());		<span class="hljs-comment">/* 将当前进程的进程号告诉给内核 	*/</span><br>	flags = fcntl(fd, F_GETFL);			<span class="hljs-comment">/* 获取当前的进程状态 			*/</span><br>	fcntl(fd, F_SETFL, flags | FASYNC);	<span class="hljs-comment">/* 设置进程启用异步通知功能 	*/</span>	<br><br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>) &#123;<br>		sleep(<span class="hljs-number">2</span>);<br>	&#125;<br><br>	close(fd);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>sigio_signal_func 函数，SIGIO 信号的处理函数，当驱动程序有效按键按下以后就会发送 SIGIO 信号，此函数就会执行。此函数通过 read 函数读取按键值，然后通过printf 函数打印在终端上。</li>
+<li>通过 signal 函数设置 SIGIO 信号的处理函数为 sigio_signal_func。</li>
+<li>设置当前进程的状态，开启异步通知的功能。 </li>
+<li>while 循环，等待信号产生。</li>
+</ul>
+<h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><p>编译运行。</p>
+<p>驱动加载成功以后使用如下命令来测试中断：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">./asyncnotiApp /dev/asyncnoti<br></code></pre></td></tr></table></figure>
+
+<p>按下开发板上的 KEY0 键，终端就会输出按键值，如图 所示：</p>
+<p><img src="/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/image-20200827160817641.png" srcset="/img/loading.gif" lazyload alt="image-20200827160817641"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">10| Linux阻塞非阻塞IO实验</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">12| Platform 设备驱动实验</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

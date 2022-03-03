@@ -1,0 +1,515 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="UVGUI抗锯齿字模符号显示原理@firestaradmin 2020年12月7日14:24:50 一、浅析LVGL Label显示原理绘制 label 过程： lv_draw_label -》 lv_draw_letter -》draw_letter_normal lv_draw_label函数原型如下： 12345678910111213&#x2F;** * Write a text * @param">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVGUI抗锯齿字模符号显示原理">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/12/07/NOTE/ARM/UVGUI/UVGUI%E6%8A%97%E9%94%AF%E9%BD%BF%E5%AD%97%E6%A8%A1%E7%AC%A6%E5%8F%B7%E6%98%BE%E7%A4%BA%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="UVGUI抗锯齿字模符号显示原理@firestaradmin 2020年12月7日14:24:50 一、浅析LVGL Label显示原理绘制 label 过程： lv_draw_label -》 lv_draw_letter -》draw_letter_normal lv_draw_label函数原型如下： 12345678910111213&#x2F;** * Write a text * @param">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-12-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-06T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="UVGUI">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>UVGUI抗锯齿字模符号显示原理 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="UVGUI抗锯齿字模符号显示原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-07 00:00" pubdate>
+        December 7, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">UVGUI抗锯齿字模符号显示原理</h1>
+            
+            <div class="markdown-body">
+              <h1 id="UVGUI抗锯齿字模符号显示原理"><a href="#UVGUI抗锯齿字模符号显示原理" class="headerlink" title="UVGUI抗锯齿字模符号显示原理"></a>UVGUI抗锯齿字模符号显示原理</h1><p>@firestaradmin 2020年12月7日14:24:50</p>
+<h2 id="一、浅析LVGL-Label显示原理"><a href="#一、浅析LVGL-Label显示原理" class="headerlink" title="一、浅析LVGL Label显示原理"></a>一、浅析LVGL Label显示原理</h2><p>绘制 label 过程：</p>
+<p><code>lv_draw_label</code> -》 <code>lv_draw_letter</code> -》<code>draw_letter_normal</code></p>
+<h3 id="lv-draw-label"><a href="#lv-draw-label" class="headerlink" title="lv_draw_label"></a>lv_draw_label</h3><p>函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Write a text</span><br><span class="hljs-comment"> * @param coords coordinates of the label</span><br><span class="hljs-comment"> * @param mask the label will be drawn only in this area</span><br><span class="hljs-comment"> * @param dsc pointer to draw descriptor</span><br><span class="hljs-comment"> * @param txt `\0` terminated text to write</span><br><span class="hljs-comment"> * @param hint pointer to a `lv_draw_label_hint_t` variable.</span><br><span class="hljs-comment"> * It is managed by the drawer to speed up the drawing of very long texts (thousands of lines).</span><br><span class="hljs-comment"> */</span><br>LV_ATTRIBUTE_FAST_MEM <span class="hljs-type">void</span> <span class="hljs-title function_">lv_draw_label</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">lv_area_t</span> * coords, <span class="hljs-type">const</span> <span class="hljs-type">lv_area_t</span> * mask, <span class="hljs-type">lv_draw_label_dsc_t</span> * dsc, <span class="hljs-type">const</span> <span class="hljs-type">char</span> * txt, <span class="hljs-type">lv_draw_label_hint_t</span> * hint)</span><br>&#123;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>coords：label 的坐标区域位置</li>
+<li>mask：label 的遮罩， 表示要在哪个区域显示</li>
+<li>dsc：绘制主题相关</li>
+<li>txt：要显示的文字字符串指针</li>
+<li>hint：方便计算第一个字符位置的结构体信息</li>
+</ul>
+<p>此函数主要收集并判断字符串显示的行数、位置等信息，再去循环调用<code>lv_draw_letter</code>  来显示每一个字符。</p>
+<hr>
+<h3 id="lv-draw-letter"><a href="#lv-draw-letter" class="headerlink" title="lv_draw_letter"></a>lv_draw_letter</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Draw a letter in the Virtual Display Buffer</span><br><span class="hljs-comment"> * @param pos_p left-top coordinate of the latter</span><br><span class="hljs-comment"> * @param clip_area the letter will be drawn only on this area  (truncated to VDB area)</span><br><span class="hljs-comment"> * @param font_p pointer to font</span><br><span class="hljs-comment"> * @param letter a letter to draw</span><br><span class="hljs-comment"> * @param color color of letter</span><br><span class="hljs-comment"> * @param opa opacity of letter (0..255)</span><br><span class="hljs-comment"> */</span><br>LV_ATTRIBUTE_FAST_MEM <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">lv_draw_letter</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">lv_point_t</span> * pos_p, <span class="hljs-type">const</span> <span class="hljs-type">lv_area_t</span> * clip_area, <span class="hljs-type">const</span> <span class="hljs-type">lv_font_t</span> * font_p, <span class="hljs-type">uint32_t</span> letter, <span class="hljs-type">lv_color_t</span> color, <span class="hljs-type">lv_opa_t</span> opa, <span class="hljs-type">lv_blend_mode_t</span> blend_mode)</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>pos_p：字符左上角坐标</li>
+<li>clip_area：在此区域的字符部分才会被显示</li>
+<li>font_p：字体结构体指针</li>
+<li>letter：要绘制的字符</li>
+<li>color：字符颜色</li>
+<li>opa：字符不透明度（或者是灰度？）</li>
+<li>blend_mode：混合模式</li>
+</ul>
+<p>此函数主要获取字符的描述信息结构体（字体样式，字模的宽、高），并获取字符的字型数据，再调用<code>draw_letter_normal</code> 来显示字符。</p>
+<hr>
+<h3 id="draw-letter-normal"><a href="#draw-letter-normal" class="headerlink" title="draw_letter_normal"></a>draw_letter_normal</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">LV_ATTRIBUTE_FAST_MEM <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">draw_letter_normal</span><span class="hljs-params">(<span class="hljs-type">lv_coord_t</span> pos_x, <span class="hljs-type">lv_coord_t</span> pos_y, <span class="hljs-type">lv_font_glyph_dsc_t</span> * g, <span class="hljs-type">const</span> <span class="hljs-type">lv_area_t</span> * clip_area, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> * map_p, <span class="hljs-type">lv_color_t</span> color, <span class="hljs-type">lv_opa_t</span> opa, <span class="hljs-type">lv_blend_mode_t</span> blend_mode)</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>pos_x：字符左上角坐标 x 值</li>
+<li>pos_y：字符左上角坐标 y 值</li>
+<li>g：字符描述信息结构体指针</li>
+<li>clip_area：只在此区域显示字符</li>
+<li>map_p：字模数据指针</li>
+<li>color：颜色</li>
+<li>…</li>
+</ul>
+<p>此函数是核心函数，根据字符信息，判断抗锯齿，并且将字模数据按照对应的抗锯齿解析，并绘制到显存中。</p>
+<hr>
+<h2 id="二、LVGL-字体-数据结构"><a href="#二、LVGL-字体-数据结构" class="headerlink" title="二、LVGL 字体 数据结构"></a>二、LVGL 字体 数据结构</h2><p>LVGL 的字体统一通过以下数据结构管理：</p>
+<h3 id="lv-font-glyph-dsc-t"><a href="#lv-font-glyph-dsc-t" class="headerlink" title="lv_font_glyph_dsc_t"></a>lv_font_glyph_dsc_t</h3><p>字形描述结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/** Describes the properties of a glyph. */</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><br>    <span class="hljs-type">uint16_t</span> adv_w; <span class="hljs-comment">/**&lt; The glyph needs this space. Draw the next glyph after this width. 8 bit integer, 4 bit fractional */</span><br>    <span class="hljs-type">uint16_t</span> box_w;  <span class="hljs-comment">/**&lt; Width of the glyph&#x27;s bounding box*/</span><br>    <span class="hljs-type">uint16_t</span> box_h;  <span class="hljs-comment">/**&lt; Height of the glyph&#x27;s bounding box*/</span><br>    <span class="hljs-type">int16_t</span> ofs_x;   <span class="hljs-comment">/**&lt; x offset of the bounding box*/</span><br>    <span class="hljs-type">int16_t</span> ofs_y;  <span class="hljs-comment">/**&lt; y offset of the bounding box*/</span><br>    <span class="hljs-type">uint8_t</span> bpp;   <span class="hljs-comment">/**&lt; Bit-per-pixel: 1, 2, 4, 8*/</span><br>&#125; <span class="hljs-type">lv_font_glyph_dsc_t</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>adv_w : 字形的绝对宽度，下一个字形在这么多间距后绘制。</li>
+<li>box_w：字模边框宽度</li>
+<li>box_h：字模边框高度</li>
+<li>ofs_x：边框x 坐标偏移</li>
+<li>ofs_y：边框y 坐标偏移</li>
+<li>bpp：抗锯齿</li>
+</ul>
+<hr>
+<h3 id="lv-font-t"><a href="#lv-font-t" class="headerlink" title="lv_font_t"></a>lv_font_t</h3><p>字体结构体</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/** Describe the properties of a font*/</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">lv_font_struct</span> &#123;</span><br>    <span class="hljs-comment">/** Get a glyph&#x27;s  descriptor from a font*/</span><br>    <span class="hljs-type">bool</span> (*get_glyph_dsc)(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> _lv_font_struct *, <span class="hljs-type">lv_font_glyph_dsc_t</span> *, <span class="hljs-type">uint32_t</span> letter, <span class="hljs-type">uint32_t</span> letter_next);<br><br>    <span class="hljs-comment">/** Get a glyph&#x27;s bitmap from a font*/</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> * (*get_glyph_bitmap)(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> _lv_font_struct *, <span class="hljs-type">uint32_t</span>);<br><br>    <span class="hljs-comment">/*Pointer to the font in a font pack (must have the same line height)*/</span><br>    <span class="hljs-type">lv_coord_t</span> line_height;         <span class="hljs-comment">/**&lt; The real line height where any text fits*/</span><br>    <span class="hljs-type">lv_coord_t</span> base_line;           <span class="hljs-comment">/**&lt; Base line measured from the top of the line_height*/</span><br>    <span class="hljs-type">uint8_t</span> subpx  : <span class="hljs-number">2</span>;             <span class="hljs-comment">/**&lt; An element of `lv_font_subpx_t`*/</span><br>    <span class="hljs-type">void</span> * dsc;                     <span class="hljs-comment">/**&lt; Store implementation specific or run_time data or caching here*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> LV_USE_USER_DATA</span><br>    <span class="hljs-type">lv_font_user_data_t</span> user_data;  <span class="hljs-comment">/**&lt; Custom user data for font. */</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>&#125; <span class="hljs-type">lv_font_t</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>get_glyph_dsc：获取字形描述信息的函数指针</li>
+<li>get_glyph_bitmap：获取字形数据的函数指针</li>
+<li>line_height：真实的行高度</li>
+<li>base_line：基线 从行高度的上方开始测量</li>
+<li>dsc：储存细节实现或者运行数据或者缓存</li>
+<li>user_data：自定义数据</li>
+</ul>
+<hr>
+<h3 id="take-a-chestnut☺："><a href="#take-a-chestnut☺：" class="headerlink" title="take a chestnut☺："></a>take a chestnut☺：</h3>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/UVGUI/">UVGUI</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/UVGUI/">UVGUI</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/08/NOTE/ARM/STM32/Keil_Cpp%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%87%BA%E7%8E%B0%E7%B1%BB%E5%9E%8B%E9%94%99%E8%AF%AF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Keil_C++环境移植第三方库出现类型错误问题解决</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/07/NOTE/ARM/UVGUI/UVGUI%E5%B1%8F%E5%B9%95%E5%88%B7%E6%96%B0%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">UVGUI屏幕刷新原理</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

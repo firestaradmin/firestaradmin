@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="RSA秘钥对以及SSH登陆 信息的加密很重要  RSA秘钥对简介RSA公开密钥密码体制是一种使用不同的加密密钥与解密密钥，“由已知加密密钥推导出解密密钥在计算上是不可行的”密码体制。 密钥对：在非对称加密技术中，有两种密钥，分为私钥和公钥，私钥是密钥对所有者持有，不可公布，公钥是密钥对持有者公布给他人的。公钥：公钥用来给数据加密，用公钥加密的数据只能使用私钥解密私钥：如上，用来解密公钥加密的数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RSA秘钥对以及SSH登陆">
+<meta property="og:url" content="http://firestaradmin.top:888/2022/02/16/NOTE/Linux/RSA%E7%A7%98%E9%92%A5%E5%AF%B9%E5%92%8CSSH%E7%99%BB%E9%99%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="RSA秘钥对以及SSH登陆 信息的加密很重要  RSA秘钥对简介RSA公开密钥密码体制是一种使用不同的加密密钥与解密密钥，“由已知加密密钥推导出解密密钥在计算上是不可行的”密码体制。 密钥对：在非对称加密技术中，有两种密钥，分为私钥和公钥，私钥是密钥对所有者持有，不可公布，公钥是密钥对持有者公布给他人的。公钥：公钥用来给数据加密，用公钥加密的数据只能使用私钥解密私钥：如上，用来解密公钥加密的数据。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-15T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="SSH">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>RSA秘钥对以及SSH登陆 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="RSA秘钥对以及SSH登陆">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-16 00:00" pubdate>
+        February 16, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">RSA秘钥对以及SSH登陆</h1>
+            
+            <div class="markdown-body">
+              <h1 id="RSA秘钥对以及SSH登陆"><a href="#RSA秘钥对以及SSH登陆" class="headerlink" title="RSA秘钥对以及SSH登陆"></a>RSA秘钥对以及SSH登陆</h1><blockquote>
+<p>信息的加密很重要</p>
+</blockquote>
+<h2 id="RSA秘钥对简介"><a href="#RSA秘钥对简介" class="headerlink" title="RSA秘钥对简介"></a>RSA秘钥对简介</h2><p>RSA<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6/11048976">公开密钥密码体制</a>是一种使用不同的加密密钥与解密密钥，“由已知加密密钥推导出解密密钥在计算上是不可行的”密码体制。</p>
+<p><strong>密钥对：</strong>在非对称加密技术中，有两种密钥，分为私钥和公钥，私钥是密钥对所有者持有，不可公布，公钥是密钥对持有者公布给他人的。<br><strong>公钥：</strong>公钥用来给数据加密，用公钥加密的数据只能使用私钥解密<br><strong>私钥：</strong>如上，用来解密公钥加密的数据。<br><strong>摘要：</strong>对需要传输的文本，做一个HASH计算，一般采用SHA1，SHA2来获得<br><strong>签名：</strong>使用私钥对需要传输的文本的摘要进行加密，得到的密文即被称为该次传输过程的签名。（看最下面的一部分就明白了）<br><strong>签名验证</strong>：数据接收端，拿到传输文本，但是需要确认该文本是否就是发送发出的内容，中途是否曾经被篡改。因此拿自己持有的公钥对签名进行解密（密钥对中的一种密钥加密的数据必定能使用另一种密钥解密。），得到了文本的摘要，然后使用与发送方同样的HASH算法计算摘要值，再与解密得到的摘要做对比，发现二者完全一致，则说明文本没有被篡改过。<br><strong>加密：</strong>是将数据资料加密，使得非法用户即使取得加密过的资料，也无法获取正确的资料内容，所以数据加密可以保护数据，防止监听攻击。其重点在于数据的安全性。</p>
+<h2 id="公开密钥过程"><a href="#公开密钥过程" class="headerlink" title="公开密钥过程"></a>公开密钥<strong>过程</strong></h2><p>比如有两个用户Alice和Bob，Alice想把一段明文通过双钥加密的技术发送给Bob，Bob有一对公钥和私钥，那么加密解密的过程如下：</p>
+<ol>
+<li><strong>Bob将他的公开密钥传送给Alice</strong>。</li>
+<li><strong>Alice用Bob的公开密钥加密她的消息，然后传送给Bob</strong>。</li>
+<li><strong>Bob用他的私人密钥解密Alice的消息</strong>。</li>
+</ol>
+<h2 id="SSH秘钥认证登陆"><a href="#SSH秘钥认证登陆" class="headerlink" title="SSH秘钥认证登陆"></a>SSH秘钥认证登陆</h2><p>一般的密码方式登录，容易有密码被暴力破解的问题。所以，一般我们会将 SSH 的端口设置为默认的 22 以外的端口，或者禁用 root 账户登录。其实，有一个更好的办法来保证安全，而且让你可以放心地用 root 账户从远程登录——那就是通过密钥方式登录。</p>
+<h3 id="1-制作密钥对"><a href="#1-制作密钥对" class="headerlink" title="1. 制作密钥对"></a>1. 制作密钥对</h3><p>首先在服务器上制作密钥对。首先用密码登录到你打算使用密钥登录的账户，然后执行以下命令：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><pre><code class="hljs gradle">[root@host ~]$ ssh-keygen  &lt;== 建立密钥对<br>Generating <span class="hljs-keyword">public</span>/<span class="hljs-keyword">private</span> rsa key pair.<br>Enter <span class="hljs-keyword">file</span> in which to save the key (<span class="hljs-regexp">/root/</span>.ssh/id_rsa): &lt;== 按 Enter<br>Created directory <span class="hljs-string">&#x27;/root/.ssh&#x27;</span>.<br>Enter passphrase (empty <span class="hljs-keyword">for</span> no passphrase): &lt;== 输入密钥锁码，或直接按 Enter 留空<br>Enter same passphrase again: &lt;== 再输入一遍密钥锁码<br>Your identification has been saved in <span class="hljs-regexp">/root/</span>.ssh/id_rsa. &lt;== 私钥<br>Your <span class="hljs-keyword">public</span> key has been saved in <span class="hljs-regexp">/root/</span>.ssh/id_rsa.pub. &lt;== 公钥<br>The key fingerprint is:<br><span class="hljs-number">0</span>f:d3:e7:<span class="hljs-number">1</span>a:<span class="hljs-number">1</span>c:bd:<span class="hljs-number">5</span>c:<span class="hljs-number">03</span>:f1:<span class="hljs-number">19</span>:f1:<span class="hljs-number">22</span>:df:<span class="hljs-number">9</span>b:cc:<span class="hljs-number">08</span> root@host<br></code></pre></td></tr></table></figure>
+
+<p>密钥锁码在使用私钥时必须输入，这样就可以保护私钥不被盗用。当然，也可以留空，实现无密码登录。</p>
+<p>现在，在 root 用户的家目录中生成了一个 .ssh 的隐藏目录，内含两个密钥文件。id_rsa 为私钥，id_rsa.pub 为公钥。</p>
+<h3 id="2-在服务器上安装公钥"><a href="#2-在服务器上安装公钥" class="headerlink" title="2. 在服务器上安装公钥"></a>2. 在服务器上安装公钥</h3><p>键入以下命令，在服务器上安装公钥：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[root<span class="hljs-variable">@host</span> ~]<span class="hljs-variable">$ </span>cd .ssh<br>[root<span class="hljs-variable">@host</span> .ssh]<span class="hljs-variable">$ </span>cat id_rsa.pub &gt;&gt; authorized_keys<br></code></pre></td></tr></table></figure>
+
+<p>如此便完成了公钥的安装。为了确保连接成功，请保证以下文件权限正确：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[root<span class="hljs-variable">@host</span> .ssh]<span class="hljs-variable">$ </span>chmod <span class="hljs-number">600</span> authorized_keys<br>[root<span class="hljs-variable">@host</span> .ssh]<span class="hljs-variable">$ </span>chmod <span class="hljs-number">700</span> ~<span class="hljs-regexp">/.ssh</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-设置-SSH，打开密钥登录功能"><a href="#3-设置-SSH，打开密钥登录功能" class="headerlink" title="3. 设置 SSH，打开密钥登录功能"></a>3. 设置 SSH，打开密钥登录功能</h3><p>编辑 &#x2F;etc&#x2F;ssh&#x2F;sshd_config 文件，进行如下设置：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">RSAAuthentication</span> <span class="hljs-literal">yes</span><br>PubkeyAuthentication <span class="hljs-literal">yes</span><br></code></pre></td></tr></table></figure>
+
+<p>另外，请留意 root 用户能否通过 SSH 登录：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">PermitRootLogin</span> <span class="hljs-literal">yes</span><br></code></pre></td></tr></table></figure>
+
+<p>当你完成全部设置，并以密钥方式登录成功后，再禁用密码登录（可选）：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">PasswordAuthentication</span> <span class="hljs-literal">no</span><br></code></pre></td></tr></table></figure>
+
+<p>最后，重启 SSH 服务：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[root<span class="hljs-variable">@host</span> .ssh]<span class="hljs-variable">$ </span>service sshd restart<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/SSH/">SSH</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/02/22/NOTE/C&amp;C++/function%20pointer/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C&C++ Function Pointer</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/07/NOTE/Linux/Ubuntu%E5%B8%B8%E7%94%A8/">
+                        <span class="hidden-mobile">Ubuntu 常用</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

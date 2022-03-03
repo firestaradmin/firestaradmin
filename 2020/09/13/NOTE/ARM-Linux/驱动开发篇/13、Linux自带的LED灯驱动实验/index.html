@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux自带的LED灯驱动前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。 1| Linu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="13| Linux自带的LED灯驱动">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Linux自带的LED灯驱动前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。 1| Linu">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png">
+<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193709178.png">
+<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828201703810.png">
+<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203725010.png">
+<meta property="og:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203747024.png">
+<meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top:888/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png">
+  
+  
+  <title>13| Linux自带的LED灯驱动 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="13| Linux自带的LED灯驱动">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-13 00:00" pubdate>
+        September 13, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      71 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">13| Linux自带的LED灯驱动</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Linux自带的LED灯驱动"><a href="#Linux自带的LED灯驱动" class="headerlink" title="Linux自带的LED灯驱动"></a>Linux自带的LED灯驱动</h1><p>前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。</p>
+<h2 id="1-Linux-内核自带-LED-驱动使能"><a href="#1-Linux-内核自带-LED-驱动使能" class="headerlink" title="1| Linux  内核自带 LED  驱动使能"></a>1| Linux  内核自带 LED  驱动使能</h2><p>上一章节我们编写基于设备树的 platform LED 灯驱动，其实 Linux 内核已经自带了 LED 灯驱动，要使用 Linux 内核自带的 LED 灯驱动首先得先配置 Linux 内核，使能自带的 LED 灯驱动，输入如下命令打开 Linux 配置菜单：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span><br></code></pre></td></tr></table></figure>
+
+<p>按照如下路径打开 LED 驱动配置项：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livescript">-&gt; Device Drivers<br>	-&gt; LED Support <span class="hljs-function"><span class="hljs-params">(NEW_LEDS [=y])</span></span><br><span class="hljs-function">		-&gt;</span>LED Support <span class="hljs-keyword">for</span> GPIO connected LEDs<br></code></pre></td></tr></table></figure>
+
+<p>按照上述路径，选择“LED Support for GPIO connected LEDs”，将其编译进 Linux 内核，也即是在此选项上按下“Y”键，使此选项前面变为“&lt;*&gt;”，如图  所示</p>
+<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193602935.png" srcset="/img/loading.gif" lazyload alt="image-20200828193602935"></p>
+<p>在“LED Support for GPIO connected LEDs”上按下可以打开此选项的帮助信息，如图 所示：</p>
+<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828193709178.png" srcset="/img/loading.gif" lazyload alt="image-20200828193709178"></p>
+<p>从图可以看出， 把 Linux 内部自带的 LED 灯 驱动编 译进内 核以后 ，<strong>CONFIG_LEDS_GPIO</strong> 就会等于‘y’，Linux 会根据 CONFIG_LEDS_GPIO 的值来选择如何编译LED 灯驱动，如果为‘y’就将其编译进 Linux 内核。</p>
+<p>重新编译 Linux 内核，然后使用新编译出来的 zImage 镜像启动开发板。</p>
+<h2 id="2-Linux-内核自带-LED-驱动简介"><a href="#2-Linux-内核自带-LED-驱动简介" class="headerlink" title="2|  Linux  内核自带 LED  驱动简介"></a>2|  Linux  内核自带 LED  驱动简介</h2><h3 id="1、LED-灯驱动框架分析"><a href="#1、LED-灯驱动框架分析" class="headerlink" title="1、LED 灯驱动框架分析"></a>1、LED 灯驱动框架分析</h3><p>LED 灯驱动文件为&#x2F;drivers&#x2F;leds&#x2F;leds-gpio.c，大家可以打开&#x2F;drivers&#x2F;leds&#x2F;Makefile 这个文件，找到如下所示内容：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs makefile">2 <span class="hljs-comment"># LED Core</span><br>3 obj-<span class="hljs-variable">$(CONFIG_NEW_LEDS)</span> 				+= led-core.o<br>.....<br>23 obj-<span class="hljs-variable">$(CONFIG_LEDS_GPIO_REGISTER)</span> 	+= leds-gpio-register.o<br>24 obj-<span class="hljs-variable">$(CONFIG_LEDS_GPIO)</span> 				+= leds-gpio.o<br>25 obj-<span class="hljs-variable">$(CONFIG_LEDS_LP3944)</span> 			+= leds-lp3944.o<br>......<br></code></pre></td></tr></table></figure>
+
+<p>第 24 行，如果定义了 <strong>CONFIG_LEDS_GPIO</strong> 的话就会编译 leds-gpio.c 这个文件，在上一小节我们选择将 LED 驱动编译进 Linux 内核，在.config 文件中就会有“CONFIG_LEDS_GPIO&#x3D;y”这一行，因此 leds-gpio.c 驱动文件就会被编译。</p>
+<p>接下来我们看一下 leds-gpio.c 这个驱动文件，找到如下所示内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">236</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">of_gpio_leds_match</span>[] =</span> &#123;<br><span class="hljs-number">237</span> 	&#123; .compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>, &#125;,<br><span class="hljs-number">238</span> 	&#123;&#125;,<br><span class="hljs-number">239</span> &#125;;<br>......<br><span class="hljs-number">290</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_driver</span> <span class="hljs-title">gpio_led_driver</span> =</span> &#123;<br><span class="hljs-number">291</span> 	.probe = gpio_led_probe,<br><span class="hljs-number">292</span> 	.remove = gpio_led_remove,<br><span class="hljs-number">293</span> 	.driver = &#123;<br><span class="hljs-number">294</span> 		.name = <span class="hljs-string">&quot;leds-gpio&quot;</span>,<br><span class="hljs-number">295</span> 		.of_match_table = of_gpio_leds_match,<br><span class="hljs-number">296</span> 	&#125;,<br><span class="hljs-number">297</span> &#125;;<br><span class="hljs-number">298</span><br><span class="hljs-number">299</span> module_platform_driver(gpio_led_driver);<br></code></pre></td></tr></table></figure>
+
+<p>第 236~239 行，LED 驱动的匹配表，此表只有一个匹配项，compatible 内容为“gpio-leds”，因此设备树中的 LED 灯设备节点的 compatible 属性值也要为“gpio-leds”，否则设备和驱动匹配不成功，驱动就没法工作。</p>
+<p>第 290~296 行，platform_driver 驱动结构体变量，可以看出，Linux 内核自带的 LED 驱动采用了 platform 框架。第 291 行可以看出 probe 函数为 gpio_led_probe，因此当驱动和设备匹配成功以后 gpio_led_probe 函数就会执行。从 294 行可以看出，驱动名字为“leds-gpio”，因此会在&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;drivers 目录下存在一个名为“leds-gpio”的文件，如图 所示：</p>
+<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828201703810.png" srcset="/img/loading.gif" lazyload alt="image-20200828201703810"></p>
+<p>第 299 行通过 module_platform_driver 函数向 Linux 内核注册 gpio_led_driver 这个platform<br>驱动。</p>
+<h3 id="2、module-platform-driver-函数简析"><a href="#2、module-platform-driver-函数简析" class="headerlink" title="2、module_platform_driver 函数简析"></a>2、module_platform_driver 函数简析</h3><p>在上一小节中我们知道 LED 驱动会采用 module_platform_driver 函数向 Linux 内核注册platform 驱动，其实在 Linux 内核中会大量采用 module_platform_driver 来完成向 Linux 内核注册 platform 驱动的操作。module_platform_driver 定义在include&#x2F;linux&#x2F;platform_device.h 文件中，为一个宏，定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">221</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_platform_driver(__platform_driver) \</span><br><span class="hljs-meta">222 	module_driver(__platform_driver, platform_driver_register, \</span><br><span class="hljs-meta">223 		platform_driver_unregister)</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看出，module_platform_driver 依赖 module_driver，module_driver 也是一个宏，定义在include&#x2F;linux&#x2F;device.h 文件中，内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1260</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_driver(__driver, __register, __unregister, ...) \</span><br><span class="hljs-meta">1261 static int __init __driver##_init(void) \</span><br><span class="hljs-meta">1262 &#123; \</span><br><span class="hljs-meta">1263 		return __register(&amp;(__driver) , ##__VA_ARGS__); \</span><br><span class="hljs-meta">1264 &#125; \</span><br><span class="hljs-meta">1265 module_init(__driver##_init); \</span><br><span class="hljs-meta">1266 static void __exit __driver##_exit(void) \</span><br><span class="hljs-meta">1267 &#123; \</span><br><span class="hljs-meta">1268 		__unregister(&amp;(__driver) , ##__VA_ARGS__); \</span><br><span class="hljs-meta">1269 &#125; \</span><br><span class="hljs-meta">1270 module_exit(__driver##_exit);</span><br></code></pre></td></tr></table></figure>
+
+<p>借助示例代码将：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">module_platform_driver(gpio_led_driver)<br></code></pre></td></tr></table></figure>
+
+<p>展开以后就是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">gpio_led_driver_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">return</span> platform_driver_register (&amp;(gpio_led_driver));<br>&#125;<br>module_init(gpio_led_driver_init);<br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">gpio_led_driver_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	platform_driver_unregister (&amp;(gpio_led_driver) );<br>&#125;<br>module_exit(gpio_led_driver_exit);<br></code></pre></td></tr></table></figure>
+
+<p>上面的代码不就是标准的注册和删除platform驱动吗？因此module_platform_driver函数的功能就是完成 platform 驱动的注册和删除。</p>
+<h3 id="3、gpio-led-probe-函数简析"><a href="#3、gpio-led-probe-函数简析" class="headerlink" title="3、gpio_led_probe  函数简析"></a>3、gpio_led_probe  函数简析</h3><p>当驱动和设备匹配以后 gpio_led_probe 函数就会执行，此函数主要是从设备树中获取 LED灯的 GPIO 信息，缩减后的函数内容如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">243</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">gpio_led_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span><br>244 &#123;<br><span class="hljs-number">245</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_led_platform_data</span> *<span class="hljs-title">pdata</span> =</span> dev_get_platdata(&amp;pdev-&gt;dev);<br><span class="hljs-number">246</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_leds_priv</span> *<span class="hljs-title">priv</span>;</span><br><span class="hljs-number">247</span> 	<span class="hljs-type">int</span> i, ret = <span class="hljs-number">0</span>;<br><span class="hljs-number">248</span><br><span class="hljs-number">249</span> 	<span class="hljs-keyword">if</span> (pdata &amp;&amp; pdata-&gt;num_leds) &#123; <span class="hljs-comment">/* 非设备树方式 */</span><br>			<span class="hljs-comment">/* 获取 platform_device 信息 */</span><br>			......<br><span class="hljs-number">268</span> 	&#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">/* 采用设备树 */</span><br><span class="hljs-number">269</span> 		priv = gpio_leds_create(pdev);<br><span class="hljs-number">270</span> 		<span class="hljs-keyword">if</span> (IS_ERR(priv))<br><span class="hljs-number">271</span> 			<span class="hljs-keyword">return</span> PTR_ERR(priv);<br><span class="hljs-number">272</span> 	&#125;<br><span class="hljs-number">273</span><br><span class="hljs-number">274</span> 	platform_set_drvdata(pdev, priv);<br><span class="hljs-number">275</span><br><span class="hljs-number">276</span> 	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">277</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>第 269~271 行，如果使用设备树的话，使用 gpio_leds_create 函数从设备树中提取设备信息，获取到的 LED 灯 GPIO 信息保存在返回值中，gpio_leds_create 函数内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">167</span> <span class="hljs-type">static</span> <span class="hljs-keyword">struct</span> gpio_leds_priv *<span class="hljs-title function_">gpio_leds_create</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span><br>168 &#123;<br><span class="hljs-number">169</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">dev</span> =</span> &amp;pdev-&gt;dev;<br><span class="hljs-number">170</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fwnode_handle</span> *<span class="hljs-title">child</span>;</span><br><span class="hljs-number">171</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_leds_priv</span> *<span class="hljs-title">priv</span>;</span><br><span class="hljs-number">172</span> 	<span class="hljs-type">int</span> count, ret;<br><span class="hljs-number">173</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_node</span> *<span class="hljs-title">np</span>;</span><br><span class="hljs-number">174</span><br><span class="hljs-number">175</span> 	count = device_get_child_node_count(dev);<br><span class="hljs-number">176</span> 	<span class="hljs-keyword">if</span> (!count)<br><span class="hljs-number">177</span> 		<span class="hljs-keyword">return</span> ERR_PTR(-ENODEV);<br><span class="hljs-number">178</span><br><span class="hljs-number">179</span> 	priv = devm_kzalloc(dev, sizeof_gpio_leds_priv(count), GFP_KERNEL);<br><span class="hljs-number">180</span> 	<span class="hljs-keyword">if</span> (!priv)<br><span class="hljs-number">181</span> 		<span class="hljs-keyword">return</span> ERR_PTR(-ENOMEM);<br><span class="hljs-number">182</span><br><span class="hljs-number">183</span> 	device_for_each_child_node(dev, child) &#123;<br><span class="hljs-number">184</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_led</span> <span class="hljs-title">led</span> =</span> &#123;&#125;;<br><span class="hljs-number">185</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *state = <span class="hljs-literal">NULL</span>;<br><span class="hljs-number">186</span><br><span class="hljs-number">187</span> 		led.gpiod = devm_get_gpiod_from_child(dev, <span class="hljs-literal">NULL</span>, child);<br><span class="hljs-number">188</span> 		<span class="hljs-keyword">if</span> (IS_ERR(led.gpiod)) &#123;<br><span class="hljs-number">189</span> 			fwnode_handle_put(child);<br><span class="hljs-number">190</span> 			ret = PTR_ERR(led.gpiod);<br><span class="hljs-number">191</span> 			<span class="hljs-keyword">goto</span> err;<br><span class="hljs-number">192</span> 		&#125;<br><span class="hljs-number">193</span><br><span class="hljs-number">194</span> 		np = of_node(child);<br><span class="hljs-number">195</span><br><span class="hljs-number">196</span> 		<span class="hljs-keyword">if</span> (fwnode_property_present(child, <span class="hljs-string">&quot;label&quot;</span>)) &#123;<br><span class="hljs-number">197</span> 			fwnode_property_read_string(child, <span class="hljs-string">&quot;label&quot;</span>, &amp;led.name);<br><span class="hljs-number">198</span> 		&#125; <span class="hljs-keyword">else</span> &#123;<br><span class="hljs-number">199</span> 			<span class="hljs-keyword">if</span> (IS_ENABLED(CONFIG_OF) &amp;&amp; !led.name &amp;&amp; np)<br><span class="hljs-number">200</span> 				led.name = np-&gt;name;<br><span class="hljs-number">201</span> 			<span class="hljs-keyword">if</span> (!led.name)<br><span class="hljs-number">202</span> 				<span class="hljs-keyword">return</span> ERR_PTR(-EINVAL);<br><span class="hljs-number">203</span> 		&#125;<br><span class="hljs-number">204</span> 		fwnode_property_read_string(child, <span class="hljs-string">&quot;linux,default-trigger&quot;</span>,<br><span class="hljs-number">205</span> 								&amp;led.default_trigger);<br><span class="hljs-number">206</span><br><span class="hljs-number">207</span> 		<span class="hljs-keyword">if</span> (!fwnode_property_read_string(child, <span class="hljs-string">&quot;default-state&quot;</span>,<br><span class="hljs-number">208</span> 									&amp;state)) &#123;<br><span class="hljs-number">209</span> 			<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(state, <span class="hljs-string">&quot;keep&quot;</span>))<br><span class="hljs-number">210</span> 				led.default_state = LEDS_GPIO_DEFSTATE_KEEP;<br><span class="hljs-number">211</span> 			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(state, <span class="hljs-string">&quot;on&quot;</span>))<br><span class="hljs-number">212</span> 				led.default_state = LEDS_GPIO_DEFSTATE_ON;<br><span class="hljs-number">213</span> 			<span class="hljs-keyword">else</span><br><span class="hljs-number">214</span> 				led.default_state = LEDS_GPIO_DEFSTATE_OFF;<br><span class="hljs-number">215</span> 		&#125;<br><span class="hljs-number">216</span><br><span class="hljs-number">217</span> 		<span class="hljs-keyword">if</span> (fwnode_property_present(child, <span class="hljs-string">&quot;retain-state-suspended&quot;</span>))<br><span class="hljs-number">218</span> 			led.retain_state_suspended = <span class="hljs-number">1</span>;<br><span class="hljs-number">219</span><br><span class="hljs-number">220</span> 		ret = create_gpio_led(&amp;led, &amp;priv-&gt;leds[priv-&gt;num_leds++],<br><span class="hljs-number">221</span> 						dev, <span class="hljs-literal">NULL</span>);<br><span class="hljs-number">222</span> 		<span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>) &#123;<br><span class="hljs-number">223</span> 			fwnode_handle_put(child);<br><span class="hljs-number">224</span> 			<span class="hljs-keyword">goto</span> err;<br><span class="hljs-number">225</span> 		&#125;<br><span class="hljs-number">226</span> 	&#125;<br><span class="hljs-number">227</span><br><span class="hljs-number">228</span> 	<span class="hljs-keyword">return</span> priv;<br><span class="hljs-number">229</span><br><span class="hljs-number">230</span> 	err:<br><span class="hljs-number">231</span> 	<span class="hljs-keyword">for</span> (count = priv-&gt;num_leds - <span class="hljs-number">2</span>; count &gt;= <span class="hljs-number">0</span>; count--)<br><span class="hljs-number">232</span> 		delete_gpio_led(&amp;priv-&gt;leds[count]);<br><span class="hljs-number">233</span> 	<span class="hljs-keyword">return</span> ERR_PTR(ret);<br><span class="hljs-number">234</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第 175 行，调用 device_get_child_node_count 函数统计子节点数量，一般在在设备树中创建一个节点表示 LED 灯，然后在这个节点下面为每个 LED 灯创建一个子节点。因此子节点数量也是 LED 灯的数量。</li>
+<li>第 183 行，遍历每个子节点，获取每个子节点的信息。</li>
+<li>第 187 行，获取 LED 灯所使用的 GPIO 信息。</li>
+<li>第 196~197 行，读取子节点 label 属性值，因为使用 label 属性作为 LED 的名字。</li>
+<li>第 204~205 行，获取“linux,default-trigger”属性值，可以通过此属性设置某个 LED 灯在Linux 系统中的默认功能，比如作为系统心跳指示灯等等。</li>
+<li>第 207~215 行，获取“default-state”属性值，也就是 LED 灯的默认状态属性。</li>
+<li>第 220 行，调用 create_gpio_led 函数创建 LED 相关的 io，其实就是设置 LED 所使用的 io为输出之类的。create_gpio_led 函数主要是初始化 led_dat 这个 gpio_led_data 结构体类型变量，led_dat 保存了 LED 的操作函数等内容。</li>
+</ul>
+<p>关于 gpio_led_probe 函数就分析到这里，gpio_led_probe 函数主要功能就是获取 LED 灯的<br>设备信息，然后根据这些信息来初始化对应的 IO，设置为输出等。</p>
+<h2 id="3-设备树节点编写"><a href="#3-设备树节点编写" class="headerlink" title="3| 设备树节点编写"></a>3| 设备树节点编写</h2><p>打开文档 Documentation&#x2F;devicetree&#x2F;bindings&#x2F;leds&#x2F;leds-gpio.txt，此文档详细的讲解了Linux 自带驱动对应的设备树节点该如何编写，我们在编写设备节点的时候要注意以下几点：</p>
+<ul>
+<li>①、创建一个节点表示 LED 灯设备，比如 dtsleds，如果板子上有多个 LED 灯的话每个 LED灯都作为 dtsleds 的子节点。</li>
+<li>②、dtsleds 节点的 compatible 属性值一定要为“gpio-leds”。</li>
+<li>③、设置 label 属性，此属性为可选，每个子节点都有一个 label 属性，label 属性一般表示LED 灯的名字，比如以颜色区分的话就是 red、green 等等。</li>
+<li>④、每个子节点必须要设置 gpios 属性值，表示此 LED 所使用的 GPIO 引脚！</li>
+<li>⑤、可以设置“linux,default-trigger”属性值，也就是设置 LED 灯的默认功能，可以查阅Documentation&#x2F;devicetree&#x2F;bindings&#x2F;leds&#x2F;common.txt 这个文档来查看可选功能，比如：backlight ：LED 灯作为背光。<ul>
+<li>default-on：LED 灯打开</li>
+<li>heartbeat ：LED 灯作为心跳指示灯，可以作为系统运行提示灯。</li>
+<li>ide-disk ：LED 灯作为硬盘活动指示灯。</li>
+<li>timer ：LED 灯周期性闪烁，由定时器驱动，闪烁频率可以修改</li>
+</ul>
+</li>
+<li>⑥、可以设置“default-state”属性值，可以设置为 on、off 或 keep，为 on 的时候 LED 灯默认打开，为 off 的话 LED 灯默认关闭，为 keep 的话 LED 灯保持当前模式。</li>
+</ul>
+<p>根据上述几条要求在 imx6ull-lxg-emmc.dts 中添加如下所示 LED 灯设备节点：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;<br><span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>;<br><span class="hljs-number">3</span><br><span class="hljs-number">4</span> 		led0 &#123;<br><span class="hljs-number">5</span> 			label = <span class="hljs-string">&quot;red&quot;</span>;<br><span class="hljs-number">6</span> 			gpios = &lt;&amp;gpio1 <span class="hljs-number">3</span> GPIO_ACTIVE_LOW&gt;;<br><span class="hljs-number">7</span> 			<span class="hljs-keyword">default</span>-state = <span class="hljs-string">&quot;off&quot;</span>;<br><span class="hljs-number">8</span> 		&#125;;<br><span class="hljs-number">9</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>因为 I.MX6U-ALPHA 开发板只有一个 LED0，因此在 dtsleds 这个节点下只有一个子节点led0，LED0 名字为 red，默认关闭。修改完成以后保存并重新编译设备树，然后用新的设备树启动开发板。</p>
+<h2 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4| 运行测试"></a>4| 运行测试</h2><p>用 新 的 zImage 和 imx6ull-lxg-emmc.dtb 启 动 开 发 板 ， 启 动 以 后 查 看&#x2F;sys&#x2F;bus&#x2F;platform&#x2F;devices&#x2F;dtsleds 这个目录是否存在，如果存在的话就如到此目录中，如图所示：</p>
+<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203725010.png" srcset="/img/loading.gif" lazyload alt="image-20200828203725010"></p>
+<p>进入到 leds 目录中，此目录中的内容如图所示：</p>
+<p><img src="/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203747024.png" srcset="/img/loading.gif" lazyload alt="image-20200828203747024"></p>
+<p>从图 可以看出，在 leds 目录下有一个名为“red”子目录，这个子目录的名字就是我们在设备树中第 5 行设置的 label 属性值。</p>
+<p>我们的设置究竟有没有用，最终是要通过测试才能知道的，首先查看一下系统中有没有“sys&#x2F;class&#x2F;leds&#x2F;red&#x2F;brightness”这个文件，如果有的话就输入如下命令打开 RED 这个 LED 灯：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/打开 LED0</span><br></code></pre></td></tr></table></figure>
+
+<p>关闭 RED 这个 LED 灯的命令如下：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">echo <span class="hljs-number">0</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/关闭 LED0</span><br></code></pre></td></tr></table></figure>
+
+<p>如果能正常的打开和关闭 LED 灯话就说明我们 Linux 内核自带的 LED 灯驱动工作正常。我们一般会使用一个 LED 灯作为系统指示灯，系统运行正常的话这个 LED 指示灯就会一闪一闪的。里我们设置 LED0 作为系统指示灯，在 dtsleds 这个设备节点中加入“linux,default-trigger”属性信息即可，属性值为“heartbeat”，修改完以后的 dtsleds 节点内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;<br><span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>;<br><span class="hljs-number">3</span><br><span class="hljs-number">4</span> 		led0 &#123;<br><span class="hljs-number">5</span> 			label = <span class="hljs-string">&quot;red&quot;</span>;<br><span class="hljs-number">6</span> 			gpios = &lt;&amp;gpio1 <span class="hljs-number">3</span> GPIO_ACTIVE_LOW&gt;;<br><span class="hljs-number">7</span> 			linux,<span class="hljs-keyword">default</span>-trigger = <span class="hljs-string">&quot;heartbeat&quot;</span>;<br><span class="hljs-number">8</span> 			<span class="hljs-keyword">default</span>-state = <span class="hljs-string">&quot;on&quot;</span>;<br><span class="hljs-number">9</span> 		&#125;;<br><span class="hljs-number">10</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>第 7 行，设置 LED0 为 heartbeat。<br>第 8 行，默认打开 LED0。</p>
+<p>重新编译设备树并且使用新的设备树启动 Linux 系统，启动以后 LED0 就会闪烁，作为系统心跳指示灯，表示系统正在运行。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/24%E3%80%81Linux%E5%9D%97%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">24| Linux 块设备驱动实验</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">14| Linux MISC驱动实验</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

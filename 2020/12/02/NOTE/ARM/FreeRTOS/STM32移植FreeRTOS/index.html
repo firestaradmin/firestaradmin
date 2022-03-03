@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="@firestaradmin 2020年12月2日15:47:03 STM32移植FreeRTOS操作记录一、获取源码 获取STM32 官方STD 库 获取FreeRTOS V10.0.1 (版本不同，大致步骤相似，见招拆招即可)  二、移植步骤1| 添加FreeRTOS 库解压缩后，在工程目录创建OS\FreeRTOS 文件夹，将 FreeRTOSv10.0.1\FreeRTOS\Source">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32移植FreeRTOS">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/12/02/NOTE/ARM/FreeRTOS/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="@firestaradmin 2020年12月2日15:47:03 STM32移植FreeRTOS操作记录一、获取源码 获取STM32 官方STD 库 获取FreeRTOS V10.0.1 (版本不同，大致步骤相似，见招拆招即可)  二、移植步骤1| 添加FreeRTOS 库解压缩后，在工程目录创建OS\FreeRTOS 文件夹，将 FreeRTOSv10.0.1\FreeRTOS\Source">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202160233250.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175426792.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202160915739.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202161501611.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162234504.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162333690.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162553823.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162816847.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175620531.png">
+<meta property="og:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175936488.png">
+<meta property="article:published_time" content="2020-12-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-01T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="FreeRTOS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top:888/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202160233250.png">
+  
+  
+  <title>STM32移植FreeRTOS - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="STM32移植FreeRTOS">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-02 00:00" pubdate>
+        December 2, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      11k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      92 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">STM32移植FreeRTOS</h1>
+            
+            <div class="markdown-body">
+              <p>@firestaradmin 2020年12月2日15:47:03</p>
+<h1 id="STM32移植FreeRTOS操作记录"><a href="#STM32移植FreeRTOS操作记录" class="headerlink" title="STM32移植FreeRTOS操作记录"></a>STM32移植FreeRTOS操作记录</h1><h2 id="一、获取源码"><a href="#一、获取源码" class="headerlink" title="一、获取源码"></a>一、获取源码</h2><ul>
+<li>获取STM32 官方STD 库</li>
+<li>获取FreeRTOS V10.0.1 (版本不同，大致步骤相似，见招拆招即可)</li>
+</ul>
+<h2 id="二、移植步骤"><a href="#二、移植步骤" class="headerlink" title="二、移植步骤"></a>二、移植步骤</h2><h3 id="1-添加FreeRTOS-库"><a href="#1-添加FreeRTOS-库" class="headerlink" title="1| 添加FreeRTOS 库"></a>1| 添加FreeRTOS 库</h3><p>解压缩后，在工程目录创建OS\FreeRTOS 文件夹，将 FreeRTOSv10.0.1\FreeRTOS\Source 内的文件复制到工程目录</p>
+<p>并在FreeRTOSv10.0.1\FreeRTOS\Demo 目录下寻找自己开发板的文件，这里以STM32F4 为例，打开目录 FreeRTOSv10.0.1\FreeRTOS\Demo\CORTEX_M4F_STM32F407ZG-SK ，并将 目录中的 FreeRTOSConfig.h 文件复制到 工程User目录下。</p>
+<p>添加完毕后如图所示：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202160233250.png" srcset="/img/loading.gif" lazyload alt="image-20201202160233250"></p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175426792.png" srcset="/img/loading.gif" lazyload alt="image-20201202175426792"></p>
+<h3 id="2-配置STM32-工程"><a href="#2-配置STM32-工程" class="headerlink" title="2| 配置STM32 工程"></a>2| 配置STM32 工程</h3><p>创建如下目录，并添加相应文件</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202160915739.png" srcset="/img/loading.gif" lazyload alt="image-20201202160915739"></p>
+<p>FreeRTOS&#x2F;port 目录下需要添加 OS\FreeRTOS\portable\目录中的 MemMang 内存操作文件（heap_4.c） 和 对于平台的 port.c 文件(对于STM32F4 使用\OS\FreeRTOS\portable\RVDS\ARM_CM4F目录中的port.c)</p>
+<p>添加文件完毕后，配置头文件路径。配置完毕，如图所示：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202161501611.png" srcset="/img/loading.gif" lazyload alt="image-20201202161501611"></p>
+<hr>
+<p>编译报错如图：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162234504.png" srcset="/img/loading.gif" lazyload alt="image-20201202162234504"></p>
+<p>原因是因为stm32f4xx_fmc.c 是针对于stm32f429 等芯片的，我们直接删除改文件即可。</p>
+<hr>
+<p>再次编译报错：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162333690.png" srcset="/img/loading.gif" lazyload alt="image-20201202162333690"></p>
+<p>打开FreeRTOSConfig.h 文件 将<code>#ifdef __ICCARM__ </code> 修改为<br><code>#if defined(__ICCARM__)||defined(__CC_ARM)||defined(__GNU__)</code>  如图：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162553823.png" srcset="/img/loading.gif" lazyload alt="image-20201202162553823"></p>
+<p>此处注意<code>SystemCoreClock</code> 的值要与你系统时钟移植，查看一下已确定。</p>
+<hr>
+<p>再次编译显示</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202162816847.png" srcset="/img/loading.gif" lazyload alt="image-20201202162816847"></p>
+<p>参考第三步配置FreeRTOS 时钟心跳。</p>
+<h3 id="3-配置FreeRTOS-时钟心跳"><a href="#3-配置FreeRTOS-时钟心跳" class="headerlink" title="3| 配置FreeRTOS 时钟心跳"></a>3| 配置FreeRTOS 时钟心跳</h3><p>将stm32f4xx_it.c 中的 <code>SVC_Handler(void)  PendSV_Handler(void)  SysTick_Handler(void)</code>三个中断函数注释。</p>
+<p>将FreeRTOSConfig.h 文件中 <code>#define xPortSysTickHandler SysTick_Handler</code>注释，如图</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175620531.png" srcset="/img/loading.gif" lazyload alt="image-20201202175620531"></p>
+<hr>
+<p>在delay.c 中添加<code>sysTick</code>中断 和 <code>sysTick Init</code> 如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment">	FreeRTOS</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;FreeRTOS.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;task.h&quot;</span></span><br><br><br><span class="hljs-type">static</span> <span class="hljs-type">uint8_t</span>  fac_us=<span class="hljs-number">0</span>;							<span class="hljs-comment">//us延时倍乘数, 1us 需要的 systick 计数次数			   </span><br><span class="hljs-type">static</span> <span class="hljs-type">uint16_t</span> fac_ms=<span class="hljs-number">0</span>;							<span class="hljs-comment">//ms延时倍乘数,在os下,代表每个节拍的ms数</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">  * @brief  This function handles SysTick Handler.</span><br><span class="hljs-comment">  * @param  None</span><br><span class="hljs-comment">  * @retval None</span><br><span class="hljs-comment">  */</span><br><span class="hljs-comment">//systick  中断服务函数</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">SysTick_Handler</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		<span class="hljs-keyword">if</span> (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) &#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>			xPortSysTickHandler();<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		&#125;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>&#125;<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif 初始化systick</span><br><span class="hljs-comment">	SYSTICK 的时钟固定为 AHB 时钟，基础例程里面 SYSTICK 时钟频率为 AHB/8</span><br><span class="hljs-comment">	这里为了兼容 FreeRTOS，所以将 SYSTICK 的时钟频率改为 AHB 的频率！</span><br><span class="hljs-comment"> * @param SYSCLK 系统时钟频率 unit: MHz</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_init</span><span class="hljs-params">(<span class="hljs-type">uint8_t</span> SYSCLK)</span><br>&#123;<br>	<span class="hljs-type">uint32_t</span> reload;<br>	<span class="hljs-comment">//SysTick 频率为 HCLK</span><br>	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);<br>	<br>	fac_us=SYSCLK; <span class="hljs-comment">//不论是否使用 OS,fac_us 都需要使用</span><br>	<br>	<span class="hljs-comment">//每秒钟的计数次数 单位为 K 根据 configTICK_RATE_HZ 设定溢出时间  reload = 168 K = 168 000 </span><br>	reload= SYSCLK * <span class="hljs-number">1000000</span>/configTICK_RATE_HZ;<br>	<span class="hljs-comment">//reload 为 24 位寄存器,最大值:16777216,</span><br>	<span class="hljs-comment">//在 168M 下,约合 0.0998s 左右</span><br>	fac_ms=<span class="hljs-number">1000</span>/configTICK_RATE_HZ; <span class="hljs-comment">//代表 OS 可以延时的最少单位</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_TICKINT_Msk;<span class="hljs-comment">//开启 SYSTICK 中断</span><br>	SysTick-&gt;LOAD=reload; <span class="hljs-comment">//每 1/configTICK_RATE_HZ 秒 中断一次</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_ENABLE_Msk; <span class="hljs-comment">//开启 SYSTICK</span><br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>至此 心跳时基就已经OK了，但是有时候会使用延时函数（会引起任务调度或者不引起任务调度的延时），如下所示添加即可</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay us. Will not cause task scheduling.</span><br><span class="hljs-comment"> * @param nus time need to delay (unit|us)</span><br><span class="hljs-comment">		range[0~204522252](max = 2^32/fac_us@fac_us=168)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_us</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nus)</span><br>&#123;		<br>	<span class="hljs-type">uint32_t</span> ticks;<br>	<span class="hljs-type">uint32_t</span> told, tnow, tcnt=<span class="hljs-number">0</span>;<br>	<span class="hljs-type">uint32_t</span> reload = SysTick-&gt;LOAD;				<span class="hljs-comment">//LOAD的值	    	 </span><br>	ticks = nus * fac_us; 						<span class="hljs-comment">//需要的节拍数 </span><br>	told = SysTick-&gt;VAL;        				<span class="hljs-comment">//刚进入时的计数器值</span><br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>	&#123;<br>		tnow = SysTick-&gt;VAL;	<br>		<span class="hljs-keyword">if</span>(tnow != told)<br>		&#123;	    <br>			<span class="hljs-keyword">if</span>(tnow &lt; told) tcnt += told - tnow;	<span class="hljs-comment">//这里注意一下SYSTICK是一个递减的计数器就可以了.</span><br>			<span class="hljs-keyword">else</span> tcnt += reload - tnow + told;	    <br>			told = tnow;<br>			<span class="hljs-keyword">if</span>(tcnt &gt;= ticks)<span class="hljs-keyword">break</span>;			<span class="hljs-comment">//时间超过/等于要延迟的时间,则退出.</span><br>		&#125;  <br>	&#125;;										    <br>&#125;  <br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. Will cause task scheduling.</span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment">		range[0~65535]</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_ms</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nms)</span><br>&#123;	<br>	<span class="hljs-keyword">if</span>(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)<span class="hljs-comment">//系统已经运行</span><br>	&#123; <br>		<span class="hljs-keyword">if</span>(nms &gt;= fac_ms) <span class="hljs-comment">//延时的时间大于 OS 的最少时间周期</span><br>		&#123;<br>			vTaskDelay(nms / fac_ms);  <span class="hljs-comment">//FreeRTOS 延时</span><br>		&#125;<br>		nms %= fac_ms;  <span class="hljs-comment">//OS 已经无法提供这么小的延时了,采用普通方式延时</span><br>		<br>	&#125;<br>	delay_us((<span class="hljs-type">uint32_t</span>)(nms*<span class="hljs-number">1000</span>)); <span class="hljs-comment">//普通方式延时</span><br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. Will not cause task scheduling.</span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_xms</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nms)</span><br>&#123;<br>	<span class="hljs-type">uint32_t</span> i;<br>	<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;i&lt;nms;i++) delay_us(<span class="hljs-number">1000</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>编译会提示 <code>xPortSysTickHandler</code> 函数隐式声明， 打开<code>FreeRTOSConfig.h</code>文件，在最后添加如下代码声明即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">xPortSysTickHandler</span><span class="hljs-params">( <span class="hljs-type">void</span> )</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<hr>
+<p>之后再次编译发现 几个Hook 函数报错，打开FreeRTOSConfig.h 文件 将如下几个宏定义定义改为0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_IDLE_HOOK				1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_TICK_HOOK				1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> configCHECK_FOR_STACK_OVERFLOW	2</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_MALLOC_FAILED_HOOK	1</span><br></code></pre></td></tr></table></figure>
+
+<p>如图所示：</p>
+<p><img src="/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175936488.png" srcset="/img/loading.gif" lazyload alt="image-20201202175936488"></p>
+<hr>
+<h2 id="三、-如何开始任务调度"><a href="#三、-如何开始任务调度" class="headerlink" title="三、 如何开始任务调度"></a>三、 如何开始任务调度</h2><p>编译无错后，打开<code>main.c</code> 添加如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/** -----------------------------------------</span><br><span class="hljs-comment">	FreeRTOS</span><br><span class="hljs-comment"> -----------------------------------------*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;FreeRTOS.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;task.h&quot;</span></span><br><br><span class="hljs-comment">/* Task handle */</span><br><span class="hljs-comment">/* 创建任务句柄 */</span><br><span class="hljs-type">static</span> TaskHandle_t AppTaskCreate_Handle = <span class="hljs-literal">NULL</span>;<br><span class="hljs-comment">/* Timer任务句柄 */</span><br><span class="hljs-type">static</span> TaskHandle_t Timer_Task_Handle = <span class="hljs-literal">NULL</span>;<br><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">AppTaskCreate</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;			<span class="hljs-comment">/* 用于创建任务 */</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">Timer_Task</span><span class="hljs-params">(<span class="hljs-type">void</span>* pvParameters)</span>;	<span class="hljs-comment">/* LED_Task任务实现 */</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">bsp_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;					<span class="hljs-comment">/* bsp drivers init. */</span><br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	BaseType_t xReturn = pdPASS;<span class="hljs-comment">/* 定义一个创建信息返回值，默认为pdPASS */</span><br>	<br>	bsp_init();<br>	<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;This is F4 FreeRTOS Demo!\r\n&quot;</span>);<br>	<br>	<span class="hljs-comment">/* 创建AppTaskCreate任务 */</span><br>	xReturn = xTaskCreate((TaskFunction_t )AppTaskCreate,  <span class="hljs-comment">/* 任务入口函数 */</span><br>						(<span class="hljs-type">const</span> <span class="hljs-type">char</span>*    )<span class="hljs-string">&quot;AppTaskCreate&quot;</span>,<span class="hljs-comment">/* 任务名字 */</span><br>						(<span class="hljs-type">uint16_t</span>       )<span class="hljs-number">128</span>,  <span class="hljs-comment">/* 任务栈大小 */</span><br>						(<span class="hljs-type">void</span>*          )<span class="hljs-literal">NULL</span>,<span class="hljs-comment">/* 任务入口函数参数 */</span><br>						(UBaseType_t    )<span class="hljs-number">1</span>, <span class="hljs-comment">/* 任务的优先级 */</span><br>						(TaskHandle_t*  )&amp;AppTaskCreate_Handle);<span class="hljs-comment">/* 任务控制块指针 */</span> <br>						<br>	<span class="hljs-comment">/* 启动任务调度 */</span>           <br>	<span class="hljs-keyword">if</span>(pdPASS == xReturn)<br>		vTaskStartScheduler();   <span class="hljs-comment">/* 启动任务，开启调度 */</span><br>	<span class="hljs-keyword">else</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;  <br><br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);   <span class="hljs-comment">/* 正常不会执行到这里 */</span>   <br>&#125;<br><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">AppTaskCreate</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	BaseType_t xReturn = pdPASS;	<span class="hljs-comment">/* 定义一个创建信息返回值，默认为pdPASS */</span><br>	 <br>	taskENTER_CRITICAL();           <span class="hljs-comment">//进入临界区</span><br>	<br>	<span class="hljs-comment">/* 创建Timer_Task任务 */</span><br>	xReturn = xTaskCreate((TaskFunction_t )Timer_Task,  <span class="hljs-comment">/* 任务入口函数 */</span><br>						(<span class="hljs-type">const</span> <span class="hljs-type">char</span>*    )<span class="hljs-string">&quot;Timer_Task&quot;</span>,	<span class="hljs-comment">/* 任务名字 */</span><br>						(<span class="hljs-type">uint16_t</span>       )<span class="hljs-number">128</span>,  			<span class="hljs-comment">/* 任务栈大小 */</span><br>						(<span class="hljs-type">void</span>*          )<span class="hljs-literal">NULL</span>,			<span class="hljs-comment">/* 任务入口函数参数 */</span><br>						(UBaseType_t    )<span class="hljs-number">2</span>, 			<span class="hljs-comment">/* 任务的优先级 */</span><br>						(TaskHandle_t*  )&amp;Timer_Task_Handle);<span class="hljs-comment">/* 任务控制块指针 */</span> <br>	<span class="hljs-keyword">if</span>(xReturn == pdPASS)<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Timer_Task Create succeed!\r\n&quot;</span>);<br>	<span class="hljs-keyword">else</span><br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Timer_Task Create failed!\r\n&quot;</span>);<br>	<br>	vTaskDelete(AppTaskCreate_Handle);<br>	taskEXIT_CRITICAL();	 <span class="hljs-comment">//退出临界区</span><br>&#125;<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief Timer_Task task main body.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">Timer_Task</span><span class="hljs-params">(<span class="hljs-type">void</span>* parameter)</span><br>&#123;	<br>	<span class="hljs-type">uint32_t</span> t = <span class="hljs-number">0</span>;<br>	<br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;time(1s): %d\r\n&quot;</span>,t);<br>		delay_ms(<span class="hljs-number">1000</span>);<br>		t++;<br>	&#125;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">bsp_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	SystemInit();	<span class="hljs-comment">//晶振时钟初始化</span><br>	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);<span class="hljs-comment">//4位抢占优先级</span><br>	delay_init(<span class="hljs-number">168</span>);<br>	usart1_init(<span class="hljs-number">115200</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译运行测试。</p>
+<hr>
+<h2 id="四、优化配置"><a href="#四、优化配置" class="headerlink" title="四、优化配置"></a>四、优化配置</h2><p>中断服务函数中代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//systick  中断服务函数</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">SysTick_Handler</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		<span class="hljs-keyword">if</span> (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) &#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>			xPortSysTickHandler();<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		&#125;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出，有宏定义判断<code>#if (INCLUDE_xTaskGetSchedulerState == 1 )</code> ， 所以我们可以打开<code>FreeRTOS.h</code> 文件 ，将宏<code>#define INCLUDE_xTaskGetSchedulerState 0</code> 改为1，启用任务可以获取调度器状态。</p>
+<h2 id="五、其他代码"><a href="#五、其他代码" class="headerlink" title="五、其他代码"></a>五、其他代码</h2><h3 id="delay-h"><a href="#delay-h" class="headerlink" title="delay.h"></a>delay.h</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __DELAY_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> __DELAY_H 			   </span><br>	 <br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stm32f4xx.h&quot;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_init</span><span class="hljs-params">(<span class="hljs-type">uint8_t</span> SYSCLK)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_ms</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nms)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_us</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nus)</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="delay-c"><a href="#delay-c" class="headerlink" title="delay.c"></a>delay.c</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;delay.h&quot;</span></span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">	FreeRTOS</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;FreeRTOS.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;task.h&quot;</span></span><br><br><span class="hljs-comment">/** Macro define */</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SYSTEM_SUPPORT_OS 1	<span class="hljs-comment">/* Define it to support OS. */</span></span><br><br><br><span class="hljs-comment">/** Private var define */</span><br><span class="hljs-type">static</span> <span class="hljs-type">uint8_t</span>  fac_us=<span class="hljs-number">0</span>;							<span class="hljs-comment">//us延时倍乘数, 1us 需要的 systick 计数次数			   </span><br><span class="hljs-type">static</span> <span class="hljs-type">uint16_t</span> fac_ms=<span class="hljs-number">0</span>;							<span class="hljs-comment">//ms延时倍乘数,在os下,代表每个节拍的ms数</span><br>	<br>	<br><br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> SYSTEM_SUPPORT_OS	<span class="hljs-comment">//如果SYSTEM_SUPPORT_OS定义了,说明要支持OS了(不限于UCOS).</span></span><br><span class="hljs-comment">/*****************SYSTEM_SUPPORT_OS********************/</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">  * @brief  This function handles SysTick Handler.</span><br><span class="hljs-comment">  * @param  None</span><br><span class="hljs-comment">  * @retval None</span><br><span class="hljs-comment">  */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">SysTick_Handler</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		<span class="hljs-keyword">if</span> (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) &#123;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>			xPortSysTickHandler();<br>	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span><br>		&#125;<br>	<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* INCLUDE_xTaskGetSchedulerState */</span></span><br>&#125;<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif 初始化systick</span><br><span class="hljs-comment">	SYSTICK 的时钟固定为 AHB 时钟，基础例程里面 SYSTICK 时钟频率为 AHB/8</span><br><span class="hljs-comment">	这里为了兼容 FreeRTOS，所以将 SYSTICK 的时钟频率改为 AHB 的频率！</span><br><span class="hljs-comment"> * @param SYSCLK 系统时钟频率 unit: MHz</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_init</span><span class="hljs-params">(<span class="hljs-type">uint8_t</span> SYSCLK)</span><br>&#123;<br>	<span class="hljs-type">uint32_t</span> reload;<br>	<span class="hljs-comment">//SysTick 频率为 HCLK</span><br>	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);<br>	<br>	fac_us=SYSCLK; <span class="hljs-comment">//不论是否使用 OS,fac_us 都需要使用</span><br>	<br>	<span class="hljs-comment">//每秒钟的计数次数 单位为 K 根据 configTICK_RATE_HZ 设定溢出时间  reload = 168 K = 168 000 </span><br>	reload= SYSCLK * <span class="hljs-number">1000000</span>/configTICK_RATE_HZ;<br>	<span class="hljs-comment">//reload 为 24 位寄存器,最大值:16777216,</span><br>	<span class="hljs-comment">//在 168M 下,约合 0.0998s 左右</span><br>	fac_ms=<span class="hljs-number">1000</span>/configTICK_RATE_HZ; <span class="hljs-comment">//代表 OS 可以延时的最少单位</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_TICKINT_Msk;<span class="hljs-comment">//开启 SYSTICK 中断</span><br>	SysTick-&gt;LOAD=reload; <span class="hljs-comment">//每 1/configTICK_RATE_HZ 秒 中断一次</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_ENABLE_Msk; <span class="hljs-comment">//开启 SYSTICK</span><br>&#125; <br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay us. Will not cause task scheduling.</span><br><span class="hljs-comment"> * @param nus time need to delay (unit|us)</span><br><span class="hljs-comment">		range[0~204522252](max = 2^32/fac_us@fac_us=168)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_us</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nus)</span><br>&#123;		<br>	<span class="hljs-type">uint32_t</span> ticks;<br>	<span class="hljs-type">uint32_t</span> told, tnow, tcnt=<span class="hljs-number">0</span>;<br>	<span class="hljs-type">uint32_t</span> reload = SysTick-&gt;LOAD;				<span class="hljs-comment">//LOAD的值	    	 </span><br>	ticks = nus * fac_us; 						<span class="hljs-comment">//需要的节拍数 </span><br>	told = SysTick-&gt;VAL;        				<span class="hljs-comment">//刚进入时的计数器值</span><br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>	&#123;<br>		tnow = SysTick-&gt;VAL;	<br>		<span class="hljs-keyword">if</span>(tnow != told)<br>		&#123;	    <br>			<span class="hljs-keyword">if</span>(tnow &lt; told) tcnt += told - tnow;	<span class="hljs-comment">//这里注意一下SYSTICK是一个递减的计数器就可以了.</span><br>			<span class="hljs-keyword">else</span> tcnt += reload - tnow + told;	    <br>			told = tnow;<br>			<span class="hljs-keyword">if</span>(tcnt &gt;= ticks)<span class="hljs-keyword">break</span>;			<span class="hljs-comment">//时间超过/等于要延迟的时间,则退出.</span><br>		&#125;  <br>	&#125;;										    <br>&#125;  <br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. Will cause task scheduling.</span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment">		range[0~65535]</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_ms</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nms)</span><br>&#123;	<br>	<span class="hljs-keyword">if</span>(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)<span class="hljs-comment">//系统已经运行</span><br>	&#123; <br>		<span class="hljs-keyword">if</span>(nms &gt;= fac_ms) <span class="hljs-comment">//延时的时间大于 OS 的最少时间周期</span><br>		&#123;<br>			vTaskDelay(nms / fac_ms);  <span class="hljs-comment">//FreeRTOS 延时</span><br>		&#125;<br>		nms %= fac_ms;  <span class="hljs-comment">//OS 已经无法提供这么小的延时了,采用普通方式延时</span><br>		<br>	&#125;<br>	delay_us((<span class="hljs-type">uint32_t</span>)(nms*<span class="hljs-number">1000</span>)); <span class="hljs-comment">//普通方式延时</span><br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. Will not cause task scheduling.</span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_xms</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nms)</span><br>&#123;<br>	<span class="hljs-type">uint32_t</span> i;<br>	<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;i&lt;nms;i++) delay_us(<span class="hljs-number">1000</span>);<br>&#125;<br><br><span class="hljs-comment">/*****************SYSTEM_SUPPORT_OS END********************/</span><br><span class="hljs-meta">#<span class="hljs-keyword">else</span>  </span><br><span class="hljs-comment">/*****************NO SYSTEM_SUPPORT_OS********************/</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif 初始化systick</span><br><span class="hljs-comment">	SYSTICK的时钟固定为AHB时钟的1/8</span><br><span class="hljs-comment"> * @param SYSCLK 系统时钟频率 unit: MHz</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_init</span><span class="hljs-params">(<span class="hljs-type">uint8_t</span> SYSCLK)</span><br>&#123;<br> 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8); <br>	fac_us=SYSCLK/<span class="hljs-number">8</span>;						<span class="hljs-comment">//不论是否使用OS,fac_us都需要使用</span><br>	fac_ms=(<span class="hljs-type">uint16_t</span>)fac_us*<span class="hljs-number">1000</span>;				<span class="hljs-comment">//非OS下,代表每个ms需要的systick时钟数   </span><br><br>&#125;	<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay us.</span><br><span class="hljs-comment"> * @param nus time need to delay (unit [us])</span><br><span class="hljs-comment">		range[0~798915](max = 2^24/fac_us@fac_us=21)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_us</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> nus)</span><br>&#123;		<br>	<span class="hljs-type">uint32_t</span> temp;	    	 <br>	SysTick-&gt;LOAD=nus*fac_us; 				<span class="hljs-comment">//时间加载	  		 </span><br>	SysTick-&gt;VAL=<span class="hljs-number">0x00</span>;        				<span class="hljs-comment">//清空计数器</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_ENABLE_Msk ; <span class="hljs-comment">//开始倒数 	 </span><br>	<span class="hljs-keyword">do</span><br>	&#123;<br>		temp=SysTick-&gt;CTRL;<br>	&#125;<span class="hljs-keyword">while</span>((temp&amp;<span class="hljs-number">0x01</span>)&amp;&amp;!(temp&amp;(<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-number">16</span>)));	<span class="hljs-comment">//等待时间到达   </span><br>	SysTick-&gt;CTRL&amp;=~SysTick_CTRL_ENABLE_Msk; <span class="hljs-comment">//关闭计数器</span><br>	SysTick-&gt;VAL =<span class="hljs-number">0X00</span>;       				<span class="hljs-comment">//清空计数器 </span><br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. </span><br><span class="hljs-comment">	注意nms的范围，SysTick-&gt;LOAD为24位寄存器,所以,最大延时为:nms&lt;=0xffffff*8*1000/SYSCLK </span><br><span class="hljs-comment">	SYSCLK单位为Hz,nms单位为ms。对168M条件下,nms&lt;=798ms </span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_xms</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> nms)</span><br>&#123;	 		  	  <br>	<span class="hljs-type">uint32_t</span> temp;		   <br>	SysTick-&gt;LOAD=(<span class="hljs-type">uint32_t</span>)nms*fac_ms;			<span class="hljs-comment">//时间加载(SysTick-&gt;LOAD为24bit)</span><br>	SysTick-&gt;VAL =<span class="hljs-number">0x00</span>;           				<span class="hljs-comment">//清空计数器</span><br>	SysTick-&gt;CTRL|=SysTick_CTRL_ENABLE_Msk ;    <span class="hljs-comment">//开始倒数 </span><br>	<span class="hljs-keyword">do</span><br>	&#123;<br>		temp=SysTick-&gt;CTRL;<br>	&#125;<span class="hljs-keyword">while</span>((temp&amp;<span class="hljs-number">0x01</span>)&amp;&amp;!(temp&amp;(<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-number">16</span>)));		<span class="hljs-comment">//等待时间到达   </span><br>	SysTick-&gt;CTRL&amp;=~SysTick_CTRL_ENABLE_Msk;    <span class="hljs-comment">//关闭计数器</span><br>	SysTick-&gt;VAL =<span class="hljs-number">0X00</span>;     		  			<span class="hljs-comment">//清空计数器	  	    </span><br>&#125; <br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @breif delay Ms. Will cause task scheduling.</span><br><span class="hljs-comment"> * @param nms 	time need to delay (unit|Ms)</span><br><span class="hljs-comment">		range[0~65535]</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">delay_ms</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> nms)</span><br>&#123;	 	 <br>	<span class="hljs-type">uint8_t</span> repeat=nms/<span class="hljs-number">540</span>;		<span class="hljs-comment">//这里用540,是考虑到某些客户可能超频使用,</span><br>								<span class="hljs-comment">//比如超频到248M的时候,delay_xms最大只能延时541ms左右了</span><br>	<span class="hljs-type">uint16_t</span> remain=nms%<span class="hljs-number">540</span>;<br>	<span class="hljs-keyword">while</span>(repeat)<br>	&#123;<br>		delay_xms(<span class="hljs-number">540</span>);<br>		repeat--;<br>	&#125;<br>	<span class="hljs-keyword">if</span>(remain)delay_xms(remain);<br>&#125; <br><span class="hljs-comment">/*****************NO SYSTEM_SUPPORT_OS END********************/</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>			 <br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/STM32/">STM32</a>
+                    
+                      <a class="hover-with-bg" href="/tags/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/07/NOTE/ARM/UVGUI/UVGUI%E5%B1%8F%E5%B9%95%E5%88%B7%E6%96%B0%E5%8E%9F%E7%90%86/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">UVGUI屏幕刷新原理</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/27/NOTE/ARM/FreeRTOS/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/">
+                        <span class="hidden-mobile">FreeRTOS中断浅析</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

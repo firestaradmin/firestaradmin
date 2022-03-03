@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="@firestaradmin 2020年11月27日16:06:56 FreeRTOS中断浅析一、STM32中断屏蔽的特殊寄存器我们在 STM32 上移植 FreeRTOS 的时候需要重点关注 PRIMASK、FAULTMASK 和 BASEPRI 这三个寄存器，本节就来学习一下这三个寄存器。 1 、PRIMASK 和 和 FAULTMASK  寄存器在许多应用中，需要暂时屏蔽所有的中断一执行一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS中断浅析">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/11/27/NOTE/ARM/FreeRTOS/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="@firestaradmin 2020年11月27日16:06:56 FreeRTOS中断浅析一、STM32中断屏蔽的特殊寄存器我们在 STM32 上移植 FreeRTOS 的时候需要重点关注 PRIMASK、FAULTMASK 和 BASEPRI 这三个寄存器，本节就来学习一下这三个寄存器。 1 、PRIMASK 和 和 FAULTMASK  寄存器在许多应用中，需要暂时屏蔽所有的中断一执行一些">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://firestaradmin.top:888/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png">
+<meta property="article:published_time" content="2020-11-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-11-26T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="FreeRTOS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top:888/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png">
+  
+  
+  <title>FreeRTOS中断浅析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="FreeRTOS中断浅析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-27 00:00" pubdate>
+        November 27, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">FreeRTOS中断浅析</h1>
+            
+            <div class="markdown-body">
+              <p>@firestaradmin 2020年11月27日16:06:56</p>
+<h1 id="FreeRTOS中断浅析"><a href="#FreeRTOS中断浅析" class="headerlink" title="FreeRTOS中断浅析"></a>FreeRTOS中断浅析</h1><h3 id="一、STM32中断屏蔽的特殊寄存器"><a href="#一、STM32中断屏蔽的特殊寄存器" class="headerlink" title="一、STM32中断屏蔽的特殊寄存器"></a>一、STM32中断屏蔽的特殊寄存器</h3><p>我们在 STM32 上移植 FreeRTOS 的时候需要重点关注 PRIMASK、FAULTMASK 和 BASEPRI 这三个寄存器，本节就来学习一下这三个寄存器。</p>
+<h4 id="1-、PRIMASK-和-和-FAULTMASK-寄存器"><a href="#1-、PRIMASK-和-和-FAULTMASK-寄存器" class="headerlink" title="1 、PRIMASK 和 和 FAULTMASK  寄存器"></a>1 、PRIMASK 和 和 FAULTMASK  寄存器</h4><p>在许多应用中，需要暂时屏蔽所有的中断一执行一些对时序要求严格的任务，这个时候就可以使用 PRIMASK 寄存器，<strong>PRIMASK 用于禁止除 NMI 和 HardFalut 外的所有异常和中断</strong>，汇编编程的时候可以使用 CPS(修改处理器状态)指令修改 PRIMASK 寄存器的数值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs asm">CPSIE I;  //清除 PRIMASK(使能中断)<br>CPSID  I;  //设置 PRIMASK(禁止中断)<br></code></pre></td></tr></table></figure>
+
+<p>PRIMASK 寄存器还可以通过 MRS 和 MSR 指令访问，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">MOVS R0, #1<br>MSR PRIMASK,  R0  ;//将 1 写入 PRIMASK 禁止所有中断<br></code></pre></td></tr></table></figure>
+
+<p>以及：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">MOVS R0, #0 <br>MSR PRIMASK,  R0  ;//将 0 写入 PRIMASK 以使能中断<br></code></pre></td></tr></table></figure>
+
+<p>UCOS 中的临界区代码代码保护就是通过开关中断实现的(UCOSIII 也可以使用禁止任务调度的方法来实现临界区代码保护，这里不讨论这种情况)，而开关中断就是直接操作 PRIMASK寄存器的，所以在 UCOS 中关闭中断的时候时关闭了除复位、NMI 和 HardFault 以外的所有中断！</p>
+<p><strong>FAULTMASK</strong> 比 PRIMASK 更狠，它可以连 HardFault 都屏蔽掉，使用方法和 PRIMASK 类似，FAULTMASK 会在退出时自动清零。汇编编程的时候可以利用 CPS 指令修改 FAULTMASK 的当前状态：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">CPSIE  F  ;清除 FAULTMASK<br>CPSID F  ;设置 FAULTMASK<br></code></pre></td></tr></table></figure>
+
+<p>还可以利用 MRS 和 MSR 指令访问 FAULTMASK 寄存器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">MOVS  R0, #1 <br>MSR FAULTMASK, R0  ;将 1 写入 FAULTMASK 禁止所有中断<br></code></pre></td></tr></table></figure>
+
+<p>以及：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">MOVS R0, #0<br>MSR FAULTMASK, R0  ;将 0 写入 FAULTMASK 使能中断<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-、BASEPRI-寄存器"><a href="#2-、BASEPRI-寄存器" class="headerlink" title="2 、BASEPRI 寄存器"></a>2 、BASEPRI 寄存器</h4><p>PRIMASK 和 FAULTMASK 寄存器太粗暴了，直接关闭除复位、NMI 和 HardFault 以外的其他所有中断，但是在有些场合需要对中断屏蔽进行更细腻的控制，比如<strong>只屏蔽优先级低于某一个阈值的中断</strong>。那么这个作为阈值的优先级值存储在哪里呢？在 BASEPRI 寄存器中，不过如果向 BASEPRI 写 0 的话就会停止屏蔽中断。比如，我们要屏蔽优先级不高于 0X60 （NVIC组4的时候）的中断，则可以使用如下汇编编程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs assembly">MOV  R0， #0X60<br>MSR BASEPRI, R0<br></code></pre></td></tr></table></figure>
+
+<p>如果需要取消 BASEPRI 对中断的屏蔽，可以使用如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asm">MOV  R0, #0<br>MSR BASEPRI, R0<br></code></pre></td></tr></table></figure>
+
+<p>注意！FreeRTOS 的开关中断就是操作 BASEPRI 寄存器来实现的！它可以关闭低于某个阈值的中断，高于这个阈值的中断就不会被关闭！</p>
+<h3 id="二、FreeRTOS-中断配置宏"><a href="#二、FreeRTOS-中断配置宏" class="headerlink" title="二、FreeRTOS  中断配置宏"></a>二、FreeRTOS  中断配置宏</h3><h5 id="configPRIO-BITS"><a href="#configPRIO-BITS" class="headerlink" title="configPRIO_BITS"></a>configPRIO_BITS</h5><p>此宏用来设置 MCU 使用几位优先级，STM32 使用的是 4 位，因此此宏为 4！</p>
+<h5 id="configLIBRARY-LOWEST-INTERRUPT-PRIORITY"><a href="#configLIBRARY-LOWEST-INTERRUPT-PRIORITY" class="headerlink" title="configLIBRARY_LOWEST_INTERRUPT_PRIORITY"></a>configLIBRARY_LOWEST_INTERRUPT_PRIORITY</h5><p>此宏是用来设置最低优先级，STM32 优先级使用了 4 位，而且 STM32 配置的使用组 4，也就是 4 位都是抢占优先级。因此优先级数就是 16 个，最低优先级那就是 15。所以此宏就是 15，注意！不同的 MCU 此值不同，具体是多少要看所使用的 MCU 的架构，这里只针对 STM32 讲解！</p>
+<h5 id="configKERNEL-INTERRUPT-PRIORITY"><a href="#configKERNEL-INTERRUPT-PRIORITY" class="headerlink" title="configKERNEL_INTERRUPT_PRIORITY"></a>configKERNEL_INTERRUPT_PRIORITY</h5><p>此宏用来设置内核中断优先级，此宏定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configKERNEL_INTERRUPT_PRIORITY</span><br>( configLIBRARY_LOWEST_INTERRUPT_PRIORITY &lt;&lt; (<span class="hljs-number">8</span> - configPRIO_BITS) )<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>宏 configKERNEL_INTERRUPT_PRIORITY 为 ， 宏configLIBRARY_LOWEST_INTERRUPT_PRIORITY 左移 8-configPRIO_BITS 位，也就是左移 4位。为什么要左移 4 位呢？前面我们说了，STM32 使用了 4 位作为优先级，而这 4 位是高 4 位，因 此 要 左 移 4 位 才 是 真 正 的 优 先 级 。 当 然 了 也 可 以 不 用 移 位 ， 直 接 将 宏configLIBRARY_LOWEST_INTERRUPT_PRIORITY 定义为 0XF0！不过这样看起来不直观。</p>
+</li>
+<li><p>宏configKERNEL_INTERRUPT_PRIORITY用来设置PendSV和滴答定时器的中断优先级，port.c 中有如下定义：</p>
+</li>
+<li><p>&#96;&#96;&#96;c<br>  #define portNVIC_PENDSV_PRI ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) &lt;&lt;16UL )<br>  #define portNVIC_SYSTICK_PRI ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) &lt;&lt;24UL )</p>
+  <figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>- 可 以 看 出 ， portNVIC_PENDSV_PRI 和 portNVIC_SYSTICK_PRI 都 是 使 用 了 宏configKERNEL_INTERRUPT_PRIORITY ， 为 什 么 宏 portNVIC_PENDSV_PRI  是 宏configKERNEL_INTERRUPT_PRIORITY 左移 <span class="hljs-number">16</span> 位呢？宏 portNVIC_SYSTICK_PRI 也同样是左移 <span class="hljs-number">24</span> 位。的，这样一次写入的是个 <span class="hljs-number">32</span> 位的数据， SysTick 和 PendSV 的优先级寄存器分别对应这个 <span class="hljs-number">32</span>位数据的最高 <span class="hljs-number">8</span> 位和次高 <span class="hljs-number">8</span> 位，不就是一个左移 <span class="hljs-number">16</span> 位，一个左移 <span class="hljs-number">24</span> 位了。<br><br>**可以看出在FreeRTOS中 PendSV 和 SysTick 的中断优先级都是最低的！**<br><br>##### configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY<br><br>此宏用来设置 FreeRTOS 系统可管理的最大优先级，也就是我们在前面讲解BASEPRI 寄存器说的那个阈值优先级，这个大家可以自由设置，这里我设置为了 <span class="hljs-number">5</span>。也就是高于 <span class="hljs-number">5</span> 的优先级(优先级的数字大小 小于 <span class="hljs-number">5</span>的优先级)不归 FreeRTOS 管理！<br><br>##### configMAX_SYSCALL_INTERRUPT_PRIORITY<br><br>此宏是 configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 左移 <span class="hljs-number">4</span> 位而来的，原因和宏 configKERNEL_INTERRUPT_PRIORITY 一样。此宏设置好以后，低于此优先级的中断可以安全的调用 FreeRTOS 的 API 函数，高于此优先级的中断 FreeRTOS 是不能禁止的，中断服务函数也不能调用 FreeRTOS 的 API 函数！<br><br><br><br>##### configMAX_PRIORITIES                     <br><br>此宏用来定义FreeRTOS自己的任务的最大优先级，和<span class="hljs-number">32</span>不同的是，数字越大优先级越高，<span class="hljs-number">32</span>则是相反的。<br><br>在FreeRTOSConfig.h中有如下定义:<br><br>```c<br>#define configMAX_PRIORITIES                     ( <span class="hljs-number">7</span> )<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="例如："><a href="#例如：" class="headerlink" title="例如："></a>例如：</h5><p>以 STM32 为例，有 16 个优先级，0 为最高优先级，15 为最低优先级，配置如下：</p>
+<ul>
+<li>configMAX_SYSCALL_INTERRUPT_PRIORITY&#x3D;&#x3D;5</li>
+<li>configKERNEL_INTERRUPT_PRIORITY&#x3D;&#x3D;15</li>
+</ul>
+<p><img src="/FreeRTOS%E4%B8%AD%E6%96%AD%E6%B5%85%E6%9E%90/image-20201127161837420.png" srcset="/img/loading.gif" lazyload alt="image-20201127161837420"></p>
+<p>由于高于 configMAX_SYSCALL_INTERRUPT_PRIORITY 的优先级不会被 FreeRTOS 内核屏蔽，因此那些对实时性要求严格的任务就可以使用这些优先级，比如四轴飞行器中的壁障检测。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/STM32/">STM32</a>
+                    
+                      <a class="hover-with-bg" href="/tags/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/02/NOTE/ARM/FreeRTOS/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">STM32移植FreeRTOS</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/10/18/NOTE/ARM/UVGUI/UVGUI%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+                        <span class="hidden-mobile">UVGUI动态内存分配实现原理</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

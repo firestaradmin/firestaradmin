@@ -1,0 +1,536 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="LED灯驱动开发实验记录一、Linux 下 LED  灯驱动原理Linux 下的任何外设驱动，最终都是要配置相应的硬件寄存器。所以本章的 LED 灯驱动最终也是对 I.MX6ULL 的 IO 口进行配置，与裸机实验不同的是，在 Linux 下编写驱动要符合 Linux的驱动框架。I.MX6U-ALPHA开发板上的LED连接到 I.MX6ULL 的 GPIO1_IO03 这个引脚上，因此本实验的重点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2| LED灯驱动开发实验记录">
+<meta property="og:url" content="http://firestaradmin.top:888/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LED灯驱动开发实验记录一、Linux 下 LED  灯驱动原理Linux 下的任何外设驱动，最终都是要配置相应的硬件寄存器。所以本章的 LED 灯驱动最终也是对 I.MX6ULL 的 IO 口进行配置，与裸机实验不同的是，在 Linux 下编写驱动要符合 Linux的驱动框架。I.MX6U-ALPHA开发板上的LED连接到 I.MX6ULL 的 GPIO1_IO03 这个引脚上，因此本实验的重点">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://firestaradmin.top:888/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%AF%95%E9%AA%8C/image-20200820154115074.png">
+<meta property="og:image" content="http://firestaradmin.top:888/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%AF%95%E9%AA%8C/image-20200820172059339.png">
+<meta property="article:published_time" content="2020-09-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-09T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Embedded">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="驱动开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://firestaradmin.top:888/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%AF%95%E9%AA%8C/image-20200820154115074.png">
+  
+  
+  <title>2| LED灯驱动开发实验记录 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="2| LED灯驱动开发实验记录">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-10 00:00" pubdate>
+        September 10, 2020 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      73 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2| LED灯驱动开发实验记录</h1>
+            
+            <div class="markdown-body">
+              <h1 id="LED灯驱动开发实验记录"><a href="#LED灯驱动开发实验记录" class="headerlink" title="LED灯驱动开发实验记录"></a>LED灯驱动开发实验记录</h1><h2 id="一、Linux-下-LED-灯驱动原理"><a href="#一、Linux-下-LED-灯驱动原理" class="headerlink" title="一、Linux 下 LED  灯驱动原理"></a>一、Linux 下 LED  灯驱动原理</h2><p>Linux 下的任何外设驱动，最终都是要配置相应的硬件寄存器。所以本章的 LED 灯驱动最终也是对 I.MX6ULL 的 IO 口进行配置，与裸机实验不同的是，在 Linux 下编写驱动要符合 Linux的驱动框架。I.MX6U-ALPHA开发板上的LED连接到 I.MX6ULL 的 GPIO1_IO03 这个引脚上，因此本实验的重点就是编写 Linux 下 I.MX6UL 引脚控制驱动。</p>
+<h3 id="1、地址映射"><a href="#1、地址映射" class="headerlink" title="1、地址映射"></a>1、地址映射</h3><p>在编写驱动之前，我们需要先简单了解一下 MMU 这个神器，MMU 全称叫做 MemoryManage Unit，也就是内存管理单元。在老版本的 Linux 中要求处理器必须有 MMU，但是现在Linux 内核已经支持无 MMU 的处理器了。</p>
+<p><strong>MMU 主要完成的功能如下</strong>：<br><strong>①、</strong>完成虚拟空间到物理空间的映射。<br><strong>②、</strong>内存保护，设置存储器的访问权限，设置虚拟存储空间的缓冲特性。</p>
+<p>我们重点来看一下第①点，也就是<strong>虚拟空间到物理空间的映射，也叫做地址映射</strong>。首先了解两个地址概念：</p>
+<p><strong>虚拟地址(VA,Virtual Address)、物理地址(PA，Physcical Address)</strong></p>
+<p>对于 32 位的处理器来说，虚拟地址范围是 2^32&#x3D;4GB，我们的开发板上有 512MB 的 DDR3，这 512MB 的<br>内存就是物理内存，经过 MMU 可以将其映射到整个 4GB 的虚拟空间，如图所示：</p>
+<p><img src="/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%AF%95%E9%AA%8C/image-20200820154115074.png" srcset="/img/loading.gif" lazyload alt="image-20200820154115074"></p>
+<p>物理内存只有 512MB，虚拟内存有 4GB，那么肯定存在多个虚拟地址映射到同一个物理地址上去，虚拟地址范围比物理地址范围大的问题处理器自会处理，这里我们不要去深究，因为MMU 是很复杂的一个东西，后续有时间的话可以再参考正点原子 Linux 团队打算做的MMU 专题教程。</p>
+<p>Linux 内核启动的时候会初始化 MMU，设置好内存映射，设置好以后 CPU 访问的都是虚拟地址。比如I.MX6ULL 的 <strong>GPIO1_IO03</strong> 引 脚 的 复 用 寄 存 器<strong>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03</strong>的地址为 <strong>0X020E0068</strong>。如果没有开启 MMU 的话直接向 0X020E0068 这个寄存器地址写入数据就可以配置GPIO1_IO03 的复用功能。现在开启了 MMU，并且设置了内存映射，因此就不能直接向 0X020E0068 这个地址写入数据了。我们必须得到 0X020E0068 这个物理地址在 Linux 系统里面对应的虚拟地址，这里就涉及到了物理内存和虚拟内存之间的转换，需要用到两个函数：<strong>ioremap</strong> 和 <strong>iounmap</strong>。</p>
+<h4 id="ioremap-函数"><a href="#ioremap-函数" class="headerlink" title="ioremap  函数"></a>ioremap  函数</h4><p>ioremap 函 数 用 于 获 取 指 定 物 理 地 址 空 间 对 应 的 虚 拟 地 址 空 间 ， 定 义 在arch&#x2F;arm&#x2F;include&#x2F;asm&#x2F;io.h 文件中，定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ioremap(cookie,size) __arm_ioremap((cookie), (size),</span><br>MT_DEVICE)<br>    <br><span class="hljs-type">void</span> __iomem * __arm_ioremap(<span class="hljs-type">phys_addr_t</span> phys_addr, <span class="hljs-type">size_t</span> size,<br>                                 <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> mtype)<br>&#123;<br>    <span class="hljs-keyword">return</span> arch_ioremap_caller(phys_addr, size, mtype,<br>                               __builtin_return_address(<span class="hljs-number">0</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>ioremap 是个宏，有两个参数：<strong>cookie</strong> 和 <strong>size</strong>，真正起作用的是函数<strong>__arm_ioremap</strong>，此函数有三个参数和一个返回值，这些参数和返回值的含义如下：<br><strong>phys_addr</strong>：要映射给的物理起始地址。<br><strong>size</strong>：要映射的内存空间大小。<br><strong>mtype</strong>：ioremap 的类型，可以选择 MT_DEVICE、MT_DEVICE_NONSHARED、MT_DEVICE_CACHED 和 MT_DEVICE_WC，ioremap 函数选择 MT_DEVICE。<br><strong>返回值</strong>：__iomem 类型的指针，指向映射后的虚拟空间首地址。</p>
+<p>假如我们要获取 I.MX6ULL 的<strong>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03</strong> 寄存器对应的虚拟地址，使用如下代码即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SW_MUX_GPIO1_IO03_BASE  (0X020E0068)</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem* SW_MUX_GPIO1_IO03;<br>SW_MUX_GPIO1_IO03 = ioremap(SW_MUX_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);<br></code></pre></td></tr></table></figure>
+
+<p><strong>宏 SW_MUX_GPIO1_IO03_BASE</strong> 是寄存器物理地址，<strong>SW_MUX_GPIO1_IO03</strong> 是映射后的虚拟地址。对于 I.MX6ULL 来说一个寄存器是 4 字节(32 位)的，因此映射的内存长度为 4。映射完成以后直接对SW_MUX_GPIO1_IO03 进行读写操作即可。</p>
+<h4 id="iounmap-函数"><a href="#iounmap-函数" class="headerlink" title="iounmap  函数"></a>iounmap  函数</h4><p>卸载驱动的时候需要使用 iounmap 函数释放掉 ioremap 函数所做的映射，iounmap 函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">iounmap</span> <span class="hljs-params">(<span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br></code></pre></td></tr></table></figure>
+
+<p>iounmap 只有一个参数 addr，此参数就是要取消映射的虚拟地址空间首地址。假如我们现在要取消掉 IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03 寄存器的地址映射，使用如下代码即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">iounmap(SW_MUX_GPIO1_IO03);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、-I-x2F-O-内存访问函数"><a href="#2、-I-x2F-O-内存访问函数" class="headerlink" title="2、 I&#x2F;O  内存访问函数"></a>2、 I&#x2F;O  内存访问函数</h3><p>这里说的 I&#x2F;O 是输入&#x2F;输出的意思，并不是我们学习单片机的时候讲的 GPIO 引脚。这里涉及到两个概念：<strong>I&#x2F;O 端口</strong>和 <strong>I&#x2F;O 内存</strong>。</p>
+<p>当外部寄存器或内存映射到 IO 空间时，称为 <strong>I&#x2F;O 端口</strong>。</p>
+<p>当外部寄存器或内存映射到内存空间时，称为 <strong>I&#x2F;O 内存</strong>。</p>
+<p>但是<strong>对于 ARM 来说没有 I&#x2F;O 空间这个概念</strong>，**因此 ARM 体系下只有 I&#x2F;O 内存(可以直接理解为内存)**。</p>
+<p>使用ioremap函数将寄存器的物理地址映射到虚拟地址以后，我们就可以直接通过指针访问这些地址，但是 Linux 内核不建议这么做，而是推荐使用一组操作函数来对映射后的内存进行读写操作。</p>
+<h4 id="1、读操作函数"><a href="#1、读操作函数" class="headerlink" title="1、读操作函数"></a>1、读操作函数</h4><p>读操作函数有如下几个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">u8 <span class="hljs-title function_">readb</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br>u16 <span class="hljs-title function_">readw</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br>u32 <span class="hljs-title function_">readl</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br></code></pre></td></tr></table></figure>
+
+<p>readb、readw 和 readl 这三个函数分别对应 8bit、16bit 和 32bit 读操作，参数 addr 就是要读取写内存地址，返回值就是读取到的数据。</p>
+<h4 id="2-、写操作函数"><a href="#2-、写操作函数" class="headerlink" title="2 、写操作函数"></a>2 、写操作函数</h4><p>写操作函数有如下几个：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">writeb</span><span class="hljs-params">(u8 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">writew</span><span class="hljs-params">(u16 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">writel</span><span class="hljs-params">(u32 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span><br></code></pre></td></tr></table></figure>
+
+<p>writeb、writew 和 writel 这三个函数分别对应 8bit、16bit 和 32bit 写操作，参数 value 是要写入的数值，addr 是要写入的地址。</p>
+<h2 id="二、硬件原理图"><a href="#二、硬件原理图" class="headerlink" title="二、硬件原理图"></a>二、硬件原理图</h2><p><img src="/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%AF%95%E9%AA%8C/image-20200820172059339.png" srcset="/img/loading.gif" lazyload alt="image-20200820172059339"></p>
+<h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><h3 id="LED-灯驱动程序编写"><a href="#LED-灯驱动程序编写" class="headerlink" title="LED  灯驱动程序编写"></a>LED  灯驱动程序编写</h3><p>新建名为“2_led”文件夹，然后在 2_led 文件夹里面创建 VSCode 工程，工作区命名为“led”。工程创建好以后新建 led.c 文件，此文件就是 led 的驱动文件，在 led.c 里面输入如下内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span><br><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED_MAJOR 200</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED_NAME <span class="hljs-string">&quot;led_driver&quot;</span></span><br><br><span class="hljs-comment">// #define LED_ON 	1</span><br><span class="hljs-comment">// #define LED_OFF 0</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">led_switch_enum</span>&#123;</span><br>	LED_OFF = <span class="hljs-number">0</span>,<br>	LED_ON = !LED_OFF<br>&#125;<span class="hljs-type">led_switch_t</span>;<br><br><span class="hljs-comment">/* 寄存器物理地址 */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_CCM_CCGR1_BASE				(0X020C406C)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_SW_MUX_GPIO1_IO03_BASE		(0X020E0068)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_SW_PAD_GPIO1_IO03_BASE		(0X020E02F4)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_GPIO1_DR_BASE 				(0X0209C000)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PA_GPIO1_GDIR_BASE 				(0X0209C004)</span><br><br><span class="hljs-comment">/* 寄存器虚拟地址 */</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_CCM_CCGR1;<br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_SW_MUX_GPIO1_IO03;<br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_SW_PAD_GPIO1_IO03;<br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_GPIO1_DR;<br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem *VA_GPIO1_GDIR;<br><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">led_switch</span><span class="hljs-params">(<span class="hljs-type">led_switch_t</span> sw)</span><br>&#123;<br>	<span class="hljs-type">int</span> val = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">if</span>(sw == LED_ON)<br>	&#123;<br>		<span class="hljs-comment">/* 设置GPIO电平为低电平 默认点亮LED */</span><br>		val = readl(VA_GPIO1_DR);<br>		val &amp;= ~(<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);<br>		writel(val, VA_GPIO1_DR);<br>	&#125;<br>	<span class="hljs-keyword">else</span><br>	&#123;<br>		<span class="hljs-comment">/* 设置GPIO电平为高电平 关闭LED */</span><br>		val = readl(VA_GPIO1_DR);<br>		val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);<br>		writel(val, VA_GPIO1_DR);<br>	&#125;<br>&#125;<br><br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">led_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span><br>&#123;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">ssize_t</span> <span class="hljs-title function_">led_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *filp, <span class="hljs-type">const</span> <span class="hljs-type">char</span> __user *buf, <span class="hljs-type">size_t</span> cnt, <span class="hljs-type">loff_t</span> *offt)</span><br>&#123;<br>    <span class="hljs-keyword">if</span>(cnt &gt; <span class="hljs-number">1</span>)<br>    &#123;<br>		printk(<span class="hljs-string">&quot;write led failed!\r\nwrite conut exceed limit,should be 1.\r\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>	<span class="hljs-type">char</span> userDataBuf[<span class="hljs-number">1</span>];<br>	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br>	ret = copy_from_user(userDataBuf, buf, cnt);<br>	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)<br>	&#123;<br>		printk(<span class="hljs-string">&quot;write led failed!\r\n&quot;</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>	&#125;<br>	led_switch(userDataBuf[<span class="hljs-number">0</span>]);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">led_release</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span><br>&#123;<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-comment">/* 字符设备操作集 */</span><br><span class="hljs-type">const</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">led_fops</span> =</span> &#123;<br>	.owner = THIS_MODULE, <br>	.open = led_open, <br>	.write = led_write,<br>	.release = led_release<br>&#125;;<br><br><br><br><span class="hljs-comment">/* 入口 */</span><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">led_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> val;<br>	printk(<span class="hljs-string">&quot;led_init\r\n&quot;</span>);<br><br>	<span class="hljs-comment">/* LED 初始化 地址映射 */</span><br>	VA_CCM_CCGR1 = ioremap(PA_CCM_CCGR1_BASE, <span class="hljs-number">4</span>);<br>	VA_SW_MUX_GPIO1_IO03 = ioremap(PA_SW_MUX_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);<br>	VA_SW_PAD_GPIO1_IO03 = ioremap(PA_SW_PAD_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);<br>	VA_GPIO1_DR = ioremap(PA_GPIO1_DR_BASE, <span class="hljs-number">4</span>);<br>	VA_GPIO1_GDIR = ioremap(PA_GPIO1_GDIR_BASE, <span class="hljs-number">4</span>);<br><br>	<span class="hljs-comment">/* 使能 GPIO1 时钟 */</span><br>	val = readl(VA_CCM_CCGR1);<br>	val &amp;=  ~(<span class="hljs-number">3</span> &lt;&lt; <span class="hljs-number">26</span>);<br>	val |= (<span class="hljs-number">3</span> &lt;&lt; <span class="hljs-number">26</span>);<br>	writel(val, VA_CCM_CCGR1);<br><br>	writel(<span class="hljs-number">0x5</span>, VA_SW_MUX_GPIO1_IO03);		<span class="hljs-comment">/* 设置复用 */</span><br>	writel(<span class="hljs-number">0x10B0</span>, VA_SW_PAD_GPIO1_IO03);	<span class="hljs-comment">/* 设置电气属性 */</span><br><br>	<span class="hljs-comment">/* 设置GPIO方向为输出*/</span><br>	val = readl(VA_GPIO1_GDIR);<br>	val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);<br>	writel(val, VA_GPIO1_GDIR);<br><br>	<span class="hljs-comment">/* 设置GPIO电平为低电平 默认点亮LED */</span><br>	val = readl(VA_GPIO1_DR);<br>	val &amp;= ~(<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);<br>	writel(val, VA_GPIO1_DR);<br><br><br>	<span class="hljs-comment">/* 注册字符设备 */</span><br>	ret = register_chrdev(LED_MAJOR, LED_NAME, &amp;led_fops);<br>	<span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;<br>		printk(<span class="hljs-string">&quot;register %s failed!\r\n&quot;</span>, LED_NAME);<br>		<span class="hljs-keyword">return</span> -EIO;<br>	&#125;<br>	<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><br><span class="hljs-comment">/* 出口 */</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">led_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> val;<br>	printk(<span class="hljs-string">&quot;led_exit\r\n&quot;</span>);<br><br>	<span class="hljs-comment">/* 设置GPIO电平为高电平 关闭LED */</span><br>	val = readl(VA_GPIO1_DR);<br>	val |= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);<br>	writel(val, VA_GPIO1_DR);<br><br>	<span class="hljs-comment">/* 地址映射释放 */</span><br>	iounmap(VA_CCM_CCGR1);<br>	iounmap(VA_SW_MUX_GPIO1_IO03);<br>	iounmap(VA_SW_PAD_GPIO1_IO03);<br>	iounmap(VA_GPIO1_DR);<br>	iounmap(VA_GPIO1_GDIR);<br><br>	<span class="hljs-comment">/* 卸载字符设备 */</span><br>	unregister_chrdev(LED_MAJOR, LED_NAME);<br>&#125;<br><span class="hljs-comment">/* 驱动入口和出口 */</span><br>module_init(led_init);<br>module_exit(led_exit);<br><br>MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);<br>MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="编写测试APP"><a href="#编写测试APP" class="headerlink" title="编写测试APP"></a>编写测试APP</h3><p>编写测试 APP，led 驱动加载成功以后手动创建&#x2F;dev&#x2F;led 节点，应用 APP 通过操作&#x2F;dev&#x2F;led文件来完成对 LED 设备的控制。</p>
+<p>向&#x2F;dev&#x2F;led 文件写 0 表示关闭 LED 灯，写 1 表示打开 LED 灯。新建 ledApp.c 文件，在里面输入如下内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> *  usage:</span><br><span class="hljs-comment"> *  ./ledAPP     &lt;openFileName&gt;     &lt;0:OFF|1:ON&gt;   </span><br><span class="hljs-comment"> *  ./ledAPP     /dev/led           0               //关灯</span><br><span class="hljs-comment"> *  ./ledAPP     /dev/led           1               //开灯</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>    <span class="hljs-type">int</span> ret = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> fd = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">char</span> *filename;<br>    <span class="hljs-type">char</span> writebuf [<span class="hljs-number">1</span>]; <br>    filename = argv[<span class="hljs-number">1</span>];<br><br>    <span class="hljs-keyword">if</span>(argc != <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;bad usage!\r\n&quot;</span>);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;usage:\r\n./ledAPP     &lt;openFileName&gt;     &lt;0:OFF|1:ON&gt;  \r\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/* 打开 */</span><br>    fd =  open(filename, O_WRONLY);<br>    <span class="hljs-keyword">if</span>(fd &lt; <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;can&#x27;t open file %s\r\n&quot;</span>, filename);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br><br>    writebuf[<span class="hljs-number">0</span>] = atoi(argv[<span class="hljs-number">2</span>]);<br>    ret = write(fd, writebuf, <span class="hljs-keyword">sizeof</span>(writebuf));<br>    <span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;write file %s failed!\r\n&quot;</span>, filename);<br>        close(fd);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;write file %s success!\r\n&quot;</span>, filename);<br>    &#125;<br><br>    <span class="hljs-comment">/* 关闭 */</span><br>    ret = close(fd);<br>    <span class="hljs-keyword">if</span>(ret &lt; <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;close file %s failed！\r\n&quot;</span>, filename);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>ledApp.c 的内容还是很简单的，就是对 led 的驱动文件进行最基本的打开、关闭、写操作等。</p>
+<h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><h3 id="1、编译驱动程序和测试-APP"><a href="#1、编译驱动程序和测试-APP" class="headerlink" title="1、编译驱动程序和测试 APP"></a>1、编译驱动程序和测试 APP</h3><p>编译驱动程序</p>
+<p>编写 Makefile 文件，本章实验的 Makefile 文件和前面实验基本一样，只是将 obj-m 变量的值改为 led.o，Makefile 内容如下所示：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs makefile">KERNEL_DIR := /home/firestaradmin/linux/IMX6U/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg<br>CURRENT_PATH := <span class="hljs-variable">$(<span class="hljs-built_in">shell</span> pwd)</span><br>obj-m := led.o<br><br><span class="hljs-section">build: kernel_modules</span><br><br><span class="hljs-section">kernel_modules:  </span><br>	<span class="hljs-variable">$(MAKE)</span> -C <span class="hljs-variable">$(KERNEL_DIR)</span> M=<span class="hljs-variable">$(CURRENT_PATH)</span> modules<br><span class="hljs-section">clean: </span><br>	<span class="hljs-variable">$(MAKE)</span> -C <span class="hljs-variable">$(KERNEL_DIR)</span> M=<span class="hljs-variable">$(CURRENT_PATH)</span> clean<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>编译测试 APP</p>
+<p>输入如下命令编译测试 ledApp.c 这个测试程序：</p>
+<p><code>arm-linux-gnueabihf-gcc ledAPP.c -o ledAPP</code></p>
+<p>编译成功以后就会生成 ledApp 这个应用程序。</p>
+<h3 id="2、运行测试"><a href="#2、运行测试" class="headerlink" title="2、运行测试"></a>2、运行测试</h3><p>将上一小节编译出来的led.ko和ledApp这两个文件拷贝到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15目录中，重启开发板，进入到目录 lib&#x2F;modules&#x2F;4.1.15 中，输入如下命令加载 led.ko 驱动模块：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">depmod <span class="hljs-regexp">//</span>第一次加载驱动的时候需要运行此命令<br>modprobe led.ko  <span class="hljs-regexp">//</span>加载驱动<br></code></pre></td></tr></table></figure>
+
+<p>驱动加载成功以后创建“&#x2F;dev&#x2F;led”设备节点，命令如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">mknod</span> /dev/led c <span class="hljs-number">200</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>驱动节点创建成功以后就可以使用 ledApp 软件来测试驱动是否工作正常，输入如下命令打开 LED 灯：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledAPP /</span>dev<span class="hljs-regexp">/led 1 /</span><span class="hljs-regexp">/打开 LED 灯</span><br></code></pre></td></tr></table></figure>
+
+<p>输入上述命令以后观察 I.MX6U-ALPHA 开发板上的红色 LED 灯是否点亮，如果点亮的话</p>
+<p>说明驱动工作正常。在输入如下命令关闭 LED 灯：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/led 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span><br></code></pre></td></tr></table></figure>
+
+<p>输入上述命令以后观察 I.MX6U-ALPHA 开发板上的红色 LED 灯是否熄灭，如果熄灭的话说明我们编写的 LED 驱动工作完全正常！至此，我们成功编写了第一个真正的 Linux 驱动设备程序。</p>
+<p>如果要卸载驱动的话输入如下命令即可：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">rmmod</span> led.ko<br></code></pre></td></tr></table></figure>
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Embedded/">Embedded</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ARM/">ARM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1| 字符设备驱动开发入门</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/">
+                        <span class="hidden-mobile">3| 新字符设备驱动实验</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
