@@ -249,10 +249,10 @@
             <div class="markdown-body">
               <h1 id="Linux自带的LED灯驱动"><a href="#Linux自带的LED灯驱动" class="headerlink" title="Linux自带的LED灯驱动"></a>Linux自带的LED灯驱动</h1><p>前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。</p>
 <h2 id="1-Linux-内核自带-LED-驱动使能"><a href="#1-Linux-内核自带-LED-驱动使能" class="headerlink" title="1| Linux  内核自带 LED  驱动使能"></a>1| Linux  内核自带 LED  驱动使能</h2><p>上一章节我们编写基于设备树的 platform LED 灯驱动，其实 Linux 内核已经自带了 LED 灯驱动，要使用 Linux 内核自带的 LED 灯驱动首先得先配置 Linux 内核，使能自带的 LED 灯驱动，输入如下命令打开 Linux 配置菜单：</p>
-<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
 
 <p>按照如下路径打开 LED 驱动配置项：</p>
-<div class="code-wrapper"><pre><code class="hljs livescript">-&gt; Device Drivers
+<div class="hljs code-wrapper"><pre><code class="hljs livescript">-&gt; Device Drivers
 	-&gt; LED Support <span class="hljs-function"><span class="hljs-params">(NEW_LEDS [=y])</span></span>
 <span class="hljs-function">		-&gt;</span>LED Support <span class="hljs-keyword">for</span> GPIO connected LEDs</code></pre></div>
 
@@ -263,7 +263,7 @@
 <p>从图可以看出， 把 Linux 内部自带的 LED 灯 驱动编 译进内 核以后 ，<strong>CONFIG_LEDS_GPIO</strong> 就会等于‘y’，Linux 会根据 CONFIG_LEDS_GPIO 的值来选择如何编译LED 灯驱动，如果为‘y’就将其编译进 Linux 内核。</p>
 <p>重新编译 Linux 内核，然后使用新编译出来的 zImage 镜像启动开发板。</p>
 <h2 id="2-Linux-内核自带-LED-驱动简介"><a href="#2-Linux-内核自带-LED-驱动简介" class="headerlink" title="2|  Linux  内核自带 LED  驱动简介"></a>2|  Linux  内核自带 LED  驱动简介</h2><h3 id="1、LED-灯驱动框架分析"><a href="#1、LED-灯驱动框架分析" class="headerlink" title="1、LED 灯驱动框架分析"></a>1、LED 灯驱动框架分析</h3><p>LED 灯驱动文件为&#x2F;drivers&#x2F;leds&#x2F;leds-gpio.c，大家可以打开&#x2F;drivers&#x2F;leds&#x2F;Makefile 这个文件，找到如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs makefile">2 <span class="hljs-comment"># LED Core</span>
+<div class="hljs code-wrapper"><pre><code class="hljs makefile">2 <span class="hljs-comment"># LED Core</span>
 3 obj-<span class="hljs-variable">$(CONFIG_NEW_LEDS)</span> 				+= led-core.o
 .....
 23 obj-<span class="hljs-variable">$(CONFIG_LEDS_GPIO_REGISTER)</span> 	+= leds-gpio-register.o
@@ -273,7 +273,7 @@
 
 <p>第 24 行，如果定义了 <strong>CONFIG_LEDS_GPIO</strong> 的话就会编译 leds-gpio.c 这个文件，在上一小节我们选择将 LED 驱动编译进 Linux 内核，在.config 文件中就会有“CONFIG_LEDS_GPIO&#x3D;y”这一行，因此 leds-gpio.c 驱动文件就会被编译。</p>
 <p>接下来我们看一下 leds-gpio.c 这个驱动文件，找到如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">236</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">of_gpio_leds_match</span>[] =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">236</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">of_gpio_leds_match</span>[] =</span> &#123;
 <span class="hljs-number">237</span> 	&#123; .compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>, &#125;,
 <span class="hljs-number">238</span> 	&#123;&#125;,
 <span class="hljs-number">239</span> &#125;;
@@ -294,12 +294,12 @@
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828201703810.png" srcset="/img/loading.gif" lazyload alt="image-20200828201703810"></p>
 <p>第 299 行通过 module_platform_driver 函数向 Linux 内核注册 gpio_led_driver 这个platform<br>驱动。</p>
 <h3 id="2、module-platform-driver-函数简析"><a href="#2、module-platform-driver-函数简析" class="headerlink" title="2、module_platform_driver 函数简析"></a>2、module_platform_driver 函数简析</h3><p>在上一小节中我们知道 LED 驱动会采用 module_platform_driver 函数向 Linux 内核注册platform 驱动，其实在 Linux 内核中会大量采用 module_platform_driver 来完成向 Linux 内核注册 platform 驱动的操作。module_platform_driver 定义在include&#x2F;linux&#x2F;platform_device.h 文件中，为一个宏，定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">221</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_platform_driver(__platform_driver) \</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">221</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_platform_driver(__platform_driver) \</span>
 <span class="hljs-meta">222 	module_driver(__platform_driver, platform_driver_register, \</span>
 <span class="hljs-meta">223 		platform_driver_unregister)</span></code></pre></div>
 
 <p>可以看出，module_platform_driver 依赖 module_driver，module_driver 也是一个宏，定义在include&#x2F;linux&#x2F;device.h 文件中，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1260</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_driver(__driver, __register, __unregister, ...) \</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1260</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> module_driver(__driver, __register, __unregister, ...) \</span>
 <span class="hljs-meta">1261 static int __init __driver##_init(void) \</span>
 <span class="hljs-meta">1262 &#123; \</span>
 <span class="hljs-meta">1263 		return __register(&amp;(__driver) , ##__VA_ARGS__); \</span>
@@ -312,10 +312,10 @@
 <span class="hljs-meta">1270 module_exit(__driver##_exit);</span></code></pre></div>
 
 <p>借助示例代码将：</p>
-<div class="code-wrapper"><pre><code class="hljs c">module_platform_driver(gpio_led_driver)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c">module_platform_driver(gpio_led_driver)</code></pre></div>
 
 <p>展开以后就是：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">gpio_led_driver_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">gpio_led_driver_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 &#123;
 	<span class="hljs-keyword">return</span> platform_driver_register (&amp;(gpio_led_driver));
 &#125;
@@ -328,7 +328,7 @@ module_exit(gpio_led_driver_exit);</code></pre></div>
 
 <p>上面的代码不就是标准的注册和删除platform驱动吗？因此module_platform_driver函数的功能就是完成 platform 驱动的注册和删除。</p>
 <h3 id="3、gpio-led-probe-函数简析"><a href="#3、gpio-led-probe-函数简析" class="headerlink" title="3、gpio_led_probe  函数简析"></a>3、gpio_led_probe  函数简析</h3><p>当驱动和设备匹配以后 gpio_led_probe 函数就会执行，此函数主要是从设备树中获取 LED灯的 GPIO 信息，缩减后的函数内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">243</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">gpio_led_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">243</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">gpio_led_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
 244 &#123;
 <span class="hljs-number">245</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_led_platform_data</span> *<span class="hljs-title">pdata</span> =</span> dev_get_platdata(&amp;pdev-&gt;dev);
 <span class="hljs-number">246</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_leds_priv</span> *<span class="hljs-title">priv</span>;</span>
@@ -349,7 +349,7 @@ module_exit(gpio_led_driver_exit);</code></pre></div>
 <span class="hljs-number">277</span> &#125;</code></pre></div>
 
 <p>第 269~271 行，如果使用设备树的话，使用 gpio_leds_create 函数从设备树中提取设备信息，获取到的 LED 灯 GPIO 信息保存在返回值中，gpio_leds_create 函数内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">167</span> <span class="hljs-type">static</span> <span class="hljs-keyword">struct</span> gpio_leds_priv *<span class="hljs-title function_">gpio_leds_create</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">167</span> <span class="hljs-type">static</span> <span class="hljs-keyword">struct</span> gpio_leds_priv *<span class="hljs-title function_">gpio_leds_create</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
 168 &#123;
 <span class="hljs-number">169</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">dev</span> =</span> &amp;pdev-&gt;dev;
 <span class="hljs-number">170</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fwnode_handle</span> *<span class="hljs-title">child</span>;</span>
@@ -444,7 +444,7 @@ module_exit(gpio_led_driver_exit);</code></pre></div>
 <li>⑥、可以设置“default-state”属性值，可以设置为 on、off 或 keep，为 on 的时候 LED 灯默认打开，为 off 的话 LED 灯默认关闭，为 keep 的话 LED 灯保持当前模式。</li>
 </ul>
 <p>根据上述几条要求在 imx6ull-lxg-emmc.dts 中添加如下所示 LED 灯设备节点：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;
 <span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>;
 <span class="hljs-number">3</span>
 <span class="hljs-number">4</span> 		led0 &#123;
@@ -461,13 +461,13 @@ module_exit(gpio_led_driver_exit);</code></pre></div>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828203747024.png" srcset="/img/loading.gif" lazyload alt="image-20200828203747024"></p>
 <p>从图 可以看出，在 leds 目录下有一个名为“red”子目录，这个子目录的名字就是我们在设备树中第 5 行设置的 label 属性值。</p>
 <p>我们的设置究竟有没有用，最终是要通过测试才能知道的，首先查看一下系统中有没有“sys&#x2F;class&#x2F;leds&#x2F;red&#x2F;brightness”这个文件，如果有的话就输入如下命令打开 RED 这个 LED 灯：</p>
-<div class="code-wrapper"><pre><code class="hljs gradle">echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/打开 LED0</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs gradle">echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/打开 LED0</span></code></pre></div>
 
 <p>关闭 RED 这个 LED 灯的命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs gradle">echo <span class="hljs-number">0</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/关闭 LED0</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs gradle">echo <span class="hljs-number">0</span> &gt; <span class="hljs-regexp">/sys/</span><span class="hljs-keyword">class</span><span class="hljs-regexp">/leds/</span>red<span class="hljs-regexp">/brightness /</span><span class="hljs-regexp">/关闭 LED0</span></code></pre></div>
 
 <p>如果能正常的打开和关闭 LED 灯话就说明我们 Linux 内核自带的 LED 灯驱动工作正常。我们一般会使用一个 LED 灯作为系统指示灯，系统运行正常的话这个 LED 指示灯就会一闪一闪的。里我们设置 LED0 作为系统指示灯，在 dtsleds 这个设备节点中加入“linux,default-trigger”属性信息即可，属性值为“heartbeat”，修改完以后的 dtsleds 节点内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> dtsleds &#123;
 <span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>;
 <span class="hljs-number">3</span>
 <span class="hljs-number">4</span> 		led0 &#123;
@@ -534,8 +534,8 @@ module_exit(gpio_led_driver_exit);</code></pre></div>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
-                        <span class="hidden-mobile">14| Linux MISC驱动实验</span>
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">15| Linux INPUT子系统实验</span>
                         <span class="visible-mobile">Nächster</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

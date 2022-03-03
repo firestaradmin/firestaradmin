@@ -249,7 +249,7 @@
 <p>MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。</p>
 <h2 id="一、MISC-设备驱动简介"><a href="#一、MISC-设备驱动简介" class="headerlink" title="一、MISC 设备驱动简介"></a>一、MISC 设备驱动简介</h2><p>所有的 MISC 设备驱动的主设备号都为 10，不同的设备使用不同的从设备号。随着 Linux字符设备驱动的不断增加，设备号变得越来越紧张，尤其是主设备号，MISC 设备驱动就用于解决此问题。<strong>MISC 设备会自动创建 cdev，不需要像我们以前那样手动创建，因此采用 MISC 设备驱动可以简化字符设备驱动的编写。</strong></p>
 <p>我们需要向 Linux 注册一个 miscdevice 设备，miscdevice是一个结构体，定义在文件include&#x2F;linux&#x2F;miscdevice.h 中，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">57</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">57</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> &#123;</span>
 <span class="hljs-number">58</span> 		<span class="hljs-type">int</span> minor; <span class="hljs-comment">/* 子设备号 */</span>
 <span class="hljs-number">59</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name; <span class="hljs-comment">/* 设备名字 */</span>
 <span class="hljs-number">60</span> 		<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> *<span class="hljs-title">fops</span>;</span> <span class="hljs-comment">/* 设备操作集 */</span>
@@ -263,7 +263,7 @@
 
 <p>定义一个 MISC 设备(miscdevice 类型)以后我们需要设置 minor、name 和 fops 这三个成员变量。</p>
 <p><strong>minor 表示子设备号</strong>，MISC 设备的主设备号为 10，这个是固定的，需要用户指定子设备号，Linux 系统已经预定义了一些 MISC 设备的子设备号，这些预定义的子设备号定义在include&#x2F;linux&#x2F;miscdevice.h 文件中，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">13</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> PSMOUSE_MINOR 1</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">13</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> PSMOUSE_MINOR 1</span>
 <span class="hljs-number">14</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MS_BUSMOUSE_MINOR 2 <span class="hljs-comment">/* unused */</span></span>
 <span class="hljs-number">15</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ATIXL_BUSMOUSE_MINOR 3 <span class="hljs-comment">/* unused */</span></span>
 <span class="hljs-number">16</span> <span class="hljs-comment">/*#define AMIGAMOUSE_MINOR 4 FIXME OBSOLETE */</span>
@@ -277,11 +277,11 @@
 <p><strong>fops 就是字符设备的操作集合</strong>，MISC 设备驱动最终是需要使用用户提供的 fops操作集合。</p>
 <hr>
 <p>当设置好 miscdevice 以后就需要使用 misc_register 函数向系统中注册一个 MISC 设备，此函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_register</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice * misc)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_register</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice * misc)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>misc</strong>：要注册的 MISC 设备。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
 <p>以前我们需要自己调用一堆的函数去创建设备，比如在以前的字符设备驱动中我们会使用如下几个函数完成设备创建过程：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> alloc_chrdev_region(); 	<span class="hljs-comment">/* 申请设备号 */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> alloc_chrdev_region(); 	<span class="hljs-comment">/* 申请设备号 */</span>
 <span class="hljs-number">2</span> cdev_init(); 				<span class="hljs-comment">/* 初始化 cdev */</span>
 <span class="hljs-number">3</span> cdev_add(); 				<span class="hljs-comment">/* 添加 cdev */</span>
 <span class="hljs-number">4</span> class_create(); 			<span class="hljs-comment">/* 创建类 */</span>
@@ -290,11 +290,11 @@
 <p>现在我们可以直接使用 misc_register 一个函数来完成示例代码中的这些步骤。</p>
 <hr>
 <p>当我们卸载设备驱动模块的时候需要调用misc_deregister函数来注销掉MISC设备，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_deregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice *misc)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">misc_deregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> miscdevice *misc)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>misc</strong>：要注销的 MISC 设备。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
 <p>以前注销设备驱动的时候，我们需要调用一堆的函数去删除此前创建的 cdev、设备等等内<br>容，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> cdev_del(); 					<span class="hljs-comment">/* 删除 cdev */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> cdev_del(); 					<span class="hljs-comment">/* 删除 cdev */</span>
 <span class="hljs-number">2</span> unregister_chrdev_region(); 	<span class="hljs-comment">/* 注销设备号 */</span>
 <span class="hljs-number">3</span> device_destroy(); 			<span class="hljs-comment">/* 删除设备 */</span>
 <span class="hljs-number">4</span> class_destroy(); 				<span class="hljs-comment">/* 删除类 */</span></code></pre></div>
@@ -304,7 +304,7 @@
 <p>通过一个 PNP 型的三极管 8550 来驱动蜂鸣器，通过 SNVS_TAMPER1 这个 IO来控制三极管 Q1 的导通，当 SNVS_TAMPER1 输出低电平的时候 Q1 导通，相当于蜂鸣器的正极连接到 DCDC_3V3，蜂鸣器形成一个通路，因此蜂鸣器会鸣叫。</p>
 <h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1| 修改设备树"></a>1| 修改设备树</h3><p>本章实验我们需要用到蜂鸣器，因此需要在 imx6ull-lxg-emmc.dts 文件中创建蜂鸣器设<br>备节点.</p>
 <h3 id="2-beep-驱动程序编写"><a href="#2-beep-驱动程序编写" class="headerlink" title="2| beep 驱动程序编写"></a>2| beep 驱动程序编写</h3><p>新建名为“19_miscbeep”的文件夹，然后在 19_miscbeep 文件夹里面创建 vscode 工程，工作区命名为“miscbeep。新建名为 miscbeep.c 的驱动文件，在 miscbeep.c 中输入如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
@@ -507,7 +507,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 
 
-<h3 id="3-编写测试APP"><a href="#3-编写测试APP" class="headerlink" title="3| 编写测试APP"></a>3| 编写测试APP</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
+<h3 id="3-编写测试APP"><a href="#3-编写测试APP" class="headerlink" title="3| 编写测试APP"></a>3| 编写测试APP</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;unistd.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/types.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/stat.h&quot;</span></span>
@@ -568,7 +568,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113754481.png" srcset="/img/loading.gif" lazyload alt="image-20200829113754481"></p>
 <p>所有的 misc 设备都属于同一个类，&#x2F;sys&#x2F;class&#x2F;misc 目录下就是 misc 这个类的所有设备，每个设备对应一个子目录。</p>
 <p>驱动与设备匹配成功以后就会生成&#x2F;dev&#x2F;miscbeep 这个设备驱动文件，<strong>输入如下命令查看这个文件的主次设备号：</strong></p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">ls</span> /dev/miscbeep -l</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">ls</span> /dev/miscbeep -l</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829113851138.png" srcset="/img/loading.gif" lazyload alt="image-20200829113851138"></p>
@@ -617,9 +617,9 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">13| Linux自带的LED灯驱动</span>
+                        <span class="hidden-mobile">15| Linux INPUT子系统实验</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     
@@ -627,8 +627,8 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/">
-                        <span class="hidden-mobile">15| Linux INPUT子系统实验</span>
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">16| Linux LCD驱动实验</span>
                         <span class="visible-mobile">Nächster</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

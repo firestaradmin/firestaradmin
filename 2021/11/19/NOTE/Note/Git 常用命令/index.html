@@ -342,84 +342,84 @@
 <td>上传远程代码并合并</td>
 </tr>
 </tbody></table>
-<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h2><h3 id="Set-global-user-config"><a href="#Set-global-user-config" class="headerlink" title="Set global user config"></a>Set global user config</h3><div class="code-wrapper"><pre><code class="hljs bash">git config --global user.name <span class="hljs-string">&quot;firestaradmin&quot;</span>
+<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h2><h3 id="Set-global-user-config"><a href="#Set-global-user-config" class="headerlink" title="Set global user config"></a>Set global user config</h3><div class="hljs code-wrapper"><pre><code class="hljs bash">git config --global user.name <span class="hljs-string">&quot;firestaradmin&quot;</span>
 git config --global user.email <span class="hljs-string">&quot;firestaradmin@xxx.com&quot;</span></code></pre></div>
 
 
 
 <h3 id="List-config"><a href="#List-config" class="headerlink" title="List config"></a>List config</h3><p>List all global config:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git config --global -l</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git config --global -l</code></pre></div>
 
 <p>List all local config:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git config --<span class="hljs-built_in">local</span> -l</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git config --<span class="hljs-built_in">local</span> -l</code></pre></div>
 
 
 
 <h3 id="Core-config"><a href="#Core-config" class="headerlink" title="Core config"></a>Core config</h3><p>Core config is set to process file before you push it.</p>
-<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">core.autocrlf</span>=<span class="hljs-literal">false</span>
+<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">core.autocrlf</span>=<span class="hljs-literal">false</span>
 <span class="hljs-attr">core.ignorecase</span>=<span class="hljs-literal">false</span></code></pre></div>
 
 <ul>
 <li>autocrlf: whether the CRLF will be automatically converted.</li>
 <li>ignorecase: whether case file name sensitve.</li>
 </ul>
-<h2 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h2><h3 id="Add-remote"><a href="#Add-remote" class="headerlink" title="Add remote"></a>Add remote</h3><div class="code-wrapper"><pre><code class="hljs sh">git remote add origin http:xxxxxxxxxxx/xxxx/xx</code></pre></div>
+<h2 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h2><h3 id="Add-remote"><a href="#Add-remote" class="headerlink" title="Add remote"></a>Add remote</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git remote add origin http:xxxxxxxxxxx/xxxx/xx</code></pre></div>
 
 <p>you can add multiple remotes, as follows:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git remote add origin1 http:xxxxxxxxxxx/xxxx/xx
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git remote add origin1 http:xxxxxxxxxxx/xxxx/xx
 git remote add origin2 http:xxxxxxxxxxx/xxxx/xx
 git remote add gitee http:xxxxxxxxxxx/xxxx/xx</code></pre></div>
 
 <p>And then, you can push branch use the following command:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">push originX localBranchX:remoteBranchX</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">push originX localBranchX:remoteBranchX</code></pre></div>
 
 <ul>
 <li>originx: the remote repository name</li>
 <li>localBranchX: the branch locally</li>
 <li>remoteBranchX: the branch of the remote will be uploaded.</li>
 </ul>
-<h3 id="Rename-remote"><a href="#Rename-remote" class="headerlink" title="Rename remote"></a>Rename remote</h3><div class="code-wrapper"><pre><code class="hljs sh">git remote rename origin old-origin</code></pre></div>
+<h3 id="Rename-remote"><a href="#Rename-remote" class="headerlink" title="Rename remote"></a>Rename remote</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git remote rename origin old-origin</code></pre></div>
 
 
 
-<h3 id="Check-remote-address"><a href="#Check-remote-address" class="headerlink" title="Check remote address"></a>Check remote address</h3><div class="code-wrapper"><pre><code class="hljs sh">git remote -v</code></pre></div>
+<h3 id="Check-remote-address"><a href="#Check-remote-address" class="headerlink" title="Check remote address"></a>Check remote address</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git remote -v</code></pre></div>
 
 
 
 
 
 <h2 id="Branch"><a href="#Branch" class="headerlink" title="Branch"></a>Branch</h2><p>branch 是分支管理命令。</p>
-<h3 id="Querrying-all-branches"><a href="#Querrying-all-branches" class="headerlink" title="Querrying all branches"></a>Querrying all branches</h3><div class="code-wrapper"><pre><code class="hljs sh">git branch -avv</code></pre></div>
+<h3 id="Querrying-all-branches"><a href="#Querrying-all-branches" class="headerlink" title="Querrying all branches"></a>Querrying all branches</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git branch -avv</code></pre></div>
 
 
 
-<h3 id="create-a-new-branch"><a href="#create-a-new-branch" class="headerlink" title="create a new branch"></a>create a new branch</h3><div class="code-wrapper"><pre><code class="hljs sh">git branch (branchname)</code></pre></div>
+<h3 id="create-a-new-branch"><a href="#create-a-new-branch" class="headerlink" title="create a new branch"></a>create a new branch</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git branch (branchname)</code></pre></div>
 
 <p>or</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git checkout -b local-branchname remote_name/remote_branchname</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git checkout -b local-branchname remote_name/remote_branchname</code></pre></div>
 
 <p>  就可以新建本地 local-branchname 分支，并将远程分支映射到该分支，且设置追踪。</p>
-<h3 id="change-current-branch"><a href="#change-current-branch" class="headerlink" title="change current branch"></a>change current branch</h3><div class="code-wrapper"><pre><code class="hljs sh">git checkout (branchname)</code></pre></div>
+<h3 id="change-current-branch"><a href="#change-current-branch" class="headerlink" title="change current branch"></a>change current branch</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git checkout (branchname)</code></pre></div>
 
 <p>or</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git checkout -b (branchname)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git checkout -b (branchname)</code></pre></div>
 
 <p>if you add <code>-b</code> , will auto create a new branch if the repository does not have it.</p>
 <h3 id="delete-branch"><a href="#delete-branch" class="headerlink" title="delete branch"></a>delete branch</h3><p>delete local branch:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git branch -d (branchname)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git branch -d (branchname)</code></pre></div>
 
 
 
 <p>delete remote branch:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push origin --delete master</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push origin --delete master</code></pre></div>
 
 <p>or</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push origin :master</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push origin :master</code></pre></div>
 
 
 
 <h3 id="Merge-branch"><a href="#Merge-branch" class="headerlink" title="Merge branch"></a>Merge branch</h3><p>合并前要先切回要并入的分支<br>以下表示要把issue1234分支合并入master分支</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git checkout master
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git checkout master
 git merge issue1234</code></pre></div>
 
 
@@ -428,33 +428,33 @@ git merge issue1234</code></pre></div>
 
 <hr>
 <h2 id="Pull"><a href="#Pull" class="headerlink" title="Pull"></a>Pull</h2><p>Normall, need use <code>git fetch</code> before pull a branch form remote.</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git fetch</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git fetch</code></pre></div>
 
 
 
 <p>将远程分支test_remote拉取下来到本地test分支, 如果本地没有该分支，自动创建</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git checkout -b <span class="hljs-built_in">test</span> origin/test_remote</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git checkout -b <span class="hljs-built_in">test</span> origin/test_remote</code></pre></div>
 
 
 
 <p>从远程分支test 中checkout下来的本地分支test成为跟踪分支，使用git pull或者git push就会操作到对应的远程分支test</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git pull <span class="hljs-built_in">test</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git pull <span class="hljs-built_in">test</span></code></pre></div>
 
 
 
 <hr>
 <h2 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h2><p><strong>git push</strong> 命用于从将本地的分支版本上传到远程并合并。 </p>
 <p>命令格式如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</code></pre></div>
 
 <p>如果本地分支名与远程分支名相同，则可以省略冒号：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push &lt;远程主机名&gt; &lt;本地分支名&gt;</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push &lt;远程主机名&gt; &lt;本地分支名&gt;</code></pre></div>
 
 <hr>
 <p>如果本地版本与远程版本有差异，但又要强制推送可以使用 –force 参数：</p>
 <p>**一般用于删除远程commit，比如错误的上传了commit4，不想要了，可以回退到commit3，然后重新push，加上 **</p>
 <p><strong>–force 就会吧commit3之后的commit 全部删除，谨慎使用！</strong></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push --force origin master</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push --force origin master</code></pre></div>
 
 
 
@@ -463,44 +463,44 @@ git merge issue1234</code></pre></div>
 </blockquote>
 <hr>
 <p>删除主机的分支可以使用 –delete 参数，以下命令表示删除 origin 主机的 master 分支：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push origin --delete master</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push origin --delete master</code></pre></div>
 
 <hr>
 <p>当你每次输入 git push origin master:master，是不是很麻烦</p>
 <p>使用 <code>-u</code> 选项，输入一次命令，就可以直接跟踪本地分支和远程分支，以后在本分支下就直接输入 git push 即可</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push -u origin master:master</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push -u origin master:master</code></pre></div>
 
 
 
 
 
-<h2 id="Commit"><a href="#Commit" class="headerlink" title="Commit"></a>Commit</h2><h3 id="Submit-a-commit"><a href="#Submit-a-commit" class="headerlink" title="Submit a commit"></a>Submit a commit</h3><div class="code-wrapper"><pre><code class="hljs sh">git commit -m <span class="hljs-string">&quot;这里是提交的说明信息&quot;</span></code></pre></div>
+<h2 id="Commit"><a href="#Commit" class="headerlink" title="Commit"></a>Commit</h2><h3 id="Submit-a-commit"><a href="#Submit-a-commit" class="headerlink" title="Submit a commit"></a>Submit a commit</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git commit -m <span class="hljs-string">&quot;这里是提交的说明信息&quot;</span></code></pre></div>
 
 
 
 <h3 id="Undo-a-commit"><a href="#Undo-a-commit" class="headerlink" title="Undo a commit"></a>Undo a commit</h3><p>commit 之后想撤回咋办?</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git reset --soft HEAD^</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git reset --soft HEAD^</code></pre></div>
 
 <p>这样就成功的撤销了你的commit</p>
 <p>注意，仅仅是撤回commit操作，您写的代码仍然保留。</p>
 <p>HEAD^的意思是上一个版本，也可以写成HEAD~1</p>
 <p>如果你进行了2次commit，想都撤回，可以使用HEAD~2</p>
 <h3 id="Change-commit"><a href="#Change-commit" class="headerlink" title="Change commit"></a>Change commit</h3><p>commit 后发现写错了 信息，可以重写</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git commit --amend</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git commit --amend</code></pre></div>
 
 <p> 此时会进入默认vim编辑器，修改注释完毕后保存就好了。</p>
 <h2 id="Clean-删除-untracked-files"><a href="#Clean-删除-untracked-files" class="headerlink" title="Clean (删除 untracked files)"></a>Clean (删除 untracked files)</h2><p>删除 untracked files</p>
 <p><code>git clean -f</code></p>
 <hr>
 <p>连 untracked 的目录也一起删掉</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git clean -fd</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git clean -fd</code></pre></div>
 
 <hr>
 <p>连 gitignore 的untrack 文件&#x2F;目录也一起删掉 （慎用，一般这个是用来删掉编译出来的 .o之类的文件用的）</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git clean -xfd</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git clean -xfd</code></pre></div>
 
 <p><strong>在用上述 git clean 前，墙裂建议加上 -n 参数来先看看会删掉哪些文件，防止重要文件被误删</strong></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git clean -nxfd
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git clean -nxfd
 git clean -nf
 git clean -nfd</code></pre></div>
 
@@ -510,59 +510,59 @@ git clean -nfd</code></pre></div>
 
 
 
-<h2 id="Tag"><a href="#Tag" class="headerlink" title="Tag"></a>Tag</h2><h3 id="git查询本地所有tag"><a href="#git查询本地所有tag" class="headerlink" title="git查询本地所有tag"></a>git查询本地所有tag</h3><div class="code-wrapper"><pre><code class="hljs sh">git tag</code></pre></div>
+<h2 id="Tag"><a href="#Tag" class="headerlink" title="Tag"></a>Tag</h2><h3 id="git查询本地所有tag"><a href="#git查询本地所有tag" class="headerlink" title="git查询本地所有tag"></a>git查询本地所有tag</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git tag</code></pre></div>
 
 
 
 <h3 id="本地新增无备注的tag"><a href="#本地新增无备注的tag" class="headerlink" title="本地新增无备注的tag"></a>本地新增无备注的tag</h3><p>（默认在当前分支最后一个commit上添加tag）</p>
 <p><code>git tag 标签名</code></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git tag v1.1.0</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git tag v1.1.0</code></pre></div>
 
 
 
 <h3 id="本地新增有备注的tag"><a href="#本地新增有备注的tag" class="headerlink" title="本地新增有备注的tag"></a>本地新增有备注的tag</h3><p>（默认在当前分支最后一个commit上添加tag）</p>
 <p><code>git tag -a 标签名 -m “备注内容”</code></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git tag -a v1.1.1 -m <span class="hljs-string">&quot;测试&quot;</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git tag -a v1.1.1 -m <span class="hljs-string">&quot;测试&quot;</span></code></pre></div>
 
 
 
 <h3 id="在指定commit上新增tag"><a href="#在指定commit上新增tag" class="headerlink" title="在指定commit上新增tag"></a>在指定commit上新增tag</h3><p><code>git tag 标签名 commit</code>（前几位也可以，尝试过最低3位报错，最好5位以上）</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git tag v1.1.0  105851905c8a0f9cc040cf845b35c1ced1963fcc</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git tag v1.1.0  105851905c8a0f9cc040cf845b35c1ced1963fcc</code></pre></div>
 
 
 
 <h3 id="将tag推送到远程分支"><a href="#将tag推送到远程分支" class="headerlink" title="将tag推送到远程分支"></a>将tag推送到远程分支</h3><p><code>git push origin 标签名</code></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push origin v1.1.0</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push origin v1.1.0</code></pre></div>
 
 
 
 <h3 id="删除本地分支标签"><a href="#删除本地分支标签" class="headerlink" title="删除本地分支标签"></a>删除本地分支标签</h3><p><code>git tag -d 标签名</code></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git tag -d v1.1.0</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git tag -d v1.1.0</code></pre></div>
 
 
 
 <h3 id="删除远程分支标签"><a href="#删除远程分支标签" class="headerlink" title="删除远程分支标签"></a>删除远程分支标签</h3><p><code>git push origin :refs/tags/标签名</code></p>
-<div class="code-wrapper"><pre><code class="hljs sh">git push origin :refs/tags/v1.1.0</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git push origin :refs/tags/v1.1.0</code></pre></div>
 
 <p> or</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">git</span> push origin :v1.<span class="hljs-number">1</span>.<span class="hljs-number">0</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">git</span> push origin :v1.<span class="hljs-number">1</span>.<span class="hljs-number">0</span></code></pre></div>
 
 <p>or</p>
-<div class="code-wrapper"><pre><code class="hljs crmsh">git push origin --delete <span class="hljs-keyword">tag</span> <span class="hljs-title">v1</span>.<span class="hljs-number">1.0</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs crmsh">git push origin --delete <span class="hljs-keyword">tag</span> <span class="hljs-title">v1</span>.<span class="hljs-number">1.0</span></code></pre></div>
 
 
 
-<h3 id="Show-tag-info"><a href="#Show-tag-info" class="headerlink" title="Show tag info"></a>Show tag info</h3><div class="code-wrapper"><pre><code class="hljs sh">git show tagXX</code></pre></div>
+<h3 id="Show-tag-info"><a href="#Show-tag-info" class="headerlink" title="Show tag info"></a>Show tag info</h3><div class="hljs code-wrapper"><pre><code class="hljs sh">git show tagXX</code></pre></div>
 
 <ul>
 <li>tagXX: tag name</li>
 </ul>
 <h2 id="rm-x2F-Reset-undo"><a href="#rm-x2F-Reset-undo" class="headerlink" title="rm&#x2F;Reset (undo)"></a>rm&#x2F;Reset (undo)</h2><h3 id="仅仅删除暂存区里的文件"><a href="#仅仅删除暂存区里的文件" class="headerlink" title="仅仅删除暂存区里的文件"></a>仅仅删除暂存区里的文件</h3><p>此时你想撤销错误添加到暂存区里的文件，可以输入以下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs ada">git rm <span class="hljs-comment">--cache 文件名</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs ada">git rm <span class="hljs-comment">--cache 文件名</span></code></pre></div>
 
 
 
-<h3 id="删除暂存区和工作区的文件"><a href="#删除暂存区和工作区的文件" class="headerlink" title="删除暂存区和工作区的文件"></a>删除暂存区和工作区的文件</h3><div class="code-wrapper"><pre><code class="hljs powershell">git <span class="hljs-built_in">rm</span> <span class="hljs-operator">-f</span> 文件名</code></pre></div>
+<h3 id="删除暂存区和工作区的文件"><a href="#删除暂存区和工作区的文件" class="headerlink" title="删除暂存区和工作区的文件"></a>删除暂存区和工作区的文件</h3><div class="hljs code-wrapper"><pre><code class="hljs powershell">git <span class="hljs-built_in">rm</span> <span class="hljs-operator">-f</span> 文件名</code></pre></div>
 
 
 
@@ -570,12 +570,12 @@ git clean -nfd</code></pre></div>
 <p><strong>错误提交到了版本库，此时无论工作区、暂存区，还是版本库，这三者的内容都是一样的</strong>，所以在这种情况下，只是删除了工作区和暂存区的文件，下一次用该版本库回滚那个误添加的文件还会重新生成。</p>
 <p>这个时候，我们必须撤销版本库的修改才能解决问题！</p>
 <p>一般指令为:</p>
-<div class="code-wrapper"><pre><code class="hljs sh">git reset HEAD^</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">git reset HEAD^</code></pre></div>
 
 <p>HEAD^的意思是上一个版本，也可以写成HEAD~1</p>
 <p>如果你进行了2次commit，想都撤回，可以使用HEAD~2</p>
 <p>可以加一些选项，如在commit后使用一下指令：</p>
-<div class="code-wrapper"><pre><code class="hljs pgsql">git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--soft HEAD^</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs pgsql">git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--soft HEAD^</span></code></pre></div>
 
 <p>这样就成功的撤销了你的commit</p>
 <p>注意，仅仅是撤回commit操作，您写的代码仍然保留。</p>
@@ -594,30 +594,30 @@ git clean -nfd</code></pre></div>
 </li>
 </ul>
 <h2 id="git-submodule-子模块"><a href="#git-submodule-子模块" class="headerlink" title="git submodule 子模块"></a>git submodule 子模块</h2><p>Git一个项目中引用其他Git仓库</p>
-<div class="code-wrapper"><pre><code class="hljs sh">// git submodule add [git地址] [目录位置]
+<div class="hljs code-wrapper"><pre><code class="hljs sh">// git submodule add [git地址] [目录位置]
 $ git submodule add https://xxx/gittest.git src/gittest</code></pre></div>
 
 <p>使用submodule后 在当前git目录下会生成一个 .gitmodules 文件</p>
 <p>如果但当前目录已经存在了一个 .gitmodules，命令需要更改为</p>
-<div class="code-wrapper"><pre><code class="hljs sh">$ git submodule add -f https://xxx/gittest.git src/gittest</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">$ git submodule add -f https://xxx/gittest.git src/gittest</code></pre></div>
 
 <p>目录存放位置如果设置，会将clone下来的仓库存放在指定位置, 默认在当前目录下</p>
 <h2 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h2><p><code>.gitignore</code>  file is a very useable file in git system.</p>
 <p>it can help you to ignore some files you do not want upload to repository.</p>
 <p>Format:</p>
-<div class="code-wrapper"><pre><code class="hljs swift">mtk<span class="hljs-operator">/</span> 过滤整个文件夹
+<div class="hljs code-wrapper"><pre><code class="hljs swift">mtk<span class="hljs-operator">/</span> 过滤整个文件夹
 <span class="hljs-operator">*</span>.zip 过滤所有.zip文件
 mtk<span class="hljs-operator">/</span><span class="hljs-keyword">do</span>.c 过滤某个具体文件</code></pre></div>
 
 <p>以上规则意思是：被过滤掉的文件就不会出现在你的GitHub库中了，当然本地库中还有，只是push的时候不会上传。</p>
 <p>除了以上规则，它还可以指定要将哪些文件添加到版本管理中。</p>
 <p>如 <code>project</code> 文件夹除了 <code>stm32.proj</code> 文件其他都忽略，示例：</p>
-<div class="code-wrapper"><pre><code class="hljs swift">project<span class="hljs-comment">/*</span>
+<div class="hljs code-wrapper"><pre><code class="hljs swift">project<span class="hljs-comment">/*</span>
 <span class="hljs-comment">!project/stm32.proj</span></code></pre></div>
 
 <p>当你需要不过滤一个特定文件时，该文件夹一定不能直接屏蔽，即 <code>project/</code> ， 这样就算底下设置了 <code>!peoject/xxx.xx</code> 也不会上传该文件。 一定要使用 <code>project/*</code>  这样子来过滤所有文件。</p>
 <p>当有多级目录时，需要加入某个特定文件时：</p>
-<div class="code-wrapper"><pre><code class="hljs jsx"><span class="hljs-comment">//错误写法</span>
+<div class="hljs code-wrapper"><pre><code class="hljs jsx"><span class="hljs-comment">//错误写法</span>
 **<span class="hljs-regexp">/node_modules/</span>*<span class="hljs-comment">//忽略文件夹node_modules</span>
 !**<span class="hljs-regexp">/node_modules/</span>vue-html5-editor/dist/  <span class="hljs-comment">//这样写是不生效的</span>
 
@@ -667,9 +667,9 @@ mtk<span class="hljs-operator">/</span><span class="hljs-keyword">do</span>.c �
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/11/19/NOTE/Note/Git%20commit%20specification/">
+                      <a href="/2021/11/22/NOTE/Note/License%20manual/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Git commit specification(Commit 规范)</span>
+                        <span class="hidden-mobile">Common License Manual</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     
@@ -677,8 +677,8 @@ mtk<span class="hljs-operator">/</span><span class="hljs-keyword">do</span>.c �
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/11/10/NOTE/C&amp;C++/%E5%AE%8F%E5%AE%9A%E4%B9%89log%E8%BE%93%E5%87%BA/">
-                        <span class="hidden-mobile">宏定义log输出</span>
+                      <a href="/2021/11/19/NOTE/Note/Git%20commit%20specification/">
+                        <span class="hidden-mobile">Git commit specification(Commit 规范)</span>
                         <span class="visible-mobile">Nächster</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

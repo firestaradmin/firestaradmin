@@ -248,11 +248,11 @@
 <hr>
 <h2 id="arm-linux-gnueabihf-gcc-编译文件"><a href="#arm-linux-gnueabihf-gcc-编译文件" class="headerlink" title="arm-linux-gnueabihf-gcc  编译文件"></a>arm-linux-gnueabihf-gcc  编译文件</h2><p>我们是要编译出在 ARM 开发板上运行的可执行文件，所以要使用交叉编译器 arm-linux-gnueabihf-gcc 来编译。</p>
 <p>如果使用一个 led.s 源文件，先将 led.s 编译为对应的.o 文件，在终端中输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc -g -c led.s -o led.o</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc -g -c led.s -o led.o</code></pre></div>
 
 <p>上述命令就是将 led.s 编译为 led.o，其中“-g”选项是产生调试信息，GDB 能够使用这些<br>调试信息进行代码调试。“-c”选项是编译源文件，但是不链接。“-o”选项是指定编译产生的文<br>件名字，这里我们指定 led.s 编译完成以后的文件名字为 led.o。执行上述命令以后就会编译生<br>成一个 led.o 文件</p>
 <h2 id="arm-linux-gnueabihf-ld-链接文件"><a href="#arm-linux-gnueabihf-ld-链接文件" class="headerlink" title="arm-linux-gnueabihf-ld  链接文件"></a>arm-linux-gnueabihf-ld  链接文件</h2><p>arm-linux-gnueabihf-ld 用来将众多的.o 文件链接到一个指定的链接位置</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-ld -Ttext 0X87800000 led.o -o led.elf</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-ld -Ttext 0X87800000 led.o -o led.elf</code></pre></div>
 
 <p>上述命令中-Ttext 就是指定链接地址，“-o”选项指定链接生成的 elf 文件名，这里我们命名<br>为 led.elf。上述命令执行完以后就会在工程目录下多一个 led.elf 文件</p>
 <p>那么为什么链接到<strong>0X87800000</strong> 这个地址呢？</p>
@@ -269,12 +269,12 @@
 <hr>
 <p>链接生成的led.elf 文件也不是我们最终烧写到 SD 卡中的可执行文件，我们要烧写的.bin 文件，因此还需要将 led.elf 文件转换为.bin 文件，这里我们就需要用到 arm-linux-gnueabihf-objcopy 这个工具了。</p>
 <h2 id="arm-linux-gnueabihf-objcopy-格式转换"><a href="#arm-linux-gnueabihf-objcopy-格式转换" class="headerlink" title="arm-linux-gnueabihf-objcopy  格式转换"></a>arm-linux-gnueabihf-objcopy  格式转换</h2><p>arm-linux-gnueabihf-objcopy 更像一个格式转换工具，我们需要用它将 led.elf 文件转换为led.bin 文件，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-objcopy -O binary -S -g led.elf led.bin</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-objcopy -O binary -S -g led.elf led.bin</code></pre></div>
 
 <p>上述命令中，“-O”选项指定以什么格式输出，后面的“binary”表示以二进制格式输出，选项“-S”表示不要复制源文件中的重定位信息和符号信息，“-g”表示不复制源文件中的调试信息。</p>
 <p>至此我们终于等到了想要的东西—led.bin 文件。</p>
 <h2 id="arm-linux-gnueabihf-objdump-反汇编"><a href="#arm-linux-gnueabihf-objdump-反汇编" class="headerlink" title="arm-linux-gnueabihf-objdump 反汇编"></a>arm-linux-gnueabihf-objdump 反汇编</h2><p>大多数情况下我们都是用 C 语言写试验例程的，有时候需要查看其汇编代码来调试代码，因此就需要进行反汇编，一般可以将 elf 文件反汇编，比如如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-objdump -D led.elf &gt; led.dis</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-objdump -D led.elf &gt; led.dis</code></pre></div>
 
 <p>上述代码中的“-D”选项表示反汇编所有的段，反汇编完成以后就会在当前目录下出现一个名为 led.dis 文件</p>
 <p><img src="/2020/09/02/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/2.ARM%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/image-20200816170752022.png" srcset="/img/loading.gif" lazyload alt="image-20200816170752022"></p>
@@ -284,10 +284,10 @@
 <p>imxdownload 会在 led.bin前面添加一些头信息，重新生成一个叫做 load.imx 的文件，最终实际烧写的是 laod.imx。</p>
 <p>具体详情可以参考 I.MX6U驱动开发&#x2F;</p>
 <p>使用 imxdownload 向 SD 卡烧写 led.bin 文件，命令格式如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">./imxdownload &lt;.bin file&gt; &lt;SD Card&gt;</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">./imxdownload &lt;.bin file&gt; &lt;SD Card&gt;</code></pre></div>
 
 <p>其中.bin 就是要烧写的.bin 文件，SD Card 就是你要烧写的 SD 卡，比如使用如下<br>命令烧写 led.bin 到&#x2F;dev&#x2F;sdd 中：( &#x2F;dev&#x2F;sdd为你的SD卡)</p>
-<div class="code-wrapper"><pre><code class="hljs sh">./imxdownload led.bin /dev/sdd</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">./imxdownload led.bin /dev/sdd</code></pre></div>
 
 
             </div>

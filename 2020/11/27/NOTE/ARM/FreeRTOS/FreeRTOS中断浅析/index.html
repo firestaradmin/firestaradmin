@@ -244,43 +244,43 @@
               <p>@firestaradmin 2020年11月27日16:06:56</p>
 <h1 id="FreeRTOS中断浅析"><a href="#FreeRTOS中断浅析" class="headerlink" title="FreeRTOS中断浅析"></a>FreeRTOS中断浅析</h1><h3 id="一、STM32中断屏蔽的特殊寄存器"><a href="#一、STM32中断屏蔽的特殊寄存器" class="headerlink" title="一、STM32中断屏蔽的特殊寄存器"></a>一、STM32中断屏蔽的特殊寄存器</h3><p>我们在 STM32 上移植 FreeRTOS 的时候需要重点关注 PRIMASK、FAULTMASK 和 BASEPRI 这三个寄存器，本节就来学习一下这三个寄存器。</p>
 <h4 id="1-、PRIMASK-和-和-FAULTMASK-寄存器"><a href="#1-、PRIMASK-和-和-FAULTMASK-寄存器" class="headerlink" title="1 、PRIMASK 和 和 FAULTMASK  寄存器"></a>1 、PRIMASK 和 和 FAULTMASK  寄存器</h4><p>在许多应用中，需要暂时屏蔽所有的中断一执行一些对时序要求严格的任务，这个时候就可以使用 PRIMASK 寄存器，<strong>PRIMASK 用于禁止除 NMI 和 HardFalut 外的所有异常和中断</strong>，汇编编程的时候可以使用 CPS(修改处理器状态)指令修改 PRIMASK 寄存器的数值：</p>
-<div class="code-wrapper"><pre><code class="hljs asm">CPSIE I;  //清除 PRIMASK(使能中断)
+<div class="hljs code-wrapper"><pre><code class="hljs asm">CPSIE I;  //清除 PRIMASK(使能中断)
 CPSID  I;  //设置 PRIMASK(禁止中断)</code></pre></div>
 
 <p>PRIMASK 寄存器还可以通过 MRS 和 MSR 指令访问，如下：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">MOVS R0, #1
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">MOVS R0, #1
 MSR PRIMASK,  R0  ;//将 1 写入 PRIMASK 禁止所有中断</code></pre></div>
 
 <p>以及：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">MOVS R0, #0 
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">MOVS R0, #0 
 MSR PRIMASK,  R0  ;//将 0 写入 PRIMASK 以使能中断</code></pre></div>
 
 <p>UCOS 中的临界区代码代码保护就是通过开关中断实现的(UCOSIII 也可以使用禁止任务调度的方法来实现临界区代码保护，这里不讨论这种情况)，而开关中断就是直接操作 PRIMASK寄存器的，所以在 UCOS 中关闭中断的时候时关闭了除复位、NMI 和 HardFault 以外的所有中断！</p>
 <p><strong>FAULTMASK</strong> 比 PRIMASK 更狠，它可以连 HardFault 都屏蔽掉，使用方法和 PRIMASK 类似，FAULTMASK 会在退出时自动清零。汇编编程的时候可以利用 CPS 指令修改 FAULTMASK 的当前状态：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">CPSIE  F  ;清除 FAULTMASK
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">CPSIE  F  ;清除 FAULTMASK
 CPSID F  ;设置 FAULTMASK</code></pre></div>
 
 <p>还可以利用 MRS 和 MSR 指令访问 FAULTMASK 寄存器：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">MOVS  R0, #1 
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">MOVS  R0, #1 
 MSR FAULTMASK, R0  ;将 1 写入 FAULTMASK 禁止所有中断</code></pre></div>
 
 <p>以及：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">MOVS R0, #0
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">MOVS R0, #0
 MSR FAULTMASK, R0  ;将 0 写入 FAULTMASK 使能中断</code></pre></div>
 
 <h4 id="2-、BASEPRI-寄存器"><a href="#2-、BASEPRI-寄存器" class="headerlink" title="2 、BASEPRI 寄存器"></a>2 、BASEPRI 寄存器</h4><p>PRIMASK 和 FAULTMASK 寄存器太粗暴了，直接关闭除复位、NMI 和 HardFault 以外的其他所有中断，但是在有些场合需要对中断屏蔽进行更细腻的控制，比如<strong>只屏蔽优先级低于某一个阈值的中断</strong>。那么这个作为阈值的优先级值存储在哪里呢？在 BASEPRI 寄存器中，不过如果向 BASEPRI 写 0 的话就会停止屏蔽中断。比如，我们要屏蔽优先级不高于 0X60 （NVIC组4的时候）的中断，则可以使用如下汇编编程：</p>
-<div class="code-wrapper"><pre><code class="hljs assembly">MOV  R0， #0X60
+<div class="hljs code-wrapper"><pre><code class="hljs assembly">MOV  R0， #0X60
 MSR BASEPRI, R0</code></pre></div>
 
 <p>如果需要取消 BASEPRI 对中断的屏蔽，可以使用如下代码：</p>
-<div class="code-wrapper"><pre><code class="hljs asm">MOV  R0, #0
+<div class="hljs code-wrapper"><pre><code class="hljs asm">MOV  R0, #0
 MSR BASEPRI, R0</code></pre></div>
 
 <p>注意！FreeRTOS 的开关中断就是操作 BASEPRI 寄存器来实现的！它可以关闭低于某个阈值的中断，高于这个阈值的中断就不会被关闭！</p>
 <h3 id="二、FreeRTOS-中断配置宏"><a href="#二、FreeRTOS-中断配置宏" class="headerlink" title="二、FreeRTOS  中断配置宏"></a>二、FreeRTOS  中断配置宏</h3><h5 id="configPRIO-BITS"><a href="#configPRIO-BITS" class="headerlink" title="configPRIO_BITS"></a>configPRIO_BITS</h5><p>此宏用来设置 MCU 使用几位优先级，STM32 使用的是 4 位，因此此宏为 4！</p>
 <h5 id="configLIBRARY-LOWEST-INTERRUPT-PRIORITY"><a href="#configLIBRARY-LOWEST-INTERRUPT-PRIORITY" class="headerlink" title="configLIBRARY_LOWEST_INTERRUPT_PRIORITY"></a>configLIBRARY_LOWEST_INTERRUPT_PRIORITY</h5><p>此宏是用来设置最低优先级，STM32 优先级使用了 4 位，而且 STM32 配置的使用组 4，也就是 4 位都是抢占优先级。因此优先级数就是 16 个，最低优先级那就是 15。所以此宏就是 15，注意！不同的 MCU 此值不同，具体是多少要看所使用的 MCU 的架构，这里只针对 STM32 讲解！</p>
 <h5 id="configKERNEL-INTERRUPT-PRIORITY"><a href="#configKERNEL-INTERRUPT-PRIORITY" class="headerlink" title="configKERNEL_INTERRUPT_PRIORITY"></a>configKERNEL_INTERRUPT_PRIORITY</h5><p>此宏用来设置内核中断优先级，此宏定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configKERNEL_INTERRUPT_PRIORITY</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configKERNEL_INTERRUPT_PRIORITY</span>
 ( configLIBRARY_LOWEST_INTERRUPT_PRIORITY &lt;&lt; (<span class="hljs-number">8</span> - configPRIO_BITS) )</code></pre></div>
 
 <ul>
@@ -289,7 +289,7 @@ MSR BASEPRI, R0</code></pre></div>
 <li><p>宏configKERNEL_INTERRUPT_PRIORITY用来设置PendSV和滴答定时器的中断优先级，port.c 中有如下定义：</p>
 </li>
 <li><p>&#96;&#96;&#96;c<br>  #define portNVIC_PENDSV_PRI ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) &lt;&lt;16UL )<br>  #define portNVIC_SYSTICK_PRI ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) &lt;&lt;24UL )</p>
-  <div class="code-wrapper"><pre><code class="hljs clean">
+  <div class="hljs code-wrapper"><pre><code class="hljs clean">
 - 可 以 看 出 ， portNVIC_PENDSV_PRI 和 portNVIC_SYSTICK_PRI 都 是 使 用 了 宏configKERNEL_INTERRUPT_PRIORITY ， 为 什 么 宏 portNVIC_PENDSV_PRI  是 宏configKERNEL_INTERRUPT_PRIORITY 左移 <span class="hljs-number">16</span> 位呢？宏 portNVIC_SYSTICK_PRI 也同样是左移 <span class="hljs-number">24</span> 位。的，这样一次写入的是个 <span class="hljs-number">32</span> 位的数据， SysTick 和 PendSV 的优先级寄存器分别对应这个 <span class="hljs-number">32</span>位数据的最高 <span class="hljs-number">8</span> 位和次高 <span class="hljs-number">8</span> 位，不就是一个左移 <span class="hljs-number">16</span> 位，一个左移 <span class="hljs-number">24</span> 位了。
 
 **可以看出在FreeRTOS中 PendSV 和 SysTick 的中断优先级都是最低的！**

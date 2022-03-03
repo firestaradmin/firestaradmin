@@ -253,14 +253,14 @@
 </ul>
 <h2 id="Ubuntu-Server"><a href="#Ubuntu-Server" class="headerlink" title="Ubuntu Server:"></a>Ubuntu Server:</h2><p>Server 版本只有命令行，这个时候一般没有NetWorkManager，所以需要使用 <code>/etc/network/interfaces</code>文件来配置网络。</p>
 <h3 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h3><p>文件</p>
-<div class="code-wrapper"><pre><code class="hljs sh">$ sudo vim /etc/network/interfaces</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">$ sudo vim /etc/network/interfaces</code></pre></div>
 
 <p>无线网络可能是 <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 文件</p>
-<h4 id="1-DHCP-mode"><a href="#1-DHCP-mode" class="headerlink" title="1. DHCP mode"></a>1. DHCP mode</h4><div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># The primary network interface - use DHCP to find our address</span>
+<h4 id="1-DHCP-mode"><a href="#1-DHCP-mode" class="headerlink" title="1. DHCP mode"></a>1. DHCP mode</h4><div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># The primary network interface - use DHCP to find our address</span>
 auto eth0
 iface eth0 inet dhcp</code></pre></div>
 
-<h4 id="2-Static-mode"><a href="#2-Static-mode" class="headerlink" title="2. Static mode"></a>2. Static mode</h4><div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># The primary network interface</span>
+<h4 id="2-Static-mode"><a href="#2-Static-mode" class="headerlink" title="2. Static mode"></a>2. Static mode</h4><div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># The primary network interface</span>
 auto eth0
 iface eth0 inet static
 address 192.168.3.90
@@ -272,14 +272,14 @@ netmask 255.255.255.0
 
 
 <h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>file</p>
-<div class="code-wrapper"><pre><code class="hljs sh">$ sudo vim /etc/resolv.conf</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">$ sudo vim /etc/resolv.conf</code></pre></div>
 
 <p>sample</p>
-<div class="code-wrapper"><pre><code class="hljs sh">nameserver 8.8.8.8
+<div class="hljs code-wrapper"><pre><code class="hljs sh">nameserver 8.8.8.8
 nameserver 114.114.114.114</code></pre></div>
 
 <h3 id="restart"><a href="#restart" class="headerlink" title="restart"></a>restart</h3><p>配置完对应的配置文件，需要使其生效：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">$ sudo /etc/init.d/networking restart</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">$ sudo /etc/init.d/networking restart</code></pre></div>
 
 
 
@@ -287,14 +287,14 @@ nameserver 114.114.114.114</code></pre></div>
 <p>NetworkManager 的配置文件在<code>/etc/NetworkManger/NetworkManager.conf</code>，其配置的连接（有线、WIFI） 配置文件在 <code>/etc/NetworkManager/system-connections/</code>目录下。</p>
 <p>一般来说会默认使用NetworkManager管理网络；<br>如果手动修改了&#x2F;etc&#x2F;network&#x2F;interfaces，则NetworkManager停止管理网络，由配置文件interfaces内的参数对网络进行管理，并自动会将managed参数改为true，NetworkManager 只会管理 &#x2F;etc&#x2F;network&#x2F;interfaces 里没配置的网络接口；</p>
 <h3 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h3><p>右上角网络图标不见了怎么办：如下操作：</p>
-<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo service network-manager restart</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">sudo service network-manager restart</span></code></pre></div>
 
 <p>不行的话试试下面的方法</p>
-<div class="code-wrapper"><pre><code class="hljs pf">sudo service network-manager stop
+<div class="hljs code-wrapper"><pre><code class="hljs pf">sudo service network-manager stop
 sudo rm /var/lib/NetworkManager/NetworkManager.<span class="hljs-keyword">state</span>
 sudo service network-manager start</code></pre></div>
 
-<div class="code-wrapper"><pre><code class="hljs awk">sudo gedit <span class="hljs-regexp">/etc/</span>NetworkManager/NetworkManager.conf</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo gedit <span class="hljs-regexp">/etc/</span>NetworkManager/NetworkManager.conf</code></pre></div>
 
 <p>把false改成true</p>
 

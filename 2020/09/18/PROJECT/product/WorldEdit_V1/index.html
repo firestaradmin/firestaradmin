@@ -261,7 +261,7 @@
 <h4 id="2-元器件、模块、电池、轴体、键帽等采购"><a href="#2-元器件、模块、电池、轴体、键帽等采购" class="headerlink" title="2. 元器件、模块、电池、轴体、键帽等采购"></a>2. 元器件、模块、电池、轴体、键帽等采购</h4><p> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 我的整个键盘需要的物品清单如下：<br><img src="/2020/09/18/PROJECT/product/WorldEdit_V1/20200102144700819.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 元器件购买完毕后，就可以开始画电路了（不会的可以用我的PCB去加工，我100元做了5张PCB）由于整个项目都已开源，这里就不介绍具体电路了。<br> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 然后是设计外壳。由于没有加工条件，只能网上订制，所以就简单的设计了一个不包底的钢板做框架。最后成品也还可以。<br> <img src="/2020/09/18/PROJECT/product/WorldEdit_V1/2020010214553562.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><br> <img src="/2020/09/18/PROJECT/product/WorldEdit_V1/20200102145621387.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
 <h2 id="二、组装调试"><a href="#二、组装调试" class="headerlink" title="二、组装调试"></a>二、组装调试</h2><p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 以上都准备完成后，就是焊电路，装轴，上键帽了。具体步骤，可以看我的制作视频。</p>
 <h2 id="三、优化程序代码"><a href="#三、优化程序代码" class="headerlink" title="三、优化程序代码"></a>三、优化程序代码</h2><p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;代码部分的思路就是检查键盘消息是否更新，更新了就生成按键数据包，然后串口传输给蓝牙模块。如果是USB模式的话就直接USB发送给电脑主机。<br>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;按键物理上如何快速与程序代码链接起来呢，这里有一个思路，如果有更好的方法或建议请留言或私信，谢谢啦。<br>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;这里将按键的位置与数组的顺序对应了起来，在后面处理按键消息的时候用起来很方便。</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> xxCK	myKeyBoard_ControlKey </span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> xxCK	myKeyBoard_ControlKey </span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> xxSK	myKeyBoard_SpecialKey </span>
 
 <span class="hljs-type">const</span> <span class="hljs-type">char</span> * myKeyBoard_KeyMap_Name[<span class="hljs-number">6</span>][<span class="hljs-number">16</span>] = 
@@ -286,7 +286,7 @@
 &#125;;</code></pre></div>
 
 <p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;main 函数如下：（具体代码已开源至GitHub）</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>
 &#123;
 	sysInit();
 	<span class="hljs-comment">//BTK05_Wake();//唤醒BTK05</span>

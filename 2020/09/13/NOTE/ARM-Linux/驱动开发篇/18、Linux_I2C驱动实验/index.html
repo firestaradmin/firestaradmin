@@ -254,7 +254,7 @@
 <hr>
 <h3 id="I2C-总线驱动"><a href="#I2C-总线驱动" class="headerlink" title="I2C  总线驱动"></a>I2C  总线驱动</h3><p>首先来看一下 I2C 总线，在讲 platform 的时候就说过，platform 是虚拟出来的一条总线，目的是为了实现总线、设备、驱动框架。</p>
 <p>对于 I2C 而言，不需要虚拟出一条总线，直接使用 I2C总线即可。I2C 总线驱动重点是 I2C 适配器(也就是 SOC 的 I2C 接口控制器)驱动，这里要用到两个重要的数据结构：i2c_adapter 和 i2c_algorithm，Linux 内核将 SOC 的 I2C 适配器(控制器)抽象成 i2c_adapter，i2c_adapter 结构体定义在 include&#x2F;linux&#x2F;i2c.h 文件中，结构体内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">498</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_adapter</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">498</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_adapter</span> &#123;</span>
 <span class="hljs-number">499</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>;</span>
 <span class="hljs-number">500</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-class"><span class="hljs-keyword">class</span>;</span> <span class="hljs-comment">/* classes to allow probing for */</span>
 <span class="hljs-number">501</span> 	<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_algorithm</span> *<span class="hljs-title">algo</span>;</span> <span class="hljs-comment">/*  总线访问算法 */</span>
@@ -279,7 +279,7 @@
 <span class="hljs-number">520</span> &#125;;</code></pre></div>
 
 <p>第 501 行，i2c_algorithm 类型的指针变量 algo，对于一个 I2C 适配器，肯定要对外提供读写 API 函数，设备驱动程序可以使用这些 API 函数来完成读写操作。i2c_algorithm 就是 I2C 适配器与 IIC 设备进行通信的方法。<br>i2c_algorithm 结构体定义在 include&#x2F;linux&#x2F;i2c.h 文件中，内容如下(删除条件编译)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">391</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_algorithm</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">391</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_algorithm</span> &#123;</span>
 ......
 <span class="hljs-number">398</span> 	<span class="hljs-type">int</span> (*master_xfer)(<span class="hljs-keyword">struct</span> i2c_adapter *adap, <span class="hljs-keyword">struct</span> i2c_msg *msgs,
 <span class="hljs-number">399</span> 					   <span class="hljs-type">int</span> num);
@@ -297,7 +297,7 @@
 <li>第 400 行，smbus_xfer 就是 SMBUS 总线的传输函数。</li>
 </ul>
 <p>综上所述，I2C 总线驱动，或者说 I2C 适配器驱动的主要工作就是初始化 i2c_adapter 结构体变量，然后设置 i2c_algorithm 中的 master_xfer 函数。完成以后通过 i2c_add_numbered_adapter或 i2c_add_adapter 这两个函数向系统注册设置好的 i2c_adapter，这两个函数的原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_add_adapter</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_add_adapter</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter)</span>
 <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_add_numbered_adapter</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adap)</span></code></pre></div>
 
 <p>这两个函数的区别在于 i2c_add_adapter 使用动态的总线号，而 i2c_add_numbered_adapter使用静态总线号。函数参数和返回值含义如下：</p>
@@ -306,13 +306,13 @@
 <li><strong>返回值</strong>：0，成功；负值，失败。</li>
 </ul>
 <p>如果要删除 I2C 适配器的话使用 i2c_del_adapter 函数即可，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">i2c_del_adapter</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter * adap)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">i2c_del_adapter</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter * adap)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>adap</strong>：要删除的 I2C 适配器。<br><strong>返回值</strong>：无。</p>
 <p>关于 I2C 的总线(控制器或适配器)驱动就讲解到这里，一般 SOC 的 I2C 总线驱动都是由半导体厂商编写的，比如 I.MX6U 的 I2C 适配器驱动 NXP 已经编写好了，这个不需要用户去编写。因此 I2C 总线驱动对我们这些 SOC 使用者来说是被屏蔽掉的，我们只要专注于 I2C 设备驱动即可。除非你是在半导体公司上班，工作内容就是写 I2C 适配器驱动.</p>
 <h3 id="I2C-设备驱动"><a href="#I2C-设备驱动" class="headerlink" title="I2C 设备驱动"></a>I2C 设备驱动</h3><p>I2C 设备驱动重点关注两个数据结构：i2c_client 和 i2c_driver，根据总线、设备和驱动模型，I2C 总线上一小节已经讲了。还剩下设备和驱动，i2c_client 就是描述设备信息的，i2c_driver 描述驱动内容，类似于 platform_driver。</p>
 <h4 id="1、i2c-client-结构体"><a href="#1、i2c-client-结构体" class="headerlink" title="1、i2c_client 结构体"></a>1、i2c_client 结构体</h4><p>i2c_client 结构体定义在 include&#x2F;linux&#x2F;i2c.h 文件中，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">217</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_client</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">217</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_client</span> &#123;</span>
 <span class="hljs-number">218</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> flags; <span class="hljs-comment">/* 标志 */</span>
 <span class="hljs-number">219</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> addr; <span class="hljs-comment">/* 芯片地址，7 位，存在低 7 位 */</span>
 ......
@@ -326,7 +326,7 @@
 
 <p>一个设备对应一个 i2c_client，每检测到一个 I2C 设备就会给这个 I2C 设备分配一个i2c_client。</p>
 <h4 id="2-、i2c-driver-结构体"><a href="#2-、i2c-driver-结构体" class="headerlink" title="2 、i2c_driver  结构体"></a>2 、i2c_driver  结构体</h4><p>i2c_driver 类似 platform_driver，是我们编写 I2C 设备驱动重点要处理的内容，i2c_driver 结构体定义在 include&#x2F;linux&#x2F;i2c.h 文件中，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">161</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_driver</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">161</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_driver</span> &#123;</span>
 <span class="hljs-number">162</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-class"><span class="hljs-keyword">class</span>;</span>
 <span class="hljs-number">163</span>
 <span class="hljs-number">164</span> 	<span class="hljs-comment">/* Notifies the driver that a new bus has appeared. You should</span>
@@ -369,21 +369,21 @@
 </ul>
 <p>对于我们 I2C 设备驱动编写人来说，重点工作就是构建 i2c_driver，构建完成以后需要向Linux 内核注册这个 i2c_driver。</p>
 <p>i2c_driver 注册函数为 int i2c_register_driver，此函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_register_driver</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> module *owner,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_register_driver</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> module *owner,</span>
 <span class="hljs-params">                        <span class="hljs-keyword">struct</span> i2c_driver *driver)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>owner</strong> ：一般为 THIS_MODULE。<br><strong>driver</strong>：要注册的 i2c_driver。<br><strong>返回值</strong>：0，成功；负值，失败。</p>
 <p>另外 i2c_add_driver 也常常用于注册 i2c_driver，i2c_add_driver 是一个宏，定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">587</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> i2c_add_driver(driver) \</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">587</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> i2c_add_driver(driver) \</span>
 <span class="hljs-meta">588 	i2c_register_driver(THIS_MODULE, driver)</span></code></pre></div>
 
 <p>2c_add_driver 就是对 i2c_register_driver 做了一个简单的封装，只有一个参数，就是要注册的 i2c_driver。</p>
 <p>注销 I2C 设备驱动的时候需要将前面注册的 i2c_driver 从 Linux 内核中注销掉，需要用到i2c_del_driver 函数，此函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">i2c_del_driver</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_driver *driver)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">i2c_del_driver</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_driver *driver)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>driver</strong>：要注销的 i2c_driver。<br><strong>返回值</strong>：无。</p>
 <p>i2c_driver 的注册示例代码如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* i2c 驱动的 probe 函数 */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* i2c 驱动的 probe 函数 */</span>
 <span class="hljs-number">2</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">xxx_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_client *client, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_device_id *id)</span>
 3 &#123;
 <span class="hljs-number">4</span> 		<span class="hljs-comment">/* 函数具体程序 */</span>
@@ -444,7 +444,7 @@
 <p><strong>1 、i2c_adapter  注册&#x2F; 注销函数</strong><br>int i2c_add_adapter(struct i2c_adapter *adapter)<br>int i2c_add_numbered_adapter(struct i2c_adapter *adap)<br>void i2c_del_adapter(struct i2c_adapter * adap)</p>
 <p><strong>2 、i2c_driver  注册&#x2F; 注销函数</strong><br>int i2c_register_driver(struct module *owner, struct i2c_driver *driver)<br>int i2c_add_driver (struct i2c_driver *driver)<br>void i2c_del_driver(struct i2c_driver *driver)</p>
 <p>设备和驱动的匹配过程也是由 I2C 总线完成的，I2C 总线的数据结构为 i2c_bus_type，定义在 drivers&#x2F;i2c&#x2F;i2c-core.c 文件，i2c_bus_type 内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">736</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> <span class="hljs-title">i2c_bus_type</span> =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">736</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> <span class="hljs-title">i2c_bus_type</span> =</span> &#123;
 <span class="hljs-number">737</span> 	.name = <span class="hljs-string">&quot;i2c&quot;</span>,
 <span class="hljs-number">738</span> 	.match = i2c_device_match,
 <span class="hljs-number">739</span> 	.probe = i2c_device_probe,
@@ -453,7 +453,7 @@
 <span class="hljs-number">742</span> &#125;;</code></pre></div>
 
 <p>.match 就是 I2C 总线的设备和驱动匹配函数，在这里就是 i2c_device_match 这个函数，此函数内容如下</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">457</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_device_match</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device *dev, <span class="hljs-keyword">struct</span> device_driver *drv)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">457</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_device_match</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device *dev, <span class="hljs-keyword">struct</span> device_driver *drv)</span>
 458 &#123;
 <span class="hljs-number">459</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_client</span> *<span class="hljs-title">client</span> =</span> i2c_verify_client(dev);
 <span class="hljs-number">460</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_driver</span> *<span class="hljs-title">driver</span>;</span>
@@ -483,7 +483,7 @@
 <li>第 476 行，i2c_match_id 函数用于传统的、无设备树的 I2C 设备和驱动匹配过程。比较 I2C设备名字和 i2c_device_id 的 name 字段是否相等，相等的话就说明 I2C 设备和驱动匹配。</li>
 </ul>
 <h2 id="2-I-MX6U-的-的-I2C-适配器驱动分析"><a href="#2-I-MX6U-的-的-I2C-适配器驱动分析" class="headerlink" title="2| I.MX6U 的 的 I2C 适配器驱动分析"></a>2| I.MX6U 的 的 I2C 适配器驱动分析</h2><p>上一小节我们讲解了Linux 下的 I2C 驱动框架，重点分为 I2C 适配器驱动和 I2C 设备驱动，其中 I2C 适配器驱动就是 SOC 的 I2C 控制器驱动。I2C 设备驱动是需要用户根据不同的 I2C 设备去编写，而 I2C 适配器驱动一般都是 SOC 厂商去编写的，比如 NXP 就编写好了 I.MX6U 的I2C 适配器驱动。在 imx6ull.dtsi 文件中找到 I.MX6U 的 I2C1 控制器节点，节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> i2c1: i2c@<span class="hljs-number">021</span>a0000 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> i2c1: i2c@<span class="hljs-number">021</span>a0000 &#123;
 <span class="hljs-number">2</span> 	<span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 <span class="hljs-number">3</span> 	<span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;0&gt;</span>;</span>
 <span class="hljs-number">4</span> 	compatible = <span class="hljs-string">&quot;fsl,imx6ul-i2c&quot;</span>, <span class="hljs-string">&quot;fsl,imx21-i2c&quot;</span>;
@@ -494,7 +494,7 @@
 <span class="hljs-number">9</span> &#125;;</code></pre></div>
 
 <p>重点关注 i2c1 节点的 compatible 属性值，因为通过 compatible 属性值可以在 Linux 源码里面找到对应的驱动文件。这里i2c1节点的compatible属性值有两个： “fsl,imx6ul-i2c”和“fsl,imx21-i2c”，在 Linux 源码中搜索这两个字符串即可找到对应的驱动文件。I.MX6U 的 I2C 适配器驱动驱动文件为drivers&#x2F;i2c&#x2F;busses&#x2F;i2c-imx.c，在此文件中有如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">244</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device_id</span> <span class="hljs-title">imx_i2c_devtype</span>[] =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">244</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device_id</span> <span class="hljs-title">imx_i2c_devtype</span>[] =</span> &#123;
 <span class="hljs-number">245</span> 	&#123;
 <span class="hljs-number">246</span> 		.name = <span class="hljs-string">&quot;imx1-i2c&quot;</span>,
 <span class="hljs-number">247</span> 		.driver_data = (<span class="hljs-type">kernel_ulong_t</span>)&amp;imx1_i2c_hwdata,
@@ -543,7 +543,7 @@
 <p>第 259 行，“fsl,imx21-i2c”属性值，设备树中 i2c1 节点的 compatible 属性值就是与此匹配上的。因此 i2c-imx.c 文件就是 I.MX6U 的 I2C 适配器驱动文件。</p>
 <p>第 1120 行，当设备和驱动匹配成功以后 i2c_imx_probe 函数就会执行，i2c_imx_probe 函数就会完成 I2C 适配器初始化工作。</p>
 <p>i2c_imx_probe 函数内容如下所示(有省略)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">971</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_imx_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">971</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_imx_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
 972 &#123;
 <span class="hljs-number">973</span> 	<span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> *<span class="hljs-title">of_id</span> =</span>
 <span class="hljs-number">974</span> 	of_match_device(i2c_imx_dt_ids, &amp;pdev-&gt;dev);
@@ -661,20 +661,20 @@
 </ul>
 <hr>
 <p>i2c_imx_algo 包含 I2C1 适配器与 I2C 设备的通信函数 master_xfer，i2c_imx_algo 结构体定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">966</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_algorithm</span> <span class="hljs-title">i2c_imx_algo</span> =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">966</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_algorithm</span> <span class="hljs-title">i2c_imx_algo</span> =</span> &#123;
 <span class="hljs-number">967</span> 	.master_xfer = i2c_imx_xfer,
 <span class="hljs-number">968</span> 	.functionality = i2c_imx_func,
 <span class="hljs-number">969</span> &#125;;</code></pre></div>
 
 <p>我们先来看一下. functionality，functionality用于返回此I2C适配器支持什么样的通信协议，在这里 functionality 就是 i2c_imx_func 函数，i2c_imx_func 函数内容如下:</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> u32 <span class="hljs-title function_">i2c_imx_func</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> u32 <span class="hljs-title function_">i2c_imx_func</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter)</span>
 &#123;
     <span class="hljs-keyword">return</span> I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL
         | I2C_FUNC_SMBUS_READ_BLOCK_DATA;
 &#125;</code></pre></div>
 
 <p>重点来看一下 i2c_imx_xfer 函数，因为最终就是通过此函数来完成与 I2C 设备通信的，此函数内容如下(有省略)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">888</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_imx_xfer</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">888</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">i2c_imx_xfer</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adapter,</span>
 <span class="hljs-params"><span class="hljs-number">889</span> <span class="hljs-keyword">struct</span> i2c_msg *msgs, <span class="hljs-type">int</span> num)</span>
 890 &#123;
 <span class="hljs-number">891</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> i, temp;
@@ -739,7 +739,7 @@
 <p>i2c_imx_start、i2c_imx_read、i2c_imx_write 和 i2c_imx_stop 这些函数就是 I2C 寄存器的具体操作函数，函数内容基本和我们裸机篇中讲的 I2C 驱动一样，这里我们就不详细的分析了.</p>
 <h2 id="3-I2C-设备驱动编写流程"><a href="#3-I2C-设备驱动编写流程" class="headerlink" title="3|  I2C  设备驱动编写流程"></a>3|  I2C  设备驱动编写流程</h2><p>I2C 适配器驱动 SOC 厂商已经替我们编写好了，我们需要做的就是编写具体的设备驱动，本小节我们就来学习一下 I2C 设备驱动的详细编写流程。</p>
 <h3 id="I2C-设备信息描述"><a href="#I2C-设备信息描述" class="headerlink" title="I2C 设备信息描述"></a>I2C 设备信息描述</h3><h4 id="1-未使用设备树的时候"><a href="#1-未使用设备树的时候" class="headerlink" title="1.未使用设备树的时候"></a>1.未使用设备树的时候</h4><p>首先肯定要描述 I2C 设备节点信息，先来看一下没有使用设备树的时候是如何在 BSP 里面描述 I2C 设备信息的，在未使用设备树的时候需要在 BSP 里面使用 i2c_board_info 结构体来描述一个具体的 I2C 设备。i2c_board_info 结构体如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">295</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_board_info</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">295</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_board_info</span> &#123;</span>
 <span class="hljs-number">296</span> 	<span class="hljs-type">char</span> type[I2C_NAME_SIZE]; <span class="hljs-comment">/* I2C 设备名字 */</span>
 <span class="hljs-number">297</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> flags; <span class="hljs-comment">/* 标志 */</span>
 <span class="hljs-number">298</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> addr; <span class="hljs-comment">/* I2C 器件地址 */</span>
@@ -751,18 +751,18 @@
 <span class="hljs-number">304</span> &#125;;</code></pre></div>
 
 <p>type 和 addr 这两个成员变量是必须要设置的，一个是 I2C 设备的名字，一个是 I2C 设备的器件地址。打开 arch&#x2F;arm&#x2F;mach-imx&#x2F;mach-mx27_3ds.c 文件，此文件中关于 OV2640 的 I2C 设备信息描述如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">392</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_board_info</span> <span class="hljs-title">mx27_3ds_i2c_camera</span> =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">392</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_board_info</span> <span class="hljs-title">mx27_3ds_i2c_camera</span> =</span> &#123;
 <span class="hljs-number">393</span> 	I2C_BOARD_INFO(<span class="hljs-string">&quot;ov2640&quot;</span>, <span class="hljs-number">0x30</span>),
 <span class="hljs-number">394</span> &#125;;</code></pre></div>
 
 <p>示例代码中使用 I2C_BOARD_INFO 来完成 mx27_3ds_i2c_camera 的初始化工作，I2C_BOARD_INFO 是一个宏，定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">316</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> I2C_BOARD_INFO(dev_type, dev_addr) \</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">316</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> I2C_BOARD_INFO(dev_type, dev_addr) \</span>
 <span class="hljs-meta">317 	.type = dev_type, .addr = (dev_addr)</span></code></pre></div>
 
 <p>可以看出， I2C_BOARD_INFO 宏其实就是设置 i2c_board_info 的 type 和 addr 这两个成员变量，因此示例代码的主要工作就是设置 I2C 设备名字为 ov2640，ov2640 的器件地址为 0X30。</p>
 <p>大家可以在 Linux 源码里面全局搜索 i2c_board_info，会找到大量以 i2c_board_info 定义的I2C 设备信息，这些就是未使用设备树的时候 I2C 设备的描述方式，当采用了设备树以后就不会再使用i2c_board_info 来描述 I2C 设备了。</p>
 <h4 id="2-使用设备树的时候"><a href="#2-使用设备树的时候" class="headerlink" title="2.使用设备树的时候"></a>2.使用设备树的时候</h4><p>使用设备树的时候 I2C 设备信息通过创建相应的节点就行了，比如 NXP 官方的 EVK 开发板在 I2C1 上接了 mag3110 这个磁力计芯片，因此必须在 i2c1 节点下创建 mag3110 子节点，然后在这个子节点内描述 mag3110 这个芯片的相关信息。打开 imx6ull-14x14-evk.dts 这个设备树文件，然后找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c1 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c1 &#123;
 <span class="hljs-number">2</span> 		clock-frequency = &lt;<span class="hljs-number">100000</span>&gt;;
 <span class="hljs-number">3</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">4</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_i2c1&gt;;
@@ -783,13 +783,13 @@
 </ul>
 <h3 id="I2C-设备数据收发处理流程"><a href="#I2C-设备数据收发处理流程" class="headerlink" title="I2C 设备数据收发处理流程"></a>I2C 设备数据收发处理流程</h3><p>在前面已经说过了，I2C 设备驱动首先要做的就是初始化 i2c_driver 并向 Linux 内核注册。当设备和驱动匹配以后 i2c_driver 里面的 probe 函数就会执行，probe 函数里面所做的就是字符设备驱动那一套了。</p>
 <p>一般需要在 probe 函数里面初始化 I2C 设备，要初始化 I2C 设备就必须能够对 I2C 设备寄存器进行读写操作，这里就要用到 i2c_transfer 函数了。i2c_transfer 函数最终会调用 I2C 适配器中 i2c_algorithm 里面的 master_xfer 函数，对于 I.MX6U 而言就是i2c_imx_xfer 这个函数。i2c_transfer 函数原型如下</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_transfer</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adap,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_transfer</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_adapter *adap,</span>
 <span class="hljs-params">                 <span class="hljs-keyword">struct</span> i2c_msg *msgs,</span>
 <span class="hljs-params">                 <span class="hljs-type">int</span> num)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>adap</strong> ：所使用的 I2C 适配器，i2c_client 会保存其对应的 i2c_adapter。<br><strong>msgs</strong>：I2C 要发送的一个或多个消息。<br><strong>num</strong> ：消息数量，也就是 msgs 的数量。<br><strong>返回值</strong>：负值，失败，其他非负值，发送的 msgs 数量。</p>
 <p>我们重点来看一下 msgs 这个参数，这是一个 i2c_msg 类型的指针参数，I2C 进行数据收发说白了就是消息的传递，Linux 内核使用 i2c_msg 结构体来描述一个消息。i2c_msg 结构体定义在 include&#x2F;uapi&#x2F;linux&#x2F;i2c.h 文件中，结构体内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">68</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_msg</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">68</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_msg</span> &#123;</span>
 <span class="hljs-number">69</span> 		__u16 addr; <span class="hljs-comment">/* 从机地址 */</span>
 <span class="hljs-number">70</span> 		__u16 flags; <span class="hljs-comment">/* 标志 */</span>
 <span class="hljs-number">71</span> 		<span class="hljs-meta">#<span class="hljs-keyword">define</span> I2C_M_TEN 0x0010</span>
@@ -805,7 +805,7 @@
 <span class="hljs-number">81</span> &#125;;</code></pre></div>
 
 <p>使用 i2c_transfer 函数发送数据之前要先构建好 i2c_msg，使用 i2c_transfer 进行 I2C 数据收发的示例代码如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 设备结构体 */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 设备结构体 */</span>
 <span class="hljs-number">2</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">xxx_dev</span> &#123;</span>
 <span class="hljs-number">3</span> 		......
 <span class="hljs-number">4</span> 		<span class="hljs-type">void</span> *private_data; <span class="hljs-comment">/* 私有数据，一般会设置为 i2c_client */</span>
@@ -878,13 +878,13 @@
 <li><strong>第 50~66 行</strong>，xxx_write_regs 函数用于向 I2C 设备多个寄存器写数据，I2C 写操作要比读操作简单一点，因此一个 i2c_msg 即可。数组 b 用于存放寄存器首地址和要发送的数据，第 59 行设置 msg 的 addr 为 I2C 器件地址。第 60 行设置 msg 的 flags 为 0，也就是写数据。第 62 行设置要发送的数据，也就是数组 b。第 63 行设置 msg 的 len 为 len+1，因为要加上一个字节的寄存器地址。最后通过 i2c_transfer 函数完成向 I2C 设备的写操作。</li>
 </ul>
 <p>另外还有两个API函数分别用于I2C数据的收发操作，这两个函数最终都会调用i2c_transfer。首先来看一下 I2C 数据发送函数 i2c_master_send，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_master_send</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_client *client,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_master_send</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_client *client,</span>
 <span class="hljs-params">                    <span class="hljs-type">const</span> <span class="hljs-type">char</span> *buf,</span>
 <span class="hljs-params">                    <span class="hljs-type">int</span> count)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>client</strong> ：I2C 设备对应的 i2c_client。<br><strong>buf</strong>：要发送的数据。<br><strong>count</strong> ：要发送的数据字节数，要小于 64KB，以为 i2c_msg 的 len 成员变量是一个 u16(无符号 16 位)类型的数据。<br><strong>返回值</strong>：负值，失败，其他非负值，发送的字节数。</p>
 <p>I2C 数据接收函数为 i2c_master_recv，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_master_recv</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_client *client,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">i2c_master_recv</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_client *client,</span>
 <span class="hljs-params">                    <span class="hljs-type">char</span> *buf,</span>
 <span class="hljs-params">                    <span class="hljs-type">int</span> count)</span></code></pre></div>
 
@@ -892,7 +892,7 @@
 <p>关于 Linux 下 I2C 设备驱动的编写流程就讲解到这里，重点就是 i2c_msg 的构建和i2c_transfer 函数的调用，接下来我们就编写 AP3216C 这个 I2C 设备的 Linux 驱动。</p>
 <h2 id="4-硬件原理图分析"><a href="#4-硬件原理图分析" class="headerlink" title="4| 硬件原理图分析"></a>4| 硬件原理图分析</h2><p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830150606209.png" srcset="/img/loading.gif" lazyload alt="image-20200830150606209"></p>
 <h2 id="5-实验程序编写"><a href="#5-实验程序编写" class="headerlink" title="5| 实验程序编写"></a>5| 实验程序编写</h2><h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1.修改设备树"></a>1.修改设备树</h3><h4 id="IO-修改或添加"><a href="#IO-修改或添加" class="headerlink" title="IO  修改或添加"></a>IO  修改或添加</h4><p>首先肯定是要修改 IO，AP3216C 用到了 I2C1 接口，I.MX6U-ALPHA 开发板上的 I2C1 接口使用到了 UART4_TXD 和 UART4_RXD，因此肯定要在设备树里面设置这两个 IO。如果要用到 AP3216C 的中断功能的话还需要初始化 AP_INT 对应的 GIO1_IO01 这个 IO，本章实验我们不使用中断功能。因此只需要设置 UART4_TXD 和 UART4_RXD 这两个 IO，NXP 其实已经将他这两个 IO 设置好了，打开 imx6ull-lxg-emmc.dts，然后找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_i2c1: i2c1grp &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_i2c1: i2c1grp &#123;
 <span class="hljs-number">2</span> 	fsl,pins = &lt;
 <span class="hljs-number">3</span> 		MX6UL_PAD_UART4_TX_DATA__I2C1_SCL <span class="hljs-number">0x4001b8b0</span>
 <span class="hljs-number">4</span> 		MX6UL_PAD_UART4_RX_DATA__I2C1_SDA <span class="hljs-number">0x4001b8b0</span>
@@ -901,7 +901,7 @@
 
 <p>pinctrl_i2c1 就是 I2C1 的 IO 节点，这里将 UART4_TXD 和 UART4_RXD 这两个 IO 分别复用为 I2C1_SCL 和 I2C1_SDA，电气属性都设置为 0x4001b8b0。</p>
 <h4 id="在-i2c1-节点追加-ap3216c-子节点"><a href="#在-i2c1-节点追加-ap3216c-子节点" class="headerlink" title="在 i2c1  节点追加 ap3216c 子节点"></a>在 i2c1  节点追加 ap3216c 子节点</h4><p>AP3216C 是连接到 I2C1 上的，因此需要在 i2c1 节点下添加 ap3216c 的设备子节点，在imx6ull-lxg-emmc.dts 文件中找到 i2c1 节点，此节点默认内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c1 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c1 &#123;
 <span class="hljs-number">2</span> 		clock-frequency = &lt;<span class="hljs-number">100000</span>&gt;;
 <span class="hljs-number">3</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">4</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_i2c1&gt;;
@@ -929,7 +929,7 @@
 <li>第 13~19 行，NXP 官方 EVK 开发板也接了一个 fxls8471，正点原子的 I.MX6U-ALPHA开发板同样没有此器件，所以也要将其删除掉。</li>
 </ul>
 <p>将 i2c1 节点里面原有的 mag3110 和 fxls8471 这两个 I2C 子节点删除，然后添加 ap3216c子节点信息，完成以后的 i2c1 节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> 	&amp;i2c1 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> 	&amp;i2c1 &#123;
 <span class="hljs-number">2</span> 		clock-frequency = &lt;<span class="hljs-number">100000</span>&gt;;
 <span class="hljs-number">3</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">4</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_i2c1&gt;;
@@ -949,7 +949,7 @@
 <p>图中的“0-001e”就是 ap3216c 的设备目录，“1e”就是 ap3216c 器件地址。进入0-001e 目录，可以看到“name”文件，name 问价就保存着此设备名字，在这里就是“ap3216c”，如图  所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830151629603.png" srcset="/img/loading.gif" lazyload alt="image-20200830151629603"></p>
 <h3 id="2-AP3216C-驱动编写"><a href="#2-AP3216C-驱动编写" class="headerlink" title="2.AP3216C  驱动编写"></a>2.AP3216C  驱动编写</h3><p>新建名为“21_iic”的文件夹，然后在 21_iic 文件夹里面创建 vscode 工程，工作区命名为“iic”。工程创建好以后新建 ap3216c.c 和 ap3216creg.h 这两个文件，ap3216c.c 为 AP3216C 的驱动代码，ap3216creg.h 是 AP3216C 寄存器头文件。先在 ap3216creg.h 中定义好 AP3216C 的寄存器，输入如下内容，</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> AP3216C_H</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> AP3216C_H</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> AP3216C_H</span>
 
 
@@ -969,7 +969,7 @@
 <span class="hljs-meta">#<span class="hljs-keyword">endif</span></span></code></pre></div>
 
 <p>ap3216creg.h 没什么好讲的，就是一些寄存器宏定义。然后在 ap3216c.c 输入如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
@@ -1305,7 +1305,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 <p>具体分析参考正点原子IMX6UL驱动开发指南61.5节</p>
 <h3 id="3-编写测试-APP"><a href="#3-编写测试-APP" class="headerlink" title="3.编写测试 APP"></a>3.编写测试 APP</h3><p>新建 ap3216cApp.c 文件，然后在里面输入如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;unistd.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/types.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/stat.h&quot;</span></span>
@@ -1362,7 +1362,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>ap3216cApp.c 文件内容很简单，就是在 while 循环中不断的读取 AP3216C 的设备文件，从而得到 ir、als 和 ps 这三个数据值，然后将其输出到终端上。</p>
 <h2 id="6-运行测试"><a href="#6-运行测试" class="headerlink" title="6| 运行测试"></a>6| 运行测试</h2><p>编译运行。</p>
 <p>当驱动模块加载成功以后使用 ap3216cApp 来测试，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs c">./ap3216cApp /dev/ap3216c</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c">./ap3216cApp /dev/ap3216c</code></pre></div>
 
 <p>测试 APP 会不断的从 AP3216C 中读取数据，然后输出到终端上，如图  所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/18%E3%80%81Linux_I2C%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200830154214853.png" srcset="/img/loading.gif" lazyload alt="image-20200830154214853"></p>

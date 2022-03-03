@@ -301,10 +301,10 @@
 <img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513011459480.png" srcset="/img/loading.gif" lazyload alt="image-20210513011459480" style="zoom:80%;">
 
 <p>环境变量修改完毕后，可能需要<strong>重启电脑</strong>才能生效。然后打开cmd，输入：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-none-eabi-gcc --version</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-none-eabi-gcc --version</code></pre></div>
 
 <p>and</p>
-<div class="code-wrapper"><pre><code class="hljs sh">openocd --version</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">openocd --version</code></pre></div>
 
 <p>能看到版本号，说明ok。</p>
 <h2 id="二、工程创建"><a href="#二、工程创建" class="headerlink" title="二、工程创建"></a>二、工程创建</h2><h3 id="1-用STM32CubeMX创建工程"><a href="#1-用STM32CubeMX创建工程" class="headerlink" title="1. 用STM32CubeMX创建工程"></a>1. 用STM32CubeMX创建工程</h3><p>新建工程，如下：</p>
@@ -348,11 +348,11 @@
 <p>下一步(Linux 无视之)，Ctrl + Shift + P 快捷键，搜索 <code>settings json</code>，会出现下图，选中打开设置（JSON）</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513212324549.png" srcset="/img/loading.gif" lazyload alt="image-20210513212324549"></p>
 <p>之后在文件末尾添加如下两行设置，用来设置VSCode默认终端为我们上面下载的Git自带的Bash。</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-attr">&quot;terminal.integrated.shell.windows&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\Program Files\\Git\\bin\\bash.exe&quot;</span><span class="hljs-punctuation">,</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-attr">&quot;terminal.integrated.shell.windows&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;D:\\Program Files\\Git\\bin\\bash.exe&quot;</span><span class="hljs-punctuation">,</span></code></pre></div>
 
 <p>Ctrl + S 保存，Ctrl + ~(Tab按键上面那个键) 打开终端。</p>
 <p>或者如果你只想在当前工程目录下使用bash开发，可以只在当前目录下新建一个.vscode文件夹，然后新建一个单独的settings.json，在里面写上：</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-attr">&quot;terminal.integrated.shell.windows&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;C:\\Program Files\\Git\\bin\\bash.exe&quot;</span>
 <span class="hljs-punctuation">&#125;</span></code></pre></div>
 
@@ -374,7 +374,7 @@
 <p>Ctrl + Shift + P 打开搜索 <code>c/c++</code>，选择编辑配置，如图：</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513213747665.png" srcset="/img/loading.gif" lazyload alt="image-20210513213747665"></p>
 <p>这里是设置好的（我会解释每个设置的作用）：</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-attr">&quot;configurations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
         <span class="hljs-punctuation">&#123;</span>
             <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Win32&quot;</span><span class="hljs-punctuation">,</span>
@@ -425,7 +425,7 @@
 <p>这个时候make编译，提示没有make的，去MinGW，或者QT，进入他们的目录，搜索<code>mingw32-make.exe</code>，复制一份重命名为<code>make.exe</code>，然后将存放的目录添加到系统环境变量即可。</p>
 <hr>
 <p>（可以无视这里，命令不多的情况下，我喜欢用手敲指令，这里只是介绍一下）为了方便操作，我们在.vscode目录下创建 <strong>tasks.json</strong> 文件，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
         <span class="hljs-attr">&quot;version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2.0.0&quot;</span><span class="hljs-punctuation">,</span>
         <span class="hljs-attr">&quot;tasks&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
             <span class="hljs-punctuation">&#123;</span>
@@ -451,7 +451,7 @@
 <p>VS Code是可以给任务绑定快捷键的，有兴趣可以自己搜索。</p>
 <p>不使用快捷键而执行task的方法：按Ctrl + P，然后输入”task[空格]“，就会出现可用的任务列表。</p>
 <h2 id="三、编译调试"><a href="#三、编译调试" class="headerlink" title="三、编译调试"></a>三、编译调试</h2><h3 id="1、Openocd-设置"><a href="#1、Openocd-设置" class="headerlink" title="1、Openocd 设置"></a>1、Openocd 设置</h3><p>直接在项目文件夹下新建一个openocd.cfg文件，内容如下</p>
-<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-comment"># 选择调试器</span>
+<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-comment"># 选择调试器</span>
 <span class="hljs-comment">#source [find interface/jlink.cfg]</span>
 <span class="hljs-built_in">source</span> [find interface/cmsis-dap.cfg]
 
@@ -468,7 +468,7 @@ transport select swd
 <h3 id="2、下载svd文件（可选）"><a href="#2、下载svd文件（可选）" class="headerlink" title="2、下载svd文件（可选）"></a>2、下载svd文件（可选）</h3><p>在<a target="_blank" rel="noopener" href="https://github.com/posborne/cmsis-svd">&lt;我是链接&gt;</a>寻找对应STM32的svd文件。</p>
 <p>CMSIS-SVD是CMSIS的一个组件，它包含完整微控制器系统（包括外设）的程序员视图的系统视图描述 XML 文件。<strong>VS Code可以通过它来知道外设寄存器的地址分布，从而把寄存器内容展示到窗口中</strong>。将下载好的STM32FXXX.svd文件放在项目文件夹根目录即可。</p>
 <h3 id="3-配置VS-Code的调试功能"><a href="#3-配置VS-Code的调试功能" class="headerlink" title="3. 配置VS Code的调试功能"></a>3. 配置VS Code的调试功能</h3><p>在.vscode文件夹中新建一个launch.json，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-comment">// 使用 IntelliSense 了解相关属性。 </span>
     <span class="hljs-comment">// 悬停以查看现有属性的描述。</span>
     <span class="hljs-comment">// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387</span>
@@ -534,7 +534,7 @@ transport select swd
 
 <hr>
 <p>5、修改之前的<code>c_cpp_properties.json</code>文件，包含头文件，修改后如下：</p>
-<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-attr">&quot;configurations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
         <span class="hljs-punctuation">&#123;</span>
             <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Win32&quot;</span><span class="hljs-punctuation">,</span>
@@ -564,7 +564,7 @@ transport select swd
 <p>6、打开根目录下的MakeFile文件，修改</p>
 <p>首先是 C_SOURCES 变量：</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513232951903.png" srcset="/img/loading.gif" lazyload alt="image-20210513232951903"></p>
-<div class="code-wrapper"><pre><code class="hljs makefile">C_SOURCES =  \
+<div class="hljs code-wrapper"><pre><code class="hljs makefile">C_SOURCES =  \
 Core/main.c \
 Core/stm32f10x_it.c \
 Drivers/CMSIS/CM3/CoreSupport/core_cm3.c \
@@ -581,7 +581,7 @@ Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 <hr>
 <p>修改C_DEFS 变量：</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513233240976.png" srcset="/img/loading.gif" lazyload alt="image-20210513233240976"></p>
-<div class="code-wrapper"><pre><code class="hljs makefile">C_DEFS =  \
+<div class="hljs code-wrapper"><pre><code class="hljs makefile">C_DEFS =  \
 -DUSE_STDPERIPH_DRIVER \
 -DSTM32F10X_HD              
 </code></pre></div>
@@ -590,7 +590,7 @@ Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 <hr>
 <p>修改 C_INCLUDES 变量：</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513233456617.png" srcset="/img/loading.gif" lazyload alt="image-20210513233456617"></p>
-<div class="code-wrapper"><pre><code class="hljs makefile">C_INCLUDES =  \
+<div class="hljs code-wrapper"><pre><code class="hljs makefile">C_INCLUDES =  \
 -ICore \
 -IDrivers/CMSIS/CM3/CoreSupport/ \
 -IDrivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x \
@@ -603,7 +603,7 @@ Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513233622854.png" srcset="/img/loading.gif" lazyload alt="image-20210513233622854"></p>
 <p>说main.c 里找不到 stm32_eval.h 因为我们没有复制该文件，我们简单的修改main.c 文件如下：</p>
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513233901498.png" srcset="/img/loading.gif" lazyload alt="image-20210513233901498"></p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stm32f10x.h&quot;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stm32f10x.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
 
 <span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;
@@ -615,7 +615,7 @@ Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 <p><img src="/2021/05/13/NOTE/ARM/STM32/VSCode_STM32%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210513233955273.png" srcset="/img/loading.gif" lazyload alt="image-20210513233955273"></p>
 <p>提示我们，core_cm3.c 文件有问题，后来我百度发现，需要修改该文件内容。</p>
 <p>将其中原来的这两个函数注释掉，然后替换为以下两个函数。</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">uint32_t</span> __STREXB(<span class="hljs-type">uint8_t</span> value, <span class="hljs-type">uint8_t</span> *addr)
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">uint32_t</span> __STREXB(<span class="hljs-type">uint8_t</span> value, <span class="hljs-type">uint8_t</span> *addr)
 &#123;
    <span class="hljs-type">uint32_t</span> result=<span class="hljs-number">0</span>;
 
@@ -642,7 +642,7 @@ Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c \
 <p>你的show time 又到了。</p>
 <h2 id="五、使用CMAKE生成"><a href="#五、使用CMAKE生成" class="headerlink" title="五、使用CMAKE生成"></a>五、使用CMAKE生成</h2><p><strong>重点就是在CMakeLists.txt 文件首行添加 <code>set(CMAKE_SYSTEM_NAME Generic)</code> 。</strong></p>
 <p>这里有一份我写好的F103 的CMAKE文件，STD库的。修改头文件路径和源文件就好了。如果是F4的或者其他的，照着修改就好了，主要就是编译参数什么的，可以去默认的Makefile文件里找，慢慢测试，不要心急。</p>
-<div class="code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">set</span>(CMAKE_SYSTEM_NAME Generic)
+<div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">set</span>(CMAKE_SYSTEM_NAME Generic)
 <span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.0</span>.<span class="hljs-number">0</span>)
 <span class="hljs-keyword">project</span>(mydemo C CXX ASM)
 

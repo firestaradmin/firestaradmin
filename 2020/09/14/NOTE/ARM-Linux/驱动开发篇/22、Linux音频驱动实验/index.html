@@ -359,14 +359,14 @@
 <li><strong>wlf,capless</strong> ：这也是一个 bool 类型的属性，如果添加了此属性，OUT3 引脚将会使能，并且为了响应耳机插入响应事件，HP_L 和 HP_R 这两个引脚都会关闭。</li>
 </ul>
 <p>绑定文档给出的参考节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c">codec: wm8960@<span class="hljs-number">1</span>a &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c">codec: wm8960@<span class="hljs-number">1</span>a &#123;
     compatible = <span class="hljs-string">&quot;wlf,wm8960&quot;</span>;
     reg = &lt;<span class="hljs-number">0x1a</span>&gt;;
     wlf,shared-lrclk;
 &#125;;</code></pre></div>
 
 <p>根据wm8960.txt 这份绑定文档我们就可以在任意一个主控的 I2C 节点下添加wm8960 相关信息了，NXP 官方 I.MX6ULL EVK 开发板使用的也是 WM8960，因此在设备树中添加设备节点这些工作 NXP 已经帮我们做了。打开 imx6ull-lxg-emmc.dts，找到名为“i2c2”的节点，此节点下都是连接到 I2C2 总线上的设备，其中就包括了 wm8960，wm8960 节点信息如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> codec: wm8960@<span class="hljs-number">1</span>a &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> codec: wm8960@<span class="hljs-number">1</span>a &#123;
 <span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;wlf,wm8960&quot;</span>;
 <span class="hljs-number">3</span> 		reg = &lt;<span class="hljs-number">0x1a</span>&gt;;
 <span class="hljs-number">4</span> 		clocks = &lt;&amp;clks IMX6UL_CLK_SAI2&gt;;
@@ -377,7 +377,7 @@
 <p>可以看出，示例代码中的内容基本和 wm8960.txt 这个绑定文档中的示例内容一致，只是多了第 4 和第 5 这两行，这两行用于描述时钟相关信息。第 4 行指定时钟源为 SAI2，第 5行指定时钟的名字为“mclk”。前面我们说过，为了更好的同步，一般都会额外提供一条 MCLK时钟。</p>
 <p>至此，关于 wm8960 的 I2C 配置接口设备树就已经添加好了。</p>
 <h4 id="2-、I-MX6ULL-SAI-音频接口设备树"><a href="#2-、I-MX6ULL-SAI-音频接口设备树" class="headerlink" title="2 、I.MX6ULL SAI 音频接口设备树"></a>2 、I.MX6ULL SAI 音频接口设备树</h4><p>接下来就是 I.MX6ULL 的 SAI 音频接口设备树相关内容的修改了，同样的，先查阅一下相应的绑定文档：Documentation&#x2F;devicetree&#x2F;bindings&#x2F;sound&#x2F;fsl-sai.txt。和我们前面讲过的 IIC 接口、ECSPI 等接口一样，在 imx6ull.dtsi 文件中会有关于 SAI 相关接口的描述，这部分是 NXP 原厂编写的，我们不需要做任何修改，SAI2 的设备子节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> sai2: sai@<span class="hljs-number">0202</span>c000 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> sai2: sai@<span class="hljs-number">0202</span>c000 &#123;
 <span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;fsl,imx6ul-sai&quot;</span>,
 <span class="hljs-number">3</span> 		<span class="hljs-string">&quot;fsl,imx6sx-sai&quot;</span>;
 <span class="hljs-number">4</span> 		reg = &lt;<span class="hljs-number">0x0202c000</span> <span class="hljs-number">0x4000</span>&gt;;
@@ -394,7 +394,7 @@
 
 <p>直接搜索 compatible 属性中的两个兼容值，那么你就会找到 I.MX6ULL 的 SAI 接口驱动文件，路径为 sound&#x2F;soc&#x2F;fsl&#x2F;fsl_sai.c，此驱动文件不需要我们去研究，除非你在 NXP 上班，而你的工作恰好是给 NXP 的 I.MX 系列芯片编写 SAI 驱动的。</p>
 <p>从第 13 行可以看出，SAI2 默认是关闭的，因此我们需要将其打开，也就是设置 status 属性的值为“okay”，这个工作肯定是在具体板子对应的.dts 文件中完成的，其实就是向 sai2 节点里面追加或者修改一些属性值。打开 imx6ull-lxg-emmc.dts 文件，找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;sai2 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;sai2 &#123;
 <span class="hljs-number">2</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">3</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_sai2
 <span class="hljs-number">4</span> 					 &amp;pinctrl_sai2_hp_det_b&gt;;
@@ -406,7 +406,7 @@
 <span class="hljs-number">10</span> &#125;;</code></pre></div>
 
 <p>上述示例代码中的内容是 NXP 针对自己的 I.MX6ULL EVK 开发板而添加的，主要是对 sai2 节点做了三个方面的修改：SAI2 接口的 pinctrl、相应的时钟、修改 status 为“okay”。我们重点来看一下 pinctrl 的设置，因为关系到 SAI2 接口的 IO 设置，从 pinctrl-0 属性可以看出这里一共有两组 IO：pinctrl_sai2 和 pinctrl_sai2_hp_det_b，这两组 IO 内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_sai2: sai2grp &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_sai2: sai2grp &#123;
 <span class="hljs-number">2</span> 		fsl,pins = &lt;
 <span class="hljs-number">3</span> 			MX6UL_PAD_JTAG_TDI__SAI2_TX_BCLK <span class="hljs-number">0x17088</span>
 <span class="hljs-number">4</span> 			MX6UL_PAD_JTAG_TDO__SAI2_TX_SYNC <span class="hljs-number">0x17088</span>
@@ -425,7 +425,7 @@
 <p>pinctrl_sai2 描述的是 SAI2 接口的 IO 配置，这个要根据自己板子的实际硬件情况修改，正点原子的 ALPHA 开发板上 SAI2 所使用的 IO 和 NXP 的 EVK 开发板一样，因此这里不需要做任何修改。</p>
 <p>pinctrl_sai2_hp_det_b 描述的是耳机插入检测引脚，wm8960 支持耳机插入检测，这样当耳机插入以后就会通过耳机播放音乐，当耳机拔出来以后就会通过喇叭播放音乐。对于正点原子的 ALPHA 开发板，SAI 部分的设备树信息不需要做任何修改，直接使用 NXP官方写好的即可。</p>
 <h4 id="3、I-MX6ULL-sound-节点"><a href="#3、I-MX6ULL-sound-节点" class="headerlink" title="3、I.MX6ULL sound 节点"></a>3、I.MX6ULL sound 节点</h4><p>最后我们需要在根节点“&#x2F;”下创建一个名为“sound”的子节点，笔者并没有在 linux 内核中找到此节点的绑定信息。只有一份在 I.MX 系列芯片中使用 WM8962 芯片的 sound 节点绑定文档，路径为：Documentation&#x2F;devicetree&#x2F;bindings&#x2F;sound&#x2F;imx-audio-wm8962.txt。虽然不是 wm8960的绑定文档，但是我们也可以参考 imx-audio-wm8962.txt。NXP 官方已经针对 EVK 开发板编写了 sound 节点，我们可以在此基础上针对我们所使用的平台来修改出对应的 sound 节点，修改完成以后的 sound 节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c">sound &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c">sound &#123;
 	compatible = <span class="hljs-string">&quot;fsl,imx6ul-evk-wm8960&quot;</span>,
 		   		 <span class="hljs-string">&quot;fsl,imx-audio-wm8960&quot;</span>;
 	model = <span class="hljs-string">&quot;wm8960-audio&quot;</span>;
@@ -480,10 +480,10 @@
 </li>
 </ul>
 <h3 id="2-使能内核的-WM8960-驱动"><a href="#2-使能内核的-WM8960-驱动" class="headerlink" title="2| 使能内核的 WM8960  驱动"></a>2| 使能内核的 WM8960  驱动</h3><p>设备树配置完成以后就可以使能内核自带的 WM8960 驱动了，直接通过图形化界面配置即可，输入如下命令打开 linux 内核的图形化配置界面：</p>
-<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
 
 <h4 id="1-、取消-ALSA-模拟-OSS-API"><a href="#1-、取消-ALSA-模拟-OSS-API" class="headerlink" title="1 、取消 ALSA  模拟 OSS API"></a>1 、取消 ALSA  模拟 OSS API</h4><p>首先取消 ALSA 模拟 OSS，进入如下路径：</p>
-<div class="code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
+<div class="hljs code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
     -&gt; Sound card support (SOUND [=y])
         -&gt; Advanced Linux Sound Architecture (SND [=y])
             -&gt; &lt;&gt; OSS Mixer API <span class="hljs-comment">//不选择</span>
@@ -491,7 +491,7 @@
 
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907165744149.png" srcset="/img/loading.gif" lazyload alt="image-20200907165744149"></p>
 <h4 id="2-、使能-I-MX6ULL-的-的-WM8960-驱动"><a href="#2-、使能-I-MX6ULL-的-的-WM8960-驱动" class="headerlink" title="2 、使能 I.MX6ULL 的 的 WM8960 驱动"></a>2 、使能 I.MX6ULL 的 的 WM8960 驱动</h4><p>接下来使能 WM8960 驱动，进入如下路径：</p>
-<div class="code-wrapper"><pre><code class="hljs livescript">-&gt; Device Drivers
+<div class="hljs code-wrapper"><pre><code class="hljs livescript">-&gt; Device Drivers
     -&gt; Sound card support <span class="hljs-function"><span class="hljs-params">(SOUND [=y])</span></span>
 <span class="hljs-function">        -&gt;</span> Advanced Linux Sound Architecture <span class="hljs-function"><span class="hljs-params">(SND [=y])</span></span>
 <span class="hljs-function">            -&gt;</span> ALSA <span class="hljs-keyword">for</span> SoC audio support <span class="hljs-function"><span class="hljs-params">(SND_SOC [=y])</span></span>
@@ -519,30 +519,30 @@
 <p>当前最新版本为 1.2.2，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907170812231.png" srcset="/img/loading.gif" lazyload alt="image-20200907170812231"></p>
 <h3 id="1-alsa-lib-移植"><a href="#1-alsa-lib-移植" class="headerlink" title="1| alsa-lib 移植"></a>1| alsa-lib 移植</h3><p>注意 alsa-lib 编译过程中会生成一些配置文件，而这些配置信息的路径都是绝对路径，因此为了保证 ubuntu 和开发板根文件系统中的路径一致！我们需要在 ubuntu 和开发板中各创建一个路径和名字完全一样的目录，这里我们都创建一个&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录，ubuntu 中创建命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /usr/share 			//进入 ubuntu 的/usr/share 目录
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /usr/share 			//进入 ubuntu 的/usr/share 目录
 sudo <span class="hljs-built_in">mkdir</span> arm-alsa  	//创建 arm-alsa 目录</code></pre></div>
 
 <p>最后在开发板根文件系统中也创建一个&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> .../nfs/rootfs/						//进入根文件系统根目录
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> .../nfs/rootfs/						//进入根文件系统根目录
 <span class="hljs-built_in">mkdir</span> ./usr/share/arm-alsa -p  		//开发板根文件系统创建 arm-alsa 目录</code></pre></div>
 
 <p>这样 ubuntu 和开发板根文件系统都有一个“&#x2F;usr&#x2F;share&#x2F;arm-alsa”目录，我们交叉编译的时候就不怕存在引用绝对路径了，因为 ubuntu 和开发板中的配置文件路径都是一模一样的。由于 alsa-utils 要用到 alsa-lib 库，因此要先编译 alsa-lib 库。alsa-lib 就是 ALSA 相关库文件，应用程序通过调用 ALSA 库来对 ALSA 框架下的声卡进行操作。先创建一个名为“alsa-lib”的目录用来保存 alsa-lib 的编译结果，然后将 alsa-lib-1.2.2.tar.bz2 拷贝到 ubuntu 中并解压，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">tar -vxjf alsa-lib-1.2.2.tar.bz2 //解压 alsa-lib</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">tar -vxjf alsa-lib-1.2.2.tar.bz2 //解压 alsa-lib</code></pre></div>
 
 <p>解压完成以后就会得到一个名为“alsa-lib-1.2.2”的文件夹，这个就是 alsa-lib 的源码。进入alsa-lib-1.2.2 目录，然后配置并编译，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-lib-1.2.2/   			//进入 alsa-lib 源码目录
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-lib-1.2.2/   			//进入 alsa-lib 源码目录
 
 ./configure --host=arm-linux-gnueabihf --prefix=/home/firestaradmin/linux/tools/alsa-lib --with-configdir=/usr/share/arm-alsa 					//配置</code></pre></div>
 
 <p>注意， “–with-configdir”用于设置 alsa-lib 编译出来的配置文件存放位置，这里设置为前面创建的“&#x2F;usr&#x2F;share&#x2F;arm-alsa”目录。</p>
 <p>配置完成以后就可以编译了，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">make  //编译
+<div class="hljs code-wrapper"><pre><code class="hljs sh">make  //编译
 sudo make install //安装</code></pre></div>
 
 <p>可能会出现如图所示的错误提示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907171829579.png" srcset="/img/loading.gif" lazyload alt="image-20200907171829579"></p>
 <p>图中提示 libatopology.la 编译失败，这是因为 sudo 会切换到 root 用户下，但是此时 root用户下的环境变量中没有交叉编译器路径，因此会提示找不到“arm-linux-gnueabihf-gcc”，从而导致 libatopology.la 编译失败。解决方法就是先切换到 root 用户，重新执行一下&#x2F;etc&#x2F;profile文件，然后直接 make install 即可，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">sudo -s  				//切换到 root 用户
+<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo -s  				//切换到 root 用户
 <span class="hljs-built_in">source</span> /etc/profile 	//执行/etc/profile
 make install  			//安装，此时已经工作在 root 下，因此不需要加“sudo”
 su firestaradmin  		//编译完成以后回原来的用户</code></pre></div>
@@ -552,16 +552,16 @@ su firestaradmin  		//编译完成以后回原来的用户</code></pre></div>
 <p>ubuntu 中&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下的内容如图所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907172142141.png" srcset="/img/loading.gif" lazyload alt="image-20200907172142141"></p>
 <p>将上上图中alsa-lib&#x2F;lib 目录下的所有文件拷贝到开发板根文件系统的&#x2F;usr&#x2F;lib 目录下，再将上图中&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下的所有文件拷贝到开发板的&#x2F;usr&#x2F;share&#x2F;arm-alsa 目录下，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-lib 
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-lib 
 sudo <span class="hljs-built_in">cp</span> lib/* /home/firestardmin/linux/nfs/rootfs/lib/ -af
 <span class="hljs-built_in">cd</span> /usr/share/arm-alsa
 sudo <span class="hljs-built_in">cp</span> * /home/firestardmin/linux/nfs/rootfs/usr/share/arm-alsa/ -raf</code></pre></div>
 
 <h3 id="2-alsa-utils-移植"><a href="#2-alsa-utils-移植" class="headerlink" title="2| alsa-utils 移植"></a>2| alsa-utils 移植</h3><p>alsa-utils 是 ALSA 的一些小工具集合，我们可以通过这些小工具还测试我们的声卡。将 alsa-utils-1.2.2.tar.bz2 复制到 ubuntu 中并解压，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">tar -vxjf alsa-utils-1.2.2.tar.bz2  //解压</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">tar -vxjf alsa-utils-1.2.2.tar.bz2  //解压</code></pre></div>
 
 <p>解压成功以后会得到一个名为“alsa-utils-1.2.2”的文件夹，此文件夹就是 alsa-utils 源码。重新创建一个名为“alsa-utils”的目录用于存放 alsa-utils-1.2.2 的编译结果。按照如下命令编译alsa-utils：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-utils-1.2.2/ 
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-utils-1.2.2/ 
 
 ./configure --host=arm-linux-gnueabihf --prefix=/home/firestaradmin/linux/tools/alsa-utils --with-alsa-inc-prefix=/home/firestaradmin/linux/tools/alsa-lib/include/ --with-alsa-prefix=/home/firestaradmin/linux/tools/alsa-lib/lib/ --disable-alsamixer --disable-xmlto
 
@@ -572,76 +572,76 @@ sudo make install</code></pre></div>
 <p>注意！上面在配置 alsa-utils 的时候使用了“–disable-alsamixer”来禁止编译 alsamixer 这个工具，但是这个工具确非常重要，它是一个图形化的声卡控制工具，需要 ncurses 库的支持。</p>
 <p>ncurses 库笔者已经交叉编译成功了，但是尝试了很多次设置，就是无法编译alsa-utils 中的 alsamixer 工具。网上也没有找到有效的解决方法，大家都是禁止编译 alsamixer的。所以这里就没法使用 alsamixer 这个工具了，但是可以使用 alsa-utils 提供的另外一个工具：amixer，alsamixer 其实就是 amixer 的图形化版本。两者的功能都是一样的，只是 alsamixer 使用起来更人性化一点。</p>
 <p>上面utils编译时可能会出现</p>
-<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mv</span>: 无法获取<span class="hljs-string">&quot;t-ja.gmo&quot;</span> 的文件状态(<span class="hljs-built_in">stat</span>): 没有那个文件或目录
+<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mv</span>: 无法获取<span class="hljs-string">&quot;t-ja.gmo&quot;</span> 的文件状态(<span class="hljs-built_in">stat</span>): 没有那个文件或目录
 make[2]: *** [ja.gmo] 错误 1</code></pre></div>
 
 <p>解决办法是自己创建一个空文件 ~&#x2F;alsa-utils-xxx&#x2F;alsaconf&#x2F;po&#x2F;t-ja.gmo 然后重新 make, 之后又提示另一个文件没有，用同样的办法创建空文件再次 make，就能成功了。</p>
 <p>编译完成以后就会在前面创建的“alsa-utils”目录下生成 bin、sbin 和 share 三个文件夹，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907174836127.png" srcset="/img/loading.gif" lazyload alt="image-20200907174836127"></p>
 <p>将图中 bin、sbin 和 share 这三个目录中的所有文件分别拷贝到开发板根目录下的&#x2F;bin、&#x2F;sbin 和&#x2F;usr&#x2F;share&#x2F;alsa 目录下，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-utils
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> alsa-utils
 sudo <span class="hljs-built_in">cp</span> bin/* /home/firestaradmin/linux/nfs/rootfs/bin/ -rfa
 sudo <span class="hljs-built_in">cp</span> sbin/* /home/firestaradmin/linux/nfs/rootfs/sbin/ -rfa
 sudo <span class="hljs-built_in">cp</span> share/* /home/firestaradmin/linux/nfs/rootfs/usr/share/ -rfa</code></pre></div>
 
 <p>打开开发板根文件系统中的&#x2F;etc&#x2F;profile 文件，在里面加入如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">export ALSA_CONFIG_PATH=<span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/arm-alsa/</span>alsa.conf</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">export ALSA_CONFIG_PATH=<span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/arm-alsa/</span>alsa.conf</code></pre></div>
 
 <p>ALSA_CONFIG_PATH 用于指定 alsa 的配置文件，这个配置文件是 alsa-lib 编译出来的。</p>
 <h2 id="五、声卡设置与测试"><a href="#五、声卡设置与测试" class="headerlink" title="五、声卡设置与测试"></a>五、声卡设置与测试</h2><h3 id="1-amixer-使用方法"><a href="#1-amixer-使用方法" class="headerlink" title="1| amixer 使用方法"></a>1| amixer 使用方法</h3><h4 id="1-、查看帮助信息"><a href="#1-、查看帮助信息" class="headerlink" title="1 、查看帮助信息"></a>1 、查看帮助信息</h4><p>声卡相关选型默认都是关闭的，比如耳机和喇叭的左右声道输出等。因此我们在使用之前一定要先设置好声卡，alsa-utils 自带了 amixer 这个声卡设置工具。输入如下命令即可查看 amixer的帮助信息：</p>
-<div class="code-wrapper"><pre><code class="hljs ada">amixer <span class="hljs-comment">--help </span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs ada">amixer <span class="hljs-comment">--help </span></code></pre></div>
 
 <p>结果如图所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175325585.png" srcset="/img/loading.gif" lazyload alt="image-20200907175325585"></p>
 <p>从图 可以看出，amixer 软件命令分为两组，scontrols、scontents、sset 和 sget 为一组。controls、contents、cset 和 cget 为另一组。这两组的基本功能都是一样的，只不过“s”开头的是 simple(简单)组，这一组命令是简化版，本教程最终使用“s”开头的命令设置声卡，因为少输入很多字符。</p>
 <h4 id="2-、查看设置项"><a href="#2-、查看设置项" class="headerlink" title="2 、查看设置项"></a>2 、查看设置项</h4><p>我们要先看一下都有哪些设置项，先来看一下 scontrols 对应的设置项，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">amixer scontrols  <span class="hljs-regexp">//</span>查看所有设置项</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">amixer scontrols  <span class="hljs-regexp">//</span>查看所有设置项</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175501178.png" srcset="/img/loading.gif" lazyload alt="image-20200907175501178"></p>
 <p>再来看一下 controls 对应的设置项，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">amixer controls  <span class="hljs-regexp">//</span>查看所有设置项</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">amixer controls  <span class="hljs-regexp">//</span>查看所有设置项</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175532792.png" srcset="/img/loading.gif" lazyload alt="image-20200907175532792"></p>
 <p>图 由于篇幅原因只列出了一部分设置项，整体设置项目还是比较多的，很多设置项目我们都不知道是啥意思，毕竟不是从事音频专业的。这里我们只关注一些最常用的设置即可，比如设置耳机和喇叭音量、设置左右声道音量、设置输入音量等等。</p>
 <h4 id="3-、查看设置值-值"><a href="#3-、查看设置值-值" class="headerlink" title="3 、查看设置值 值"></a>3 、查看设置值 值</h4><p>不同的设置项对应的设置值类型不同，先查看一下scontents对应的设置值，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">amixer scontents  <span class="hljs-regexp">//</span>查看设置值</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">amixer scontents  <span class="hljs-regexp">//</span>查看设置值</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907175630338.png" srcset="/img/loading.gif" lazyload alt="image-20200907175630338"></p>
 <p>从图 可以看出“Headphone”项目就是设置耳机音量的，音量范围为 0-127，当前音量为 0。有些设置项是 bool 类型，只有 on 和 off 两种状态。关于 controls 对应的设置值大家自行输入“amixer controls”命令查看即可。</p>
 <h4 id="4、设置声卡"><a href="#4、设置声卡" class="headerlink" title="4、设置声卡"></a>4、设置声卡</h4><p>知道了设置项和设置值，那么设置声卡就很简单了，直接使用下面命令即可：</p>
-<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> sset 设置项目 设置值</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> sset 设置项目 设置值</code></pre></div>
 
 <p>或：</p>
-<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> cset 设置项目 设置值</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> cset 设置项目 设置值</code></pre></div>
 
 
 
 <h4 id="5-、获取声卡设置值"><a href="#5-、获取声卡设置值" class="headerlink" title="5 、获取声卡设置值"></a>5 、获取声卡设置值</h4><p>如果要读取当前声卡某项设置值的话使用如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs smali">amixer<span class="hljs-built_in"> sget </span>设置项目</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs smali">amixer<span class="hljs-built_in"> sget </span>设置项目</code></pre></div>
 
 <p>或：</p>
-<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> cget 设置项目</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">amixer</span> cget 设置项目</code></pre></div>
 
 
 
 <h3 id="2-音乐播放测试"><a href="#2-音乐播放测试" class="headerlink" title="2| 音乐播放测试"></a>2| 音乐播放测试</h3><h4 id="1-、使用-amixer-设置声卡"><a href="#1-、使用-amixer-设置声卡" class="headerlink" title="1 、使用 amixer  设置声卡"></a>1 、使用 amixer  设置声卡</h4><p>第一次使用声卡之前一定要先使用 amixer 设置声卡，打开耳机和喇叭，并且设置喇叭和耳<br>机音量，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">amixer</span> sset Headphone <span class="hljs-number">100</span>,<span class="hljs-number">100</span>
+<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">amixer</span> sset Headphone <span class="hljs-number">100</span>,<span class="hljs-number">100</span>
 <span class="hljs-attribute">amixer</span> sset Speaker <span class="hljs-number">120</span>,<span class="hljs-number">120</span>
 <span class="hljs-attribute">amixer</span> sset &#x27;Right Output Mixer PCM&#x27; <span class="hljs-literal">on</span>
 <span class="hljs-attribute">amixer</span> sset &#x27;Left Output Mixer PCM&#x27; <span class="hljs-literal">on</span></code></pre></div>
 
 <h4 id="2-、使用-aplay-播放-WAV-格式音乐"><a href="#2-、使用-aplay-播放-WAV-格式音乐" class="headerlink" title="2 、使用 aplay  播放 WAV  格式音乐"></a>2 、使用 aplay  播放 WAV  格式音乐</h4><p>声卡设置好以后就可以使用 aplay 软件播放 wav 格式的音乐测试一下，aplay 也是 alsa-utils提供的。可以在开发板根文件系统下创建一个名为“music”的目录来存放音频文件，然后找一首 wav 格式的音乐放到开发板根文件系统中，然后输入如下命令播放：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">aplay test.wav <span class="hljs-regexp">//</span>播放歌曲</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">aplay test.wav <span class="hljs-regexp">//</span>播放歌曲</code></pre></div>
 
 <p>如果一切设置正常的话就会开始播放音乐，因为 ALPHA 开发板支持喇叭和耳机自动切换，因此如果不插耳机的话默认从喇叭播放音乐。插上耳机以后喇叭就会停止播放音乐，改为耳机播放音乐。</p>
 <h3 id="3-MIC-录音测试"><a href="#3-MIC-录音测试" class="headerlink" title="3| MIC  录音测试"></a>3| MIC  录音测试</h3><p>ALPHA 开发板上有一个麦克风，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907180428743.png" srcset="/img/loading.gif" lazyload alt="image-20200907180428743"></p>
 <p>我们可以通过图 上的这个麦克风(MIC)来完成录音测试。</p>
 <h4 id="1-、使用-amixer-设置声卡-1"><a href="#1-、使用-amixer-设置声卡-1" class="headerlink" title="1 、使用 amixer  设置声卡"></a>1 、使用 amixer  设置声卡</h4><p>同样的，第一次使用声卡录音之前要先使用 amixer 设置一下声卡，这里为了方便，我们在开发板根文件系统的&#x2F;music 目录下创建一个名为“mic_in_config.sh”的 shell 脚本，然后在里面输入声卡的设置命令。mic_in_config.sh 脚本内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span>
 <span class="hljs-comment">#设置捕获的音量</span>
 amixer cset name=<span class="hljs-string">&#x27;Capture Volume&#x27;</span> 90,90
 
@@ -690,11 +690,11 @@ amixer sset <span class="hljs-string">&#x27;Right Boost Mixer RINPUT3&#x27;</spa
 amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27;</span> 0</code></pre></div>
 
 <p>给予 mic_in_config.sh 可执行权限并运行，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 mic_in_config.sh 
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 mic_in_config.sh 
 ./mic_in_config.sh</code></pre></div>
 
 <h4 id="2-、使用-arecord-录制音频"><a href="#2-、使用-arecord-录制音频" class="headerlink" title="2 、使用 arecord  录制音频"></a>2 、使用 arecord  录制音频</h4><p>使用 arecord 来录制一段 10 秒中的音频，arecord 也是 alsa-utils 编译出来的，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arecord -f <span class="hljs-built_in">cd</span> -d 10 record.wav</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arecord -f <span class="hljs-built_in">cd</span> -d 10 record.wav</code></pre></div>
 
 <p>-f 是设置录音质量，“-f cd”表示录音质量为 cd 级别。-d 是指定录音时间，单位是 s，这条指令就是录制一段 cd 级别 10s 的 wav 音频，音频名字为 record.wav。录制的时候大家就可以对着开发板上的 MIC 说话，直到录制完成。</p>
 <p>录制完成以后使用 aplay 播放刚刚录制的 record.wav 音频，大家会发现只有左声道有声音，右声道没有任何声音，这是因为 ALPHA 开发板的 MIC 只接了左声道，因此录出来的音频只有左声道有数据。</p>
@@ -703,7 +703,7 @@ amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27
 <p>从图  可以看出，R23 的 bit3:2 控制着左右声道数据来自哪里，可选设置如下：<br>00 ：左声道数据使用左 ADC，右声道数据使用右 ADC，这个是默认模式。<br>01 ：左声道数据使用左 ADC，右声道数据使用左 ADC。<br>10 ：左声道数据使用右 ADC，右声道数据使用右 ADC。<br>11：左声道数据使用右 ADC，右声道数据使用左 ADC。</p>
 <p>由于 ALPHA 开发板 MIC 接在了左声道，因此 WM8960 的 R23 寄存器 bit3:2 应该设置为01，也就是左右声道的数据都使用左 ADC。</p>
 <p>打开 linux 内核里面的 wm8960.c 这个文件，找到 wm8960_reg_defaults 数组，此数组保存着 wm8960 的默认配置值，为&lt;寄存器地址，值&gt;这样的形式。R23 寄存器地址为 0X17，因此找到 0x17 组，默认情况下 0x17 对应的值为 0X01C0，我们将 bit3:2 改为 01 以后 0x17 寄存器的值就变为了 0x01C4，修改后的 wm8960_reg_defaults 寄存器如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">reg_default</span> <span class="hljs-title">wm8960_reg_defaults</span>[] =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">reg_default</span> <span class="hljs-title">wm8960_reg_defaults</span>[] =</span> &#123;
 <span class="hljs-number">2</span> 		&#123; <span class="hljs-number">0x0</span>, <span class="hljs-number">0x00a7</span> &#125;,
 ......
 <span class="hljs-number">21</span> 		&#123; <span class="hljs-number">0x16</span>, <span class="hljs-number">0x00c3</span> &#125;,
@@ -719,7 +719,7 @@ amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181517384.png" srcset="/img/loading.gif" lazyload alt="image-20200907181517384"></p>
 <p>注意，图  中的 Line in 不是用来连接话筒的！这里不能接话筒。使用一根 3.5mm 公对公音频线，一头连接到手机或者电脑，另外一头连接到图 中的 Line in 接口上。</p>
 <h4 id="1-、使用-amixer-设置声卡-2"><a href="#1-、使用-amixer-设置声卡-2" class="headerlink" title="1 、使用 amixer  设置声卡"></a>1 、使用 amixer  设置声卡</h4><p>同样新建一个名为“line_in_config.sh”的 shell 脚本，在此脚本里面输入如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">1 <span class="hljs-comment">#!/bin/sh</span>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">1 <span class="hljs-comment">#!/bin/sh</span>
 2 <span class="hljs-comment">#正点原子@ALIENTEK</span>
 3 <span class="hljs-comment">#设置捕获的音量</span>
 4 amixer cset name=<span class="hljs-string">&#x27;Capture Volume&#x27;</span> 100,100
@@ -777,28 +777,28 @@ amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27
 56 amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27;</span> 127</code></pre></div>
 
 <p>最后，给予 line_in_config.sh 可执行权限并运行，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs stata">chmod 777 line_in_config.<span class="hljs-keyword">sh</span> <span class="hljs-comment">//给予可执行权限</span>
+<div class="hljs code-wrapper"><pre><code class="hljs stata">chmod 777 line_in_config.<span class="hljs-keyword">sh</span> <span class="hljs-comment">//给予可执行权限</span>
 ./line_in_config.<span class="hljs-keyword">sh</span> <span class="hljs-comment">//运行</span></code></pre></div>
 
 <h4 id="2-、使用-arecord-录制音频-1"><a href="#2-、使用-arecord-录制音频-1" class="headerlink" title="2 、使用 arecord  录制音频"></a>2 、使用 arecord  录制音频</h4><p>使用 arecord 来录制一段 10 秒中的音频，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs powershell">arecord <span class="hljs-operator">-f</span> <span class="hljs-built_in">cd</span> <span class="hljs-literal">-d</span> <span class="hljs-number">10</span> record.wav</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs powershell">arecord <span class="hljs-operator">-f</span> <span class="hljs-built_in">cd</span> <span class="hljs-literal">-d</span> <span class="hljs-number">10</span> record.wav</code></pre></div>
 
 <p>录制完成以后使用 aplay 播放刚刚录制的音频，由于 ALPHA 开发板上 LINE IN 是接了左右双声道，因此录制出来的音频是立体声的，不像 MIC 录出来的只有左声道。</p>
 <h2 id="六、开机自动配置声卡"><a href="#六、开机自动配置声卡" class="headerlink" title="六、开机自动配置声卡"></a>六、开机自动配置声卡</h2><p>大家在使用的时候应该应该会发现开发板重启以后声卡的所有设置都会消失，必须重新设置声卡。也就是说我们对声卡的设置不能保存，本小节我们就来学习一下如何保存声卡的设置。</p>
 <h3 id="1-、使用-alsactl-保存声卡设置"><a href="#1-、使用-alsactl-保存声卡设置" class="headerlink" title="1 、使用 alsactl  保存声卡设置"></a>1 、使用 alsactl  保存声卡设置</h3><p>声卡设置的保存通过 alsactl 工具来完成，此工具也是 alsa-utils 编译出来的。因为 alsactl 默认将声卡配置文件保存在&#x2F;var&#x2F;lib&#x2F;alsa 目录下，因此首先在开发板根文件系统下创建&#x2F;var&#x2F;lib&#x2F;alsa目录，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">mkdir <span class="hljs-regexp">/var/</span>lib/alsa -p</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">mkdir <span class="hljs-regexp">/var/</span>lib/alsa -p</code></pre></div>
 
 <p>首先使用 amixer 设置声卡，然后输入如下命令保存声卡设置</p>
-<div class="code-wrapper"><pre><code class="hljs awk">alsactl -f <span class="hljs-regexp">/var/</span>lib<span class="hljs-regexp">/alsa/</span>asound.state store <span class="hljs-regexp">//</span>保存声卡设置</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">alsactl -f <span class="hljs-regexp">/var/</span>lib<span class="hljs-regexp">/alsa/</span>asound.state store <span class="hljs-regexp">//</span>保存声卡设置</code></pre></div>
 
 <p>-f 指定声卡配置文件，store 表示保存。关于 alsactl 的详细使用方法，输入“alsactl -h”即可。保存成功以后就会生成&#x2F;var&#x2F;lib&#x2F;alsa&#x2F;asound.state 这个文件，asound.state 里面就是关于声卡的各种设置信息，大家可以打开此文件查看一下里面的内容，如图所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907181757589.png" srcset="/img/loading.gif" lazyload alt="image-20200907181757589"></p>
 <p>如果要使用 asound.state 中的配置信息来配置声卡，执行如下命令即可：</p>
-<div class="code-wrapper"><pre><code class="hljs pf">alsactl -f /var/lib/alsa/asound.<span class="hljs-keyword">state</span> restore</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs pf">alsactl -f /var/lib/alsa/asound.<span class="hljs-keyword">state</span> restore</code></pre></div>
 
 <p>最后面的参数改为 restore 即可，也就是恢复的意思。</p>
 <p>打开&#x2F;etc&#x2F;init.d&#x2F;rcS 文件，在最后面追加如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-keyword">if</span> [ -f <span class="hljs-string">&quot;/var/lib/alsa/asound.state&quot;</span> ]; then
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-keyword">if</span> [ -f <span class="hljs-string">&quot;/var/lib/alsa/asound.state&quot;</span> ]; then
 <span class="hljs-number">2</span> 		echo <span class="hljs-string">&quot;ALSA: Restoring mixer setting......&quot;</span>
 <span class="hljs-number">3</span> 		/sbin/alsactl -f /var/lib/alsa/asound.state restore &amp;
 <span class="hljs-number">4</span> fi</code></pre></div>
@@ -808,10 +808,10 @@ amixer sset <span class="hljs-string">&#x27;Right Input Boost Mixer RINPUT3&#x27
 <p>接使用 aplay 播放音乐测试声卡开机自动配置是否正确。</p>
 <h2 id="七、mplayer-播放器移植与使用"><a href="#七、mplayer-播放器移植与使用" class="headerlink" title="七、mplayer  播放器移植与使用"></a>七、mplayer  播放器移植与使用</h2><p>至此，linux 下的 LCD 显示和音频都已经驱动起来了，那么肯定就会有朋友想播放视频。<br>本节我们就来学习一下如何移植 mplayer 这个强大的视频播放软件。mplayer 是一款开源的多媒<br>体播放器，可以用来播放音视频，mplayer 自带多种格式的解码器，不需要我们再另外安装。</p>
 <h3 id="1-mplayer-移植"><a href="#1-mplayer-移植" class="headerlink" title="1| mplayer 移植"></a>1| mplayer 移植</h3><h4 id="1-、移植-zlib-库"><a href="#1-、移植-zlib-库" class="headerlink" title="1 、移植 zlib  库"></a>1 、移植 zlib  库</h4><p>mplayer 用到了 zlib 库，因此要先移植 zlib 库。zlib 源码下载地址为：<a target="_blank" rel="noopener" href="http://zlib.net/%EF%BC%8C%E5%BD%93%E5%89%8D%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E4%B8%BA">http://zlib.net/，当前最新版本为</a> 1.2.11。我们已经下载下来放到了开发板光盘中，</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">ar</span> -vxzf zlib-<span class="hljs-number">1</span>.<span class="hljs-number">2</span>.<span class="hljs-number">11</span>.tar.gz  //解压</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">ar</span> -vxzf zlib-<span class="hljs-number">1</span>.<span class="hljs-number">2</span>.<span class="hljs-number">11</span>.tar.gz  //解压</code></pre></div>
 
 <p>解压完成以后得到一个名为“zlib-1.2.11”的 zlib 源码文件。另外新建一个名为“zlib”的文件夹来保存 zlib 的编译结果。进入 zlib 源码目录，然后配置并编译，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs groovy">cd zlib<span class="hljs-number">-1.2</span><span class="hljs-number">.11</span><span class="hljs-regexp">/ /</span>/进去 zlib 源码
+<div class="hljs code-wrapper"><pre><code class="hljs groovy">cd zlib<span class="hljs-number">-1.2</span><span class="hljs-number">.11</span><span class="hljs-regexp">/ /</span>/进去 zlib 源码
 
 CC=arm-linux-gnueabihf-gcc  LD=arm-linux-gnueabihf-ld  AD=arm-linux-gnueabihf-
 <span class="hljs-keyword">as</span> .<span class="hljs-regexp">/configure --prefix=/</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/tools/</span>zlib <span class="hljs-comment">//配置</span>
@@ -822,15 +822,15 @@ make install</code></pre></div>
 <p>编译完成以后的 zlib 目录内容如图所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182057667.png" srcset="/img/loading.gif" lazyload alt="image-20200907182057667"></p>
 <p>将图中的lib目录下的zlib库文件拷贝到开发板根文件系统的&#x2F;lib目录下，命令为：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">sudo cp lib<span class="hljs-regexp">/* /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/</span> -rfa</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo cp lib<span class="hljs-regexp">/* /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/</span> -rfa</code></pre></div>
 
 
 
 <h4 id="2-、移植-mplayer"><a href="#2-、移植-mplayer" class="headerlink" title="2 、移植 mplayer"></a>2 、移植 mplayer</h4><p>mplayer 需要用到 alsa-lib 和 zlib，因此要先保证这两个已经交叉编译了。mplayer 源码下载地址为：<a target="_blank" rel="noopener" href="http://www.mplayerhq.hu/MPlayer/releases/%EF%BC%8C%E5%BD%93%E5%89%8D%E6%9C%80%E6%96%B0%E7%9A%84%E4%B8%BA">http://www.mplayerhq.hu/MPlayer/releases/，当前最新的为</a> 1.4 版本。将 MPlayer-1.4.tar.gz 拷贝到 ubuntu 中并解压，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs stylus">tar -vxzf MPlayer-<span class="hljs-number">1.4</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> <span class="hljs-comment">//解压</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs stylus">tar -vxzf MPlayer-<span class="hljs-number">1.4</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> <span class="hljs-comment">//解压</span></code></pre></div>
 
 <p>解压完成以后得到一个名为“MPlayer-1.4”的 mplayer 源码文件。另外新建一个名为“mplayer”的文件夹来保存 mplayer 的编译结果。进入 mplayer 源码目录，然后配置并编译，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs brainfuck"><span class="hljs-comment">cd</span> <span class="hljs-comment">MPlayer</span><span class="hljs-literal">-</span><span class="hljs-comment">1</span><span class="hljs-string">.</span><span class="hljs-comment">4/</span>  <span class="hljs-comment">//进去</span> <span class="hljs-comment">mplayer</span> <span class="hljs-comment">源码</span>
+<div class="hljs code-wrapper"><pre><code class="hljs brainfuck"><span class="hljs-comment">cd</span> <span class="hljs-comment">MPlayer</span><span class="hljs-literal">-</span><span class="hljs-comment">1</span><span class="hljs-string">.</span><span class="hljs-comment">4/</span>  <span class="hljs-comment">//进去</span> <span class="hljs-comment">mplayer</span> <span class="hljs-comment">源码</span>
 
 <span class="hljs-string">.</span><span class="hljs-comment">/configure</span> --<span class="hljs-comment">cc=arm</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span><span class="hljs-literal">-</span><span class="hljs-comment">gnueabihf</span><span class="hljs-literal">-</span><span class="hljs-comment">gcc</span> --<span class="hljs-comment">host</span><span class="hljs-literal">-</span><span class="hljs-comment">cc=gcc</span> --<span class="hljs-comment">target=arm</span><span class="hljs-literal">-</span><span class="hljs-comment">linux</span><span class="hljs-literal">-</span><span class="hljs-comment">gnueabihf</span> --<span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">ossaudio</span> --<span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">alsa</span> --<span class="hljs-comment">prefix=/home/zuozhongkai/linux/IMX6ULL/tool/mplayer</span> --<span class="hljs-comment">extra</span><span class="hljs-literal">-</span><span class="hljs-comment">cflags=&quot;</span><span class="hljs-literal">-</span><span class="hljs-comment">I/home/zuozhongkai/linux/IMX6ULL/tool/zlib/include</span>  <span class="hljs-literal">-</span><span class="hljs-comment">I/home/zuozhongkai/linux/IMX6ULL/tool/alsa</span><span class="hljs-literal">-</span><span class="hljs-comment">lib/include&quot;</span>  --<span class="hljs-comment">extra</span><span class="hljs-literal">-</span><span class="hljs-comment">ldflags=&quot;</span><span class="hljs-literal">-</span><span class="hljs-comment">L/home/zuozhongkai/linux/IMX6ULL/tool/zlib/lib</span>  <span class="hljs-literal">-</span><span class="hljs-comment">Iz</span>  <span class="hljs-literal">-</span>
 <span class="hljs-comment">L/home/zuozhongkai/linux/IMX6ULL/tool/alsa</span><span class="hljs-literal">-</span><span class="hljs-comment">lib/lib</span> <span class="hljs-literal">-</span><span class="hljs-comment">lasound&quot;</span> --<span class="hljs-comment">enable</span><span class="hljs-literal">-</span><span class="hljs-comment">fbdev</span> --<span class="hljs-comment">disable</span><span class="hljs-literal">-</span><span class="hljs-comment">mencoder</span>
@@ -842,17 +842,17 @@ make install</code></pre></div>
 <p>修改完成以后使用“make install”安装，安装完成以后 mplayer 目录内容如图 所示</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182326254.png" srcset="/img/loading.gif" lazyload alt="image-20200907182326254"></p>
 <p>图 中的 bin 目录下有一个叫做“mplayer”的可执行文件，这就是我们需要的 mplayer播放器！将其拷贝到开发板根文件系统的&#x2F;bin 目录下，命令为：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">sudo cp bin<span class="hljs-regexp">/mplayer /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/bin/</span> -f</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo cp bin<span class="hljs-regexp">/mplayer /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/bin/</span> -f</code></pre></div>
 
 <p>至此，mplayer 移植就已经完成了，接下来就是使用 mplayer 播放音视频。</p>
 <h3 id="2-mplayer-使用"><a href="#2-mplayer-使用" class="headerlink" title="2| mplayer  使用"></a>2| mplayer  使用</h3><h4 id="1-、mplayer-播放音频"><a href="#1-、mplayer-播放音频" class="headerlink" title="1 、mplayer  播放音频"></a>1 、mplayer  播放音频</h4><p>输入“mplayer -h”即可查看帮助信息。mplayer 播放歌曲很简单，不限歌曲格式，“mplayer+歌曲名”即可，比如：</p>
-<div class="code-wrapper"><pre><code class="hljs cmake">mplayer <span class="hljs-keyword">test</span>.flac</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs cmake">mplayer <span class="hljs-keyword">test</span>.flac</code></pre></div>
 
 <p>播放过程如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182411920.png" srcset="/img/loading.gif" lazyload alt="image-20200907182411920"></p>
 <p>播放过程中我们可以通过键盘控制播放器，常用的控制方法如下：<br>9 ：增加音量。<br>0：减小音量。<br>左键：倒退 10 秒<br>右键：快进 10 秒<br>上键：倒退 1 分钟<br>下键：快进 1 分钟<br>空格：暂停和播放<br>如果 mplayer 音量已经调到最大了，但是耳机音量依旧很小的话请使用 amixer 调大声卡最<br>大音量。</p>
 <h4 id="2-、视频播放测试"><a href="#2-、视频播放测试" class="headerlink" title="2 、视频播放测试"></a>2 、视频播放测试</h4><p>视频播放的方法和音频一样， “mplayer+视频名”即可，但是这样的话视频不是居中播放的，我们可以加入“-fs”参数让视频居中播放。注意！由于 I.MX6ULL 性能比较差，而且没有硬件视频解码，因此 6ULL 不能播放高分辨率、高码率和高帧率的视频，视频分辨率最好在 640*480 左右！输入如下命令播放视频：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">mplayer test.avi -fs <span class="hljs-regexp">//</span>居中播放视频</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk">mplayer test.avi -fs <span class="hljs-regexp">//</span>居中播放视频</code></pre></div>
 
 <p>如果你所使用的芯片性能比较差的话 mplayer 会给你提示，如图  所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/22%E3%80%81Linux%E9%9F%B3%E9%A2%91%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200907182452001.png" srcset="/img/loading.gif" lazyload alt="image-20200907182452001"></p>

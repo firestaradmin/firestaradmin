@@ -682,14 +682,14 @@
 <h2 id="四、Linux-内核自带-HOST-实验"><a href="#四、Linux-内核自带-HOST-实验" class="headerlink" title="四、Linux  内核自带 HOST  实验"></a>四、Linux  内核自带 HOST  实验</h2><h3 id="1-USB-鼠标键盘测试"><a href="#1-USB-鼠标键盘测试" class="headerlink" title="1| USB  鼠标键盘测试"></a>1| USB  鼠标键盘测试</h3><p>首先做一下 USB HOST 试验，也就是 I.MX6U-ALPHA 开发板做 USB 主机，然后外接 USB设备，比如 USB 鼠标键盘、USB 转 TTL 串口线、U 盘等设备。Linux 内核已经集成了大量的USB 设备驱动，尤其是我们常见的 USB 鼠标键盘、U 盘等，本节我们就来学习一下如何使能Linux 内核常见的 USB 设备驱动。</p>
 <h4 id="1-、USB-鼠标键盘-驱动使能"><a href="#1-、USB-鼠标键盘-驱动使能" class="headerlink" title="1 、USB  鼠标键盘 驱动使能"></a>1 、USB  鼠标键盘 驱动使能</h4><p>注意，NXP 官方的 Linux 内核默认已经使能了 USB 键盘鼠标驱动！</p>
 <p>USB 鼠标键盘属于 HID 设备，内核已经集成了相应的驱动，NXP 官方提供的 linux 内核默认已经使能了 USB 鼠标键盘驱动，但是我们还要学习一下如何手动使能这些驱动。输入<code>make menuconfig</code>打开 linux 内核配置界面，首先打开 HID 驱动，按照如下路径到相应的配置项目：</p>
-<div class="code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
+<div class="hljs code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
     -&gt; <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span>
   	  	-&gt; <span class="hljs-type">HID</span> bus sup<span class="hljs-keyword">port</span> (HID [=y])
     		-&gt; &lt;*&gt; <span class="hljs-type">Generic</span> <span class="hljs-type">HID</span> driver  //使能通用 <span class="hljs-type">HID</span> 驱动</code></pre></div>
 
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908122624017.png" srcset="/img/loading.gif" lazyload alt="image-20200908122624017"></p>
 <p>接下来需要使能 USB 键盘和鼠标驱动，配置路径如下：</p>
-<div class="code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
+<div class="hljs code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
     -&gt; <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span>
         -&gt; <span class="hljs-type">USB</span> <span class="hljs-type">HID</span> sup<span class="hljs-keyword">port</span>
             -&gt; &lt;*&gt; <span class="hljs-type">USB</span> <span class="hljs-type">HID</span> trans<span class="hljs-keyword">port</span> layer //USB 键盘鼠标等 HID 设备驱动</code></pre></div>
@@ -704,20 +704,20 @@
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123346643.png" srcset="/img/loading.gif" lazyload alt="image-20200908123346643"></p>
 <p>图就是键盘作为输入子系统设备的原始输入值，这里就不去分析了，我们在移植GUI 图形库以后就可以直接使用键盘鼠标，比如 QT 等。</p>
 <p>最后再来测试一下 USB 键盘，屏幕已经驱动起来了，所以我们可以直接将屏幕作为终端，然后接上键盘直接输入命令来进行各种操作。首先将屏幕设置为控制台，打开开发板根文件系统中的&#x2F;etc&#x2F;inittab 文件，然后在里面加入下面这一行：</p>
-<div class="code-wrapper"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh</code></pre></div>
 
 <p>完成以后重启开发板，此时屏幕就会作为终端控制台，会有“Please press Enter to activatethis console.”这样提示，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123615570.png" srcset="/img/loading.gif" lazyload alt="image-20200908123615570"></p>
 <p>接上键盘，然后根据图  中的提示，按下键盘上的 Enter(回车)键即可使能 LCD 屏幕控制台，然后我们就可以输入各种命令来执行相应的操作。</p>
 <h3 id="2-U-盘实验"><a href="#2-U-盘实验" class="headerlink" title="2| U  盘实验"></a>2| U  盘实验</h3><p>注意，NXP 官方的 Linux 内核默认已经使能了 U 盘！NXP 提供的 Linux 内核默认也已经是能了 U 盘驱动，因此我们可以直接插上去使用。但是我们还是需要学习一下如何手动配置 Linux 内核，使能 U 盘驱动。</p>
 <h4 id="1-、使能-U-盘驱动"><a href="#1-、使能-U-盘驱动" class="headerlink" title="1 、使能 U  盘驱动"></a>1 、使能 U  盘驱动</h4><p>U 盘使用 SCSI 协议，因此要先使能 Linux 内核中的 SCSI 协议，配置路径如下：</p>
-<div class="code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
+<div class="hljs code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
     -&gt; <span class="hljs-type">SCSI</span> device sup<span class="hljs-keyword">port</span>
         -&gt; &lt;*&gt; <span class="hljs-type">SCSI</span> disk sup<span class="hljs-keyword">port</span> //选中此选项</code></pre></div>
 
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123706421.png" srcset="/img/loading.gif" lazyload alt="image-20200908123706421"></p>
 <p>我们还需要使能 USB Mass Storage，也就是 USB 接口的大容量存储设备，配置路径如下：</p>
-<div class="code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
+<div class="hljs code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
     -&gt; <span class="hljs-type">USB</span> sup<span class="hljs-keyword">port</span> (USB_SUPPORT [=y])
         -&gt; <span class="hljs-type">Support</span> for <span class="hljs-type">Host</span>-side <span class="hljs-type">USB</span> (<span class="hljs-type">USB</span> [=y])
             -&gt; &lt;*&gt; <span class="hljs-type">USB</span> <span class="hljs-type">Mass</span> <span class="hljs-type">Storage</span> sup<span class="hljs-keyword">port</span> //USB 大容量存储设备</code></pre></div>
@@ -727,19 +727,19 @@
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908123912657.png" srcset="/img/loading.gif" lazyload alt="image-20200908123912657"></p>
 <p>从图可以看出，系统检测到 U 盘插入，大小为 16GB，对应的设备文件为&#x2F;dev&#x2F;sda和&#x2F;dev&#x2F;sda1，大家可以查看一下&#x2F;dev 目录下有没有 sda 和 sda1 这两个文件。</p>
 <p>&#x2F;dev&#x2F;sda 是整个 U盘，&#x2F;dev&#x2F;sda1 是 U 盘的第一个分区，我们一般使用 U 盘的时候都是只有一个分区。要想访问 U盘我们需要先对 U 盘进行挂载，理论上挂载到任意一个目录下都可以，这里我创建一个&#x2F;mnt&#x2F;usb_disk 目录，然后将 U 盘挂载到&#x2F;mnt&#x2F;usb_disk 目录下，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">mkdir <span class="hljs-regexp">/mnt/u</span>sb_disk -p <span class="hljs-regexp">//</span>创建目录
+<div class="hljs code-wrapper"><pre><code class="hljs awk">mkdir <span class="hljs-regexp">/mnt/u</span>sb_disk -p <span class="hljs-regexp">//</span>创建目录
 mount <span class="hljs-regexp">/dev/</span>sda1 <span class="hljs-regexp">/mnt/u</span>sb_disk<span class="hljs-regexp">/ -t vfat -o iocharset=utf8  /</span><span class="hljs-regexp">/挂载</span></code></pre></div>
 
 <p>-t 指定挂载所使用的文件系统类型，这里设置为 vfat，也就是 FAT 文件系统，“-o iocharset”设置硬盘编码格式为 utf8，否则的话 U 盘里面的中文会显示乱码！挂载成功以后进入到&#x2F;mnt&#x2F;usb_disk 目录下，输入 ls 命令查看 U 盘文件，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908124337988.png" srcset="/img/loading.gif" lazyload alt="image-20200908124337988"></p>
 <p>至此 U 盘就能正常读写操作了，直接对&#x2F;mnt&#x2F;usb_disk 目录进行操作就行了。如果要拔出 U盘要执行一个 sync 命令进行同步，然后在使用 umount 进行 U 盘卸载，命令如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">sync 		<span class="hljs-regexp">//</span>同步
+<div class="hljs code-wrapper"><pre><code class="hljs awk">sync 		<span class="hljs-regexp">//</span>同步
 cd <span class="hljs-regexp">/ 		/</span><span class="hljs-regexp">/如果处于/m</span>nt/usb_disk 目录的话先退出来，否则卸载的时候提示设备忙，导致卸载失败，切记！
 umount <span class="hljs-regexp">/mnt/u</span>sb_disk 		<span class="hljs-regexp">//</span>卸载</code></pre></div>
 
 <h2 id="五、Linux-内核自带-USB-OTG-实验"><a href="#五、Linux-内核自带-USB-OTG-实验" class="headerlink" title="五、Linux  内核自带 USB OTG  实验"></a>五、Linux  内核自带 USB OTG  实验</h2><h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1| 修改设备树"></a>1| 修改设备树</h3><p>注意，如果使用的是正点原子 I.MX6U-ALPHA 开发板，那么就需要修改 OTG ID 引脚的电气属性，因为 ALPHA 开发板为了在板子上集成 OTG 的主机和从机接口对 ID 线做了修改，至于原因已经在前面小节讲过了。如果使用的其他 6ULL 开发板，就要去咨询一下厂商，看看需不需要修改 ID 引脚的电气属性。</p>
 <p>查阅原理图可以知道，USB OTG1 的 ID 引脚连接到了 I.MX6ULL 的 GPIO1_IO00 这个引脚上，在 前面小节分析 ALPHA 开发板 USB OTG 原理图的时候已经说过了，USB OTG 默认工作在主机(HOST)模式下，因此 ID 线应该是低电平。这里需要修改设备树中 GPIO1_IO00 这个引脚的电气属性，将其设置为默认下拉。打开设备树 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 pinctrl_hog_1 子节点下添加 GPIO1_IO00 引脚信息，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;iomuxc &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;iomuxc &#123;
 <span class="hljs-number">2</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">3</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_hog_1&gt;;
 <span class="hljs-number">4</span> 		imx6ul-evk &#123;
@@ -757,7 +757,7 @@ umount <span class="hljs-regexp">/mnt/u</span>sb_disk 		<span class="hljs-regexp
 <p>注意！如果使用正点原子的 ALPHA 开发板，切记不要使用 Mini OTG 线来外接 USB 设备，原因已经在前面小节说明了，只需要将USB 设备插入到开发板上的OTG HOST 接口上即可！</p>
 <h3 id="3-OTG-从机实验"><a href="#3-OTG-从机实验" class="headerlink" title="3| OTG  从机实验"></a>3| OTG  从机实验</h3><p>OTG 从机就是将开发板作为一个 USB 设备连接到其他的主机上，这里我们来做两个 USB从机实验：模拟 U 盘以及 USB 声卡。</p>
 <h4 id="1、-模拟-U-盘实验"><a href="#1、-模拟-U-盘实验" class="headerlink" title="1、 模拟 U  盘实验"></a>1、 模拟 U  盘实验</h4><p>模拟 U 盘实验就是将开发板当做一个 U 盘，可以将开发板上的 U 盘或者 TF 卡挂载到 PC上去，首先需要配置 Linux，配置路径如下：</p>
-<div class="code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
+<div class="hljs code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
     -&gt; USB support (USB_SUPPORT [=y])
         -&gt; USB Gadget Support (USB_GADGET [=y]
             -&gt; [M]USB Gadget Drivers (&lt;choice&gt; [=m]) <span class="hljs-comment">//选中 USB Gadget 驱动</span>
@@ -765,30 +765,30 @@ umount <span class="hljs-regexp">/mnt/u</span>sb_disk 		<span class="hljs-regexp
 
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125107043.png" srcset="/img/loading.gif" lazyload alt="image-20200908125107043"></p>
 <p>这里我们需要将驱动编译为模块！使用的时候直接输入命令加载驱动模块即可。配置好以后重新编译 Linux 内核，会得到三个.ko 驱动模块(带路径)：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko
+<div class="hljs code-wrapper"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko
 drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/function/u</span>sb_f_mass_storage.ko
 drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/legacy/g</span>_mass_storage.ko</code></pre></div>
 
 <p>将上述三个.ko 模块拷贝到开发板根文件系统中，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">cd drivers<span class="hljs-regexp">/usb/g</span>adget/ 
+<div class="hljs code-wrapper"><pre><code class="hljs awk">cd drivers<span class="hljs-regexp">/usb/g</span>adget/ 
 sudo cp libcomposite.ko <span class="hljs-regexp">/home/</span>firestaradmin<span class="hljs-regexp">/linux/</span>nfs<span class="hljs-regexp">/rootfs/</span>lib<span class="hljs-regexp">/modules/</span><span class="hljs-number">4.1</span>.<span class="hljs-number">15</span>/
 sudo cp <span class="hljs-keyword">function</span><span class="hljs-regexp">/usb_f_mass_storage.ko /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/m</span>odules<span class="hljs-regexp">/4.1.15/</span>
 sudo cp legacy<span class="hljs-regexp">/g_mass_storage.ko /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/m</span>odules<span class="hljs-regexp">/4.1.15/</span></code></pre></div>
 
 <p>拷贝完成以后使用新编译出来的 zImage 启动开发板，在开发板上插入一个 U 盘，记住这个U盘对应的设备文件，比如我们这里是&#x2F;dev&#x2F;sda和&#x2F;dev&#x2F;sda1，以后要将&#x2F;dev&#x2F;sda1挂载到PC上，也就是把&#x2F;dev&#x2F;sda1 作为模拟 U 盘的存储区域。使用 Mini USB 线将开发板的 USB OTG Mini 接口与电脑连接起来，如图所示：</p>
 <p>连接好以后依次加载 libcomposite.ko、usb_f_mass_storage.ko 和 g_mass_storage.ko 这三个驱动文件，顺序不能错了！命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs routeros">depmod
+<div class="hljs code-wrapper"><pre><code class="hljs routeros">depmod
 modprobe libcomposite.ko
 modprobe usb_f_mass_storage.ko
 modprobe g_mass_storage.ko <span class="hljs-attribute">file</span>=/dev/sda1 <span class="hljs-attribute">removable</span>=1</code></pre></div>
 
 <p>加载 g_mass_storage.ko 的时候使用 file 参数指定使用的大容量存储设备，我这里使用 U 盘对应的&#x2F;dev&#x2F;sda1。如果加载成功的话电脑就会出现一个U盘，这个U盘就是我们开发板模拟的，如图 所示：</p>
 <p>我们可以直接在电脑上对这个 U 盘进行读写操作，实际上操作的就是插在开发板上的 U盘。操作完成以后要退出的话执行如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">rmmod</span> g_mass_storage.ko</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">rmmod</span> g_mass_storage.ko</code></pre></div>
 
 <p>注意！不要将开发板上的 EMMC 或者 NAND 作为模拟 U 盘的存储区域，因为 linux 下EMMC和NAND使用的文件系统一般都是EXT3&#x2F;EXT4和UBIFS，这些文件系统类型和windows下的不兼容，如果挂载的话就会在 windows 下提示要你格式化 U 盘！</p>
 <h4 id="2-、USB-声卡实验"><a href="#2-、USB-声卡实验" class="headerlink" title="2 、USB  声卡实验"></a>2 、USB  声卡实验</h4><p>USB 声卡就是 USB 接口的外置声卡，一般电脑内部都自带了声卡，但是内部自带的声卡效果相对来说比较差，不能满足很多 HIFI 玩家的需求。USB 声卡通过 USB 接口来传递音频数据，具体的 ADC 和 DAC 过程由声卡完成，摆脱了电脑主板体积的限制，外置 USB 声卡就可以做的很好。ALPHA 开发板板载了音频解码芯片，因此可以将 ALPHA 开发板作为一个外置USB 声卡，配置 Linux 内核，配置路径如下：</p>
-<div class="code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
+<div class="hljs code-wrapper"><pre><code class="hljs clean">-&gt; Device Drivers
     -&gt; USB support (USB_SUPPORT [=y])
         -&gt; USB Gadget Support (USB_GADGET [=y]
             -&gt; [M]USB Gadget Drivers <span class="hljs-comment">//选中 USB Gadget 驱动</span>
@@ -797,18 +797,18 @@ modprobe g_mass_storage.ko <span class="hljs-attribute">file</span>=/dev/sda1 <s
 
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/23%E3%80%81Linux_USB%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200908125942445.png" srcset="/img/loading.gif" lazyload alt="image-20200908125942445"></p>
 <p>注意，这里也是编译为驱动模块，配置完成以后重新编译内核，得到新的 zImage 和三个.ko驱动模块文件：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko
+<div class="hljs code-wrapper"><pre><code class="hljs awk">drivers<span class="hljs-regexp">/usb/g</span>adget/libcomposite.ko
 drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/function/u</span>sb_f_uac1.ko
 drivers<span class="hljs-regexp">/usb/g</span>adget<span class="hljs-regexp">/legacy/g</span>_audio.ko</code></pre></div>
 
 <p>将上述三个.ko 模块拷贝到开发板根文件系统中，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs awk">cd drivers<span class="hljs-regexp">/usb/g</span>adget/
+<div class="hljs code-wrapper"><pre><code class="hljs awk">cd drivers<span class="hljs-regexp">/usb/g</span>adget/
 sudo cp libcomposite.ko <span class="hljs-regexp">/home/</span>firestaradmin<span class="hljs-regexp">/linux/</span>nfs<span class="hljs-regexp">/rootfs/</span>lib<span class="hljs-regexp">/modules/</span><span class="hljs-number">4.1</span>.<span class="hljs-number">15</span>/
 sudo cp <span class="hljs-keyword">function</span><span class="hljs-regexp">/usb_f_uac1.ko /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/m</span>odules<span class="hljs-regexp">/4.1.15/</span>
 sudo cp legacy<span class="hljs-regexp">/g_audio.ko /</span>home<span class="hljs-regexp">/firestaradmin/</span>linux<span class="hljs-regexp">/nfs/</span>rootfs<span class="hljs-regexp">/lib/m</span>odules<span class="hljs-regexp">/4.1.15/</span></code></pre></div>
 
 <p>拷贝完成以后使用新编译出来的 zImage 启动开发板，首先按照 音频驱动实验讲解的方法配置ALPHA 的声卡，保证声卡播放正常！使用 Mini USB 线将开发板与电脑连接起来，最后依次加载 libcomposite.ko、usb_f_uac1.ko 和 g_audio.ko 这三个驱动模块，命令如下：</p>
-<div class="code-wrapper"><pre><code class="hljs stylus">depmod
+<div class="hljs code-wrapper"><pre><code class="hljs stylus">depmod
 modprobe libcomposite<span class="hljs-selector-class">.ko</span>
 modprobe usb_f_uac1<span class="hljs-selector-class">.ko</span>
 modprobe g_audio.ko</code></pre></div>

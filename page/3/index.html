@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          14| Linux MISC驱动实验
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/" target="_self">
+          15| Linux INPUT子系统实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux MISC驱动实验misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。 MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。 一、MISC 设备驱动简介所有的 MISC 设备驱动的主设备号都为 10，不同的
+          Linux INPUT子系统实验按键、鼠标、键盘、触摸屏等都属于输入(input)设备，Linux 内核为此专门做了一个叫做 input子系统的框架来处理输入事件。 输入设备本质上还是字符设备，只是在此基础上套上了 input 框架，用户只需要负责上报输入事件，比如按键值、坐标等信息，input 核心层负责处理这些事件。本章我们就来学习一下 Linux 内核中的 input 子系统。 一、INPU
         </a>
       </p>
 
@@ -248,15 +248,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/" target="_self">
-          15| Linux INPUT子系统实验
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          14| Linux MISC驱动实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux INPUT子系统实验按键、鼠标、键盘、触摸屏等都属于输入(input)设备，Linux 内核为此专门做了一个叫做 input子系统的框架来处理输入事件。 输入设备本质上还是字符设备，只是在此基础上套上了 input 框架，用户只需要负责上报输入事件，比如按键值、坐标等信息，input 核心层负责处理这些事件。本章我们就来学习一下 Linux 内核中的 input 子系统。 一、INPU
+          Linux MISC驱动实验misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。 MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。 一、MISC 设备驱动简介所有的 MISC 设备驱动的主设备号都为 10，不同的
         </a>
       </p>
 
@@ -529,15 +529,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
-          11| Linux异步通知实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
+          10| Linux阻塞非阻塞IO实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处
+          Linux阻塞非阻塞IO实验阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种设备访问模式，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。 一、阻塞和非阻塞IO1|阻塞和非阻塞简介这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引
         </a>
       </p>
 
@@ -586,15 +586,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
-          10| Linux阻塞非阻塞IO实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
+          11| Linux异步通知实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux阻塞非阻塞IO实验阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种设备访问模式，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。 一、阻塞和非阻塞IO1|阻塞和非阻塞简介这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引
+          异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处
         </a>
       </p>
 
@@ -873,6 +873,63 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          7| Linux按键输入驱动实验
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          
+          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-11 00:00" pubdate>
+              2020-09-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Embedded/">Embedded</a>
+            
+              <a href="/tags/ARM/">ARM</a>
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
           4| Linux  设备树
         </a>
@@ -919,63 +976,6 @@
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
               <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          7| Linux按键输入驱动实验
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          
-          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-11 00:00" pubdate>
-              2020-09-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Embedded/">Embedded</a>
-            
-              <a href="/tags/ARM/">ARM</a>
-            
-              <a href="/tags/Linux/">Linux</a>
-            
-              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
             
           </div>
         

@@ -258,7 +258,7 @@
 <p>NXP 官方的 Linux 内核默认已经开启了 LCD 驱动，因此我们是可以看到&#x2F;dev&#x2F;fb0 这样一个设备，如图所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829171727766.png" srcset="/img/loading.gif" lazyload alt="image-20200829171727766"></p>
 <p>图中的&#x2F;dev&#x2F;fb0 就是 LCD 对应的设备文件，&#x2F;dev&#x2F;fb0 是个字符设备，因此肯定有file_operations 操作集，fb 的 file_operations 操作集定义在 drivers&#x2F;video&#x2F;fbdev&#x2F;core&#x2F;fbmem.c 文件中，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1495</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">fb_fops</span> =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1495</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">fb_fops</span> =</span> &#123;
 <span class="hljs-number">1496</span> 	.owner = THIS_MODULE,
 <span class="hljs-number">1497</span> 	.read = fb_read,
 <span class="hljs-number">1498</span> 	.write = fb_write,
@@ -282,7 +282,7 @@
 <h3 id="2-LCD-驱动简析"><a href="#2-LCD-驱动简析" class="headerlink" title="2| LCD  驱动简析"></a>2| LCD  驱动简析</h3><p>LCD 裸机例程主要分两部分：<br>①、获取 LCD 的屏幕参数。<br>②、根据屏幕参数信息来初始化 eLCDIF 接口控制器。</p>
 <p>不同分辨率的 LCD 屏幕其 eLCDIF 控制器驱动代码都是一样的，只需要修改好对应的屏幕参数即可。屏幕参数信息属于屏幕设备信息内容，这些肯定是要放到设备树中的，因此我们本章实验的主要工作就是修改设备树，NXP 官方的设备树已经添加了 LCD 设备节点，只是此节点的 LCD 屏幕信息是针对 NXP 官方 EVK 开发板所使用的 4.3 寸 480*272 编写的，我们需要将其改为我们所使用的屏幕参数。</p>
 <p>我们简单看一下 NXP 官方编写的 Linux 下的 LCD 驱动，打开 imx6ull.dtsi，然后找到 lcdif节点内容，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> lcdif: lcdif@<span class="hljs-number">021</span>c8000 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> lcdif: lcdif@<span class="hljs-number">021</span>c8000 &#123;
 <span class="hljs-number">2</span> 	compatible = <span class="hljs-string">&quot;fsl,imx6ul-lcdif&quot;</span>, <span class="hljs-string">&quot;fsl,imx28-lcdif&quot;</span>;
 <span class="hljs-number">3</span> 	reg = &lt;<span class="hljs-number">0x021c8000</span> <span class="hljs-number">0x4000</span>&gt;;
 <span class="hljs-number">4</span> 	interrupts = &lt;GIC_SPI <span class="hljs-number">5</span> IRQ_TYPE_LEVEL_HIGH&gt;;
@@ -295,7 +295,7 @@
 
 <p>示例代码中的 lcdif 节点信息是所有使用 I.MX6ULL 芯片的板子所共有的，并不是完整的 lcdif 节点信息。</p>
 <p>像屏幕参数这些需要根据不同的硬件平台去添加，比如向 imx6ull-lxg-emmc.dts 中的 lcdif 节点添加其他的属性信息。从示例代码可以看出 lcdif 节点的 compatible 属性值为“fsl,imx6ul-lcdif”和“fsl,imx28-lcdi”，因此在 Linux 源码中搜索这两个字符串即可找到 I.MX6ULL 的 LCD 驱动文件，这个文件为 drivers&#x2F;video&#x2F;fbdev&#x2F;mxsfb.c，mxsfb.c就是 I.MX6ULL 的 LCD 驱动文件，在此文件中找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1362</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">mxsfb_dt_ids</span>[] =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1362</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">mxsfb_dt_ids</span>[] =</span> &#123;
 <span class="hljs-number">1363</span> 	&#123; .compatible = <span class="hljs-string">&quot;fsl,imx23-lcdif&quot;</span>, .data = &amp;mxsfb_devtype[<span class="hljs-number">0</span>], &#125;,
 <span class="hljs-number">1364</span> 	&#123; .compatible = <span class="hljs-string">&quot;fsl,imx28-lcdif&quot;</span>, .data = &amp;mxsfb_devtype[<span class="hljs-number">1</span>], &#125;,
 <span class="hljs-number">1365</span> 	&#123; <span class="hljs-comment">/* sentinel */</span> &#125;
@@ -316,7 +316,7 @@
 <span class="hljs-number">1637</span> module_platform_driver(mxsfb_driver);</code></pre></div>
 
 <p>从示例代码 可以看出，这是一个标准的 platform 驱动，当驱动和设备匹配以后mxsfb_probe 函数就会执行。在看 mxsfb_probe 函数之前我们先简单了解一下 Linux 下Framebuffer 驱动的编写流程，Linux 内核将所有的 Framebuffer 抽象为一个叫做 fb_info 的结构体，fb_info 结构体包含了 Framebuffer 设备的完整属性和操作集合，因此每一个 Framebuffer 设备都必须有一个 fb_info。换言之就是，LCD 的驱动就是构建 fb_info，并且向系统注册 fb_info的过程。fb_info 结构体定义在 include&#x2F;linux&#x2F;fb.h 文件里面，内容如下(省略掉条件编译)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">448</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_info</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">448</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_info</span> &#123;</span>
 <span class="hljs-number">449</span> 	<span class="hljs-type">atomic_t</span> count;
 <span class="hljs-number">450</span> 	<span class="hljs-type">int</span> node;
 <span class="hljs-number">451</span> 	<span class="hljs-type">int</span> flags;
@@ -359,7 +359,7 @@
 <p>①、申请 fb_info。<br>②、初始化 fb_info 结构体中的各个成员变量。<br>③、初始化 eLCDIF 控制器。<br>④、使用 register_framebuffer 函数向 Linux 内核注册初始化好的 fb_info。</p>
 <p>register_framebuffer函数原型如下：</p>
 <ul>
-<li><div class="code-wrapper"><pre><code class="hljs">int register_framebuffer(struct fb_info *fb_info)
+<li><div class="hljs code-wrapper"><pre><code class="hljs">int register_framebuffer(struct fb_info *fb_info)
 <pre><code class="hljs yaml">
   <span class="hljs-string">函数参数和返回值含义如下：</span>
   <span class="hljs-string">**fb_info**：需要上报的</span> <span class="hljs-string">fb_info。</span>
@@ -474,7 +474,7 @@
 <li><p><strong>第 1416 行</strong>，申请中断，中断服务函数为 mxsfb_irq_handler。</p>
 </li>
 <li><p><strong>第 1425 行</strong>，对从设备树中获取到的寄存器首地址(res)进行内存映射，得到虚拟地址，并保存到host 的 base 成员变量。因此通过访问 host 的 base 成员即可访问 I.MX6ULL 的整个 eLCDIF寄存器。其实在 mxsfb.c 中已经定义了 eLCDIF 各个寄存器相比于基地址的偏移值，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">67</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> LCDC_CTRL 0x00</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">67</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> LCDC_CTRL 0x00</span>
 <span class="hljs-number">68</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> LCDC_CTRL1 0x10</span>
 <span class="hljs-number">69</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> LCDC_V4_CTRL2 0x20</span>
 <span class="hljs-number">70</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> LCDC_V3_TRANSFER_COUNT 0x20</span>
@@ -488,7 +488,7 @@
 <li><p><strong>第1462行</strong>，给fb_info中的pseudo_palette申请内存。</p>
 </li>
 <li><p><strong>第 1473 行</strong>，调用 mxsfb_init_fbinfo 函数初始化 fb_info，重点是 fb_info 的 var、fix、fbops，screen_base 和 screen_size。其中 fbops 是 Framebuffer 设备的操作集，NXP 提供的 fbops 为mxsfb_ops，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">987</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_ops</span> <span class="hljs-title">mxsfb_ops</span> =</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">987</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_ops</span> <span class="hljs-title">mxsfb_ops</span> =</span> &#123;
 <span class="hljs-number">988</span> 	.owner = THIS_MODULE,
 <span class="hljs-number">989</span> 	.fb_check_var = mxsfb_check_var,
 <span class="hljs-number">990</span> 	.fb_set_par = mxsfb_set_par,
@@ -513,7 +513,7 @@
 <h2 id="三、-LCD-驱动程序编写"><a href="#三、-LCD-驱动程序编写" class="headerlink" title="三、 LCD  驱动程序编写"></a>三、 LCD  驱动程序编写</h2><p>前面已经说了，6ULL 的 eLCDIF 接口驱动程序 NXP 已经编写好了，因此 LCD 驱动部分我们不需要去修改。我们需要做的就是按照所使用的 LCD 来修改设备树。重点要注意三个地方：<br>①、LCD 所使用的 IO 配置。<br>②、LCD 屏幕节点修改，修改相应的属性值，换成我们所使用的 LCD 屏幕参数。<br>③、LCD 背光节点信息修改，要根据实际所使用的背光 IO 来修改相应的设备节点信息。</p>
 <p>接下来我们依次来看一下上面这两个节点改如何去修改：</p>
 <h3 id="1-LCD-屏幕-IO-配置"><a href="#1-LCD-屏幕-IO-配置" class="headerlink" title="1| LCD  屏幕 IO  配置"></a>1| LCD  屏幕 IO  配置</h3><p>首先要检查一下设备树中 LCD 所使用的 IO 配置，这个其实 NXP 都已经给我们写好了，不需要修改，不过我们还是要看一下。打开 imx6ull-lxg-emmc.dts 文件，在 iomuxc 节点中找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_lcdif_dat: lcdifdatgrp &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_lcdif_dat: lcdifdatgrp &#123;
 <span class="hljs-number">2</span> 	fsl,pins = &lt;
 <span class="hljs-number">3</span> 		MX6UL_PAD_LCD_DATA00__LCDIF_DATA00 <span class="hljs-number">0x79</span>
 <span class="hljs-number">4</span> 		MX6UL_PAD_LCD_DATA01__LCDIF_DATA01 <span class="hljs-number">0x79</span>
@@ -559,7 +559,7 @@
 <p>第 30~36 行，子节点 pinctrl_lcdif_ctrl，RGB LCD 的 4 根控制线配置项，包括 CLK、ENABLE、VSYNC 和 HSYNC。</p>
 <p>第 37~40 行，子节点 pinctrl_pwm1，LCD 背光 PWM 引脚配置项。这个引脚要根据实际情况设置，这里我们建议大家在以后的学习或工作中，LCD 的背光 IO 尽量和半导体厂商的官方开发板一致。</p>
 <h3 id="2-LCD-屏幕参数节点信息修改"><a href="#2-LCD-屏幕参数节点信息修改" class="headerlink" title="2| LCD  屏幕参数节点信息修改"></a>2| LCD  屏幕参数节点信息修改</h3><p>继续在 imx6ull-lxg-emmc.dts 文件中找到 lcdif 节点，节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;lcdif &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;lcdif &#123;
 <span class="hljs-number">2</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">3</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_lcdif_dat <span class="hljs-comment">/* 使用到的 IO */</span>
 <span class="hljs-number">4</span> 		&amp;pinctrl_lcdif_ctrl
@@ -599,7 +599,7 @@
 <p><strong>第 9~32 行</strong>，display0 子节点，描述 LCD 的参数信息，第 10 行的 bits-per-pixel 属性用于指明一个像素占用的 bit 数，默认为 16bit。本教程我们将 LCD 配置为 RGB888 模式，因此一个像素点占用 24bit，bits-per-pixel 属性要改为 24。第 11 行的 bus-width 属性用于设置数据线宽度，因为要配置为 RGB888 模式，因此 bus-width 也要设置为 24。</p>
 <p><strong>第 13~30 行</strong>，这几行非常重要！因为这几行设置了 LCD 的时序参数信息，NXP 官方的 EVK开发板使用了一个 4.3 寸的 480*272 屏幕，因此这里默认是按照 NXP 官方的那个屏幕参数设置的。每一个属性的含义后面的注释已经写的很详细了，大家自己去看就行了，这些时序参数就是我们重点要修改的，需要根据自己所使用的屏幕去修改。</p>
 <p>这里以正点原子的 ATK7016(7 寸 1024*600)屏幕为例，将 imx6ull-lxg-emmc.dts 文件中的 lcdif 节点改为如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;lcdif &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;lcdif &#123;
 <span class="hljs-number">2</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">3</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_lcdif_dat <span class="hljs-comment">/*  使用到的 IO */</span>
 <span class="hljs-number">4</span> 		&amp;pinctrl_lcdif_ctrl&gt;;
@@ -637,14 +637,14 @@
 <p>第 15~23 行，ATK7016 屏幕时序参数，根据自己所使用的屏幕修改即可。</p>
 <h3 id="3-LCD-屏幕背光节点信息"><a href="#3-LCD-屏幕背光节点信息" class="headerlink" title="3| LCD  屏幕背光节点信息"></a>3| LCD  屏幕背光节点信息</h3><p>正点原子的 LCD 接口背光控制 IO 连接到了 I.MX6U 的 GPIO1_IO08 引脚上，GPIO1_IO08复用为 PWM1_OUT，通过 PWM 信号来控制 LCD 屏幕背光的亮度。正点原子 I.MX6U-ALPHA 开发板的 LCD 背光引脚和 NXP 官方 EVK 开发板的背光引脚一样，因此背光的设备树节点是不需要修改的，但是考虑到其他同学可能使用别的开发板或者屏幕，LCD 背光引脚和 NXP 官方 EVK 开发板可能不同，因此我们还是来看一下如何在设备树中添加背光节点信息。</p>
 <p>先是 GPIO1_IO08 这个 IO 的配置，在 imx6ull-lxg-emmc.dts 中找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_pwm1: pwm1grp &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_pwm1: pwm1grp &#123;
 <span class="hljs-number">2</span> 	fsl,pins = &lt;
 <span class="hljs-number">3</span> 		MX6UL_PAD_GPIO1_IO08__PWM1_OUT <span class="hljs-number">0x110b0</span>
 <span class="hljs-number">4</span> 	&gt;;
 <span class="hljs-number">5</span> &#125;;</code></pre></div>
 
 <p>pinctrl_pwm1 节点就是 GPIO1_IO08 的配置节点，从第 3 行可以看出，设置 GPIO1_IO08这个 IO 复用为 PWM1_OUT，并且设置电气属性值为 0x110b0。LCD 背光要用到 PWM1，因此也要设置 PWM1 节点，在 imx6ull.dtsi 文件中找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pwm1: pwm@<span class="hljs-number">02080000</span> &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pwm1: pwm@<span class="hljs-number">02080000</span> &#123;
 <span class="hljs-number">2</span> 	compatible = <span class="hljs-string">&quot;fsl,imx6ul-pwm&quot;</span>, <span class="hljs-string">&quot;fsl,imx27-pwm&quot;</span>;
 <span class="hljs-number">3</span> 	reg = &lt;<span class="hljs-number">0x02080000</span> <span class="hljs-number">0x4000</span>&gt;;
 <span class="hljs-number">4</span> 	interrupts = &lt;GIC_SPI <span class="hljs-number">83</span> IRQ_TYPE_LEVEL_HIGH&gt;;
@@ -657,7 +657,7 @@
 <p>imx6ull.dtsi 文件中的 pwm1 节点信息大家不要修改，如果要修改 pwm1 节点内容的话请在imx6ull-lxg-emmc.dts 文件中修改。</p>
 <p>在整个 Linux 源码文件中搜索 compatible 属性的这两个值即可找到 imx6ull 的 pwm 驱动文件，imx6ull 的 PWM 驱动文件为 drivers&#x2F;pwm&#x2F;pwm-imx.c，这里我们就不详细的去分析这个文件了。</p>
 <p>继续在 imx6ull-lxg-emmc.dts 文件中找到向 pwm1追加的内容，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;pwm1 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;pwm1 &#123;
 <span class="hljs-number">2</span> 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">3</span> 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_pwm1&gt;;
 <span class="hljs-number">4</span> 	status = <span class="hljs-string">&quot;okay&quot;</span>;
@@ -674,7 +674,7 @@
 <li>⑤、default-brightness-level 属性为默认亮度级别。</li>
 </ul>
 <p>根据上述 5 点设置 backlight 节点，这个 NXP 已经给我们设置好了，大家在 imx6ull-lxg-emmc.dts 文件中找到如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> backlight &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> backlight &#123;
 <span class="hljs-number">2</span> 	compatible = <span class="hljs-string">&quot;pwm-backlight&quot;</span>;
 <span class="hljs-number">3</span> 	pwms = &lt;&amp;pwm1 <span class="hljs-number">0</span> <span class="hljs-number">5000000</span>&gt;;
 <span class="hljs-number">4</span> 	brightness-levels = &lt;<span class="hljs-number">0</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span> <span class="hljs-number">16</span> <span class="hljs-number">32</span> <span class="hljs-number">64</span> <span class="hljs-number">128</span> <span class="hljs-number">255</span>&gt;;
@@ -689,7 +689,7 @@
 </ul>
 <h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><h3 id="1-LCD屏幕基本测试"><a href="#1-LCD屏幕基本测试" class="headerlink" title="1| LCD屏幕基本测试"></a>1| LCD屏幕基本测试</h3><h4 id="1-编译新的设备树"><a href="#1-编译新的设备树" class="headerlink" title="1.编译新的设备树"></a>1.编译新的设备树</h4><p>上一小节我们已经配置好了设备树，所以需要输入如下命令重新编译一下设备树：<br><code>make dtbs</code><br>等待编译生成新的 imx6ull-alientek-emmc.dtb 设备树文件，一会要使用新的设备树启动Linux 内核</p>
 <h4 id="2-使能-Linux-logo-显示"><a href="#2-使能-Linux-logo-显示" class="headerlink" title="2.使能 Linux logo  显示"></a>2.使能 Linux logo  显示</h4><p>Linux 内核启动的时候可以选择显示小企鹅 logo，只要这个小企鹅 logo 显示没问题那么我们的 LCD 驱动基本就工作正常了。这个 logo 显示是要配置的，不过 Linux 内核一般都会默认开启 logo 显示，但是奔着学习的目的，我们还是来看一下如何使能 Linux logo 显示。打开 Linux内核图形化配置界面，按下路径找到对应的配置项：</p>
-<div class="code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
+<div class="hljs code-wrapper"><pre><code class="hljs elm">-&gt; <span class="hljs-type">Device</span> <span class="hljs-type">Drivers</span>
     -&gt; <span class="hljs-type">Graphics</span> sup<span class="hljs-keyword">port</span>
         -&gt; <span class="hljs-type">Bootup</span> logo (<span class="hljs-type">LOGO</span> [=y])
             -&gt; <span class="hljs-type">Standard</span> black and white <span class="hljs-type">Linux</span> logo
@@ -702,43 +702,43 @@
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829175529252.png" srcset="/img/loading.gif" lazyload alt="image-20200829175529252"></p>
 <h3 id="2-设置-LCD-作为终端控制台"><a href="#2-设置-LCD-作为终端控制台" class="headerlink" title="2| 设置 LCD  作为终端控制台"></a>2| 设置 LCD  作为终端控制台</h3><p>我们一直使用SecureCRT作为Linux开发板终端，开发板通过串口和SecureCRT进行通信。现在我们已经驱动起来 LCD 了，所以可以设置 LCD 作为终端，也就是开发板使用自己的显示设备作为自己的终端，然后接上键盘就可以直接在开发板上敲命令了(前提是USB驱动设置好)，将 LCD 设置为终端控制台的方法如下：</p>
 <h4 id="1-、设置-uboot-中的-bootargs"><a href="#1-、设置-uboot-中的-bootargs" class="headerlink" title="1 、设置 uboot  中的 bootargs"></a>1 、设置 uboot  中的 bootargs</h4><p>重启开发板，进入 Linux 命令行，重新设置 bootargs 参数的 console 内容，命令如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> bootargs &#x27;console=tty1 console=ttymxc0,<span class="hljs-number">115200</span> root=/dev/nfs nfsroot=<span class="hljs-number">192.168.0.200</span>:/home/firestaradmin/linux/nfs/rootfs,proto=tcp rw ip=<span class="hljs-number">192.168.0.210:192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">200</span>:<span class="hljs-number">192.168.0.1:255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">0</span>::eth0:<span class="hljs-literal">off</span>&#x27;</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> bootargs &#x27;console=tty1 console=ttymxc0,<span class="hljs-number">115200</span> root=/dev/nfs nfsroot=<span class="hljs-number">192.168.0.200</span>:/home/firestaradmin/linux/nfs/rootfs,proto=tcp rw ip=<span class="hljs-number">192.168.0.210:192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">200</span>:<span class="hljs-number">192.168.0.1:255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">0</span>::eth0:<span class="hljs-literal">off</span>&#x27;</code></pre></div>
 
 <p>注意分设置 console，这里我们设置了两遍 console，第一次设置 console&#x3D;tty1，也就是设置 LCD 屏幕为控制台，第二遍又设置 console&#x3D;ttymxc0,115200，也就是设置串口也作为控制台。相当于我们打开了两个 console，一个是 LCD，一个是串口，大家重启开发板就会发现 LCD 和串口都会显示 Linux 启动 log 信息。但是此时我们还不能使用 LCD 作为终端进行交互，因为我们的设置还未完成。</p>
 <h4 id="2、修改-x2F-etc-x2F-inittab-文件"><a href="#2、修改-x2F-etc-x2F-inittab-文件" class="headerlink" title="2、修改&#x2F;etc&#x2F;inittab  文件"></a>2、修改&#x2F;etc&#x2F;inittab  文件</h4><p>打开开发板根文件系统中的&#x2F;etc&#x2F;inittab 文件，在里面加入下面这一行：</p>
-<div class="code-wrapper"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs arcade">tty1::askfirst:-<span class="hljs-regexp">/bin/</span>sh</code></pre></div>
 
 <p>添加完成以后的&#x2F;etc&#x2F;inittab 文件内容如图  所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829180715010.png" srcset="/img/loading.gif" lazyload alt="image-20200829180715010"></p>
 <p>修改完成以后保存&#x2F;etc&#x2F;inittab 并退出，然后重启开发板，重启以后开发板 LCD 屏幕最后一行会显示下面一行语句：</p>
-<div class="code-wrapper"><pre><code class="hljs applescript">Please press Enter <span class="hljs-keyword">to</span> <span class="hljs-built_in">activate</span> this console.</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs applescript">Please press Enter <span class="hljs-keyword">to</span> <span class="hljs-built_in">activate</span> this console.</code></pre></div>
 
 <p>上述提示语句说的是：按下回车键使能当前终端，我们之前已经将 I.MX6U-ALPHA 开发板上的 KEY 按键注册为了回车键，因此按下开发板上的 KEY 按键即可使能 LCD这个终端。当然了，大家也可以接上一个 USB 键盘，Linux 内核默认已经使能了 USB 键盘驱动了，因此可以直接使用 USB 键盘。</p>
 <p>至此，我们就拥有了两套终端，一个是基于串口的 SecureCRT，一个就是我们开发板的 LCD屏幕，但是为了方便调试，我们以后还是以 SecureCRT 为主。</p>
 <p>我们可以通过下面这一行命令向LCD 屏幕输出“hello linux！”</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">echo</span> hello linux &gt; /dev/tty1</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">echo</span> hello linux &gt; /dev/tty1</code></pre></div>
 
 <h3 id="3-LCD-背光调节"><a href="#3-LCD-背光调节" class="headerlink" title="3| LCD  背光调节"></a>3| LCD  背光调节</h3><p>背光设备树节点设置了 8 个等级的背光调节，可以设置为 0~7，我们可以通过设置背光等级来实现 LCD 背光亮度的调节，进入如下目录：</p>
-<div class="code-wrapper"><pre><code class="hljs awk"><span class="hljs-regexp">/sys/</span>devices<span class="hljs-regexp">/platform/</span>backlight<span class="hljs-regexp">/backlight/</span>backlight</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs awk"><span class="hljs-regexp">/sys/</span>devices<span class="hljs-regexp">/platform/</span>backlight<span class="hljs-regexp">/backlight/</span>backlight</code></pre></div>
 
 <p>此目录下的文件如图 所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181040258.png" srcset="/img/loading.gif" lazyload alt="image-20200829181040258"></p>
 <p>图中的 brightness 表示当前亮度等级，max_bgigntness 表示最大亮度等级。当前这两个文件内容如图所示：</p>
 <p><img src="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/16%E3%80%81Linux_LCD%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200829181118422.png" srcset="/img/loading.gif" lazyload alt="image-20200829181118422"></p>
 <p>从图可以看出，当前屏幕亮度等级为 6，根据前面的分析可以，这个是 50%亮度。屏幕最大亮度等级为 7。如果我们要修改屏幕亮度，只需要向 brightness 写入需要设置的屏幕亮度等级即可。比如设置屏幕亮度等级为 7，那么可以使用如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-number">7</span> &gt; brightness</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-number">7</span> &gt; brightness</code></pre></div>
 
 <p>输入上述命令以后就会发现屏幕亮度增大了，如果设置 brightness 为 0 的话就会关闭 LCD背光，屏幕就会熄灭。</p>
 <h3 id="4-LCD-自动关闭解决方法"><a href="#4-LCD-自动关闭解决方法" class="headerlink" title="4| LCD  自动关闭解决方法"></a>4| LCD  自动关闭解决方法</h3><p>默认情况下 10 分钟以后 LCD 就会熄屏，这个并不是代码有问题，而是 Linux 内核设置的，就和我们用手机或者电脑一样，一段时间不操作的话屏幕就会熄灭，以节省电能。解决这个问题有多种方法，我们依次来看一下：</p>
 <h4 id="1-按键盘唤醒"><a href="#1-按键盘唤醒" class="headerlink" title="1.按键盘唤醒"></a>1.按键盘唤醒</h4><p>最简单的就是按下回车键唤醒屏幕，我们在前面将 I.MX6U-ALPHA 开发板上的 KEY按键注册为了回车键，因此按下开发板上的 KEY 按键即可唤醒屏幕。如果开发板上没有按键的话可以外接 USB 键盘，然后按下 USB 键盘上的回车键唤醒屏幕。</p>
 <h4 id="2-关闭-10-分钟熄屏功能"><a href="#2-关闭-10-分钟熄屏功能" class="headerlink" title="2.关闭 10  分钟熄屏功能"></a>2.关闭 10  分钟熄屏功能</h4><p>在 Linux 源码中找到 drivers&#x2F;tty&#x2F;vt&#x2F;vt.c 这个文件，在此文件中找到 blankinterval 变量，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">179</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> vesa_blank_mode;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">179</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> vesa_blank_mode;
 <span class="hljs-number">180</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> vesa_off_interval;
 <span class="hljs-number">181</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> blankinterval = <span class="hljs-number">10</span>*<span class="hljs-number">60</span>;</code></pre></div>
 
 <p>blankinterval 变量控制着 LCD 关闭时间，默认是 10*60，也就是 10 分钟。将 blankinterval的值改为 0 即可关闭 10 分钟熄屏的功能，修改完成以后需要重新编译 Linux 内核，得到新的zImage，然后用新的 zImage 启动开发板。</p>
 <h4 id="3-编写一个-APP-来关闭熄屏功能"><a href="#3-编写一个-APP-来关闭熄屏功能" class="headerlink" title="3.编写一个 APP  来关闭熄屏功能"></a>3.编写一个 APP  来关闭熄屏功能</h4><p>在 ubuntu 中新建一个名为 lcd_always_on.c 的文件，然后在里面输入如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-number">2</span> <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
 <span class="hljs-number">3</span> <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ioctl.h&gt;</span></span>
 <span class="hljs-number">4</span>
@@ -753,10 +753,10 @@
 <span class="hljs-number">13</span> &#125;</code></pre></div>
 
 <p>使用如下命令编译 lcd_always_on.c 这个文件：</p>
-<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc lcd_always_on.c -o lcd_always_on</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc lcd_always_on.c -o lcd_always_on</code></pre></div>
 
 <p>编译生成 lcd_always_on 以后将此可执行文件拷贝到开发板根文件系统的&#x2F;usr&#x2F;bin 目录中，然后给予可执行权限。设置 lcd_always_on 这个软件为开机自启动，打开&#x2F;etc&#x2F;init.d&#x2F;rcS，在此文件最后面加入如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> cd /usr/bin
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> cd /usr/bin
 <span class="hljs-number">2</span> ./lcd_always_on
 <span class="hljs-number">3</span> cd ..</code></pre></div>
 
@@ -805,9 +805,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/15%E3%80%81Linux_INPUT%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">15| Linux INPUT子系统实验</span>
+                        <span class="hidden-mobile">14| Linux MISC驱动实验</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     

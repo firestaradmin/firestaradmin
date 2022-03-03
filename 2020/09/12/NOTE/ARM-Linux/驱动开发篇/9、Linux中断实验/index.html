@@ -252,7 +252,7 @@
 <p>在 Linux 内核中也提供了大量的中断相关的 API 函数，我们来看一下这些跟中断有关的API 函数：</p>
 <h4 id="1-、中断号"><a href="#1-、中断号" class="headerlink" title="1 、中断号"></a><strong>1 、中断号</strong></h4><p>每个中断都有一个中断号，通过中断号即可区分不同的中断，有的资料也把中断号叫做中断线。在 Linux 内核中使用一个 int 变量表示中断号.</p>
 <h4 id="2-、request-irq-函数"><a href="#2-、request-irq-函数" class="headerlink" title="2 、request_irq  函数"></a><strong>2 、request_irq  函数</strong></h4><p>在 Linux 内核中要想使用某个中断是需要申请的，request_irq 函数用于申请中断，request_irq函数可能会导致睡眠，因此不能在中断上下文或者其他禁止睡眠的代码段中使用 request_irq 函数。request_irq 函数会激活(使能)中断，所以不需要我们手动去使能中断，request_irq 函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">request_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">request_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq,</span>
 <span class="hljs-params">                <span class="hljs-type">irq_handler_t</span> handler,</span>
 <span class="hljs-params">                <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> flags,</span>
 <span class="hljs-params">                <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name,</span>
@@ -277,20 +277,20 @@
 </ul>
 <hr>
 <h4 id="3-、free-irq-函数"><a href="#3-、free-irq-函数" class="headerlink" title="3 、free_irq  函数"></a><strong>3 、free_irq  函数</strong></h4><p>使用中断的时候需要通过 request_irq 函数申请，使用完成以后就要通过 free_irq 函数释放掉相应的中断。如果中断不是共享的，那么 free_irq 会删除中断处理函数并且禁止中断。free_irq函数原型如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">free_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">free_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq,</span>
 <span class="hljs-params">                <span class="hljs-type">void</span> *dev)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>irq</strong> ：要释放的中断。<br><strong>dev</strong>：如果中断设置为共享(IRQF_SHARED)的话，此参数用来区分具体的中断。共享中断只有在释放最后中断处理函数的时候才会被禁止掉。<br><strong>返回值</strong>：无。</p>
 <hr>
 <h4 id="4-、中断处理函数"><a href="#4-、中断处理函数" class="headerlink" title="4 、中断处理函数"></a><strong>4 、中断处理函数</strong></h4><p>使用 request_irq 函数申请中断的时候需要设置中断处理函数，中断处理函数格式如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">irqreturn_t</span> (*<span class="hljs-type">irq_handler_t</span>) (<span class="hljs-type">int</span>, <span class="hljs-type">void</span> *)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">irqreturn_t</span> (*<span class="hljs-type">irq_handler_t</span>) (<span class="hljs-type">int</span>, <span class="hljs-type">void</span> *)</code></pre></div>
 
 <ul>
 <li>第一个参数是要中断处理函数要相应的中断号。</li>
 <li>第二个参数是一个指向 void 的指针，也就是个通用指针，需要与 request_irq 函数的 dev 参数保持一致。用于区分共享中断的不同设备，dev 也可以指向设备数据结构。</li>
 </ul>
 <p>中断处理函数的返回值为 irqreturn_t 类型，irqreturn_t类型定义如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">10</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">irqreturn</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">10</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">irqreturn</span> &#123;</span>
 <span class="hljs-number">11</span> 		IRQ_NONE = (<span class="hljs-number">0</span> &lt;&lt; <span class="hljs-number">0</span>),
 <span class="hljs-number">12</span> 		IRQ_HANDLED = (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">0</span>),
 <span class="hljs-number">13</span> 		IRQ_WAKE_THREAD = (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">1</span>),
@@ -299,22 +299,22 @@
 <span class="hljs-number">16</span> <span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">irqreturn</span> <span class="hljs-title">irqreturn_t</span>;</span></code></pre></div>
 
 <p>可以看出 irqreturn_t 是个枚举类型，一共有三种返回值。一般中断服务函数返回值使用如下形式：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">return</span> IRQ_RETVAL(IRQ_HANDLED)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">return</span> IRQ_RETVAL(IRQ_HANDLED)</code></pre></div>
 
 <hr>
 <h4 id="5-、中断使能与禁止函数"><a href="#5-、中断使能与禁止函数" class="headerlink" title="5 、中断使能与禁止函数"></a><strong>5 、中断使能与禁止函数</strong></h4><p>常用的中断使用和禁止函数如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">enable_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">enable_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq)</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">disable_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq)</span></code></pre></div>
 
 <p>enable_irq 和 disable_irq 用于使能和禁止指定的中断，irq 就是要禁止的中断号。disable_irq函数要等到当前正在执行的中断处理函数执行完才返回，因此使用者需要保证不会产生新的中断，并且确保所有已经开始执行的中断处理程序已经全部退出。在这种情况下，可以使用另外一个中断禁止函数：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">disable_irq_nosync</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">disable_irq_nosync</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> irq)</span></code></pre></div>
 
 <p>disable_irq_nosync 函数调用以后立即返回，不会等待当前中断处理程序执行完毕。上面三个函数都是使能或者禁止某一个中断，有时候我们需要关闭当前处理器的整个中断系统，也就是在学习 STM32 的时候常说的关闭全局中断，这个时候可以使用如下两个函数</p>
-<div class="code-wrapper"><pre><code class="hljs c">local_irq_enable()
+<div class="hljs code-wrapper"><pre><code class="hljs c">local_irq_enable()
 local_irq_disable()</code></pre></div>
 
 <p>local_irq_enable 用于使能当前处理器中断系统，local_irq_disable 用于禁止当前处理器中断系统。假如 A 任务调用 local_irq_disable 关闭全局中断 10S，当关闭了 2S 的时候 B 任务开始运行，B 任务也调用 local_irq_disable 关闭全局中断 3S，3 秒以后 B 任务调用local_irq_enable 函数将全局中断打开了。此时才过去 2+3&#x3D;5 秒的时间，然后全局中断就被打开了，此时 A 任务要关闭 10S 全局中断的愿望就破灭了，然后 A 任务就“生气了”，结果很严重，可能系统都要被A 任务整崩溃。为了解决这个问题，B 任务不能直接简单粗暴的通过 local_irq_enable 函数来打开全局中断，而是将中断状态恢复到以前的状态，要考虑到别的任务的感受，此时就要用到下面两个函数：</p>
-<div class="code-wrapper"><pre><code class="hljs c">local_irq_save(flags) 
+<div class="hljs code-wrapper"><pre><code class="hljs c">local_irq_save(flags) 
 local_irq_restore(flags)</code></pre></div>
 
 <p>这两个函数是一对，local_irq_save 函数用于禁止中断，并且将中断状态保存在 flags 中。local_irq_restore 用于恢复中断，将中断到 flags 状态。</p>
@@ -332,16 +332,16 @@ local_irq_restore(flags)</code></pre></div>
 </ul>
 <p>上半部处理很简单，直接编写中断处理函数就行了，关键是下半部该怎么做呢？Linux 内核提供了多种下半部机制，接下来我们来学习一下这些下半部机制。</p>
 <h4 id="1、软中断"><a href="#1、软中断" class="headerlink" title="1、软中断"></a>1、软中断</h4><p>一开始 Linux 内核提供了“bottom half”机制来实现下半部，简称“BH”。后面引入了软中断和 tasklet 来替代“BH”机制，完全可以使用软中断和 tasklet 来替代 BH，从 2.5 版本的 Linux内核开始 BH 已经被抛弃了。<strong>Linux 内核使用结构体 softirq_action 表示软中断</strong>，softirq_action结构体定义在文件 include&#x2F;linux&#x2F;interrupt.h 中，内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">433</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">softirq_action</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">433</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">softirq_action</span></span>
 <span class="hljs-class">434 &#123;</span>
 <span class="hljs-number">435</span> 	<span class="hljs-type">void</span> (*action)(<span class="hljs-keyword">struct</span> softirq_action *);
 <span class="hljs-number">436</span> &#125;;</code></pre></div>
 
 <p>在 kernel&#x2F;softirq.c 文件中一共定义了 10 个软中断，如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">softirq_action</span> <span class="hljs-title">softirq_vec</span>[<span class="hljs-title">NR_SOFTIRQS</span>];</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">softirq_action</span> <span class="hljs-title">softirq_vec</span>[<span class="hljs-title">NR_SOFTIRQS</span>];</span></code></pre></div>
 
 <p>NR_SOFTIRQS 是枚举类型，定义在文件 include&#x2F;linux&#x2F;interrupt.h 中，定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">enum</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">enum</span></span>
 <span class="hljs-class">&#123;</span>
     HI_SOFTIRQ=<span class="hljs-number">0</span>, <span class="hljs-comment">/* 高优先级软中断 */</span>
     TIMER_SOFTIRQ, <span class="hljs-comment">/* 定时器软中断 */</span>
@@ -357,7 +357,7 @@ local_irq_restore(flags)</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>可以看出，一共有 10 个软中断，因此 NR_SOFTIRQS 为 10，因此数组 softirq_vec 有 10 个元素。softirq_action 结构体中的 action 成员变量就是软中断的服务函数，数组 softirq_vec是个全局数组，因此所有的 CPU(对于 SMP 系统而言)都可以访问到，每个 CPU 都有自己的触发和控制机制，并且只执行自己所触发的软中断。但是各个 CPU 所执行的软中断服务函数确是相同的，都是数组 softirq_vec 中定义的 action 函数。要使用软中断，必须先使用open_softirq 函数注册对应的软中断处理函数，open_softirq 函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">open_softirq</span><span class="hljs-params">(<span class="hljs-type">int</span> nr, <span class="hljs-type">void</span> (*action)(<span class="hljs-keyword">struct</span> softirq_action *))</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">open_softirq</span><span class="hljs-params">(<span class="hljs-type">int</span> nr, <span class="hljs-type">void</span> (*action)(<span class="hljs-keyword">struct</span> softirq_action *))</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：</p>
 <ul>
@@ -366,7 +366,7 @@ local_irq_restore(flags)</code></pre></div>
 <li>返回值：没有返回值。</li>
 </ul>
 <p>注册好软中断以后需要通过 raise_softirq 函数触发，raise_softirq 函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">raise_softirq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> nr)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">raise_softirq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> nr)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：</p>
 <ul>
@@ -375,7 +375,7 @@ local_irq_restore(flags)</code></pre></div>
 </ul>
 <p>软中断必须在编译的时候静态注册！Linux 内核使用 softirq_init 函数初始化软中断.</p>
 <h4 id="2、tasklet"><a href="#2、tasklet" class="headerlink" title="2、tasklet"></a>2、tasklet</h4><p>tasklet 是利用软中断来实现的另外一种下半部机制，在软中断和 tasklet 之间，建议大家使用 tasklet。Linux 内核使用结构体</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">484</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tasklet_struct</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">484</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tasklet_struct</span></span>
 <span class="hljs-class">485 &#123;</span>
 <span class="hljs-number">486</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tasklet_struct</span> *<span class="hljs-title">next</span>;</span> <span class="hljs-comment">/* 下一个 tasklet */</span>
 <span class="hljs-number">487</span> 	<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> state; 		<span class="hljs-comment">/* tasklet 状态 */</span>
@@ -385,7 +385,7 @@ local_irq_restore(flags)</code></pre></div>
 <span class="hljs-number">491</span> &#125;;</code></pre></div>
 
 <p>第 489 行的 func 函数就是 tasklet 要执行的处理函数，用户定义函数内容，相当于中断处理函数。如果要使用 tasklet，必须先定义一个 tasklet，然后使用 tasklet_init 函数初始化tasklet，taskled_init 函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">tasklet_init</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tasklet_struct *t,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">tasklet_init</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tasklet_struct *t,</span>
 <span class="hljs-params">                  <span class="hljs-type">void</span> (*func)(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>),</span>
 <span class="hljs-params">				  <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> data)</span>;</code></pre></div>
 
@@ -397,11 +397,11 @@ local_irq_restore(flags)</code></pre></div>
 <li>返回值：没有返回值。</li>
 </ul>
 <p>也 可 以 使 用 宏 DECLARE_TASKLET 来 一 次 性 完 成 tasklet 的 定 义 和 初 始 化 ，DECLARE_TASKLET 定义在 include&#x2F;linux&#x2F;interrupt.h 文件中，定义如下:</p>
-<div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">DECLARE_TASKLET(<span class="hljs-params">name</span>, <span class="hljs-params">func</span>, <span class="hljs-params">data</span>)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">DECLARE_TASKLET(<span class="hljs-params">name</span>, <span class="hljs-params">func</span>, <span class="hljs-params">data</span>)</span></code></pre></div>
 
 <p>其中 name 为要定义的 tasklet 名字，这个名字就是一个 tasklet_struct 类型的时候变量，func就是 tasklet 的处理函数，data 是传递给 func 函数的参数。</p>
 <p>在上半部，也就是中断处理函数中调用 tasklet_schedule 函数就能使 tasklet 在合适的时间运<br>行，tasklet_schedule 函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">tasklet_schedule</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tasklet_struct *t)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">tasklet_schedule</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tasklet_struct *t)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：</p>
 <ul>
@@ -409,7 +409,7 @@ local_irq_restore(flags)</code></pre></div>
 <li>返回值：没有返回值。</li>
 </ul>
 <p>关于 tasklet 的参考使用示例如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 定义 taselet */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 定义 taselet */</span>
 <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tasklet_struct</span> <span class="hljs-title">testtasklet</span>;</span>
 <span class="hljs-comment">/* tasklet 处理函数 */</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">testtasklet_func</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> data)</span>
@@ -437,14 +437,14 @@ local_irq_restore(flags)</code></pre></div>
 
 <h4 id="3、工作队列"><a href="#3、工作队列" class="headerlink" title="3、工作队列"></a>3、工作队列</h4><p>工作队列是另外一种下半部执行方式，工作队列在进程上下文执行，工作队列将要推后的工作交给一个内核线程去执行，因为工作队列工作在进程上下文，因此工作队列允许睡眠或重新调度。因此如果你要推后的工作可以睡眠那么就可以选择工作队列，否则的话就只能选择软中断或 tasklet。</p>
 <p>Linux 内核使用 work_struct 结构体表示一个工作，内容如下(省略掉条件编译)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">work_struct</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">work_struct</span> &#123;</span>
     <span class="hljs-type">atomic_long_t</span> data;
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">entry</span>;</span>
     <span class="hljs-type">work_func_t</span> func; <span class="hljs-comment">/* 工作队列处理函数 */</span>
 &#125;;</code></pre></div>
 
 <p>这些工作组织成工作队列，工作队列使用 workqueue_struct 结构体表示，内容如下(省略掉条件编译)：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">workqueue_struct</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">workqueue_struct</span> &#123;</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">pwqs</span>;</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">list</span>;</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mutex</span> <span class="hljs-title">mutex</span>;</span>
@@ -468,7 +468,7 @@ local_irq_restore(flags)</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>Linux 内核使用工作者线程(worker thread)来处理工作队列中的各个工作，Linux 内核使用worker 结构体表示工作者线程，worker 结构体内容如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">worker</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">worker</span> &#123;</span>
     <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span>
         <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">entry</span>;</span>
         <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hlist_node</span> <span class="hljs-title">hentry</span>;</span>
@@ -489,14 +489,14 @@ local_irq_restore(flags)</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>从示例代码 可以看出，每个 worker 都有一个工作队列，工作者线程处理自己工作队列中的所有工作。在实际的驱动开发中，我们只需要定义工作(work_struct)即可，关于工作队列和工作者线程我们基本不用去管。简单创建工作很简单，直接定义一个 work_struct 结构体变量即可，然后使用 INIT_WORK 宏来初始化工作，INIT_WORK 宏定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> INIT_WORK(_work, _func) </span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> INIT_WORK(_work, _func) </span></code></pre></div>
 
 <p>_work 表示要初始化的工作，_func 是工作对应的处理函数。</p>
 <p>也可以使用 DECLARE_WORK 宏一次性完成工作的创建和初始化，宏定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> DECLARE_WORK(n, f)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> DECLARE_WORK(n, f)</span></code></pre></div>
 
 <p>n 表示定义的工作(work_struct)，f 表示工作对应的处理函数。<br>和 tasklet 一样，工作也是需要调度才能运行的，工作的调度函数为 schedule_work，函数原<br>型如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">bool</span> <span class="hljs-title function_">schedule_work</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> work_struct *work)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">bool</span> <span class="hljs-title function_">schedule_work</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> work_struct *work)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：</p>
 <ul>
@@ -504,7 +504,7 @@ local_irq_restore(flags)</code></pre></div>
 <li>返回值：0 成功，其他值 失败。</li>
 </ul>
 <p>关于工作队列的参考使用示例如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 定义工作(work) */</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 定义工作(work) */</span>
 <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">work_struct</span> <span class="hljs-title">testwork</span>;</span>
 <span class="hljs-comment">/* work 处理函数 */</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">testwork_func_t</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> work_struct *work)</span>;
@@ -531,7 +531,7 @@ local_irq_restore(flags)</code></pre></div>
 &#125;</code></pre></div>
 
 <h3 id="3-设备树中断信息节点"><a href="#3-设备树中断信息节点" class="headerlink" title="3|设备树中断信息节点"></a>3|设备树中断信息节点</h3><p>如果使用设备树的话就需要在设备树中设置好中断属性信息，Linux 内核通过读取设备树中的中断属性信息来配置中断。对于中断控制器而言，设备树绑定信息参考文档Documentation&#x2F;devicetree&#x2F;bindings&#x2F;arm&#x2F;gic.txt。打开 imx6ull.dtsi 文件，其中的 <strong>intc 节点就是I.MX6ULL 的中断控制器节点</strong>，节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> intc: interrupt-controller@<span class="hljs-number">00</span>a01000 &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> intc: interrupt-controller@<span class="hljs-number">00</span>a01000 &#123;
 <span class="hljs-number">2</span> 		compatible = <span class="hljs-string">&quot;arm,cortex-a7-gic&quot;</span>;
 <span class="hljs-number">3</span> 		<span class="hljs-meta">#interrupt-cells = <span class="hljs-string">&lt;3&gt;</span>;</span>
 <span class="hljs-number">4</span> 		interrupt-controller;
@@ -552,7 +552,7 @@ local_irq_restore(flags)</code></pre></div>
 <li><p><strong>第 4 行</strong>，<strong>interrupt-controller</strong> 节点为空，表示当前节点是中断控制器。对于 gpio 来说，gpio 节点也可以作为中断控制器，比如 imx6ull.dtsi 文件中的 gpio5 节点内容如下所示：</p>
 </li>
 <li><p>&#96;&#96;&#96;c<br>1 gpio5: gpio@020ac000 {<br>2         compatible &#x3D; “fsl,imx6ul-gpio”, “fsl,imx35-gpio”;<br>3         reg &#x3D; &lt;0x020ac000 0x4000&gt;;<br>4         interrupts &#x3D; &lt;GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH&gt;,<br>5                      &lt;GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH&gt;;<br>6         gpio-controller;<br>7         #gpio-cells &#x3D; &lt;2&gt;;<br>8         interrupt-controller;<br>9         #interrupt-cells &#x3D; &lt;2&gt;;<br>10 };</p>
-<div class="code-wrapper"><pre><code class="hljs tap">
+<div class="hljs code-wrapper"><pre><code class="hljs tap">
 - **第<span class="hljs-number"> 4 </span>行**，interrupts 描述中断源信息，对于 gpio5 来说一共有两条信息，中断类型都是 SPI，触发电平都是 IRQ_TYPE_LEVEL_HIGH。不同之处在于中断源，一个是 74，一个是 75，打开可以打开《IMX6ULL 参考手册》的“Chapter<span class="hljs-number"> 3 </span>Interrupts and DMA Events”章节，找到表 3-1，有如图所示的内容：
 
   ![image-20200825171323009](9、Linux中断实验/image-20200825171323009.png)
@@ -576,18 +576,18 @@ local_irq_restore(flags)</code></pre></div>
 </li>
 </ul>
 <h3 id="4-获取中断号-irq-of-parse-and-map"><a href="#4-获取中断号-irq-of-parse-and-map" class="headerlink" title="4|获取中断号 irq_of_parse_and_map"></a>4|获取中断号 irq_of_parse_and_map</h3><p>编写驱动的时候需要用到中断号，我们用到中断号，中断信息已经写到了设备树里面，因此可以通过 <strong>irq_of_parse_and_map</strong>函数从 interupts 属性中提取到对应的设备号，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-title function_">irq_of_parse_and_map</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device_node *dev,</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-title function_">irq_of_parse_and_map</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device_node *dev,</span>
 <span class="hljs-params">                                  <span class="hljs-type">int</span> index)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ：设备节点。<br><strong>index</strong>：索引号，interrupts 属性可能包含多条中断信息，通过 index 指定要获取的信息。<br><strong>返回值</strong>：中断号。</p>
 <p>如果使用 GPIO 的话，可以使用 <strong>gpio_to_irq</strong> 函数来获取 gpio 对应的中断号，函数原型如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">gpio_to_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> gpio)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">gpio_to_irq</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> gpio)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>gpio</strong> ：要获取的 GPIO 编号。<br><strong>返回值</strong>：GPIO 对应的中断号。</p>
 <h2 id="二、硬件原理分析"><a href="#二、硬件原理分析" class="headerlink" title="二、硬件原理分析"></a>二、硬件原理分析</h2><p><img src="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200825172109959.png" srcset="/img/loading.gif" lazyload alt="image-20200825172109959"></p>
 <h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><p>本章实验我们驱动 I.MX6U-ALPHA 开发板上的 KEY0 按键，不过我们采用中断的方式，并且采用定时器来实现按键消抖，应用程序读取按键值并且通过终端打印出来。通过本章我们可以学习到 Linux 内核中断的使用方法，以及对 Linux 内核定时器的回顾。</p>
 <h3 id="1-修改设备树文件"><a href="#1-修改设备树文件" class="headerlink" title="1|修改设备树文件"></a>1|修改设备树文件</h3><p>本章实验使用到了按键 KEY0，按键 KEY0 使用中断模式，因此需要在“key”节点下添加中断相关属性，添加完成以后的“key”节点内容如下所示：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> key &#123;
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> key &#123;
 <span class="hljs-number">2</span> 		<span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 <span class="hljs-number">3</span> 		<span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 <span class="hljs-number">4</span> 		compatible = <span class="hljs-string">&quot;atkalpha-key&quot;</span>;
@@ -602,7 +602,7 @@ local_irq_restore(flags)</code></pre></div>
 <p>第 8 行，设置 interrupt-parent 属性值为“gpio1”，因为 KEY0 所使用的 GPIO 为GPIO1_IO18，也就是设置 KEY0 的 GPIO 中断控制器为 gpio1。</p>
 <p>第 9 行，设置 interrupts 属性，也就是设置中断源，第一个 cells 的 18 表示 GPIO1 组的 18号 IO。</p>
 <p>IRQ_TYPE_EDGE_BOTH 定义在文件 include&#x2F;linux&#x2F;irq.h 中，定义如下：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">76</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> &#123;</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">76</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> &#123;</span>
 <span class="hljs-number">77</span> 		IRQ_TYPE_NONE = <span class="hljs-number">0x00000000</span>,
 <span class="hljs-number">78</span> 		IRQ_TYPE_EDGE_RISING = <span class="hljs-number">0x00000001</span>,
 <span class="hljs-number">79</span> 		IRQ_TYPE_EDGE_FALLING = <span class="hljs-number">0x00000002</span>,
@@ -617,7 +617,7 @@ local_irq_restore(flags)</code></pre></div>
 
 <p>从示例代码  中可以看出，IRQ_TYPE_EDGE_BOTH 表示上升沿和下降沿同时有效，相当于 KEY0 按下和释放都会触发中断。设备树编写完成以后使用“make dtbs”命令重新编译设备树，然后使用新编译出来的imx6ull-lxg-emmc.dtb 文件启动 Linux 系统。</p>
 <h3 id="2-按键中断驱动程序编写"><a href="#2-按键中断驱动程序编写" class="headerlink" title="2|按键中断驱动程序编写"></a>2|按键中断驱动程序编写</h3><p>新建名为“13_irq”的文件夹，然后在 13_irq 文件夹里面创建 vscode 工程，工作区命名为“imx6uirq”。工程创建好以后新建 imx6uirq.c 文件，在 imx6uirq.c 里面输入如下内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
@@ -976,7 +976,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 </li>
 </ul>
 <h3 id="3-编写测试APP"><a href="#3-编写测试APP" class="headerlink" title="3|编写测试APP"></a>3|编写测试APP</h3><p>测试 APP 要实现的内容很简单，通过不断的读取&#x2F;dev&#x2F;imx6uirq 文件来获取按键值，当按键按下以后就会将获取到的按键值输出在终端上，新建名为 imx6uirqApp.c 的文件，然后输入如下所示内容：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
@@ -1037,7 +1037,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p> while 循环用于不断的读取按键值，如果读取到有效的按键值就将其输出到终端上。</p>
 <h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><p>编译运行。</p>
 <p>驱动加载成功以后可以通过查看&#x2F;proc&#x2F;interrupts 文件来检查一下对应的中断有没有被注册上，输入如下命令：</p>
-<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/interrupts</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/interrupts</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/image-20200826110945181.png" srcset="/img/loading.gif" lazyload alt="image-20200826110945181"></p>

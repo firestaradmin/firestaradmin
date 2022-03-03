@@ -244,40 +244,40 @@
 <p>我不敢正视你的眼睛，我怕我看你的每一眼都是在表白。 </p>
 </blockquote>
 <h2 id="一、模板"><a href="#一、模板" class="headerlink" title="一、模板"></a>一、模板</h2><h4 id="1-C语言中’-’-和-‘-’-的模板用法"><a href="#1-C语言中’-’-和-‘-’-的模板用法" class="headerlink" title="1.C语言中’#’ 和 ‘##’ 的模板用法"></a>1.C语言中’#’ 和 ‘##’ 的模板用法</h4><h5 id="运算符"><a href="#运算符" class="headerlink" title="#运算符"></a><strong>#运算符</strong></h5><p><strong>#运算符</strong>将一个宏的参数转换为字符串字面量。它仅允许出现在带参数的宏的替换列表中。如：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PRINT_INT(x) printf(#x <span class="hljs-string">&quot; = %d\n&quot;</span>, x)</span></code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PRINT_INT(x) printf(#x <span class="hljs-string">&quot; = %d\n&quot;</span>, x)</span></code></pre></div>
 <p><strong>x</strong>之前的#运算符通知预处理器根据PRINT_INT的参数创建一个字符串字面量。<br>因此，调用 “PRINT_INT(i&#x2F;j);” 等同于：</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;i/j&quot;</span> <span class="hljs-string">&quot; = %d\n&quot;</span>, i/j);</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;i/j&quot;</span> <span class="hljs-string">&quot; = %d\n&quot;</span>, i/j);</code></pre></div>
 
 <p>而在C语言中相邻的字符串字面量会被合并<br>因此上边的语句等价于：<strong>printf(“i&#x2F;j &#x3D; %d\n”, i&#x2F;j);</strong></p>
 <hr>
 <h5 id="运算符-1"><a href="#运算符-1" class="headerlink" title="##运算符"></a><strong>##运算符</strong></h5><p> <strong>##运算符</strong>可以将两个记号（例如标识符）“粘”在一起，成为一个记号。（##运算符被称为“记号粘合”。）如果其中一个操作数是宏参数，“粘合”会在当形式参数被相应的实际参数替换后发生。</p>
 <p>例如我们需要定义一个加法函数  </p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">int_add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">int_add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>
 &#123;
     <span class="hljs-keyword">return</span> a + b;
 &#125;</code></pre></div>
 
 <p>但是这种情况下，如果我们要计算float类型的数据怎么办？重新在定义一个是可以的，但是如果有更多的类型呢？难道一个个全部定义嘛，这里有更好的办法。</p>
-<div class="code-wrapper"><pre><code class="hljs reasonml">#define <span class="hljs-constructor">GENERIC_ADD(<span class="hljs-params">type</span>)</span> \
+<div class="hljs code-wrapper"><pre><code class="hljs reasonml">#define <span class="hljs-constructor">GENERIC_ADD(<span class="hljs-params">type</span>)</span> \
 <span class="hljs-keyword">type</span> <span class="hljs-keyword">type</span>##<span class="hljs-constructor">_add(<span class="hljs-params">type</span> <span class="hljs-params">a</span>, <span class="hljs-params">type</span> <span class="hljs-params">b</span>)</span> \
 &#123; \
 	return a + b; \
 &#125; \</code></pre></div>
 
 <p>现在，如果我们需要一个float类型的加法，只需要这一行代码</p>
-<div class="code-wrapper"><pre><code class="hljs c">GENERIC_ADD(<span class="hljs-type">float</span>)</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c">GENERIC_ADD(<span class="hljs-type">float</span>)</code></pre></div>
 
 <p>预处理器会自动展开为</p>
-<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">float</span> <span class="hljs-title function_">float_add</span><span class="hljs-params">(flaot a, <span class="hljs-type">float</span> b)</span> 
+<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">float</span> <span class="hljs-title function_">float_add</span><span class="hljs-params">(flaot a, <span class="hljs-type">float</span> b)</span> 
 &#123; 
 	<span class="hljs-keyword">return</span> a + b; 
 &#125;</code></pre></div>
 
-<h4 id="2-C-Template模板"><a href="#2-C-Template模板" class="headerlink" title="2.C++ Template模板"></a>2.C++ Template模板</h4><h5 id="1、类模板的格式为："><a href="#1、类模板的格式为：" class="headerlink" title="1、类模板的格式为："></a>1、类模板的格式为：</h5><div class="code-wrapper"><pre><code class="hljs cpp">　　　　<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span>  形参名，<span class="hljs-keyword">class</span> 形参名，…&gt;
+<h4 id="2-C-Template模板"><a href="#2-C-Template模板" class="headerlink" title="2.C++ Template模板"></a>2.C++ Template模板</h4><h5 id="1、类模板的格式为："><a href="#1、类模板的格式为：" class="headerlink" title="1、类模板的格式为："></a>1、类模板的格式为：</h5><div class="hljs code-wrapper"><pre><code class="hljs cpp">　　　　<span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span>  形参名，<span class="hljs-keyword">class</span> 形参名，…&gt;
 　　　　<span class="hljs-keyword">class</span> 类名&#123; ... &#125;;</code></pre></div>
 
 <p>类模板和函数模板都是以<code>template</code> 开始后接模板形参列表组成，模板形参不能为空，一但声明了类模板就可以用类模板的形参名声明类中的成员变量和成员函数，即可以在类中使用内置类型的地方都可以使用模板形参名来声明。比如</p>
-<div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span> <span class="hljs-title class_">T</span>&gt; <span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span>
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span> <span class="hljs-title class_">T</span>&gt; <span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span>
 &#123;
     <span class="hljs-keyword">public</span>: 
     T a;
@@ -286,10 +286,10 @@
 &#125;;</code></pre></div>
 
 <p>当我们实例化一个类 m 时就可以这样：</p>
-<div class="code-wrapper"><pre><code class="hljs c++">A&lt;<span class="hljs-type">int</span>&gt; m;</code></pre></div>
+<div class="hljs code-wrapper"><pre><code class="hljs c++">A&lt;<span class="hljs-type">int</span>&gt; m;</code></pre></div>
 
 <p>这样上面的类A中所有 T 的类型会被int 替代。</p>
-<h5 id="2、函数模板"><a href="#2、函数模板" class="headerlink" title="2、函数模板"></a>2、函数模板</h5><div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span>  T&gt; <span class="hljs-type">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(T&amp; t1, T&amp; t2)</span> </span>&#123;
+<h5 id="2、函数模板"><a href="#2、函数模板" class="headerlink" title="2、函数模板"></a>2、函数模板</h5><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span>  T&gt; <span class="hljs-type">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(T&amp; t1, T&amp; t2)</span> </span>&#123;
     T tmpT;
     tmpT = t1;
     t1 = t2;
@@ -297,12 +297,12 @@
 &#125;</code></pre></div>
 
 <p>用法：</p>
-<div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-type">int</span> num1 = <span class="hljs-number">1</span>, num2 = <span class="hljs-number">2</span>;
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-type">int</span> num1 = <span class="hljs-number">1</span>, num2 = <span class="hljs-number">2</span>;
 <span class="hljs-built_in">swap</span>&lt;<span class="hljs-type">int</span>&gt;(num1, num2);</code></pre></div>
 
 
 
-<h5 id="3、模板的偏特化和全特化"><a href="#3、模板的偏特化和全特化" class="headerlink" title="3、模板的偏特化和全特化"></a>3、模板的偏特化和全特化</h5><div class="code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">/* 模板 */</span>
+<h5 id="3、模板的偏特化和全特化"><a href="#3、模板的偏特化和全特化" class="headerlink" title="3、模板的偏特化和全特化"></a>3、模板的偏特化和全特化</h5><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">/* 模板 */</span>
 <span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T1, <span class="hljs-keyword">typename</span> T2&gt;
 <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span>
 &#123;
@@ -336,7 +336,7 @@
 &#125;;</code></pre></div>
 
 <p>使用：</p>
-<div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-function">Test&lt;<span class="hljs-type">double</span> , <span class="hljs-type">double</span>&gt; <span class="hljs-title">t1</span><span class="hljs-params">(<span class="hljs-number">0.1</span>,<span class="hljs-number">0.2</span>)</span></span>;  
+<div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-function">Test&lt;<span class="hljs-type">double</span> , <span class="hljs-type">double</span>&gt; <span class="hljs-title">t1</span><span class="hljs-params">(<span class="hljs-number">0.1</span>,<span class="hljs-number">0.2</span>)</span></span>;  
 <span class="hljs-function">Test&lt;<span class="hljs-type">int</span> , <span class="hljs-type">char</span>&gt; <span class="hljs-title">t2</span><span class="hljs-params">(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;A&#x27;</span>)</span></span>;  
 <span class="hljs-function">Test&lt;<span class="hljs-type">char</span>, <span class="hljs-type">bool</span>&gt; <span class="hljs-title">t3</span><span class="hljs-params">(<span class="hljs-string">&#x27;A&#x27;</span>,<span class="hljs-literal">true</span>)</span></span>;  
 <span class="hljs-comment">//依次打印：</span>
@@ -344,7 +344,7 @@
 <span class="hljs-comment">//全特化</span>
 <span class="hljs-comment">//偏特化</span></code></pre></div>
 
-<h5 id="4、使用枚举替代-class-x2F-typename-关键字"><a href="#4、使用枚举替代-class-x2F-typename-关键字" class="headerlink" title="4、使用枚举替代 class&#x2F;typename 关键字"></a>4、使用枚举替代 class&#x2F;typename 关键字</h5><div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<h5 id="4、使用枚举替代-class-x2F-typename-关键字"><a href="#4、使用枚举替代-class-x2F-typename-关键字" class="headerlink" title="4、使用枚举替代 class&#x2F;typename 关键字"></a>4、使用枚举替代 class&#x2F;typename 关键字</h5><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
 
 <span class="hljs-keyword">enum</span> <span class="hljs-title class_">type_enum</span>&#123;
     MYTYPE_INT = <span class="hljs-number">1</span>,
