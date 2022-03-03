@@ -240,7 +240,7 @@
             <div class="markdown-body">
               <h1 id="Ubuntu-常用"><a href="#Ubuntu-常用" class="headerlink" title="Ubuntu 常用"></a>Ubuntu 常用</h1><h2 id="1-开机自动运行"><a href="#1-开机自动运行" class="headerlink" title="1. 开机自动运行"></a>1. 开机自动运行</h2><h3 id="way-1-rc-local"><a href="#way-1-rc-local" class="headerlink" title="way 1. rc.local"></a>way 1. rc.local</h3><p>在 &#x2F;etc&#x2F;rc.local 下添加 要运行的命令，即可开机自动执行这些命令。</p>
 <p>如：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh -e</span>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh -e</span>
 <span class="hljs-comment"># rc.local</span>
 <span class="hljs-comment"># This script is executed at the end of each multiuser runlevel.</span>
 <span class="hljs-comment"># Make sure that the script will &quot;exit 0&quot; on success or any other</span>
@@ -257,7 +257,7 @@ mono  nat123linux.sh  service  &amp;      ---自动读取上次成功登录帐�
 <p><strong>1、设置rc-local.service</strong></p>
 <p>创建并编辑 <code>sudo vim /etc/systemd/system/rc-local.service</code> </p>
 <p>将以下内容复制进去</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span>
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span>
  <span class="hljs-attr">Description</span>=/etc/rc.local Compatibility
  <span class="hljs-attr">ConditionPathExists</span>=/etc/rc.local
 
@@ -273,11 +273,11 @@ mono  nat123linux.sh  service  &amp;      ---自动读取上次成功登录帐�
  <span class="hljs-attr">WantedBy</span>=multi-user.target</code></pre></div>
 
 <p><strong>2、激活rc-local.service</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs pgsql">sudo systemctl <span class="hljs-keyword">enable</span> rc-<span class="hljs-keyword">local</span>.service</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs pgsql">sudo systemctl <span class="hljs-keyword">enable</span> rc-<span class="hljs-keyword">local</span>.service</code></pre></div>
 
 <p><strong>3、添加启动服务</strong></p>
 <p>手工创建或者拷贝已有的&#x2F;etc&#x2F;rc.local，并赋予执行权限</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh -e</span>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh -e</span>
 <span class="hljs-comment"># </span>
 <span class="hljs-comment"># rc.local</span>
 <span class="hljs-comment">#</span>
@@ -296,11 +296,11 @@ mono  nat123linux.sh  service  &amp;      ---自动读取上次成功登录帐�
 <span class="hljs-built_in">exit</span> 0</code></pre></div>
 
 <p><strong>4、给予脚本执行权限</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo chmod +x <span class="hljs-regexp">/etc/</span>rc.local</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">sudo chmod +x <span class="hljs-regexp">/etc/</span>rc.local</code></pre></div>
 
 
 
-<h2 id="2-用户登录自动运行"><a href="#2-用户登录自动运行" class="headerlink" title="2. 用户登录自动运行"></a>2. 用户登录自动运行</h2><h3 id="1-在-x2F-etc-x2F-profile-里编辑"><a href="#1-在-x2F-etc-x2F-profile-里编辑" class="headerlink" title="1. 在 &#x2F;etc&#x2F;profile 里编辑"></a>1. 在 &#x2F;etc&#x2F;profile 里编辑</h3><h3 id="2-在-x2F-etc-x2F-profile-d-x2F-下-添加-sh-脚本"><a href="#2-在-x2F-etc-x2F-profile-d-x2F-下-添加-sh-脚本" class="headerlink" title="2. 在 &#x2F;etc&#x2F;profile.d&#x2F;下 添加 sh 脚本"></a>2. 在 &#x2F;etc&#x2F;profile.d&#x2F;下 添加 sh 脚本</h3><h2 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h2><div class="hljs code-wrapper"><pre><code class="hljs vim"><span class="hljs-keyword">ps</span> -ef | <span class="hljs-keyword">grep</span> nat
+<h2 id="2-用户登录自动运行"><a href="#2-用户登录自动运行" class="headerlink" title="2. 用户登录自动运行"></a>2. 用户登录自动运行</h2><h3 id="1-在-x2F-etc-x2F-profile-里编辑"><a href="#1-在-x2F-etc-x2F-profile-里编辑" class="headerlink" title="1. 在 &#x2F;etc&#x2F;profile 里编辑"></a>1. 在 &#x2F;etc&#x2F;profile 里编辑</h3><h3 id="2-在-x2F-etc-x2F-profile-d-x2F-下-添加-sh-脚本"><a href="#2-在-x2F-etc-x2F-profile-d-x2F-下-添加-sh-脚本" class="headerlink" title="2. 在 &#x2F;etc&#x2F;profile.d&#x2F;下 添加 sh 脚本"></a>2. 在 &#x2F;etc&#x2F;profile.d&#x2F;下 添加 sh 脚本</h3><h2 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h2><div class="code-wrapper"><pre><code class="hljs vim"><span class="hljs-keyword">ps</span> -ef | <span class="hljs-keyword">grep</span> nat
 <span class="hljs-keyword">ps</span> -ef | <span class="hljs-keyword">grep</span> xxx
 
 kill -<span class="hljs-number">9</span>

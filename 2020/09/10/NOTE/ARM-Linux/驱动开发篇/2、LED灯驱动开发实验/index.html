@@ -254,7 +254,7 @@
 <p>物理内存只有 512MB，虚拟内存有 4GB，那么肯定存在多个虚拟地址映射到同一个物理地址上去，虚拟地址范围比物理地址范围大的问题处理器自会处理，这里我们不要去深究，因为MMU 是很复杂的一个东西，后续有时间的话可以再参考正点原子 Linux 团队打算做的MMU 专题教程。</p>
 <p>Linux 内核启动的时候会初始化 MMU，设置好内存映射，设置好以后 CPU 访问的都是虚拟地址。比如I.MX6ULL 的 <strong>GPIO1_IO03</strong> 引 脚 的 复 用 寄 存 器<strong>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03</strong>的地址为 <strong>0X020E0068</strong>。如果没有开启 MMU 的话直接向 0X020E0068 这个寄存器地址写入数据就可以配置GPIO1_IO03 的复用功能。现在开启了 MMU，并且设置了内存映射，因此就不能直接向 0X020E0068 这个地址写入数据了。我们必须得到 0X020E0068 这个物理地址在 Linux 系统里面对应的虚拟地址，这里就涉及到了物理内存和虚拟内存之间的转换，需要用到两个函数：<strong>ioremap</strong> 和 <strong>iounmap</strong>。</p>
 <h4 id="ioremap-函数"><a href="#ioremap-函数" class="headerlink" title="ioremap  函数"></a>ioremap  函数</h4><p>ioremap 函 数 用 于 获 取 指 定 物 理 地 址 空 间 对 应 的 虚 拟 地 址 空 间 ， 定 义 在arch&#x2F;arm&#x2F;include&#x2F;asm&#x2F;io.h 文件中，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ioremap(cookie,size) __arm_ioremap((cookie), (size),</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ioremap(cookie,size) __arm_ioremap((cookie), (size),</span>
 MT_DEVICE)
     
 <span class="hljs-type">void</span> __iomem * __arm_ioremap(<span class="hljs-type">phys_addr_t</span> phys_addr, <span class="hljs-type">size_t</span> size,
@@ -266,16 +266,16 @@ MT_DEVICE)
 
 <p>ioremap 是个宏，有两个参数：<strong>cookie</strong> 和 <strong>size</strong>，真正起作用的是函数<strong>__arm_ioremap</strong>，此函数有三个参数和一个返回值，这些参数和返回值的含义如下：<br><strong>phys_addr</strong>：要映射给的物理起始地址。<br><strong>size</strong>：要映射的内存空间大小。<br><strong>mtype</strong>：ioremap 的类型，可以选择 MT_DEVICE、MT_DEVICE_NONSHARED、MT_DEVICE_CACHED 和 MT_DEVICE_WC，ioremap 函数选择 MT_DEVICE。<br><strong>返回值</strong>：__iomem 类型的指针，指向映射后的虚拟空间首地址。</p>
 <p>假如我们要获取 I.MX6ULL 的<strong>IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03</strong> 寄存器对应的虚拟地址，使用如下代码即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SW_MUX_GPIO1_IO03_BASE  (0X020E0068)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SW_MUX_GPIO1_IO03_BASE  (0X020E0068)</span>
 <span class="hljs-type">static</span> <span class="hljs-type">void</span> __iomem* SW_MUX_GPIO1_IO03;
 SW_MUX_GPIO1_IO03 = ioremap(SW_MUX_GPIO1_IO03_BASE, <span class="hljs-number">4</span>);</code></pre></div>
 
 <p><strong>宏 SW_MUX_GPIO1_IO03_BASE</strong> 是寄存器物理地址，<strong>SW_MUX_GPIO1_IO03</strong> 是映射后的虚拟地址。对于 I.MX6ULL 来说一个寄存器是 4 字节(32 位)的，因此映射的内存长度为 4。映射完成以后直接对SW_MUX_GPIO1_IO03 进行读写操作即可。</p>
 <h4 id="iounmap-函数"><a href="#iounmap-函数" class="headerlink" title="iounmap  函数"></a>iounmap  函数</h4><p>卸载驱动的时候需要使用 iounmap 函数释放掉 ioremap 函数所做的映射，iounmap 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">iounmap</span> <span class="hljs-params">(<span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">iounmap</span> <span class="hljs-params">(<span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span></code></pre></div>
 
 <p>iounmap 只有一个参数 addr，此参数就是要取消映射的虚拟地址空间首地址。假如我们现在要取消掉 IOMUXC_SW_MUX_CTL_PAD_GPIO1_IO03 寄存器的地址映射，使用如下代码即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">iounmap(SW_MUX_GPIO1_IO03);</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c">iounmap(SW_MUX_GPIO1_IO03);</code></pre></div>
 
 <h3 id="2、-I-x2F-O-内存访问函数"><a href="#2、-I-x2F-O-内存访问函数" class="headerlink" title="2、 I&#x2F;O  内存访问函数"></a>2、 I&#x2F;O  内存访问函数</h3><p>这里说的 I&#x2F;O 是输入&#x2F;输出的意思，并不是我们学习单片机的时候讲的 GPIO 引脚。这里涉及到两个概念：<strong>I&#x2F;O 端口</strong>和 <strong>I&#x2F;O 内存</strong>。</p>
 <p>当外部寄存器或内存映射到 IO 空间时，称为 <strong>I&#x2F;O 端口</strong>。</p>
@@ -283,20 +283,20 @@ SW_MUX_GPIO1_IO03 = ioremap(SW_MUX_GPIO1_IO03_BASE, <span class="hljs-number">4<
 <p>但是<strong>对于 ARM 来说没有 I&#x2F;O 空间这个概念</strong>，**因此 ARM 体系下只有 I&#x2F;O 内存(可以直接理解为内存)**。</p>
 <p>使用ioremap函数将寄存器的物理地址映射到虚拟地址以后，我们就可以直接通过指针访问这些地址，但是 Linux 内核不建议这么做，而是推荐使用一组操作函数来对映射后的内存进行读写操作。</p>
 <h4 id="1、读操作函数"><a href="#1、读操作函数" class="headerlink" title="1、读操作函数"></a>1、读操作函数</h4><p>读操作函数有如下几个：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">u8 <span class="hljs-title function_">readb</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
+<div class="code-wrapper"><pre><code class="hljs c">u8 <span class="hljs-title function_">readb</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
 u16 <span class="hljs-title function_">readw</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
 u32 <span class="hljs-title function_">readl</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span></code></pre></div>
 
 <p>readb、readw 和 readl 这三个函数分别对应 8bit、16bit 和 32bit 读操作，参数 addr 就是要读取写内存地址，返回值就是读取到的数据。</p>
 <h4 id="2-、写操作函数"><a href="#2-、写操作函数" class="headerlink" title="2 、写操作函数"></a>2 、写操作函数</h4><p>写操作函数有如下几个：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">writeb</span><span class="hljs-params">(u8 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">writeb</span><span class="hljs-params">(u8 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">writew</span><span class="hljs-params">(u16 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">writel</span><span class="hljs-params">(u32 value, <span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> __iomem *addr)</span></code></pre></div>
 
 <p>writeb、writew 和 writel 这三个函数分别对应 8bit、16bit 和 32bit 写操作，参数 value 是要写入的数值，addr 是要写入的地址。</p>
 <h2 id="二、硬件原理图"><a href="#二、硬件原理图" class="headerlink" title="二、硬件原理图"></a>二、硬件原理图</h2><p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/image-20200820172059339.png" srcset="/img/loading.gif" lazyload alt="image-20200820172059339"></p>
 <h2 id="三、实验程序编写"><a href="#三、实验程序编写" class="headerlink" title="三、实验程序编写"></a>三、实验程序编写</h2><h3 id="LED-灯驱动程序编写"><a href="#LED-灯驱动程序编写" class="headerlink" title="LED  灯驱动程序编写"></a>LED  灯驱动程序编写</h3><p>新建名为“2_led”文件夹，然后在 2_led 文件夹里面创建 VSCode 工程，工作区命名为“led”。工程创建好以后新建 led.c 文件，此文件就是 led 的驱动文件，在 led.c 里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -464,7 +464,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 <h3 id="编写测试APP"><a href="#编写测试APP" class="headerlink" title="编写测试APP"></a>编写测试APP</h3><p>编写测试 APP，led 驱动加载成功以后手动创建&#x2F;dev&#x2F;led 节点，应用 APP 通过操作&#x2F;dev&#x2F;led文件来完成对 LED 设备的控制。</p>
 <p>向&#x2F;dev&#x2F;led 文件写 0 表示关闭 LED 灯，写 1 表示打开 LED 灯。新建 ledApp.c 文件，在里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
@@ -521,7 +521,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>ledApp.c 的内容还是很简单的，就是对 led 的驱动文件进行最基本的打开、关闭、写操作等。</p>
 <h2 id="四、运行测试"><a href="#四、运行测试" class="headerlink" title="四、运行测试"></a>四、运行测试</h2><h3 id="1、编译驱动程序和测试-APP"><a href="#1、编译驱动程序和测试-APP" class="headerlink" title="1、编译驱动程序和测试 APP"></a>1、编译驱动程序和测试 APP</h3><p>编译驱动程序</p>
 <p>编写 Makefile 文件，本章实验的 Makefile 文件和前面实验基本一样，只是将 obj-m 变量的值改为 led.o，Makefile 内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">KERNEL_DIR := /home/firestaradmin/linux/IMX6U/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg
+<div class="code-wrapper"><pre><code class="hljs makefile">KERNEL_DIR := /home/firestaradmin/linux/IMX6U/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg
 CURRENT_PATH := <span class="hljs-variable">$(<span class="hljs-built_in">shell</span> pwd)</span>
 obj-m := led.o
 
@@ -538,22 +538,22 @@ obj-m := led.o
 <p><code>arm-linux-gnueabihf-gcc ledAPP.c -o ledAPP</code></p>
 <p>编译成功以后就会生成 ledApp 这个应用程序。</p>
 <h3 id="2、运行测试"><a href="#2、运行测试" class="headerlink" title="2、运行测试"></a>2、运行测试</h3><p>将上一小节编译出来的led.ko和ledApp这两个文件拷贝到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15目录中，重启开发板，进入到目录 lib&#x2F;modules&#x2F;4.1.15 中，输入如下命令加载 led.ko 驱动模块：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">depmod <span class="hljs-regexp">//</span>第一次加载驱动的时候需要运行此命令
+<div class="code-wrapper"><pre><code class="hljs awk">depmod <span class="hljs-regexp">//</span>第一次加载驱动的时候需要运行此命令
 modprobe led.ko  <span class="hljs-regexp">//</span>加载驱动</code></pre></div>
 
 <p>驱动加载成功以后创建“&#x2F;dev&#x2F;led”设备节点，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">mknod</span> /dev/led c <span class="hljs-number">200</span> <span class="hljs-number">0</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">mknod</span> /dev/led c <span class="hljs-number">200</span> <span class="hljs-number">0</span></code></pre></div>
 
 <p>驱动节点创建成功以后就可以使用 ledApp 软件来测试驱动是否工作正常，输入如下命令打开 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledAPP /</span>dev<span class="hljs-regexp">/led 1 /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledAPP /</span>dev<span class="hljs-regexp">/led 1 /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
 
 <p>输入上述命令以后观察 I.MX6U-ALPHA 开发板上的红色 LED 灯是否点亮，如果点亮的话</p>
 <p>说明驱动工作正常。在输入如下命令关闭 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/led 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/led 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
 
 <p>输入上述命令以后观察 I.MX6U-ALPHA 开发板上的红色 LED 灯是否熄灭，如果熄灭的话说明我们编写的 LED 驱动工作完全正常！至此，我们成功编写了第一个真正的 Linux 驱动设备程序。</p>
 <p>如果要卸载驱动的话输入如下命令即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">rmmod</span> led.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">rmmod</span> led.ko</code></pre></div>
 
 
 

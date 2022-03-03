@@ -279,7 +279,7 @@
 <p>首先 uboot 官方的基本是不会用的，因为支持太弱了。最常用的就是半导体厂商或者开发板厂商的 uboot，如果你用的半导体厂商的评估板，那么就使用半导体厂商的 uboot，如果你是购买的第三方开发板，比如正点原子的 I.MX6ULL 开发板，那么就使用正点原子提供的 uboot 源码（也是在半导体厂商的 uboot 上修改的）。当然了，你也可以在购买了第三方开发板以后使用半导体厂商提供的 uboot，只不过有些外设驱动可能不支持，需要自己移植，这个就是我们常说的 uboot 移植</p>
 <p>uboot 的移植并不是说我们完完全全的从零开始将 uboot 移植到我们现在所使用的开发板或者开发平台上。这个对于我们来说基本是不可能的，这个工作一般是半导体厂商做的，半导<br>体厂商负责将 uboot 移植到他们的芯片上，因此半导体厂商都会自己做一个开发板，这个开发板就叫做原厂开发板。半导体厂商会将 uboot 移植到他们自己的原厂开发板上，测试好以后就会将这个 uboot 发布出去，这就是大家常说的原厂 BSP 包。</p>
 <h2 id="二、uboot初次编译"><a href="#二、uboot初次编译" class="headerlink" title="二、uboot初次编译"></a>二、uboot初次编译</h2><p>首先在 Ubuntu 中安装 ncurses 库，否则编译会报错，安装命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install libncurses5-dev</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo apt-get install libncurses5-dev</code></pre></div>
 
 <h3 id="1-解压uboot源码"><a href="#1-解压uboot源码" class="headerlink" title="1.解压uboot源码"></a>1.解压uboot源码</h3><p>获取uboot源码后，解压uboot得到这样一个目录</p>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183254084.png" srcset="/img/loading.gif" lazyload alt="image-20200817183254084"></p>
@@ -287,10 +287,10 @@
 <p>如IMX6uLL的官方开发板EVK的配置文件为</p>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817183701255.png" srcset="/img/loading.gif" lazyload alt="image-20200817183701255"></p>
 <p>使用<code>make xxx_defconfig</code>命令即可配置 uboot，比如：**(注意要在uboot根目录输入命令)**</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_14x14_evk_emmc_defconfig</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_14x14_evk_emmc_defconfig</code></pre></div>
 
 <h3 id="3-编译源码"><a href="#3-编译源码" class="headerlink" title="3.编译源码"></a>3.编译源码</h3><p>编译 NXP  官方开发板对应的 uboot:</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 
 <ul>
 <li><code>V=1</code> 查看完整的编译信息</li>
@@ -300,7 +300,7 @@
 <p>这里每次输入那么长，很麻烦，可以直接在Makefile里给<code>ARCH</code> 和<code>CORSS_COMPILE </code>赋值, 或者可以写个SHELL脚本</p>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200817192750821.png" srcset="/img/loading.gif" lazyload alt="image-20200817192750821"></p>
 <p>这样我们就可以使用如下简短的命令来编译 uboot 了：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">make mx6ull_14x14_evk_emmc_defconfig
+<div class="code-wrapper"><pre><code class="hljs sh">make mx6ull_14x14_evk_emmc_defconfig
 make V=1 -j16</code></pre></div>
 
 
@@ -308,11 +308,11 @@ make V=1 -j16</code></pre></div>
 <h3 id="4-烧写未修改过的uboot测试"><a href="#4-烧写未修改过的uboot测试" class="headerlink" title="4.烧写未修改过的uboot测试"></a>4.烧写未修改过的uboot测试</h3><p><code>sudo fdisk -l</code>查看当前储存设备。</p>
 <p>将 imxdownload 软件拷贝到 uboot 源码根目录下然后使用 imxdownload 软件将 u-boot.bin烧写到 SD 卡中，烧写命令如下：<br><code>chmod 777 imxdownload</code> 给予 imxdownload 可执行权限<br><code>./imxdownload u-boot.bin /dev/sdb </code> 烧写 u-boot.bin 到 SD 卡中</p>
 <h2 id="三、移植uboot"><a href="#三、移植uboot" class="headerlink" title="三、移植uboot"></a>三、移植uboot</h2><h3 id="1-添加开发板默认配置文件"><a href="#1-添加开发板默认配置文件" class="headerlink" title="1.添加开发板默认配置文件"></a>1.添加开发板默认配置文件</h3><p>先在 configs 目录下创建默认配置文件，复制 mx6ull_14x14_evk_emmc_defconfig，然后重<br>命名为 mx6ull_alientek_emmc_defconfig，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> configs
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> configs
 <span class="hljs-built_in">cp</span> mx6ull_14x14_evk_emmc_defconfig mx6ull_lxg_emmc_defconfig</code></pre></div>
 
 <p>然后将文件 mx6ull_lxg_emmc_defconfig 中的内容改成下面的：<br>示例代码 33.2.1.1 mx6ull_alientek_emmc_defconfig 文件</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">CONFIG_SYS_EXTRA_OPTIONS=<span class="hljs-string">&quot;IMX_CONFIG=board/freescale/mx6ull_lxg_emmc/imximage.cfg,MX6ULL_EVK_EMMC_REWORK&quot;</span>
+<div class="code-wrapper"><pre><code class="hljs c">CONFIG_SYS_EXTRA_OPTIONS=<span class="hljs-string">&quot;IMX_CONFIG=board/freescale/mx6ull_lxg_emmc/imximage.cfg,MX6ULL_EVK_EMMC_REWORK&quot;</span>
 CONFIG_ARM=y
 CONFIG_ARCH_MX6=y
 CONFIG_TARGET_MX6ULL_LXG_EMMC=y
@@ -321,30 +321,30 @@ CONFIG_CMD_GPIO=y</code></pre></div>
 <p>mx6ull_lxg_emmc_defconfig 基本和 mx6ull_14x14_evk_emmc_defconfig 中<br>的内容一样，只是第 1 行和第 4 行做了修改。</p>
 <h3 id="2-添加开发板对应头文件"><a href="#2-添加开发板对应头文件" class="headerlink" title="2.添加开发板对应头文件"></a>2.添加开发板对应头文件</h3><p>在目录include&#x2F;configs 下添加 I.MX6ULL-ALPHA 开发板对应的头文件</p>
 <p>复制<code>include/configs/mx6ullevk.h</code>，并重命名为 <code>mx6ull_lxg_emmc.h</code>，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> include/configs/mx6ullevk.h include/configs/mx6ull_lxg_emmc.h</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> include/configs/mx6ullevk.h include/configs/mx6ull_lxg_emmc.h</code></pre></div>
 
 <p>拷贝完成以后编辑文件，将：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MX6ULLEVK_CONFIG_H</span>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MX6ULLEVK_CONFIG_H</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __MX6ULLEVK_CONFIG_H</span></code></pre></div>
 
 <p>改为：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MX6ULL_LXG_EMMC_CONFIG_H</span>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MX6ULL_LXG_EMMC_CONFIG_H</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __MX6ULL_LXG_EMMC_CONFIG_H</span></code></pre></div>
 
 <p>mx6ull_lxg_emmc.h 里面有很多宏定义，这些宏定义基本用于配置 uboot，也有一些I.MX6ULL 的配置项目。如果我们自己要想使能或者禁止 uboot 的某些功能，那就在mx6ull_lxg_emmc.h 里面做修改即可。</p>
 <h3 id="3-添加开发板对应的板级文件夹"><a href="#3-添加开发板对应的板级文件夹" class="headerlink" title="3.添加开发板对应的板级文件夹"></a>3.添加开发板对应的板级文件夹</h3><p>uboot 中每个板子都有一个对应的文件夹来存放板级文件，比如开发板上外设驱动文件等等。</p>
 <p>NXP 的 I.MX 系列芯片的所有板级文件夹都存放在<code>board/freescale</code>目录下，在这个目录下有个名为 <code>mx6ullevk</code> 的文件夹，这个文件夹就是 NXP 官方 I.MX6ULL EVK 开发板的板级文件夹。复制 <code>mx6ullevk</code>，将其重命名为 <code>mx6ull_lxg_emmc</code>，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> board/freescale/
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> board/freescale/
 <span class="hljs-built_in">cp</span> mx6ullevk/ -r mx6ull_lxg_emmc</code></pre></div>
 
 <p>进 入 mx6ull_alientek_emmc 目录中，将其中的 mx6ullevk.c 文件重命名为<code>mx6ull_lxg_emmc.c</code></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> mx6ull_lxg_emmc
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> mx6ull_lxg_emmc
 <span class="hljs-built_in">mv</span> mx6ullevk.c mx6ull_lxg_emmc.c</code></pre></div>
 
 <p>我们还需要对<code> mx6ull_lxg_emmc</code>目录下的文件做一些修改：</p>
 <ul>
 <li><p><strong>修改 mx6ull_lxg_emmc  目录下的 Makefile 如下</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile"><span class="hljs-comment"># (C) Copyright 2015 Freescale Semiconductor, Inc.</span>
+<div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-comment"># (C) Copyright 2015 Freescale Semiconductor, Inc.</span>
 <span class="hljs-comment">#</span>
 <span class="hljs-comment"># SPDX-License-Identifier:	GPL-2.0+</span>
 <span class="hljs-comment">#</span>
@@ -362,7 +362,7 @@ extra-<span class="hljs-variable">$(CONFIG_USE_PLUGIN)</span> :=  plugin.bin
 <p>将 imximage.cfg 中的下面一句：<br><code>PLUGIN board/freescale/mx6ullevk/plugin.bin 0x00907000</code><br>改为：<br><code>PLUGIN board/freescale/mx6ull_lxg_emmc /plugin.bin 0x00907000</code></p>
 </li>
 <li><p><strong>修改 mx6ull_alientek_emmc  目录下的 Kconfig</strong> </p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">if</span> TARGET_MX6ULL_LXG_EMMC
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">if</span> TARGET_MX6ULL_LXG_EMMC
 
 config SYS_BOARD
 	<span class="hljs-keyword">default</span> <span class="hljs-string">&quot;mx6ull_lxg_emmc&quot;</span>
@@ -381,7 +381,7 @@ endif
 </li>
 <li><p><strong>修改 mx6ull_alientek_emmc  目录下的 MAINTAINERS</strong> </p>
 <p>修改 MAINTAINERS 文件，修改后的内容如下</p>
-<div class="hljs code-wrapper"><pre><code class="hljs dts">MX6ULLEVK BOARD
+<div class="code-wrapper"><pre><code class="hljs dts">MX6ULLEVK BOARD
 <span class="hljs-symbol">M:</span>	Peng Fan <span class="hljs-params">&lt;peng.fan@nxp.com&gt;</span>
 <span class="hljs-symbol">S:</span>	Maintained
 <span class="hljs-symbol">F:</span>	board<span class="hljs-keyword">/freescale/</span>mx6ull_lxg_emmc/
@@ -392,7 +392,7 @@ endif
 <ul>
 <li>在 207 行加入如下内容：</li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs csharp">config TARGET_MX6ULL_LXG_EMMC
+<div class="code-wrapper"><pre><code class="hljs csharp">config TARGET_MX6ULL_LXG_EMMC
 	<span class="hljs-built_in">bool</span> <span class="hljs-string">&quot;Support mx6ull_lxg_emmc&quot;</span>
 	<span class="hljs-keyword">select</span> MX6ULL
 	<span class="hljs-keyword">select</span> DM
@@ -402,24 +402,24 @@ endif
 <ul>
 <li>在最后一行的 endif 的前一行添加如下内容:</li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> <span class="hljs-string">&quot;board/freescale/mx6ull_lxg_emmc/Kconfig&quot;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> <span class="hljs-string">&quot;board/freescale/mx6ull_lxg_emmc/Kconfig&quot;</span></code></pre></div>
 
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818200505813.png" srcset="/img/loading.gif" lazyload alt="image-20200818200505813"></p>
 <hr>
 <p>到此为止，I.MX6U-ALPHA 开发板就已经添加到 uboot 中了，接下来就是编译这个新添加<br>的开发板。</p>
 <h3 id="5-使用新添加的板子配置编译uboot"><a href="#5-使用新添加的板子配置编译uboot" class="headerlink" title="5.使用新添加的板子配置编译uboot"></a>5.使用新添加的板子配置编译uboot</h3><p>在uboot根目录下新建一个名为 <code>mx6ull_lxg_emmc.sh</code> 的 shell 脚本，在这个shell脚本里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="language-bash">!/bin/bash</span>
+<div class="code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="language-bash">!/bin/bash</span>
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- distclean
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_lxg_emmc_defconfig
 make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 
 <p>第3行我们使用的默认配置文件就是之前新建的 <code>mx6ull_alientek_emmc_defconfig</code>这个配置文件。</p>
 <p>给予 <code>mx6ull_lxg_emmc.sh</code> 可执行权限，然后运行脚本来完成编译，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 mx6ull_alientek_emmc.sh 
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 mx6ull_alientek_emmc.sh 
 ./mx6ull_alientek_emmc.sh</code></pre></div>
 
 <p>等待编译完成，编译完成以后输入如下命令，查看一下之前添加的<code>mx6ull_lxg_emmc.h</code>这个头文件有没有被引用, 输入命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">grep -nR <span class="hljs-string">&quot;`mx6ull_lxg_emmc.h&quot;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">grep -nR <span class="hljs-string">&quot;`mx6ull_lxg_emmc.h&quot;</span></code></pre></div>
 
 <p>如果有很多文件都引用了<code>mx6ull_lxg_emmc.h</code>这个头文件，那就说明新板子添加成功，</p>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818201707668.png" srcset="/img/loading.gif" lazyload alt="image-20200818201707668"></p>
@@ -429,7 +429,7 @@ make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 <h3 id="6-LCD驱动修改"><a href="#6-LCD驱动修改" class="headerlink" title="6.LCD驱动修改"></a>6.LCD驱动修改</h3><p>一般 uboot 中修改驱动基本都是在 xxx.h 和 xxx.c 这两个文件中进行的，xxx 为板子名称，比如 mx6ull_lxg_emmc.h 和 mx6ull_lxg_emmc.c 这两个文件。<br>一般修改 LCD 驱动重点注意以下几点：<br><strong>①、LCD 所使用的 GPIO，查看 uboot 中 LCD 的 IO 配置是否正确。</strong><br><strong>②、LCD 背光引脚 GPIO 的配置。</strong><br><strong>③、LCD 配置参数是否正确。</strong></p>
 <p>这里以正点原子的 I.MX6U-ALPHA 开发板 为例：</p>
 <p>LCD 原理图和 NXP 官方 I.MX6ULL 开发板一致，也就是 LCD 的 IO 和背光 IO 都一样的，所以 IO 部分就不用修改了。需要修改的只有 LCD 参数，打开文件 mx6ull_lxg_emmc.c，找到如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> <span class="hljs-title">const</span> <span class="hljs-title">displays</span>[] =</span> &#123;&#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> <span class="hljs-title">const</span> <span class="hljs-title">displays</span>[] =</span> &#123;&#123;
 	.bus = MX6UL_LCDIF1_BASE_ADDR,
 	.addr = <span class="hljs-number">0</span>,
 	.pixfmt = <span class="hljs-number">24</span>,
@@ -452,7 +452,7 @@ make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 
 <p>示例代码中定义了一个变量 displays, 类型为 display_info_t，这个结构体是 LCD信息结构体，其中包括了 LCD 的分辨率，像素格式，LCD 的各个参数等。</p>
 <p>display_info_t 定义在文件 arch&#x2F;arm&#x2F;include&#x2F;asm&#x2F;imx-common&#x2F;video.h 中，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> &#123;</span>
 	<span class="hljs-type">int</span>	bus;
 	<span class="hljs-type">int</span>	addr;
 	<span class="hljs-type">int</span>	pixfmt;
@@ -463,7 +463,7 @@ make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 
 <p><code>pixfmt </code>是像素格式，也就是一个像素点是多少位，如果是 RGB565 的话就是 16 位，如果是 888 的话就是 24 位，一般使用 RGB888。</p>
 <p>结构体 display_info_t 还有个 <code>mode</code> 成员变量，此成员变量也是个结构体，为 <code>fb_videomode</code>，定义在文件 include&#x2F;linux&#x2F;fb.h 中，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_videomode</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fb_videomode</span> &#123;</span>
 	<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name;	<span class="hljs-comment">/* optional */</span>
 	u32 refresh;		<span class="hljs-comment">/* optional */</span>
 	u32 xres;
@@ -495,7 +495,7 @@ make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 </ul>
 <p>可以看出，这些参数与裸机驱动 RGB LCD 的时候参数基本一样，唯一不同的像素时钟 pixclock 的含义不同，以正点原子的 7 寸 1024x600 分辨率的屏幕(ATK7016)为例，屏幕要求的像素时钟为 51.2MHz，因此：<br>pixclock&#x3D;(1&#x2F;51200000)*10^12&#x3D;19531</p>
 <p>在根据其他的屏幕参数，可以得出 ATK7016 屏幕的配置参数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> <span class="hljs-title">const</span> <span class="hljs-title">displays</span>[] =</span> &#123;&#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">display_info_t</span> <span class="hljs-title">const</span> <span class="hljs-title">displays</span>[] =</span> &#123;&#123;
 	.bus = MX6UL_LCDIF1_BASE_ADDR,
 	.addr = <span class="hljs-number">0</span>,
 	.pixfmt = <span class="hljs-number">24</span>,
@@ -518,15 +518,15 @@ make V=1 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j12</code></pre></div>
 
 <p>使用示例代码中的屏幕参数替换掉 mx6ull_lxg_emmc.c 中 uboot 默认的屏幕参数。</p>
 <p>打开 mx6ull_lxg_emmc.h，找到所有如下语句：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">panel=TFT43AB</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c">panel=TFT43AB</code></pre></div>
 
 <p>将其改为：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">panel=TFT7016</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c">panel=TFT7016</code></pre></div>
 
 <p>也就是设置 panel 为 TFT7016，panel 的值要与display_info_t结构体变量中的.name 成员变量的值<br>一致。修改完成以后重新编译一遍 uboot 并烧写到 SD 中启动。</p>
 <p>重启以后 LCD 驱动一般就会工作正常了，LCD 上回显示 NXP 的 logo。但是有可能会遇到LCD 并没有工作，还是黑屏，这是什么原因呢？在 uboot 命令模式输入“print”来查看环境变量 panel 的值，会发现 panel 的值是 TFT43AB(或其他的，反正不是 TFT7016)</p>
 <p>这是因为之前有将环境变量保存到 EMMC 中，uboot 启动以后会先从 EMMC 中读取环境变量，如果EMMC 中没有环境变量的话才会使用 mx6ull_alientek_emmc.h 中的默认环境变量。如果 EMMC 中的环境变量panel 不等于 TFT7016，那么 LCD 显示肯定不正常，我们只需要在uboot 中修改 panel 的值为 TFT7016 即可，在 uboot 的命令模式下输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv panel TFT7016
+<div class="code-wrapper"><pre><code class="hljs sh">setenv panel TFT7016
 saveenv</code></pre></div>
 
 <p>上述命令修改环境变量 panel 为 TFT7016，然后保存，重启 uboot，此时 LCD 驱动就工作正常了。如果 LCD 还是没有正常工作的，那就要检查自己哪里有没有改错，或者还有哪里没有修改。</p>
@@ -547,7 +547,7 @@ saveenv</code></pre></div>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818212327169.png" srcset="/img/loading.gif" lazyload alt="image-20200818212327169"></p>
 <p>关于 ENET2 网络驱动的修改也注意一下三点：<br>①、ENET2 的复位引脚，从图可以看出，ENET2 的复位引脚 ENET2_RST 接到了I.MX6ULL 的 SNVS_TAMPER8 上。<br>②、ENET2 所使用的 PHY 芯片器件地址，从图可以看出，<strong>PHY 器件地址为 0X1</strong>。<br>③、LAN8720 驱动，ENET1 和 ENET2 都使用的 LAN8720，所以驱动肯定是一样的。</p>
 <h4 id="2、网络-PHY-地址修改"><a href="#2、网络-PHY-地址修改" class="headerlink" title="2、网络 PHY  地址修改"></a>2、网络 PHY  地址修改</h4><p>首先修改 uboot 中的 ENET1 和 ENET2 的 PHY 地址和驱动，打开<code>mx6ull_alientek_emmc.h</code>这个文件，找到如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_CMD_NET</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_CMD_NET</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_PING</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_DHCP</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_MII</span>
@@ -576,7 +576,7 @@ saveenv</code></pre></div>
 <p>根据前面的分析可知，正点原子的 I.MX6U-ALPHA 开发板 ENET1 的 PHY 地址为0X0，ENET2 的 PHY 地址为 0X1，所以需要将第第一个**<code>CONFIG_FEC_MXC_PHYADDR</code>宏**改为 0x0 。</p>
 <p><strong>宏<code> CONFIG_PHY_MICREL</code><strong>用于使能 uboot 中 Micrel 公司的 PHY驱动，KSZ8081 这颗 PHY 芯片就是 Micrel 公司生产的，不过 Micrel 已经被 Microchip 收购了。如果要使用 LAN8720A，那么就得将</strong><code>CONFIG_PHY_MICREL</code></strong> 改为 **<code>CONFIG_PHY_SMSC</code>**，也就是使能 uboot 中的 SMSC 公司中的 PHY 驱动，因为 LAN8720A 就是 SMSC 公司生产的。所以示例代码有三处要修改：</p>
 <p><strong>①、修改 ENET1 网络 PHY 的地址。</strong><br><strong>②、修改 ENET2 网络 PHY 的地址。</strong><br><strong>③、使能 SMSC 公司的 PHY 驱动。</strong><br>修改后的网络 PHY 地址参数如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_CMD_NET</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_CMD_NET</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_PING</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_DHCP</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_CMD_MII</span>
@@ -600,18 +600,18 @@ saveenv</code></pre></div>
 <span class="hljs-meta">#<span class="hljs-keyword">endif</span></span></code></pre></div>
 
 <h4 id="3-、删除-uboot-中-中-74LV595-的驱动代码"><a href="#3-、删除-uboot-中-中-74LV595-的驱动代码" class="headerlink" title="3 、删除 uboot 中 中 74LV595 的驱动代码"></a>3 、删除 uboot 中 中 74LV595 的驱动代码</h4><p>uboot 中网络 PHY 芯片地址修改完成以后就是网络复位引脚的驱动修改了，打开<code>mx6ull_lxg_emmc.c</code>找到如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> IOX_SDI IMX_GPIO_NR(5, 10)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> IOX_SDI IMX_GPIO_NR(5, 10)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> IOX_STCP IMX_GPIO_NR(5, 7)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> IOX_SHCP IMX_GPIO_NR(5, 11)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> IOX_OE IMX_GPIO_NR(5, 8)</span></code></pre></div>
 
 <p>以上示例代码中以 IOX 开头的宏定义是 74LV595 的相关 GPIO，因为 NXP 官方I.MX6ULL EVK 开发板使用 74LV595 来扩展 IO，两个网络的复位引脚就是由 74LV595 来控制的。正点原子的 I.MX6U-ALPHA 开发板并没有使用 74LV595，因此我们将示例代码中的代码删除掉，替换为如下所示代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ENET1_RESET IMX_GPIO_NR(5, 7)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ENET1_RESET IMX_GPIO_NR(5, 7)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> ENET2_RESET IMX_GPIO_NR(5, 8)</span></code></pre></div>
 
 <p>ENET1 的复位引脚连接到 SNVS_TAMPER7 上，对应 GPIO5_IO07，ENET2 的复位引脚连接到 SNVS_TAMPER8 上，对应 GPIO5_IO08。</p>
 <p>继续在 <code>mx6ull_lxg_emmc.c</code> 中找到如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> iox_pads[] = &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> iox_pads[] = &#123;
 	<span class="hljs-comment">/* IOX_SDI */</span>
 	MX6_PAD_BOOT_MODE0__GPIO5_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	<span class="hljs-comment">/* IOX_SHCP */</span>
@@ -623,7 +623,7 @@ saveenv</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>同理，示例代码是 74LV595 的 IO 配置参数结构体，将其删除掉。继续在mx6ull_lxg_emmc.c 中找到函数 iox74lv_init，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">iox74lv_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">iox74lv_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 &#123;
 	<span class="hljs-type">int</span> i;
 
@@ -669,7 +669,7 @@ saveenv</code></pre></div>
 
 <p>iox74lv_init 函数是 74LV595 的初始化函数，iox74lv_set 函数用于控制 74LV595 的 IO 输出电平，将这两个函数全部删除掉！</p>
 <p>继续在 mx6ull_lxg_emmc.c 中找到 board_init 函数，此函数是板子初始化函数，会被board_init_r 调用，board_init 函数内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">board_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">board_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 &#123;
 	......
 	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
@@ -681,7 +681,7 @@ saveenv</code></pre></div>
 <p>board_init 会调用 imx_iomux_v3_setup_multiple_pads 和 iox74lv_init 这两个函数来初始化74lv595 的 GPIO，<strong>将这两行删除掉</strong>。</p>
 <p>至此，mx6ull_alientek_emmc.c 中关于 74LV595 芯片的驱动代码都删除掉了，接下来就是添加 I.MX6U-ALPHA 开发板两个网络复位引脚了。</p>
 <h4 id="4-、添加-I-MX6U-ALPHA-开发板网络复位引脚驱动"><a href="#4-、添加-I-MX6U-ALPHA-开发板网络复位引脚驱动" class="headerlink" title="4 、添加 I.MX6U-ALPHA 开发板网络复位引脚驱动"></a>4 、添加 I.MX6U-ALPHA 开发板网络复位引脚驱动</h4><p>在 mx6ull_lxg_emmc.c 中找到如下所示代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> fec1_pads[] = &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> fec1_pads[] = &#123;
 	MX6_PAD_GPIO1_IO06__ENET1_MDIO | MUX_PAD_CTRL(MDIO_PAD_CTRL),
 	MX6_PAD_GPIO1_IO07__ENET1_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
 ......
@@ -698,7 +698,7 @@ saveenv</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>结构体数组 fec1_pads 和 fec2_pads 是 ENET1 和 ENET2 这两个网口的 IO 配置参数，在这两个数组中添加两个网口的复位 IO 配置参数，完成以后如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> fec1_pads[] = &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">iomux_v3_cfg_t</span> <span class="hljs-type">const</span> fec1_pads[] = &#123;
 	MX6_PAD_GPIO1_IO06__ENET1_MDIO | MUX_PAD_CTRL(MDIO_PAD_CTRL),
 	MX6_PAD_GPIO1_IO07__ENET1_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
 ......
@@ -717,7 +717,7 @@ saveenv</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>添加的两行分别是 ENET1 和 ENET2 的复位 IO 配置参数。继续在文件 mx6ull_lxg_emmc.c 中找到函数 setup_iomux_fec，此函数默认代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">setup_iomux_fec</span><span class="hljs-params">(<span class="hljs-type">int</span> fec_id)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">setup_iomux_fec</span><span class="hljs-params">(<span class="hljs-type">int</span> fec_id)</span>
 &#123;
 	<span class="hljs-keyword">if</span> (fec_id == <span class="hljs-number">0</span>)
 		imx_iomux_v3_setup_multiple_pads(fec1_pads,
@@ -728,7 +728,7 @@ saveenv</code></pre></div>
 &#125;</code></pre></div>
 
 <p>函数 setup_iomux_fec 就是根据 fec1_pads 和 fec2_pads 这两个网络 IO 配置数组来初始化I.MX6ULL 的网络 IO。我们需要在其中添加网络复位 IO 的初始化代码，并且复位一下 PHY 芯片，修改后的setup_iomux_fec 函数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">setup_iomux_fec</span><span class="hljs-params">(<span class="hljs-type">int</span> fec_id)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">setup_iomux_fec</span><span class="hljs-params">(<span class="hljs-type">int</span> fec_id)</span>
 &#123;
 	<span class="hljs-keyword">if</span> (fec_id == <span class="hljs-number">0</span>)
     &#123;
@@ -752,7 +752,7 @@ saveenv</code></pre></div>
 
 <p>示例代码分别对应 ENET1 和 ENET2 的复位 IO 初始化，将这两个 IO 设置为输出并且硬件复位一下 LAN8720A，这个硬件复位很重要！否则可能导致 uboot 无法识别 LAN8720A。</p>
 <h4 id="5-、修改-drivers-x2F-net-x2F-phy-x2F-phy-c-文件中的函数-genphy-update-link"><a href="#5-、修改-drivers-x2F-net-x2F-phy-x2F-phy-c-文件中的函数-genphy-update-link" class="headerlink" title="5 、修改 drivers&#x2F;net&#x2F;phy&#x2F;phy.c  文件中的函数 genphy_update_link"></a>5 、修改 drivers&#x2F;net&#x2F;phy&#x2F;phy.c  文件中的函数 genphy_update_link</h4><p>大功基本上告成，还差最后一步，uboot 中的 LAN8720A 驱动有点问题，打开文件drivers&#x2F;net&#x2F;phy&#x2F;phy.c，找到函数 genphy_update_link，这是个通用 PHY 驱动函数，此函数用于更新 PHY 的连接状态和速度。使用 LAN8720A 的时候需要在此函数中添加一些代码，修改后的函数 genphy_update_link 如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">genphy_update_link</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> phy_device *phydev)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">genphy_update_link</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> phy_device *phydev)</span>
 &#123;
 	<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> mii_reg;
 
@@ -787,7 +787,7 @@ saveenv</code></pre></div>
 <p>至此网络的复位引脚驱动修改完成，重新编译 uboot，然后将 u-boot.bin 烧写到 SD 卡中并启动，uboot 启动信息如图所示：</p>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818221858986.png" srcset="/img/loading.gif" lazyload alt="image-20200818221858986"></p>
 <p>可以看到“Net： FEC1”这一行，提示当前使用的 FEC1 这个网口，也就是 ENET2。</p>
-<h4 id="6、uboot网络环境变量的配置"><a href="#6、uboot网络环境变量的配置" class="headerlink" title="6、uboot网络环境变量的配置"></a>6、uboot网络环境变量的配置</h4><div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> ipaddr <span class="hljs-number">192.168.0.120</span>  //开发板 IP 地址
+<h4 id="6、uboot网络环境变量的配置"><a href="#6、uboot网络环境变量的配置" class="headerlink" title="6、uboot网络环境变量的配置"></a>6、uboot网络环境变量的配置</h4><div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> ipaddr <span class="hljs-number">192.168.0.120</span>  //开发板 IP 地址
 <span class="hljs-attribute">setenv</span> ethaddr <span class="hljs-number">00</span>:<span class="hljs-number">04</span>:<span class="hljs-number">9</span>f:<span class="hljs-number">04</span>:d2:<span class="hljs-number">35</span> //开发板网卡 MAC 地址
 <span class="hljs-attribute">setenv</span> gatewayip <span class="hljs-number">192.168.0.1</span> //开发板默认网关
 <span class="hljs-attribute">setenv</span> netmask <span class="hljs-number">255.255.255.0</span>  //开发板子网掩码
@@ -796,7 +796,7 @@ saveenv</code></pre></div>
 
 <p>以上请根据自己的网络环境具体配置。</p>
 <p>设置好环境变量以后就可以在 uboot 中使用网络了，用网线将 I.MX6U-ALPHA 上的 ENET2与电脑或者路由器连接起来，保证开发板和电脑在同一个网段内，通过 ping 命令来测试一下网络连接，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">ping</span> <span class="hljs-number">192.168.0.111</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">ping</span> <span class="hljs-number">192.168.0.111</span></code></pre></div>
 
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818223729557.png" srcset="/img/loading.gif" lazyload alt="image-20200818223729557"></p>
 <p>从图可以看出，有“host 192.168.1.250 is alive”这句，说明 ping 主机成功，说明ENET2网络工作正常。再来测试一下ENET1的网络是否正常工作，打开mx6ull_lxg_emmc.h，将 CONFIG_FEC_ENET_DEV 改为 0，然后重新编译一下 uboot 并烧写到 SD 卡中重启。重启开发板</p>
@@ -804,7 +804,7 @@ saveenv</code></pre></div>
 <p><img src="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/image-20200818224138597.png" srcset="/img/loading.gif" lazyload alt="image-20200818224138597"></p>
 <p>从图可以看出，ping 主机也成功，说明 ENET1 网络也工作正常，至此，I.MX6U-ALPHA 开发板的两个网络都工作正常了.</p>
 <h3 id="8、其他需要修改的地方"><a href="#8、其他需要修改的地方" class="headerlink" title="8、其他需要修改的地方"></a>8、其他需要修改的地方</h3><p>在 uboot 启动信息中会有“Board: MX6ULL 14x14 EVK”这一句，也就是说板子名字为“MX6ULL 14x14 EVK”，要将其改为我们所使用的板子名字，比如“MX6ULL LXG EMMC”或者“MX6ULL LXG NAND”。打开文件 mx6ull_lxg_emmc.c，找到函数checkboard，将其改为如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">checkboard</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">checkboard</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 &#123;
 	<span class="hljs-keyword">if</span> (is_mx6ull_9x9_evk())
 		<span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;Board: MX6ULL 9x9 EVK\n&quot;</span>);
@@ -819,7 +819,7 @@ saveenv</code></pre></div>
 <p>从图可以看出，Board 变成了“MX6ULL LXG EMMC”。至此 uboot 的驱动部分就修改完成了，uboot 移植也完成了，uboot 的最终目的就是启动 Linux 内核，所以需要通过启动 Linux 内核来判断 uboot 移植是否成功。在启动 Linux 内核之前我们先来学习两个重要的环境变量 bootcmd 和 bootargs。</p>
 <h2 id="四、uboot下的环境变量"><a href="#四、uboot下的环境变量" class="headerlink" title="四、uboot下的环境变量"></a>四、uboot下的环境变量</h2><p>uboot 中有两个非常重要的环境变量 bootcmd 和 bootargs，接下来看一下这两个环境变量。</p>
 <p>bootcmd 和 bootagrs 是采用类似 shell 脚本语言编写的，里面有很多的变量引用，这些变量其实都是环境变量，有很多是NXP自己定义的。文 件 mx6ull_lxg_emmc.h 中的宏<code>CONFIG_EXTRA_ENV_SETTINGS</code>保存着这些环境变量的默认值，内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(CONFIG_SYS_BOOT_NAND)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(CONFIG_SYS_BOOT_NAND)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_EXTRA_ENV_SETTINGS \</span>
 <span class="hljs-meta">	CONFIG_MFG_ENV_SETTINGS \</span>
 <span class="hljs-meta">	<span class="hljs-string">&quot;panel=TFT7016\0&quot;</span> \</span>
@@ -850,7 +850,7 @@ saveenv</code></pre></div>
 
 <p><strong>宏 CONFIG_EXTRA_ENV_SETTINGS</strong> 是个条件编译语句，使用 NAND 和 EMMC 的时候<strong>宏 CONFIG_EXTRA_ENV_SETTINGS</strong> 的值是不同的。</p>
 <p>板子第一次运行 uboot 的时候都会使用默认值来设置环境变量。打开文件 <strong>include&#x2F;env_default.h</strong>，在此文件中有如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">env_t</span> environment __PPCENV__ = &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">env_t</span> environment __PPCENV__ = &#123;
 	ENV_CRC,	<span class="hljs-comment">/* CRC Sum */</span>
 <span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_SYS_REDUNDAND_ENVIRONMENT</span>
 	<span class="hljs-number">1</span>,		<span class="hljs-comment">/* Flags: valid */</span>
@@ -897,7 +897,7 @@ saveenv</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>从示例代码的第 1 行可以看出，environment 是个 env_t 类型的变量，env_t 类型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">environment_s</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">environment_s</span> &#123;</span>
 	<span class="hljs-type">uint32_t</span>	crc;		<span class="hljs-comment">/* CRC32 over data bytes	*/</span>
 <span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_SYS_REDUNDAND_ENVIRONMENT</span>
 	<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>	flags;		<span class="hljs-comment">/* active/obsolete flags	*/</span>
@@ -909,7 +909,7 @@ saveenv</code></pre></div>
 <h3 id="1、环境变量-bootcmd"><a href="#1、环境变量-bootcmd" class="headerlink" title="1、环境变量 bootcmd"></a>1、环境变量 bootcmd</h3><h5 id="bootcmd默认宏定义设置的解析"><a href="#bootcmd默认宏定义设置的解析" class="headerlink" title="bootcmd默认宏定义设置的解析"></a>bootcmd默认宏定义设置的解析</h5><p>bootcmd 保存着 uboot 默认命令，uboot 倒计时结束以后就会执行 bootcmd 中的命令。</p>
 <p>这些命令一般都是用来启动 Linux 内核的，比如读取 EMMC 或者 NAND Flash 中的 Linux 内核镜像文件和设备树文件到 DRAM 中，然后启动 Linux 内核。可以在 uboot 启动以后进入命令行设置 bootcmd 环境变量的值。如果 EMMC 或者 NAND 中没有保存 bootcmd 的值，那么 uboot 就会使用默认的值</p>
 <p>在上一个示例代码中指定了很多环境变量的默认值，比如bootcmd 的 默 认 值 就 是CONFIG_BOOTCOMMAND，bootargs 的默认值就是CONFIG_BOOTARGS 。 我们可以在mx6ull_lxg_emmc.h文件中通过设置宏CONFIG_BOOTCOMMAND 来 设 置 bootcmd 的 默 认 值 ， NXP 官 方 设 置 的CONFIG_BOOTCOMMAND 值如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_BOOTCOMMAND \</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_BOOTCOMMAND \</span>
 <span class="hljs-meta">	   <span class="hljs-string">&quot;run findfdt;&quot;</span> \</span>
 <span class="hljs-meta">	   <span class="hljs-string">&quot;mmc dev $&#123;mmcdev&#125;;&quot;</span> \</span>
 <span class="hljs-meta">	   <span class="hljs-string">&quot;mmc dev $&#123;mmcdev&#125;; if mmc rescan; then &quot;</span> \</span>
@@ -927,7 +927,7 @@ saveenv</code></pre></div>
 <p>看起来很复杂的样子！因为 uboot 使用了类似 shell 脚本语言的方式来编写的，我们一行一行来分析。</p>
 <ul>
 <li><p>第二行 <code>run findfdt；</code>使用的是 uboot 的 run 命令来运行 findfdt，findfdt 是 NXP 自行添加的环境变量。findfdt 是用来查找开发板对应的设备树文件(.dtb)。IMX6ULL EVK 的设备树文件为 imx6ull-14x14-evk.dtb，findfdt 内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-string">&quot;findfdt=&quot;</span>\
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-string">&quot;findfdt=&quot;</span>\
           <span class="hljs-string">&quot;if test $fdt_file = undefined; then &quot;</span> \
 		<span class="hljs-string">&quot;if test $board_name = EVK &amp;&amp; test $board_rev = 9X9; then &quot;</span> \
 			<span class="hljs-string">&quot;setenv fdt_file imx6ull-9x9-evk.dtb; fi; &quot;</span> \
@@ -954,7 +954,7 @@ saveenv</code></pre></div>
 <p>之后的一行<code>&quot;run bootscript; &quot;</code>如果加载 boot.src 文件成功的话就运行 bootscript 环境变量，bootscript 的内容如下：<br><code>bootscript=echo Running bootscript from mmc ...;</code><br><code>source</code><br>因为 boot.src 文件不存在，所以 bootscript 也就不会运行。</p>
 </li>
 <li><p>&#96;&#96;&#96;<br> “else “ <br> “if run loadimage; then “ <br>     “run mmcboot; “ <br> “else run netboot; “ <br> “fi; “ <br> “fi; “ \</p>
-<div class="hljs code-wrapper"><pre><code class="hljs routeros">
+<div class="code-wrapper"><pre><code class="hljs routeros">
   如果 loadbootscript 没有找到 boot.src 的话就运行环境变量`<span class="hljs-built_in">run</span> loadimage`，环境变量loadimage 内容如下：
   `<span class="hljs-attribute">loadimage</span>=fatload mmc <span class="hljs-variable">$&#123;mmcdev&#125;</span>:<span class="hljs-variable">$&#123;mmcpart&#125;</span> <span class="hljs-variable">$&#123;loadaddr&#125;</span> <span class="hljs-variable">$&#123;image&#125;</span>`
   其中 <span class="hljs-attribute">mmcdev</span>=1，mmcpart=1，loadaddr=0x80800000，image = zImage，展开以后就是：
@@ -982,24 +982,24 @@ saveenv</code></pre></div>
   		<span class="hljs-string">&quot;fi;\0&quot;</span> \</code></pre></div></li>
 </ul>
 <p>Linux 内核启动，如此复杂的设置就是为了从 EMMC 中读取 zImage 镜像文件和设备树文件。经过分析，浓缩出来的仅仅是 4 行精华：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">mmc</span> dev <span class="hljs-number">1</span>  //切换到 EMMC
+<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">mmc</span> dev <span class="hljs-number">1</span>  //切换到 EMMC
 <span class="hljs-attribute">fatload</span> mmc <span class="hljs-number">1</span>:<span class="hljs-number">1</span> <span class="hljs-number">0</span>x80800000 zImage //读取 zImage 到 <span class="hljs-number">0</span>x80800000 处
 <span class="hljs-attribute">fatload</span> mmc <span class="hljs-number">1</span>:<span class="hljs-number">1</span> <span class="hljs-number">0</span>x83000000 imx6ull-<span class="hljs-number">14</span>x14-evk.dtb //读取设备树到 <span class="hljs-number">0</span>x83000000 处
 <span class="hljs-attribute">bootz</span> <span class="hljs-number">0</span>x80800000 - <span class="hljs-number">0</span>x83000000 //启动 Linux</code></pre></div>
 
 <p>NXP 官方将 CONFIG_BOOTCOMMAND 写的这么复杂只有一个目的：为了兼容多个板子，所以写了个很复杂的脚本。当我们明确知道我们所使用的板子的时候就可以大幅简化宏CONFIG_BOOTCOMMAND 的 设 置 ，比 如 我 们 要 从 EMMC 启 动 ， 那 么 宏CONFIG_BOOTCOMMAND 就可简化为：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_BOOTCOMMAND \</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> CONFIG_BOOTCOMMAND \</span>
 <span class="hljs-meta"><span class="hljs-string">&quot;mmc dev 1;&quot;</span> \</span>
 <span class="hljs-meta"><span class="hljs-string">&quot;fatload mmc 1:1 0x80800000 zImage;&quot;</span> \</span>
 <span class="hljs-meta"><span class="hljs-string">&quot;fatload mmc 1:1 0x83000000 imx6ull-alientek-emmc.dtb;&quot;</span> \</span>
 <span class="hljs-meta"><span class="hljs-string">&quot;bootz 0x80800000 - 0x83000000;&quot;</span></span></code></pre></div>
 
 <p>或者可以直接在 uboot 中设置 bootcmd 的值，这个值就是保存到 EMMC 中的，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 1; fatload mmc 1:1 80800000 zImage; fatload mmc 1:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 - 83000000;&#x27;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 1; fatload mmc 1:1 80800000 zImage; fatload mmc 1:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 - 83000000;&#x27;</span></code></pre></div>
 
-<h5 id="bootcmd设置栗子"><a href="#bootcmd设置栗子" class="headerlink" title="bootcmd设置栗子"></a>bootcmd设置栗子</h5><h6 id="从EMMC启-动"><a href="#从EMMC启-动" class="headerlink" title="从EMMC启 动"></a>从EMMC启 动</h6><div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 1; fatload mmc 1:1 80800000 zImage; fatload mmc 1:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 - 83000000;&#x27;</span></code></pre></div>
+<h5 id="bootcmd设置栗子"><a href="#bootcmd设置栗子" class="headerlink" title="bootcmd设置栗子"></a>bootcmd设置栗子</h5><h6 id="从EMMC启-动"><a href="#从EMMC启-动" class="headerlink" title="从EMMC启 动"></a>从EMMC启 动</h6><div class="code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 1; fatload mmc 1:1 80800000 zImage; fatload mmc 1:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 - 83000000;&#x27;</span></code></pre></div>
 
-<h6 id="从SD卡-启动"><a href="#从SD卡-启动" class="headerlink" title="从SD卡 启动"></a>从SD卡 启动</h6><div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 0; fatload mmc 0:1 80800000 zImage; fatload mmc 0:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 – 83000000;&#x27;</span></code></pre></div>
+<h6 id="从SD卡-启动"><a href="#从SD卡-启动" class="headerlink" title="从SD卡 启动"></a>从SD卡 启动</h6><div class="code-wrapper"><pre><code class="hljs sh">setenv bootcmd <span class="hljs-string">&#x27;mmc dev 0; fatload mmc 0:1 80800000 zImage; fatload mmc 0:1 83000000 imx6ull-lxg-emmc.dtb; bootz 80800000 – 83000000;&#x27;</span></code></pre></div>
 
 <hr>
 <h4 id="2、bootargs环境变量"><a href="#2、bootargs环境变量" class="headerlink" title="2、bootargs环境变量"></a>2、bootargs环境变量</h4><h5 id="bootargs默认宏定义设置的解析"><a href="#bootargs默认宏定义设置的解析" class="headerlink" title="bootargs默认宏定义设置的解析"></a>bootargs默认宏定义设置的解析</h5><p>bootargs 保存着 uboot 传递给 Linux 内核的参数，是由 <strong>mmcargs</strong> 设置的，mmcargs 环境变量如下：<br><code>mmcargs=setenv bootargs console=$&#123;console&#125;,$&#123;baudrate&#125; root=$&#123;mmcroot&#125;</code></p>
@@ -1009,7 +1009,7 @@ saveenv</code></pre></div>
 <p><code>“console= ttymxc0, 115200 root=/dev/mmcblk1p2 rootwait rw”</code></p>
 <p>bootargs 就是设置了很多的参数的值。</p>
 <p>例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootartgs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw&#x27;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">setenv bootartgs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw&#x27;</span></code></pre></div>
 
 <p><strong>1 、console</strong></p>
 <p>console 用来设置 linux 终端(或者叫控制台)，也就是通过什么设备来和 Linux 进行交互，是串口还是 LCD 屏幕？如果是串口的话应该是串口几等等。一般设置串口作为 Linux 终端，这样我们就可以在电脑上通过 SecureCRT 来和 linux 交互了。这里设置 console 为 ttymxc0，因为 linux启动以后 I.MX6ULL 的串口 1 在 linux 下的设备文件就是&#x2F;dev&#x2F;ttymxc0，在 Linux 下，一切皆文件。ttymxc0 后面有个“,115200”，这是设置串口的波特率，<strong>console&#x3D;ttymxc0,115200</strong> 综合起来就是设置 ttymxc0（也就是串口 1）作为 Linux 的终端，并且串口波特率设置为 115200。</p>
@@ -1020,14 +1020,14 @@ saveenv</code></pre></div>
 <p>bootargs 常设置的选项就这三个</p>
 <hr>
 <h5 id="bootargs设置栗子"><a href="#bootargs设置栗子" class="headerlink" title="bootargs设置栗子"></a>bootargs设置栗子</h5><h6 id="挂载根文件至mmc设备："><a href="#挂载根文件至mmc设备：" class="headerlink" title="挂载根文件至mmc设备："></a>挂载根文件至mmc设备：</h6><p>例如：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootargs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/mmcblk0p2 rootwait rw&#x27;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">setenv bootargs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/mmcblk0p2 rootwait rw&#x27;</span></code></pre></div>
 
 <hr>
 <h6 id="挂载根文件至nfs网络下："><a href="#挂载根文件至nfs网络下：" class="headerlink" title="挂载根文件至nfs网络下："></a>挂载根文件至nfs网络下：</h6><p>例如：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv bootargs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/nfs rw nfsroot=192.168.0.111:/home/firestaradmin/linux/nfs/rootfs ip=192.168.0.112:192.168.0.111:192.168.0.1:255.255.255.0::eth0:off&#x27;</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">setenv bootargs <span class="hljs-string">&#x27;console=ttymxc0,115200 root=/dev/nfs rw nfsroot=192.168.0.111:/home/firestaradmin/linux/nfs/rootfs ip=192.168.0.112:192.168.0.111:192.168.0.1:255.255.255.0::eth0:off&#x27;</span></code></pre></div>
 
 <p>在 Linux 内核源码里面有相应的文档讲解如何设置，文档为Documentation&#x2F;filesystems&#x2F;nfs&#x2F;nfsroot.txt，格式如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ruby">root=<span class="hljs-regexp">/dev/nfs</span> nfsroot=[&lt;server-ip&gt;<span class="hljs-symbol">:</span>]&lt;root-dir&gt;[,&lt;nfs-options&gt;] 
+<div class="code-wrapper"><pre><code class="hljs ruby">root=<span class="hljs-regexp">/dev/nfs</span> nfsroot=[&lt;server-ip&gt;<span class="hljs-symbol">:</span>]&lt;root-dir&gt;[,&lt;nfs-options&gt;] 
 ip=&lt;client-ip&gt;<span class="hljs-symbol">:&lt;server-ip&gt;</span><span class="hljs-symbol">:&lt;gw-ip&gt;</span><span class="hljs-symbol">:&lt;netmask&gt;</span>:
 &lt;hostname&gt;<span class="hljs-symbol">:&lt;device&gt;</span><span class="hljs-symbol">:&lt;autoconf&gt;</span><span class="hljs-symbol">:&lt;dns0-ip&gt;</span><span class="hljs-symbol">:&lt;dns1-ip&gt;</span></code></pre></div>
 
@@ -1045,28 +1045,28 @@ ip=&lt;client-ip&gt;<span class="hljs-symbol">:&lt;server-ip&gt;</span><span cla
 <p><dns1-ip> ：   DNS1 服务器 IP 地址，不使用。</dns1-ip></p>
 <hr>
 <h6 id="Pc机Ubuntn-的nfs配置："><a href="#Pc机Ubuntn-的nfs配置：" class="headerlink" title="Pc机Ubuntn 的nfs配置："></a>Pc机Ubuntn 的nfs配置：</h6><p>安装NFS服务：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
 
 <p>配置NFS文件：</p>
 <p>​    <strong>打开 nfs 配置文件&#x2F;etc&#x2F;exports：</strong></p>
 <p>​    <strong>打开&#x2F;etc&#x2F;exports 以后在文件后面添加如下所示内容：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk"><span class="hljs-regexp">/home/</span>firestaradmin<span class="hljs-regexp">/linux/</span>nfs *(rw,sync,no_root_squash)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk"><span class="hljs-regexp">/home/</span>firestaradmin<span class="hljs-regexp">/linux/</span>nfs *(rw,sync,no_root_squash)</code></pre></div>
 
 <p>重启 NFS 服务，使用命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
 
 <h2 id="uboot图形化配置"><a href="#uboot图形化配置" class="headerlink" title="uboot图形化配置"></a>uboot图形化配置</h2><h3 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h3><p>在前两章中我们知道 uboot 可以通过 mx6ull_lxg_emmc_defconfig 来配置，或者通过文件mx6ull_lxg_emmc.h 来配置 uboot。还有另外一种配置 uboot 的方法，就是图形化配置.</p>
 <p>uboot 或 Linux 内核可以通过输入“<strong>make menuconfig</strong>”来打开图形化配置界面，menuconfig是一套图形化的配置工具，需要 ncurses 库支持。ncurses 库提供了一系列的 API 函数供调用者生成基于文本的图形界面，因此需要先在 Ubuntu 中安装 ncurses 库，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install build-essential
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt-get install build-essential
 sudo apt-get install libncurses5-dev</code></pre></div>
 
 <p>menuconfig 重点会用到uboot根目录的两个文件：<code>.config</code> 和 <code>Kconfig</code>，<code>.config </code>文件前面已经说了，这个文件保存着 uboot 的配置项，使用 menuconfig 配置完 uboot 以后肯定要更新.config 文件。Kconfig文件是图形界面的描述文件，也就是描述界面应该有什么内容，很多目录下都会有 Kconfig 文件。</p>
 <p>在打开图形化配置界面之前，要先使用“make xxx_defconfig”对 uboot 进行一次默认配置，只需要一次即可。如果使用“make clean”清理了工程的话就那就需要重新使用“make xxx_defconfig”再对 uboot 进行一次配置。进入 uboot 根目录，输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_lxg_emmc_defconfig
+<div class="code-wrapper"><pre><code class="hljs sh">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- mx6ull_lxg_emmc_defconfig
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig</code></pre></div>
 
 <p>如果已经在 uboot 的顶层 Makefile 中定义了 ARCH 和 CROSS_COMPILE 的值，那么上述命令可以简化为：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs gauss"><span class="hljs-built_in">make</span> mx6ull_lxg_emmc_defconfig
+<div class="code-wrapper"><pre><code class="hljs gauss"><span class="hljs-built_in">make</span> mx6ull_lxg_emmc_defconfig
 <span class="hljs-built_in">make</span> menuconfig</code></pre></div>
 
 <p>打开后的图形化界面如图 34.1.1 所示：</p>
@@ -1099,7 +1099,7 @@ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig</code></pre></div>
 <p>千万不能使用如下命令：</p>
 <p><code>./mx6ull_lxg_emmc.sh</code></p>
 <p>因为 mx6ull_lxg_emmc.sh 在编译之前会清理工程，会删除掉.config 文件！通过图形化界面配置所有配置项都会被删除，结果就是竹篮打水一场空。编译完成以后烧写到 SD 卡中，重启开发板进入 uboot 命令模式，输入“?”查看是否有“dns”命令，一般肯定有的。测试一下 dns 命令工作是否正常，使用 dns 命令来查看一下百度官网“<a target="_blank" rel="noopener" href="http://www.baidu.com”的/">www.baidu.com”的</a> IP 地址。要先设置一下 dns 服务器的 IP 地址，也就是设置环境变量 dnsip的值，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">setenv dnsip 114.114.114.114
+<div class="code-wrapper"><pre><code class="hljs sh">setenv dnsip 114.114.114.114
 saveenv</code></pre></div>
 
 <p>设置好以后就可以使用 dns 命令查看百度官网的 IP 地址了，输入命令：<br><code>dns www.baidu.com</code><br>结果如图所示：</p>
@@ -1160,8 +1160,8 @@ saveenv</code></pre></div>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/5.Makefile%E7%9A%84%E7%AE%80%E5%8D%95%E7%BC%96%E5%86%99(%E8%A7%81C++%E9%87%8C%E7%9A%84%E7%AC%94%E8%AE%B0)/">
-                        <span class="hidden-mobile">5| Makefile的简单编写</span>
+                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/6.IMX6U%E8%A3%B8%E6%9C%BA%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C/">
+                        <span class="hidden-mobile">6| 裸机程序编译运行</span>
                         <span class="visible-mobile">Nächster</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -241,7 +241,7 @@
               <h1 id="UVGUI屏幕刷新原理"><a href="#UVGUI屏幕刷新原理" class="headerlink" title="UVGUI屏幕刷新原理"></a>UVGUI屏幕刷新原理</h1><p>@firestaradmin 2020年12月9日17:39:32</p>
 <p><strong>我还在寻找回家的路。长路漫漫，唯剑作伴。        ——亚索</strong></p>
 <h2 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h2><p>核心结构体为 <code>ug_disp_t</code>，UVGUI 支持同时驱动多个屏幕，每个屏幕对应一个disp 结构体，disp 定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Display structure.</span>
 <span class="hljs-comment"> * @note `ug_disp_drv_t` should be the first member of the structure.</span>
 <span class="hljs-comment"> */</span>
@@ -284,7 +284,7 @@
 <p>每创建一个对象，就会根据对象的区域大小，将其储存到<code>inv_areas</code>数组中，并且inv_p 数加一。</p>
 <hr>
 <h2 id="二、核心算法"><a href="#二、核心算法" class="headerlink" title="二、核心算法"></a>二、核心算法</h2><p>算法流程：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">_ug_disp_refr_task()	<span class="hljs-comment">/* 屏幕刷新任务 */</span>
+<div class="code-wrapper"><pre><code class="hljs c">_ug_disp_refr_task()	<span class="hljs-comment">/* 屏幕刷新任务 */</span>
     -&gt; ug_refr_join_area();		<span class="hljs-comment">/* 合并非法区域 */</span>
     -&gt; ug_refr_areas();			<span class="hljs-comment">/* 刷新区域 */</span>
 		-&gt; ug_refr_area();
@@ -295,7 +295,7 @@
 
 <hr>
 <h3 id="ug-refr-join-area"><a href="#ug-refr-join-area" class="headerlink" title="ug_refr_join_area()"></a>ug_refr_join_area()</h3><p>此函数功能为 合并有相同部分的区域。 函数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Join the areas which has got common parts</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_join_area</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
@@ -345,7 +345,7 @@
 <p>然后判断，两个区域是否有相同部分，即是否有接壤，如果有 则将两个区域合并的区域储存至<strong>joined_area</strong>，然后再判断合并后的区域大小是否比之前两个区域的大小加在一起更小，如果更小则会将合并后的区域储存到 <strong>inv_area[join_in]</strong> 里，并且将<strong>inv_area_joined[join_form]</strong> 置1，来指示该区域已被合并。</p>
 <hr>
 <h3 id="ug-refr-areas"><a href="#ug-refr-areas" class="headerlink" title="ug_refr_areas()"></a>ug_refr_areas()</h3><p>此函数刷新所有非合法区域，即刷新 <code>inv_area_joined[]</code> 标志未被置 1 (即未被合并) 的 <code>inv_areas[]</code> 储存的区域。代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Refresh the joined areas</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ug_refr_areas</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
@@ -383,7 +383,7 @@
 <p>此函数会找到符合条件的区域并调用子函数 <code>ug_refr_area()</code> 来刷新。</p>
 <hr>
 <h3 id="ug-refr-area"><a href="#ug-refr-area" class="headerlink" title="ug_refr_area()"></a>ug_refr_area()</h3><p>此函数代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Refresh an area if there is Virtual Display Buffer</span>
 <span class="hljs-comment"> * @param area_p  pointer to an area to refresh</span>
 <span class="hljs-comment"> */</span>
@@ -445,7 +445,7 @@
 <p>此函数会根据你设置的显存大小和刷新的区域大小进行判断，如果你的显存大小是真实屏幕的像素大小，就一次刷新完，如果显存比屏幕小，就会一部分一部分刷新，直至刷新完毕。计算好虚拟显存的区域后，会调用<code>ug_refr_area_part()</code>  函数来刷新。</p>
 <hr>
 <h3 id="ug-refr-area-part"><a href="#ug-refr-area-part" class="headerlink" title="ug_refr_area_part()"></a>ug_refr_area_part()</h3><p>此函数会刷新在当前虚拟显存上的一块区域。代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Refresh a part of an area which is on the actual Virtual Display Buffer</span>
 <span class="hljs-comment"> * @param area_p pointer to an area to refresh</span>
 <span class="hljs-comment"> */</span>
@@ -520,7 +520,7 @@
 </blockquote>
 <p>最后会调用<code>ug_refr_obj_and_children()</code> 来刷新。</p>
 <h3 id="ug-refr-obj-and-children"><a href="#ug-refr-obj-and-children" class="headerlink" title="ug_refr_obj_and_children()"></a>ug_refr_obj_and_children()</h3><p>函数代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">
+<div class="code-wrapper"><pre><code class="hljs c">
 <span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Make the refreshing from an object. Draw all its children and the youngers too.</span>
 <span class="hljs-comment"> * @param top_p pointer to an objects. Start the drawing from it.</span>

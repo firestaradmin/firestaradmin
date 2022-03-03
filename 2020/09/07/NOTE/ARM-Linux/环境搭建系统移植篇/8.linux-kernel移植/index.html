@@ -376,53 +376,53 @@
 <h2 id="三、内核移植"><a href="#三、内核移植" class="headerlink" title="三、内核移植"></a>三、内核移植</h2><h3 id="1、创建VSCode工程"><a href="#1、创建VSCode工程" class="headerlink" title="1、创建VSCode工程"></a>1、创建VSCode工程</h3><p>这里我们使用 NXP 官方提供的 Linux 源码，将其移植到正点原子 I.MX6U-ALPHA 开发板上。</p>
 <p>源码压缩包<strong>linux-imx-rel_imx_4.1.15_2.1.0_ga.tar.bz2</strong>。使用FileZilla将其发送到Ubuntu中并解压，得到名为<code>linux-imx-rel_imx_4.1.15_2.1.0_ga</code>的目录，为了和 NXP 官方的名字区分，可 以使用“ mv ”命令对其重命名，我这里将其重命名为 “ linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg”.</p>
 <p>命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> linux-imx-rel_imx_4.1.15_2.1.0_ga linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> linux-imx-rel_imx_4.1.15_2.1.0_ga linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg</code></pre></div>
 
 <p>完成以后创建 VSCode 工程，步骤和 Windows 下一样，重点是.vscode&#x2F;settings.json 这个文件。</p>
 <h3 id="2、NXP-官方开发板-Linux-内核初次编译"><a href="#2、NXP-官方开发板-Linux-内核初次编译" class="headerlink" title="2、NXP  官方开发板 Linux 内核初次编译"></a>2、NXP  官方开发板 Linux 内核初次编译</h3><p>编译内核之前需要先在 ubuntu 上安装 lzop 库，否则内核编译会失败！命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install lzop</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt-get install lzop</code></pre></div>
 
 <p>修改顶层 Makefile，直接在顶层 Makefile 文件里面定义 ARCH 和 CROSS_COMPILE 这两个的变量值为 arm 和 arm-linux-gnueabihf-，结果如图 所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819122938067.png" srcset="/img/loading.gif" lazyload alt="image-20200819122938067"></p>
 <p>分别设置了 ARCH 和 CROSS_COMPILE 这两个变量的值，这样在编译的时候就不用输入很长的命令了。</p>
 <p>和 uboot 一样，在编译 Linux 内核之前要先配置 Linux 内核。每个板子都有其对应的默认配置文件，这些默认配置文件保存 在 <strong>arch&#x2F;arm&#x2F;configs</strong> 目录中。 imx_v7_defconfig 和imx_v7_mfg_defconfig 都可作为 I.MX6ULL EVK 开发板所使用的默认配置文件。但是这里建议使用 imx_v7_mfg_defconfig 这个默认配置文件，首先此配置文件默认支持 I.MX6UL 这款芯片，而且重要的一点就是此文件编译出来的 zImage 可以通过 NXP 官方提供的 MfgTool 工具烧写！！imx_v7_mfg_defconfig 中的“mfg”的意思就是 MfgTool。进入到 Ubuntu 中的 Linux 源码根目录下，执行如下命令配置 Linux 内核：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">make clean  <span class="hljs-regexp">//</span>第一次编译 Linux 内核之前先清理一下
+<div class="code-wrapper"><pre><code class="hljs awk">make clean  <span class="hljs-regexp">//</span>第一次编译 Linux 内核之前先清理一下
 make imx_v7_mfg_defconfig <span class="hljs-regexp">//</span>配置 Linux 内核</code></pre></div>
 
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123316222.png" srcset="/img/loading.gif" lazyload alt="image-20200819123316222"></p>
 <p>配置完成以后就可以编译了，使用如下命令编译 Linux 内核：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">make -j12  <span class="hljs-regexp">//</span>编译 Linux 内核</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">make -j12  <span class="hljs-regexp">//</span>编译 Linux 内核</code></pre></div>
 
 <p>等待编译完成，结果如图所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819123555197.png" srcset="/img/loading.gif" lazyload alt="image-20200819123555197"></p>
 <p>Linux 内核编译完成以后会在 <strong>arch&#x2F;arm&#x2F;boot</strong> 目录下生成 <strong>zImage</strong> 镜像文件，如果使用设备树的话还会在 <strong>arch&#x2F;arm&#x2F;boot&#x2F;dts</strong> 目录下开发板对应的**.dtb**(设备树)文件，比如 imx6ull-14x14-evk.dtb就是 NXP 官方的 I.MX6ULL EVK 开发板对应的设备树文件。至此我们得到两个文件：<br><strong>①、Linux 内核镜像文件：zImage。</strong><br><strong>②、NXP 官方 I.MX6ULL EVK 开发板对应的设备树文件：imx6ull-14x14-evk.dtb。</strong></p>
 <h3 id="3、Linux-内核启动测试"><a href="#3、Linux-内核启动测试" class="headerlink" title="3、Linux 内核启动测试"></a>3、Linux 内核启动测试</h3><p>在上一小节我们已经得到了 NXP 官方 I.MX6ULL EVK 开发板对应的 zImage 和 imx6ull-14x14-evk.dtb 这两个文件。</p>
 <p>现在测试这两个文件能不能在正点原子的 I.MX6U-ALPHA EMMC 版开发板上启动，在测试之前确保 uboot 中的环境变量 bootargs 内容如下：<br><code>console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw</code><br>将上一小节编译出来的 zImage 和 imx6ull-14x14-evk.dtb 复制到 Ubuntu 中的 tftp 目录下，因为我们要在 uboot 中使用 tftp 命令将其下载到开发板中，拷贝命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> <span class="hljs-built_in">arch</span>/arm/boot/zImage /home/firestaradmin/linux/tftpboot/ -f
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> <span class="hljs-built_in">arch</span>/arm/boot/zImage /home/firestaradmin/linux/tftpboot/ -f
 <span class="hljs-built_in">cp</span> <span class="hljs-built_in">arch</span>/arm/boot/dts/imx6ull-14x14-evk.dtb /home/firestaradmin/linux/tftpboot/ -f</code></pre></div>
 
 <p>拷贝完成以后就可以测试了，启动开发板，进入 uboot 命令行模式，然后输入如下命令将zImage 和 imx6ull-14x14-evk.dtb 下载到开发板中并启动：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">tftp 80800000 zImage
+<div class="code-wrapper"><pre><code class="hljs sh">tftp 80800000 zImage
 tftp 83000000 imx6ull-14x14-evk.dtb
 bootz 80800000 - 83000000</code></pre></div>
 
 <p>结果图所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819130548552.png" srcset="/img/loading.gif" lazyload alt="image-20200819130548552"></p>
 <h3 id="4、在linux内核中添加自己的开发板"><a href="#4、在linux内核中添加自己的开发板" class="headerlink" title="4、在linux内核中添加自己的开发板"></a>4、在linux内核中添加自己的开发板</h3><h4 id="1、添加默认配置文件"><a href="#1、添加默认配置文件" class="headerlink" title="1、添加默认配置文件"></a>1、添加默认配置文件</h4><p>将 arch&#x2F;arm&#x2F;configs 目 录 下 的 imx_v7_mfg_defconfig 重 新 复 制 一 份 ， 命 名 imx_lxg_emmc_defconfig，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/configs
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/configs
 <span class="hljs-built_in">cp</span> imx_v7_mfg_defconfig imx_lxg_emmc_defconfig</code></pre></div>
 
 <p>以后 imx_lxg_emmc_defconfig就是我们的 EMMC 版开发板默认配置文件了。完成以后如图 37.3.1.1 所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131258173.png" srcset="/img/loading.gif" lazyload alt="image-20200819131258173"></p>
 <h4 id="2、添加开发板对应的设备树文件"><a href="#2、添加开发板对应的设备树文件" class="headerlink" title="2、添加开发板对应的设备树文件"></a>2、添加开发板对应的设备树文件</h4><p>添加适合正点原子 EMMC 版开发板的设备树文件，进入目录 arch&#x2F;arm&#x2F;boot&#x2F;dts 中，复制一份 imx6ull-14x14-evk.dts，然后将其重命名为 imx6ull-lxg-emmc.dts，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/boot/dts
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> <span class="hljs-built_in">arch</span>/arm/boot/dts
 <span class="hljs-built_in">cp</span> imx6ull-14x14-evk.dts imx6ull-lxg-emmc.dts</code></pre></div>
 
 <p>.dts 是设备树源码文件，编译 Linux 的时候会将其编译为.dtb 文件。imx6ull-lxg-emmc.dts<br>创建好以后我们还需要修改arch&#x2F;arm&#x2F;boot&#x2F;dts&#x2F;Makefile，找到 “ dtb-$(CONFIG_SOC_IMX6ULL)”配置项，在此配置项中加入“imx6ull-lxg-emmc.dtb” ，如下所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819131816436.png" srcset="/img/loading.gif" lazyload alt="image-20200819131816436"></p>
 <p>这样编译 Linux 的时候就可以从 imx6ull-lxg-emmc.dts 编译出 imx6ull-lxg-emmc.dtb 文件了。</p>
 <h4 id="3、编译测试"><a href="#3、编译测试" class="headerlink" title="3、编译测试"></a>3、编译测试</h4><p>经过前面两个小节，Linux 内核里面已经添加了我们自己的I.MX6UL-LXG-EMMC 版开发板了，接下接编译测试一下，我们可以创建一个编译脚本，imx6ull_lxg_emmc.sh，脚本内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span>
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- distclean
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- imx_lxg_emmc_defconfig
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
@@ -430,11 +430,11 @@ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- all -j12</code></pre></div>
 
 <p>第 2 行，清理工程。<br>第 3 行，使用默认配置文件 imx_lxg_emmc_defconfig 来配置 Linux 内核。<br>第 4 行，打开 Linux 的图形配置界面，如果不需要每次都打开图形配置界面可以删除此行。<br>第 5 行，编译 Linux。</p>
 <p>执行 shell 脚本 imx_lxg_emmc.sh 编译 Linux 内核，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 imx_lxg_emmc.sh //给予可执行权限
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 777 imx_lxg_emmc.sh //给予可执行权限
 ./imx_lxg_emmc.sh //执行 shell 脚本编译内核</code></pre></div>
 
 <p>编译完成以后就会在目录 arch&#x2F;arm&#x2F;boot 下生成 zImage 镜像文件。在 arch&#x2F;arm&#x2F;boot&#x2F;dts 目录下生成 imx6ull-lxg-emmc.dtb 文件。将这两个文件拷贝到 tftp 目录下，然后重启开发板，在uboot 命令模式中使用 tftp 命令下载这两个文件并启动，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">tftp 80800000 zImage
+<div class="code-wrapper"><pre><code class="hljs sh">tftp 80800000 zImage
 tftp 83000000 imx6ull-lxg-emmc.dtb
 bootz 80800000 – 83000000</code></pre></div>
 
@@ -443,7 +443,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p>红框为linux内核的编译时间</p>
 <h3 id="5、部分驱动修改（CPU、NET、EMMC）"><a href="#5、部分驱动修改（CPU、NET、EMMC）" class="headerlink" title="5、部分驱动修改（CPU、NET、EMMC）"></a>5、部分驱动修改（CPU、NET、EMMC）</h3><h4 id="1、CPU主频修改"><a href="#1、CPU主频修改" class="headerlink" title="1、CPU主频修改"></a>1、CPU主频修改</h4><h5 id="1、在linux下手动修改cpu配置文件或修改linux内核配置文件"><a href="#1、在linux下手动修改cpu配置文件或修改linux内核配置文件" class="headerlink" title="1、在linux下手动修改cpu配置文件或修改linux内核配置文件"></a>1、在linux下手动修改cpu配置文件或修改linux内核配置文件</h5><p>正点原子 I.MX6U-ALPHA 开发板所使用的 I.MX6ULL 芯片主频都是 792MHz 的，也就是NXP 官方宣传的 800MHz 版本。这里以此板为例。</p>
 <p>1 、设置 I.MX6U-ALPHA  开发板工作在 792MHz<br>确保 EMMC 中的根文件系统可用！然后重新启动开发板，进入终端(可以输入命令)，如图</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/cpuinfo</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/cpuinfo</code></pre></div>
 
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143359337.png" srcset="/img/loading.gif" lazyload alt="image-20200819143359337"></p>
 <p>在图 中有 BogoMIPS 这一条，此时 BogoMIIS 为 3.00，BogoMIPS 是 Linux 系统中衡量处理器运行速度的一个“尺子”，处理器性能越强，主频越高，BogoMIPS 值就越大。BogoMIPS 只是粗略的计算 CPU 性能，并不十分准确。但是我们可以通过 BogoMIPS 值来大致的判断当前处理器的性能。在图中并没有看到当前 CPU 的工作频率，那我们就转变另一种方法查看当前 CPU 的工作频率。进入到目录 &#x2F;sys&#x2F;bus&#x2F;cpu&#x2F;devices&#x2F;cpu0&#x2F;cpufreq 中，此目录下会有很多文件，如图 37.4.1.3 所示：</p>
@@ -457,7 +457,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p>使用如下命令查看当前 CPU 频率：<code>cat cpuinfo_cur_freq</code><br>结果如图 37.4.1.4 所示</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819143815635.png" srcset="/img/loading.gif" lazyload alt="image-20200819143815635"></p>
 <p>从图 37.4.1.4 可以看出，当前 CPU 频率为 198MHz，工作频率很低！其他的值如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">cpuinfo_cur_freq</span> = <span class="hljs-number">198000</span>
+<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">cpuinfo_cur_freq</span> = <span class="hljs-number">198000</span>
 <span class="hljs-attribute">cpuinfo_max_freq</span> = <span class="hljs-number">792000</span>
 <span class="hljs-attribute">cpuinfo_min_freq</span> = <span class="hljs-number">198000</span>
 <span class="hljs-attribute">scaling_cur_freq</span> = <span class="hljs-number">198000</span>
@@ -468,12 +468,12 @@ bootz 80800000 – 83000000</code></pre></div>
 
 <p>可以看出，当前 CPU 支持 198MHz、396MHz、528Mhz 和 792000 四种频率切换，其中调频策略为 ondemand，也就是定期检查负载，然后根据负载情况调节 CPU 频率。因为当前我们开发板并没有做什么工作，因此 CPU 频率降低为 198MHz 以省电。如果开发板做一些高负载的工作，比如播放视频等操作那么 CPU 频率就会提升上去。</p>
 <p>查看 stats 目录下的 time_in_state 文件可以看到 CPU 在各频率下的工作时间，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /sys/bus/cpu/devices/cpu0/cpufreq/stats/time_in_state</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /sys/bus/cpu/devices/cpu0/cpufreq/stats/time_in_state</code></pre></div>
 
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144003337.png" srcset="/img/loading.gif" lazyload alt="image-20200819144003337"></p>
 <p>从图中可以看出，CPU 在 198MHz、396MHz、528MHz 和 792MHz 都工作过，其中 198MHz 的工作时间最长！假如我们想让 CPU 一直工作在 792MHz 那该怎么办？很简单，配置 Linux 内核，将调频策略选择为 performance（直接修改<strong>scaling_governor</strong> 文件的内容，将ondemand修改为performance）。</p>
 <p>或者修改 imx_lxg_emmc_defconfig 文件，此文件中有下面几行：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND</span>=y
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND</span>=y
 <span class="hljs-attr">CONFIG_CPU_FREQ_GOV_POWERSAVE</span>=y
 <span class="hljs-attr">CONFIG_CPU_FREQ_GOV_USERSPACE</span>=y
 <span class="hljs-attr">CONFIG_CPU_FREQ_GOV_INTERACTIVE</span>=y</code></pre></div>
@@ -481,7 +481,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p>分别为：</p>
 <p>配置 ondemand 为默认调频策略。<br>使能 powersave 策略。<br>使能 userspace 策略。<br>使能 interactive 策略</p>
 <p>将示例代码中的第 1 行屏蔽掉，然后在最后面添加：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_ONDEMAND</span>=y</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">CONFIG_CPU_FREQ_GOV_ONDEMAND</span>=y</code></pre></div>
 
 <p>修改完成以后重新编译 Linux 内核，编译之前先清理一下工程！因为我们重新修改过默认配置文件了，编译完成以后使用新的 zImage 镜像文件重新启动 Linux。再次查看&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu0&#x2F;cpufreq&#x2F; cpuinfo_cur_freq 文件的值，如图 37.4.1.6 所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819144814735.png" srcset="/img/loading.gif" lazyload alt="image-20200819144814735"></p>
@@ -497,7 +497,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p><strong>声明：</strong><br>想体验一下高性能的朋友可以体验一下超频，但是！毕竟是超频了的，工作肯定没有在默认频率稳定。<strong>如果因为超频带来任何损坏，本文档不负任何责任！</strong></p>
 <p>在实际的产品中，禁止任何超频！务必严格按照 I.MX6ULL 手册上给出的标准工作频率来运行！！如果想要更高的性能，请购买相应型号的处理器！看到这里，如果您还是执意要超频，那么就接着往下看，如果要放弃超频，那就跳过本小节。</p>
 <p>超频设置其实很简单，修改一下设备树文件 arch&#x2F;arm&#x2F;boot&#x2F;dts&#x2F;imx6ull.dtsi 即可，打开imx6ull.dtsi，找到下面代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">cpu0: cpu@<span class="hljs-number">0</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs c">cpu0: cpu@<span class="hljs-number">0</span> &#123;
 	compatible = <span class="hljs-string">&quot;arm,cortex-a7&quot;</span>;
 	device_type = <span class="hljs-string">&quot;cpu&quot;</span>;
 	reg = &lt;<span class="hljs-number">0</span>&gt;;
@@ -525,7 +525,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150034290.png" srcset="/img/loading.gif" lazyload alt="image-20200819150034290"></p>
 <p>加入了“696000 1225000”，这个就是 696MHz 的支持。<br>加入了“696000 1175000”，也是对 696MHz 的支持。</p>
 <p>修改好以后保存，并且编译设备树，在 Linux 内核源码根目录下输入如下命令编译设备树：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make dtbs</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make dtbs</span></code></pre></div>
 
 <p>命令“make dtbs”只编译设备树文件，也就是将.dts 编译为.dtb，编译完成以后使用新的设备树文件imx6ull-lxg_emmc.dtb 启动Linux.</p>
 <p>重启以后查看文件&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu0&#x2F;cpufreq&#x2F; scaling_available_frequencies 的内容，如图 37.4.1.10 所示：</p>
@@ -534,7 +534,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <h3 id="6、使能8线EMMC驱动"><a href="#6、使能8线EMMC驱动" class="headerlink" title="6、使能8线EMMC驱动"></a>6、使能8线EMMC驱动</h3><p>正点原子 EMMC 版本核心板上的 EMMC 采用的 8 位数据线，原理图如图 37.4.2.1 所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819150756416.png" srcset="/img/loading.gif" lazyload alt="image-20200819150756416"></p>
 <p>Linux 内核驱动里面 EMMC 默认是 4 线模式的，4 线模式肯定没有 8 线模式的速度快，所以本节我们将 EMMC 的驱动修改为 8 线模式。修改方法很简单，直接修改设备树即可，打开文件 imx6ull-lxg-emmc.dts，找到如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;usdhc2 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;usdhc2 &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_usdhc2&gt;;
 	non-removable;
@@ -542,7 +542,7 @@ bootz 80800000 – 83000000</code></pre></div>
 &#125;;</code></pre></div>
 
 <p>关于设备树的原理以及内容后面会专门讲解，示例代码中的代码含义我们现在不去纠结，只需要将其改为如下代码即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;usdhc2 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;usdhc2 &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>, <span class="hljs-string">&quot;state_100mhz&quot;</span>, <span class="hljs-string">&quot;state_200mhz&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_usdhc2_8bit&gt;;
 	pinctrl<span class="hljs-number">-1</span> = &lt;&amp;pinctrl_usdhc2_8bit_100mhz&gt;;
@@ -555,7 +555,7 @@ bootz 80800000 – 83000000</code></pre></div>
 <p>修改完成以后保存一下 imx6ull-lxg-emmc.dts，然后使用命令“make dtbs”重新编译一下设备树，编译完成以后使用新的设备树重启 Linux 系统即可。</p>
 <h3 id="7、修改网络驱动"><a href="#7、修改网络驱动" class="headerlink" title="7、修改网络驱动"></a>7、修改网络驱动</h3><p>因为在后面学习 Linux 驱动开发的时候要用到网络调试驱动，所以必须要把网络驱动调试好。在讲解uboot 移植的时候就已经说过了，正点原子开发板的网络和 NXP 官方的网络硬件上不同，网络 PHY 芯片由 KSZ8081 换为了 LAN8720A，两个网络 PHY 芯片的复位 IO 也不同。所以 Linux 内核自带的网络驱动是驱动不起来 I.MX6U-ALPHA 开发板上的网络的，需要做修改。</p>
 <h4 id="1、修改LAN8720-的复位-以及网络时钟引脚驱动"><a href="#1、修改LAN8720-的复位-以及网络时钟引脚驱动" class="headerlink" title="1、修改LAN8720  的复位 以及网络时钟引脚驱动"></a>1、修改LAN8720  的复位 以及网络时钟引脚驱动</h4><p>ENET1 复位引脚 ENET1_RST 连接在 I.M6ULL 的 SNVS_TAMPER7 这个引脚上。ENET2的复位引脚 ENET2_RST 连接在 I.MX6ULL 的 SNVS_TAMPER8 上。打开设备树文件 imx6ull-lxg-emmc.dts，找到如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">pinctrl_spi4: spi4grp &#123;
+<div class="code-wrapper"><pre><code class="hljs c">pinctrl_spi4: spi4grp &#123;
                    fsl,pins = &lt;
                            MX6ULL_PAD_BOOT_MODE0__GPIO5_IO10        <span class="hljs-number">0x70a1</span>
                            MX6ULL_PAD_BOOT_MODE1__GPIO5_IO11        <span class="hljs-number">0x70a1</span>
@@ -565,11 +565,11 @@ bootz 80800000 – 83000000</code></pre></div>
                &#125;;</code></pre></div>
 
 <p>示例代码中</p>
-<div class="hljs code-wrapper"><pre><code class="hljs gcode">MX<span class="hljs-number">6</span>ULL_PAD_S<span class="hljs-symbol">NVS_TAMPER7</span>__GPI<span class="hljs-meta">O5</span>_I<span class="hljs-meta">O07</span>      <span class="hljs-number">0</span>x<span class="hljs-number">70</span>a<span class="hljs-number">1</span>
+<div class="code-wrapper"><pre><code class="hljs gcode">MX<span class="hljs-number">6</span>ULL_PAD_S<span class="hljs-symbol">NVS_TAMPER7</span>__GPI<span class="hljs-meta">O5</span>_I<span class="hljs-meta">O07</span>      <span class="hljs-number">0</span>x<span class="hljs-number">70</span>a<span class="hljs-number">1</span>
 MX<span class="hljs-number">6</span>ULL_PAD_S<span class="hljs-symbol">NVS_TAMPER8</span>__GPI<span class="hljs-meta">O5</span>_I<span class="hljs-meta">O08</span>      <span class="hljs-number">0</span>x<span class="hljs-number">80000000</span></code></pre></div>
 
 <p>就是初始化 SNVS_TAMPER7 和 SNVS_TAMPER8 这两个引脚的，不过看样子好像是作为了 SPI4 的 IO，这不是我们想要的，所以将这两行删除掉！删除掉以后继续在 imx6ull-lxg-emmc.dts 中找到如下所示代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">spi4 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">spi4 &#123;
 	compatible = <span class="hljs-string">&quot;spi-gpio&quot;</span>;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_spi4&gt;;
@@ -581,7 +581,7 @@ MX<span class="hljs-number">6</span>ULL_PAD_S<span class="hljs-symbol">NVS_TAMPE
 	num-chipselects = &lt;<span class="hljs-number">1</span>&gt;;
        ......</code></pre></div>
 
-<div class="hljs code-wrapper"><pre><code class="hljs c">pinctrl-assert-gpios = &lt;&amp;gpio5 <span class="hljs-number">8</span> GPIO_ACTIVE_LOW&gt;;
+<div class="code-wrapper"><pre><code class="hljs c">pinctrl-assert-gpios = &lt;&amp;gpio5 <span class="hljs-number">8</span> GPIO_ACTIVE_LOW&gt;;
 cs-gpios = &lt;&amp;gpio5 <span class="hljs-number">7</span> <span class="hljs-number">0</span>&gt;;</code></pre></div>
 
 <p>其中这两行分别是</p>
@@ -589,7 +589,7 @@ cs-gpios = &lt;&amp;gpio5 <span class="hljs-number">7</span> <span class="hljs-n
 <p>设置 GPIO5_IO07 作为 SPI4 的片选引脚，而 GPIO5_IO07 就是 SNVS_TAMPER7的 GPIO 功能引脚。</p>
 <p>现在我们需要 GPIO5_IO07 和 GPIO5_IO08 分别作为 ENET1 和 ENET2 的复位引脚，而不是 SPI4 的什么功能引脚，<strong>因此将示例代码 中的两行代码删除掉！！</strong>否则会干扰到网络复位引脚！</p>
 <p>在 imx6ull-alientek-emmc.dts 里面找到名为“iomuxc_snvs”的节点(就是直接搜索)，然后在<br>此节点下添加网络复位引脚信息，添加完成以后的“iomuxc_snvs”的节点内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;iomuxc_snvs &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;iomuxc_snvs &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default_snvs&quot;</span>;
         pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_hog_2&gt;;
         imx6ul-evk &#123;
@@ -615,7 +615,7 @@ cs-gpios = &lt;&amp;gpio5 <span class="hljs-number">7</span> <span class="hljs-n
 &#125;;</code></pre></div>
 
 <p>最后还需要修改一下 ENET1 和 ENET2 的网络时钟引脚配置，继续在 imx6ull-lxg-emmc.dts 中找到如下所示代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">pinctrl_enet1: enet1grp &#123;
+<div class="code-wrapper"><pre><code class="hljs c">pinctrl_enet1: enet1grp &#123;
     fsl,pins = &lt;
         MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN	<span class="hljs-number">0x1b0b0</span>
         MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER	<span class="hljs-number">0x1b0b0</span>
@@ -645,7 +645,7 @@ pinctrl_enet2: enet2grp &#123;
 
 <p>两个节点中的最后一行分别为 ENET1 和 ENET2 的网络时钟引脚配置信息，<strong>将这两个引脚的电气属性值改为 0x4001b009，原来默认值为 0x4001b031</strong>。修改完成以后记得保存一下 imx6ull-lxg-emmc.dts，网络复位以及时钟引脚驱动就修改好了。</p>
 <h4 id="2-、修改-fec1-和-和-fec2-节点的-pinctrl-0-属性"><a href="#2-、修改-fec1-和-和-fec2-节点的-pinctrl-0-属性" class="headerlink" title="2 、修改 fec1 和 和 fec2  节点的 pinctrl-0  属性"></a>2 、修改 fec1 和 和 fec2  节点的 pinctrl-0  属性</h4><p>在 imx6ull-lxg-emmc.dts 文件中找到名为“fec1”和“fec2”的这两个节点，修改其中的“pinctrl-0”属性值，修改以后如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_enet1
         		 &amp;pinctrl_enet1_reset&gt;;
@@ -664,7 +664,7 @@ pinctrl_enet2: enet2grp &#123;
 &#125;;</code></pre></div>
 
 <h4 id="3、修改-LAN8720A-的-的-PHY-地址"><a href="#3、修改-LAN8720A-的-的-PHY-地址" class="headerlink" title="3、修改 LAN8720A 的 的 PHY 地址"></a>3、修改 LAN8720A 的 的 PHY 地址</h4><p>在 uboot 移植中，我们说过 ENET1 的 LAN8720A 地址为 0x0，ENET2 的 LAN8720A地址为 0x1。在 imx6ull-lxg-emmc.dts 中找到如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_enet1
         		 &amp;pinctrl_enet1_reset&gt;;
@@ -698,7 +698,7 @@ pinctrl_enet2: enet2grp &#123;
 &#125;;</code></pre></div>
 
 <p>上述代码中的</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">mdio &#123;
+<div class="code-wrapper"><pre><code class="hljs c">mdio &#123;
 	<span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 	<span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;0&gt;</span>;</span>
 
@@ -715,7 +715,7 @@ pinctrl_enet2: enet2grp &#123;
 
 <p>部分为mdio节点，述了 ENET1和 ENET2 的 PHY 地址信息。</p>
 <p>将示例代码改为如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
+<div class="code-wrapper"><pre><code class="hljs c">&amp;fec1 &#123;
 	pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 	pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_enet1
         		 &amp;pinctrl_enet1_reset&gt;;
@@ -761,7 +761,7 @@ pinctrl_enet2: enet2grp &#123;
 <p>reg 的值也表示 PHY 地址，ENET1 的 PHY 地址为 0，所以 reg&#x3D;0。</p>
 <p>至此，LAN8720A 的 PHY 地址就改好了，保存一下 imx6ull-lxg-emmc.dts 文件。然后使用“make dtbs”命令重新编译一下设备树。</p>
 <h4 id="4、修改-fec-main-c-文件"><a href="#4、修改-fec-main-c-文件" class="headerlink" title="4、修改 fec_main.c  文件"></a>4、修改 fec_main.c  文件</h4><p>要 在 I.MX6ULL 上 使 用 LAN8720A ， 需 要 修 改 一 下 Linux 内 核 源 码 ， 打 开drivers&#x2F;net&#x2F;ethernet&#x2F;freescale&#x2F;fec_main.c，找到函数 fec_probe，在 fec_probe 中加入如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span>
 <span class="hljs-title function_">fec_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span>
 &#123;
 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fec_enet_private</span> *<span class="hljs-title">fep</span>;</span>
@@ -800,7 +800,7 @@ pinctrl_enet2: enet2grp &#123;
 <p>图中选择将“Drivers for SMSC PHYs”编译到 Linux 内核中，因此“&lt;&gt;”里面变为了“*”。LAN8720A 是 SMSC 公司出品的，因此勾选这个以后就会编译 LAN8720 驱动，配置好以后退出配置界面，然后重新编译一下 Linux 内核。</p>
 <h4 id="6、修改-smsc-c-文件"><a href="#6、修改-smsc-c-文件" class="headerlink" title="6、修改 smsc.c  文件"></a>6、修改 smsc.c  文件</h4><p>在修改 smsc.c 文件之前先说点题外话，那就是我是怎么确定要修改 smsc.c 这个文件的。在写本书之前我并没有修改过 smsc.c 这个文件，都是使能 LAN8720A 驱动以后就直接使用。但是我在测试 NFS 挂载文件系统的时候发现文件系统挂载成功率很低！老是提示 NFS 服务器找不到，三四次就有一次挂载失败！很折磨人。NFS 挂载就是通过网络来挂载文件系统，这样做的好处就是方便我们后续调试 Linux 驱动。既然老是挂载失败那么可以肯定的是网络驱动有问题，网络驱动分两部分：内部 MAC+外部 PHY，内部 MAC 驱动是由 NXP 提供的，一般不会出问题，否则的话用户早就给 NXP 反馈了。而且我用 NXP 官方的开发板测试网络是一直正常的，但是 NXP 官方的开发板所使用的 PHY 芯片为KSZ8081。所以只有可能是外部 PHY，也就是LAN8720A 的驱动可能出问题了。</p>
 <p>鉴于 LAN8720A有“前车之鉴”，那就是在 uboot 中需要对LAN8720A 进行一次软复位，要设置LAN8720A 的 BMCR(寄存器地址为 0)寄存器 bit15 为 1。所以我猜测，在 Linux 中也需要对 LAN8720A 进行一次软复位。首先需要找到 LAN8720A 的驱动文件，LAN8720A 的驱动文件是 drivers&#x2F;net&#x2F;phy&#x2F;smsc.c，在此文件中有个叫做 smsc_phy_reset 的函数，看名字都知道这是 SMSC PHY 的复位函数，因此，LAN8720A 肯定也会使用到这个复位函数，修改此函数的内容，修改以后的 smsc_phy_reset函数内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">smsc_phy_reset</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> phy_device *phydev)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">smsc_phy_reset</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> phy_device *phydev)</span>
 &#123;
     <span class="hljs-comment">//添加的内容如下</span>
     <span class="hljs-type">int</span> err, phy_reset;
@@ -868,7 +868,7 @@ pinctrl_enet2: enet2grp &#123;
 &#125;</code></pre></div>
 
 <p>最后我们还需要在 drivers&#x2F;net&#x2F;phy&#x2F;smsc.c 文件中添加两个头文件，因为修改后的smsc_phy_reset 函数用到了 gpio_direction_output 和 gpio_set_value 这两个函数，需要添加的头文件如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/of_gpio.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/io.h&gt;</span></span></code></pre></div>
 
 <h4 id="7、网络驱动测试"><a href="#7、网络驱动测试" class="headerlink" title="7、网络驱动测试"></a>7、网络驱动测试</h4><p>修改好设备树和 Linux 内核以后重新编译一下，得到新的 zImage 镜像文件和 imx6ull-lxg-emmc.dtb设备树文件，使用网线将 I.MX6U-ALPHA 开发板的两个网口与路由器或者电脑连接起来，最后使用新的文件启动 Linux 内核。启动以后使用“ifconfig”命令查看一下当前活动的网卡有哪些，结果如图 所示：</p>
@@ -877,7 +877,7 @@ pinctrl_enet2: enet2grp &#123;
 <p>输入命令“ifconfig -a”来查看一下开发板中存在的所有网卡，结果如图所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162256490.png" srcset="/img/loading.gif" lazyload alt="image-20200819162256490"></p>
 <p>图中 can0 和 can1 为 CAN 接口的网卡，eth0 和 eth1 才是网络接口的网卡，其中eth0 对应于 ENET2，eth1 对应于 ENET1。使用如下命令依次打开 eth0 和 eth1 这两个网卡：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs vim">ifconfig eth0 <span class="hljs-keyword">up</span>
+<div class="code-wrapper"><pre><code class="hljs vim">ifconfig eth0 <span class="hljs-keyword">up</span>
 ifconfig eth1 <span class="hljs-keyword">up</span></code></pre></div>
 
 <p>网卡的打开过程如图 37.4.3.4 所示：</p>
@@ -885,14 +885,14 @@ ifconfig eth1 <span class="hljs-keyword">up</span></code></pre></div>
 <p>可以看到“SMSC LAN8710&#x2F;LAN8720”字样，说明当前的网络驱动使用的就是我们前面使能的 SMSC 驱动。再次输入“ifconfig”命令来查看一下当前活动的网卡，结果如图所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162818948.png" srcset="/img/loading.gif" lazyload alt="image-20200819162818948"></p>
 <p>可以看出，此时 eth0 和 eth1 两个网卡都已经打开，并且工作正常，但是这两个网卡都还没<br>有 IP 地址，所以不能进行 ping 等操作。使用如下命令给两个网卡配置 IP 地址：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">ifconfig eth0 192.168.0.251
+<div class="code-wrapper"><pre><code class="hljs sh">ifconfig eth0 192.168.0.251
 ifconfig eth1 192.168.0.252</code></pre></div>
 
 <p>上述命令配置 eth0 和 eth1 这两个网卡的 IP 地址，注意 IP 地址选择的合理性，一定要和自己的电脑处于同一个网段内，并且没有被其他的设备占用！</p>
 <p>设置好以后，使用“ping”命令来 ping 一下自己的主机，如果能 ping 通那说明网络驱动修改成功！比如我的 Ubuntu 主机 IP 地址为 192.168.0.111，使用如下命令 ping 一下：ping 192.168.0.111<br>结果如图 37.4.3.6 所示：</p>
 <p><img src="/2020/09/07/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/8.linux-kernel%E7%A7%BB%E6%A4%8D/image-20200819162957546.png" srcset="/img/loading.gif" lazyload alt="image-20200819162957546"></p>
 <h4 id="8、保存修改后的图形化配置文件"><a href="#8、保存修改后的图形化配置文件" class="headerlink" title="8、保存修改后的图形化配置文件"></a>8、保存修改后的图形化配置文件</h4><p>在修改网络驱动的时候我们通过图形界面使能了 LAN8720A 的驱动，使能以后会在.config中存在如下代码：<br><code>CONFIG_SMSC_PHY=y</code><br>打开 drivers&#x2F;net&#x2F;phy&#x2F;Makefile，有如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">obj-$(CONFIG_SMSC_PHY) += smsc.o</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">obj-$(CONFIG_SMSC_PHY) += smsc.o</code></pre></div>
 
 <p>当 CONFIG_SMSC_PHY&#x3D;y 的时候就会编译 smsc.c 这个文件，smsc.c 就是 LAN8720A 的驱动文件。但是当我们执行“make clean”清理工程以后.config 文件就会被删除掉，因此我们所有的配置内容都会丢失，结果就是前功尽弃，一“删”回到解放前！所以我们在配置完图形界面以后经过测试没有问题，就必须要保存一下配置文件。保存配置的方法有两个。</p>
 <h5 id="1、直接另存为-config-文件"><a href="#1、直接另存为-config-文件" class="headerlink" title="1、直接另存为.config 文件"></a>1、直接另存为.config 文件</h5><p>既然图形化界面配置后的配置项保存在.config 中，那么就简单粗暴，直接将.config 文件另存为 imx_lxg_emmc_defconfig，然后其复制到 arch&#x2F;arm&#x2F;configs 目录下，替换以前的imx_lxg_emmc_defconfig。这样以后执行“make imx_lxg_emmc_defconfig”重新配置Linux 内核的时候就会使用新的配置文件，默认就会使能 LAN8720A 的驱动。</p>

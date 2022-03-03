@@ -242,38 +242,38 @@
             <h1 style="display: none">1| 开发环境搭建</h1>
             
             <div class="markdown-body">
-              <h1 id="一、FTP-File-Transfer-Protocol"><a href="#一、FTP-File-Transfer-Protocol" class="headerlink" title="一、FTP(File Transfer Protocol)"></a>一、FTP(File Transfer Protocol)</h1><h2 id="开启-linux下的-FTP-服务"><a href="#开启-linux下的-FTP-服务" class="headerlink" title="开启 linux下的 FTP 服务"></a>开启 linux下的 FTP 服务</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install vsftpd
+              <h1 id="一、FTP-File-Transfer-Protocol"><a href="#一、FTP-File-Transfer-Protocol" class="headerlink" title="一、FTP(File Transfer Protocol)"></a>一、FTP(File Transfer Protocol)</h1><h2 id="开启-linux下的-FTP-服务"><a href="#开启-linux下的-FTP-服务" class="headerlink" title="开启 linux下的 FTP 服务"></a>开启 linux下的 FTP 服务</h2><div class="code-wrapper"><pre><code class="hljs bash">sudo apt-get install vsftpd
 sudo vi /etc/vsftpd.conf</code></pre></div>
 
 <p>打开 vsftpd.conf 文件以后找到如下两行：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">local_enable</span>=<span class="hljs-literal">YES</span>
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-attr">local_enable</span>=<span class="hljs-literal">YES</span>
 <span class="hljs-attr">write_enable</span>=<span class="hljs-literal">YES</span></code></pre></div>
 
 <p>确保上面两行前面没有“#”，有的话就取消掉</p>
 <p>保存退出后，重启服务</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/vsftpd restart</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/vsftpd restart</code></pre></div>
 
 
 
 <h2 id="windows-下连接FTP"><a href="#windows-下连接FTP" class="headerlink" title="windows 下连接FTP:"></a>windows 下连接FTP:</h2><p>​    FTP软件中填写对应终端的IP 输入用户名和密码即可</p>
-<h1 id="二、NFS-Network-File-System"><a href="#二、NFS-Network-File-System" class="headerlink" title="二、NFS(Network File System)"></a>二、NFS(Network File System)</h1><h2 id="NFS-服务端"><a href="#NFS-服务端" class="headerlink" title="NFS 服务端"></a>NFS 服务端</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
+<h1 id="二、NFS-Network-File-System"><a href="#二、NFS-Network-File-System" class="headerlink" title="二、NFS(Network File System)"></a>二、NFS(Network File System)</h1><h2 id="NFS-服务端"><a href="#NFS-服务端" class="headerlink" title="NFS 服务端"></a>NFS 服务端</h2><div class="code-wrapper"><pre><code class="hljs bash">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
 
 <p>安装完成后创建一个nfs文件夹，以后需要通过网络用的文件都放这里.<code>xxxx/nfs</code></p>
 <p>之后配置文件&#x2F;etc&#x2F;exports：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo vi /etc/exports</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo vi /etc/exports</code></pre></div>
 
 <p>在文件末尾添加如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">xxxx/nfs *(rw,<span class="hljs-built_in">sync</span>,no_root_squash)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">xxxx/nfs *(rw,<span class="hljs-built_in">sync</span>,no_root_squash)</code></pre></div>
 
 <p>重启 NFS 服务</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
 
 <h2 id="NFS客户端"><a href="#NFS客户端" class="headerlink" title="NFS客户端"></a>NFS客户端</h2><p>安装客户端应用：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">apt-get install -y nfs-common</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">apt-get install -y nfs-common</code></pre></div>
 
 <p>用mkdir命令创建一个文件夹xxx&#x2F;nfs-mount。</p>
 <p>将NFS服务器的xxx&#x2F;nfs 目录挂载到NFS客户端的xxx&#x2F;nfs-mount 目录，执行以下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">mount 192.168.119.128:xxx/nfs  xxx/nfs-mount</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs shell">mount 192.168.119.128:xxx/nfs  xxx/nfs-mount</code></pre></div>
 
 
 
@@ -281,7 +281,7 @@ sudo vi /etc/vsftpd.conf</code></pre></div>
 <p><img src="/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20200820013608568.png" srcset="/img/loading.gif" lazyload alt="image-20200820013608568"></p>
 <p>ARM-Linux NFS挂载不上，是由于高版本的NFS服务，默认不支持nfs v2的连接，而uboot中nfs服务是 V2版本的，所以需要修改<code>/etc/default/nfs-kernel-server </code>文件以支持v2 nfs。</p>
 <p>修改完内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># Number of servers to start up</span>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># Number of servers to start up</span>
 <span class="hljs-comment">#RPCNFSDCOUNT=8</span>
 RPCNFSDCOUNT=<span class="hljs-string">&#x27;-V 2 8&#x27;</span>
 
@@ -311,7 +311,7 @@ RPCSVCGSSDOPTS=<span class="hljs-string">&quot;--nfs-version 2,3,4 --debug --sys
 
 
 <h1 id="三、SSH安全外壳协议-Secure-Shell"><a href="#三、SSH安全外壳协议-Secure-Shell" class="headerlink" title="三、SSH安全外壳协议 (Secure Shell)"></a>三、SSH安全外壳协议 (Secure Shell)</h1><h2 id="SSH-服务开启"><a href="#SSH-服务开启" class="headerlink" title="SSH 服务开启"></a>SSH 服务开启</h2><p>安装 ssh 服务</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install openssh-server</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo apt-get install openssh-server</code></pre></div>
 
 <p>ssh 的配置文件为&#x2F;etc&#x2F;ssh&#x2F;sshd_config，使用默认配置即可</p>
 <h1 id="四、交叉编译工具链"><a href="#四、交叉编译工具链" class="headerlink" title="四、交叉编译工具链"></a>四、交叉编译工具链</h1><p>编译 ARM 架构的代码，我们需要一个在 X86 架构的 PC 上运行，可以编译 ARM 架构代码的 GCC 编译器，这个编译器就叫做交叉编译器.</p>
@@ -320,34 +320,34 @@ RPCSVCGSSDOPTS=<span class="hljs-string">&quot;--nfs-version 2,3,4 --debug --sys
 <p><img src="/2020/09/01/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/1.%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/2222.png" srcset="/img/loading.gif" lazyload alt="2222"></p>
 <p>有很多种 GCC 交叉编译工具链，因为我们所使用的 I.MX6U-ALPHA 开发板是一个 Cortex-A7 内核的开发板，因此选择 arm-linux-gnueabihf，点击后面的“Binaries”进入可执行文件下载</p>
 <p>创建目录：&#x2F;usr&#x2F;local&#x2F;arm：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo <span class="hljs-built_in">mkdir</span> /usr/local/arm</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo <span class="hljs-built_in">mkdir</span> /usr/local/arm</code></pre></div>
 
 <p>将下载的文件放至该目录进行解压</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo tar -vxf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo tar -vxf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz</code></pre></div>
 
 <p>解压完成以后会生成一个名为“gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf”的文件夹，这个文件夹里面就是我们的交叉编译工具链.</p>
 <p>修改环境变量，使用 VI 打开&#x2F;etc&#x2F;profile 文件，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo vi /etc/profile</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo vi /etc/profile</code></pre></div>
 
 <p>打开&#x2F;etc&#x2F;profile 以后，在最后面输入如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs elixir">export PATH=<span class="hljs-variable">$PATH</span><span class="hljs-symbol">:/usr/local/arm/gcc-linaro-</span><span class="hljs-number">4.9</span>.<span class="hljs-number">4</span><span class="hljs-number">-2017.01</span>-x86_64_arm-linux-gnueabihf/bin</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs elixir">export PATH=<span class="hljs-variable">$PATH</span><span class="hljs-symbol">:/usr/local/arm/gcc-linaro-</span><span class="hljs-number">4.9</span>.<span class="hljs-number">4</span><span class="hljs-number">-2017.01</span>-x86_64_arm-linux-gnueabihf/bin</code></pre></div>
 
 <p>重启 Ubuntu 系统，交叉编译工具链(编译器)就安装成功了</p>
 <p>查看版本号</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">arm-linux-gnueabihf-gcc -v</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">arm-linux-gnueabihf-gcc -v</code></pre></div>
 
 <p>如果交叉编译器安装正确的话就会显示版本号</p>
 <h1 id="五、TFTP服务"><a href="#五、TFTP服务" class="headerlink" title="五、TFTP服务"></a>五、TFTP服务</h1><p>tftp 命令的作用和 nfs 命令一样，都是用于通过网络下载东西到 DRAM 中，只是 tftp 命令使用的 TFTP 协议，Ubuntu 主机作为 TFTP 服务器。因此需要在 Ubuntu 上搭建 TFTP 服务器，需要安装 tftp-hpa 和 tftpd-hpa，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install tftp-hpa tftpd-hpa
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt-get install tftp-hpa tftpd-hpa
 sudo apt-get install xinetd</code></pre></div>
 
 <p>和 NFS 一样，TFTP 也需要一个文件夹来存放文件，在用户目录下新建一个目录，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /home/firestaradmin/linux/tftpboot
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /home/firestaradmin/linux/tftpboot
 <span class="hljs-built_in">chmod</span> 777 /home/firestaradmin/linux/tftpboot</code></pre></div>
 
 <p>这 样 我 就 在 我 的 电 脑 上 创 建 了 一 个 名 为 tftpboot 的目录 ( 文 件 夹 )，路径为**&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;tftpboot**</p>
 <p>注意！我们要给 tftpboot 文件夹权限，否则的话 uboot 不能从tftpboot 文件夹里面下载文件。最后配置 tftp，安装完成以后新建文件&#x2F;etc&#x2F;xinetd.d&#x2F;tftp，如果没有&#x2F;etc&#x2F;xinetd.d 目录的话自行创建，然后在里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">server tftp
+<div class="code-wrapper"><pre><code class="hljs c">server tftp
 &#123;
     socket_type = dgram
     protocol = udp
@@ -363,7 +363,7 @@ sudo apt-get install xinetd</code></pre></div>
 
 <p> 完了以后启动 tftp 服务<code>sudo service tftpd-hpa start</code></p>
 <p>之后打开**&#x2F;etc&#x2F;default&#x2F;tftpd-hpa** 文件，将其修改为如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-comment"># /etc/default/tftpd-hpa</span>
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-comment"># /etc/default/tftpd-hpa</span>
 
 <span class="hljs-attr">TFTP_USERNAME</span>=<span class="hljs-string">&quot;tftp&quot;</span>
 <span class="hljs-attr">TFTP_DIRECTORY</span>=<span class="hljs-string">&quot;/home/firestaradmin/linux/tftpboot&quot;</span>
@@ -373,7 +373,7 @@ sudo apt-get install xinetd</code></pre></div>
 <p>TFTP_DIRECTORY 就是我们上面创建的 tftp 文件夹目录，以后我们就将所有需要通过TFTP 传输的文件都放到这个文件夹里面，并且要给予这些文件相应的权限。</p>
 <p>最后输入如下命令， 重启 tftp 服务器：<br><code>sudo service tftpd-hpa restart</code></p>
 <p>tftp 服务器已经搭建好了，接下来就是使用了。将 zImage 镜像文件拷贝到 tftpboot 文件夹中，并且给予 zImage 相应的权限，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> zImage /home/firestaradmin/linux/tftpboot/
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> zImage /home/firestaradmin/linux/tftpboot/
 <span class="hljs-built_in">cd</span> /home/firestaradmin/linux/tftpboot/
 <span class="hljs-built_in">chmod</span> 777 zImage</code></pre></div>
 

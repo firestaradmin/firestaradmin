@@ -241,7 +241,7 @@
             <h1 style="display: none">QT ini配置文件</h1>
             
             <div class="markdown-body">
-              <h1 id="QT-配置文件"><a href="#QT-配置文件" class="headerlink" title="QT 配置文件"></a>QT 配置文件</h1><h2 id="一、QSettings-类-ini-文件"><a href="#一、QSettings-类-ini-文件" class="headerlink" title="一、QSettings 类 ini 文件"></a>一、QSettings 类 ini 文件</h2><h3 id="1-创建ini-文件"><a href="#1-创建ini-文件" class="headerlink" title="1. 创建ini 文件"></a>1. 创建ini 文件</h3><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">//创建ini配置文件</span>
+              <h1 id="QT-配置文件"><a href="#QT-配置文件" class="headerlink" title="QT 配置文件"></a>QT 配置文件</h1><h2 id="一、QSettings-类-ini-文件"><a href="#一、QSettings-类-ini-文件" class="headerlink" title="一、QSettings 类 ini 文件"></a>一、QSettings 类 ini 文件</h2><h3 id="1-创建ini-文件"><a href="#1-创建ini-文件" class="headerlink" title="1. 创建ini 文件"></a>1. 创建ini 文件</h3><div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">//创建ini配置文件</span>
 QSettings *iniFile = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QSettings</span>(<span class="hljs-string">&quot;sysConfig.ini&quot;</span>, QSettings::IniFormat);</code></pre></div>
 
 <ul>
@@ -249,7 +249,7 @@ QSettings *iniFile = <span class="hljs-keyword">new</span> <span class="hljs-bui
 <li>arg2：文件格式</li>
 </ul>
 <p>当没有文件会创建文件，有文件会打开文件。</p>
-<h3 id="2-设置键值对"><a href="#2-设置键值对" class="headerlink" title="2. 设置键值对"></a>2. 设置键值对</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
+<h3 id="2-设置键值对"><a href="#2-设置键值对" class="headerlink" title="2. 设置键值对"></a>2. 设置键值对</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
 iniFile-&gt;beginGroup(<span class="hljs-string">&quot;flashSetting&quot;</span>);
 <span class="hljs-comment">//设置键值对</span>
 iniFile-&gt;setValue(<span class="hljs-string">&quot;offset&quot;</span>, <span class="hljs-number">0x08000000</span>);
@@ -268,7 +268,7 @@ iniFile-&gt;setValue(<span class="hljs-string">&quot;dataPackSize&quot;</span>, 
 <p>  顾名思义 设置键值对</p>
 </li>
 </ul>
-<h3 id="3-判断键值对是否存在"><a href="#3-判断键值对是否存在" class="headerlink" title="3. 判断键值对是否存在"></a>3. 判断键值对是否存在</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
+<h3 id="3-判断键值对是否存在"><a href="#3-判断键值对是否存在" class="headerlink" title="3. 判断键值对是否存在"></a>3. 判断键值对是否存在</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
 iniFile-&gt;beginGroup(<span class="hljs-string">&quot;flashSetting&quot;</span>);
 <span class="hljs-comment">//判断键是否存在</span>
 key = iniFile-&gt;contains(<span class="hljs-string">&quot;offset&quot;</span>);
@@ -276,7 +276,7 @@ qDebug() &lt;&lt; <span class="hljs-string">&quot;falshSetting/offset &quot;</sp
 
 
 
-<h3 id="3-读取键值对"><a href="#3-读取键值对" class="headerlink" title="3. 读取键值对"></a>3. 读取键值对</h3><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
+<h3 id="3-读取键值对"><a href="#3-读取键值对" class="headerlink" title="3. 读取键值对"></a>3. 读取键值对</h3><div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">//索引进入组 这个时候根目录在 flashSetting 下</span>
 iniFile-&gt;<span class="hljs-built_in">beginGroup</span>(<span class="hljs-string">&quot;flashSetting&quot;</span>);
 <span class="hljs-comment">//读取键值对</span>
 <span class="hljs-type">int</span> dataPackSize = iniFile-&gt;<span class="hljs-built_in">value</span>(<span class="hljs-string">&quot;dataPackSize&quot;</span>).<span class="hljs-built_in">toInt</span>();

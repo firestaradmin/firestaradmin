@@ -239,7 +239,7 @@
             <h1 style="display: none">PyQt Note</h1>
             
             <div class="markdown-body">
-              <h1 id="PyQt-notes"><a href="#PyQt-notes" class="headerlink" title="PyQt notes"></a>PyQt notes</h1><h2 id="1-PyQt5-QML-界面"><a href="#1-PyQt5-QML-界面" class="headerlink" title="1. PyQt5 QML 界面"></a>1. PyQt5 QML 界面</h2><h3 id="py"><a href="#py" class="headerlink" title=".py"></a>.py</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtGui <span class="hljs-keyword">import</span> QGuiApplication
+              <h1 id="PyQt-notes"><a href="#PyQt-notes" class="headerlink" title="PyQt notes"></a>PyQt notes</h1><h2 id="1-PyQt5-QML-界面"><a href="#1-PyQt5-QML-界面" class="headerlink" title="1. PyQt5 QML 界面"></a>1. PyQt5 QML 界面</h2><h3 id="py"><a href="#py" class="headerlink" title=".py"></a>.py</h3><div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtGui <span class="hljs-keyword">import</span> QGuiApplication
 <span class="hljs-keyword">from</span> PyQt5 <span class="hljs-keyword">import</span> QtQml
 
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
@@ -253,7 +253,7 @@
 
 
 
-<h3 id="main-qml"><a href="#main-qml" class="headerlink" title="main.qml"></a>main.qml</h3><div class="hljs code-wrapper"><pre><code class="hljs dts">import QtQuick <span class="hljs-number">2.12</span>
+<h3 id="main-qml"><a href="#main-qml" class="headerlink" title="main.qml"></a>main.qml</h3><div class="code-wrapper"><pre><code class="hljs dts">import QtQuick <span class="hljs-number">2.12</span>
 import QtQuick.Controls <span class="hljs-number">2.12</span>
 
 
@@ -322,7 +322,7 @@ import QtQuick.Controls <span class="hljs-number">2.12</span>
 
 
 
-<h3 id="MyColorPicLabel-qml"><a href="#MyColorPicLabel-qml" class="headerlink" title="MyColorPicLabel.qml"></a>MyColorPicLabel.qml</h3><div class="hljs code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
+<h3 id="MyColorPicLabel-qml"><a href="#MyColorPicLabel-qml" class="headerlink" title="MyColorPicLabel.qml"></a>MyColorPicLabel.qml</h3><div class="code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
 
 
 Item &#123;
@@ -361,7 +361,7 @@ Item &#123;
 <li><code>__init__()</code> 函数需要调用父类的 构造函数</li>
 <li>QML 里调用的函数必须是槽函数，用 @pyqtSlot(…) 修饰</li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyScreen</span>(<span class="hljs-title class_ inherited__">QObject</span>):
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyScreen</span>(<span class="hljs-title class_ inherited__">QObject</span>):
     screens = QGuiApplication.screens()
     screenCount = <span class="hljs-number">0</span>
 
@@ -394,14 +394,14 @@ Item &#123;
         <span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>)
 </code></pre></div>
 
-<h3 id="将python-class-加载进-QML"><a href="#将python-class-加载进-QML" class="headerlink" title="将python class 加载进 QML"></a>将python class 加载进 QML</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># create screen obejct</span>
+<h3 id="将python-class-加载进-QML"><a href="#将python-class-加载进-QML" class="headerlink" title="将python class 加载进 QML"></a>将python class 加载进 QML</h3><div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># create screen obejct</span>
 scr = MyScreen()
 <span class="hljs-comment"># 注册 Python 类至 QML 根节点</span>
 engine.rootContext().setContextProperty(<span class="hljs-string">&quot;scr&quot;</span>, scr)</code></pre></div>
 
 <p>这样QML 里可以使用 scr 对象了。</p>
 <h3 id="QML-信号定义和触发"><a href="#QML-信号定义和触发" class="headerlink" title="QML 信号定义和触发"></a>QML 信号定义和触发</h3><p>定义信号</p>
-<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-title">ApplicationWindow</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs qml"><span class="hljs-title">ApplicationWindow</span> &#123;
     <span class="hljs-attribute">id:</span><span class="hljs-string"> mainWin</span>
     <span class="hljs-comment">// signal</span>
     <span class="hljs-keyword">signal</span><span class="hljs-string"> myLogSignal</span>(<span class="hljs-built_in">string</span> log)
@@ -409,7 +409,7 @@ engine.rootContext().setContextProperty(<span class="hljs-string">&quot;scr&quot
 &#125;</code></pre></div>
 
 <p>触发信号</p>
-<div class="hljs code-wrapper"><pre><code class="hljs scss"><span class="hljs-selector-tag">Button</span>&#123;
+<div class="code-wrapper"><pre><code class="hljs scss"><span class="hljs-selector-tag">Button</span>&#123;
     text: <span class="hljs-string">&quot;点我输出log&quot;</span>;
     <span class="hljs-attribute">font</span><span class="hljs-selector-class">.family</span>: <span class="hljs-string">&quot;Alibaba puhuiti&quot;</span>; 
     <span class="hljs-attribute">font</span><span class="hljs-selector-class">.pointSize</span>: <span class="hljs-number">13</span>; 
@@ -425,13 +425,13 @@ engine.rootContext().setContextProperty(<span class="hljs-string">&quot;scr&quot
     &#125;
 &#125;</code></pre></div>
 
-<h3 id="QML-信号绑定-Python-槽函数"><a href="#QML-信号绑定-Python-槽函数" class="headerlink" title="QML 信号绑定 Python 槽函数"></a>QML 信号绑定 Python 槽函数</h3><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
+<h3 id="QML-信号绑定-Python-槽函数"><a href="#QML-信号绑定-Python-槽函数" class="headerlink" title="QML 信号绑定 Python 槽函数"></a>QML 信号绑定 Python 槽函数</h3><div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
 my_obj = engine.rootObjects()[<span class="hljs-number">0</span>]    <span class="hljs-comment"># 获取根节点</span>
 my_obj.myLogSignal.connect(scr.printlog)    <span class="hljs-comment"># 绑定信号和槽</span>
 </code></pre></div>
 
 <h3 id="Python-调用QML-函数"><a href="#Python-调用QML-函数" class="headerlink" title="Python 调用QML 函数"></a>Python 调用QML 函数</h3><p>定义函数</p>
-<div class="hljs code-wrapper"><pre><code class="hljs arcade">ApplicationWindow &#123;
+<div class="code-wrapper"><pre><code class="hljs arcade">ApplicationWindow &#123;
 	...
   	<span class="hljs-keyword">function</span> <span class="hljs-title function_">qmlLog</span>(<span class="hljs-params">str</span>)&#123;
         <span class="hljs-built_in">console</span>.<span class="hljs-built_in">log</span>(str);
@@ -441,7 +441,7 @@ my_obj.myLogSignal.connect(scr.printlog)    <span class="hljs-comment"># 绑定�
 </code></pre></div>
 
 <p>python 调用</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># QML 信号连接 Python 槽函数</span>
 my_obj = engine.rootObjects()[<span class="hljs-number">0</span>]    <span class="hljs-comment"># 获取根节点</span>
 <span class="hljs-comment"># 调用QML 函数</span>
 my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串&quot;</span>)</code></pre></div>
@@ -449,7 +449,7 @@ my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串
 
 
 <h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>main.py</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtCore <span class="hljs-keyword">import</span> QObject, QRect, pyqtSlot
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PyQt5.QtCore <span class="hljs-keyword">import</span> QObject, QRect, pyqtSlot
 <span class="hljs-keyword">from</span> PyQt5 <span class="hljs-keyword">import</span> QtQml
 <span class="hljs-keyword">from</span> PyQt5.QtGui <span class="hljs-keyword">import</span> QGuiApplication
 
@@ -514,7 +514,7 @@ my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串
 
 
 <p>main.qml</p>
-<div class="hljs code-wrapper"><pre><code class="hljs qml"><span class="hljs-keyword">import</span> QtQuick <span class="hljs-number">2.12</span>
+<div class="code-wrapper"><pre><code class="hljs qml"><span class="hljs-keyword">import</span> QtQuick <span class="hljs-number">2.12</span>
 <span class="hljs-keyword">import</span> QtQuick.Controls <span class="hljs-number">2.12</span>
 
 
@@ -633,7 +633,7 @@ my_obj.qmlLog(<span class="hljs-string">&quot;我是qml 函数输出的字符串
 
 
 <p>MycolorPicLabel.qml</p>
-<div class="hljs code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
+<div class="code-wrapper"><pre><code class="hljs maxima">import QtQuick <span class="hljs-number">2.4</span>
 
 
 Item &#123;

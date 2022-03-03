@@ -284,7 +284,7 @@
 <p><img src="/2020/12/02/NOTE/ARM/FreeRTOS/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175620531.png" srcset="/img/loading.gif" lazyload alt="image-20201202175620531"></p>
 <hr>
 <p>在delay.c 中添加<code>sysTick</code>中断 和 <code>sysTick Init</code> 如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment">	FreeRTOS</span>
 <span class="hljs-comment">*/</span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;FreeRTOS.h&quot;</span></span>
@@ -336,7 +336,7 @@
 &#125;</code></pre></div>
 
 <p>至此 心跳时基就已经OK了，但是有时候会使用延时函数（会引起任务调度或者不引起任务调度的延时），如下所示添加即可</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * @breif delay us. Will not cause task scheduling.</span>
 <span class="hljs-comment"> * @param nus time need to delay (unit|us)</span>
 <span class="hljs-comment">		range[0~204522252](max = 2^32/fac_us@fac_us=168)</span>
@@ -392,13 +392,13 @@
 
 <hr>
 <p>编译会提示 <code>xPortSysTickHandler</code> 函数隐式声明， 打开<code>FreeRTOSConfig.h</code>文件，在最后添加如下代码声明即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">xPortSysTickHandler</span><span class="hljs-params">( <span class="hljs-type">void</span> )</span>;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">xPortSysTickHandler</span><span class="hljs-params">( <span class="hljs-type">void</span> )</span>;</code></pre></div>
 
 
 
 <hr>
 <p>之后再次编译发现 几个Hook 函数报错，打开FreeRTOSConfig.h 文件 将如下几个宏定义定义改为0</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_IDLE_HOOK				1</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_IDLE_HOOK				1</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_TICK_HOOK				1</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> configCHECK_FOR_STACK_OVERFLOW	2</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> configUSE_MALLOC_FAILED_HOOK	1</span></code></pre></div>
@@ -407,7 +407,7 @@
 <p><img src="/2020/12/02/NOTE/ARM/FreeRTOS/STM32%E7%A7%BB%E6%A4%8DFreeRTOS/image-20201202175936488.png" srcset="/img/loading.gif" lazyload alt="image-20201202175936488"></p>
 <hr>
 <h2 id="三、-如何开始任务调度"><a href="#三、-如何开始任务调度" class="headerlink" title="三、 如何开始任务调度"></a>三、 如何开始任务调度</h2><p>编译无错后，打开<code>main.c</code> 添加如下代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/** -----------------------------------------</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/** -----------------------------------------</span>
 <span class="hljs-comment">	FreeRTOS</span>
 <span class="hljs-comment"> -----------------------------------------*/</span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;FreeRTOS.h&quot;</span></span>
@@ -501,7 +501,7 @@
 <p>编译运行测试。</p>
 <hr>
 <h2 id="四、优化配置"><a href="#四、优化配置" class="headerlink" title="四、优化配置"></a>四、优化配置</h2><p>中断服务函数中代码如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//systick  中断服务函数</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//systick  中断服务函数</span>
 <span class="hljs-type">void</span> <span class="hljs-title function_">SysTick_Handler</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 &#123;
 	<span class="hljs-meta">#<span class="hljs-keyword">if</span> (INCLUDE_xTaskGetSchedulerState == 1 )</span>
@@ -514,7 +514,7 @@
 &#125;</code></pre></div>
 
 <p>可以看出，有宏定义判断<code>#if (INCLUDE_xTaskGetSchedulerState == 1 )</code> ， 所以我们可以打开<code>FreeRTOS.h</code> 文件 ，将宏<code>#define INCLUDE_xTaskGetSchedulerState 0</code> 改为1，启用任务可以获取调度器状态。</p>
-<h2 id="五、其他代码"><a href="#五、其他代码" class="headerlink" title="五、其他代码"></a>五、其他代码</h2><h3 id="delay-h"><a href="#delay-h" class="headerlink" title="delay.h"></a>delay.h</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __DELAY_H</span>
+<h2 id="五、其他代码"><a href="#五、其他代码" class="headerlink" title="五、其他代码"></a>五、其他代码</h2><h3 id="delay-h"><a href="#delay-h" class="headerlink" title="delay.h"></a>delay.h</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __DELAY_H</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __DELAY_H 			   </span>
 	 
 
@@ -528,7 +528,7 @@
 
 
 
-<h3 id="delay-c"><a href="#delay-c" class="headerlink" title="delay.c"></a>delay.c</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;delay.h&quot;</span></span>
+<h3 id="delay-c"><a href="#delay-c" class="headerlink" title="delay.c"></a>delay.c</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;delay.h&quot;</span></span>
 
 <span class="hljs-comment">/**</span>
 <span class="hljs-comment">	FreeRTOS</span>

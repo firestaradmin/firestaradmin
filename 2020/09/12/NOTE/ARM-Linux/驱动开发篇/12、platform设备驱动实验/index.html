@@ -268,7 +268,7 @@
 <p>input 子系统负责管理所有跟输入有关的驱动，包括键盘、鼠标、触摸等，最底层的就是设备原始驱动，负责获取输入设备的原始值，获取到的输入事件上报给 input 核心层。input 核心层会处理各种 IO 模型，并且提供 file_operations 操作集合。我们在编写输入设备驱动的时候只需要处理好输入事件的上报即可，至于如何处理这些上报的输入事件那是上层去考虑的，我们不用管。可以看出借助分层模型可以极大的简化我们的驱动编写，对于驱动编写来说非常的友好。</p>
 <h2 id="二、platform-平台驱动模型简介"><a href="#二、platform-平台驱动模型简介" class="headerlink" title="二、platform  平台驱动模型简介"></a>二、platform  平台驱动模型简介</h2><p>前面我们讲了设备驱动的分离，并且引出了总线(bus)、驱动(driver)和设备(device)模型，比如 I2C、SPI、USB 等总线。但是在 SOC 中有些外设是没有总线这个概念的，但是又要使用总线、驱动和设备模型该怎么办呢？为了解决此问题，Linux 提出了 platform 这个虚拟总线，相应的就有 platform_driver 和 platform_device。</p>
 <h3 id="1-platform总线"><a href="#1-platform总线" class="headerlink" title="1| platform总线"></a>1| platform总线</h3><p>Linux系统内核使用bus_type结构体表示总线，此结构体定义在文件include&#x2F;linux&#x2F;device.h，bus_type 结构体内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> &#123;</span>
 <span class="hljs-number">2</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name; <span class="hljs-comment">/* 总线名字 */</span>
 <span class="hljs-number">3</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *dev_name;
 <span class="hljs-number">4</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device</span> *<span class="hljs-title">dev_root</span>;</span>
@@ -296,7 +296,7 @@
 <p>第 10 行，match 函数，此函数很重要，单词 match 的意思就是“匹配、相配”，因此此函数就是完成设备和驱动之间匹配的，总线就是使用 match 函数来根据注册的设备来查找对应的驱动，或者根据注册的驱动来查找相应的设备，因此每一条总线都必须实现此函数。match 函数有两个参数：dev 和 drv，这两个参数分别为 device 和 device_driver 类型，也就是设备和驱动。</p>
 <hr>
 <p>platform 总线是 bus_type 的一个具体实例，定义在文件 drivers&#x2F;base&#x2F;platform.c，platform 总线定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> <span class="hljs-title">platform_bus_type</span> =</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> <span class="hljs-title">platform_bus_type</span> =</span> &#123;
 <span class="hljs-number">2</span> 		.name = <span class="hljs-string">&quot;platform&quot;</span>,
 <span class="hljs-number">3</span> 		.dev_groups = platform_dev_groups,
 <span class="hljs-number">4</span> 		.match = platform_match,
@@ -305,7 +305,7 @@
 <span class="hljs-number">7</span> &#125;;</code></pre></div>
 
 <p>platform_bus_type 就是 platform 平台总线，其中 platform_match 就是匹配函数。我们来看一下驱动和设备是如何匹配的，platform_match 函数定义在文件drivers&#x2F;base&#x2F;platform.c 中，函数内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">platform_match</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device *dev, <span class="hljs-keyword">struct</span> device_driver *drv)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">platform_match</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> device *dev, <span class="hljs-keyword">struct</span> device_driver *drv)</span>
 2 &#123;
 <span class="hljs-number">3</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device</span> *<span class="hljs-title">pdev</span> =</span> to_platform_device(dev);
 <span class="hljs-number">4</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_driver</span> *<span class="hljs-title">pdrv</span> =</span> to_platform_driver(drv);
@@ -337,7 +337,7 @@
 <p>第 23 行，第四种匹配方式，如果第三种匹配方式的 id_table 不存在的话就直接比较驱动和设备的 name 字段，看看是不是相等，如果相等的话就匹配成功。</p>
 <p>对于支持设备树的 Linux 版本号，一般设备驱动为了兼容性都支持设备树和无设备树两种匹配方式。也就是第一种匹配方式一般都会存在，第三种和第四种只要存在一种就可以，一般用的最多的还是第四种，也就是直接比较驱动和设备的 name 字段，毕竟这种方式最简单了.</p>
 <h3 id="2-platform驱动"><a href="#2-platform驱动" class="headerlink" title="2| platform驱动"></a>2| platform驱动</h3><p>platform_driver 结 构 体 表 示 platform 驱 动 ， 此 结 构 体 定 义 在 文 件include&#x2F;linux&#x2F;platform_device.h 中，内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_driver</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_driver</span> &#123;</span>
 <span class="hljs-number">2</span> 		<span class="hljs-type">int</span> (*probe)(<span class="hljs-keyword">struct</span> platform_device *);
 <span class="hljs-number">3</span> 		<span class="hljs-type">int</span> (*remove)(<span class="hljs-keyword">struct</span> platform_device *);
 <span class="hljs-number">4</span> 		<span class="hljs-type">void</span> (*shutdown)(<span class="hljs-keyword">struct</span> platform_device *);
@@ -351,14 +351,14 @@
 <p>第 2 行，probe 函数，当驱动与设备匹配成功以后 probe 函数就会执行，非常重要的函数！！一般驱动的提供者会编写，如果自己要编写一个全新的驱动，那么 probe 就需要自行实现。</p>
 <p>第 7 行，driver 成员，为 device_driver 结构体变量，Linux 内核里面大量使用到了面向对象的思维，device_driver 相当于基类，提供了最基础的驱动框架。plaform_driver 继承了这个基类，然后在此基础上又添加了一些特有的成员变量。</p>
 <p>第 8 行，id_table 表，也就是我们上一小节讲解 platform 总线匹配驱动和设备的时候采用的第三种方法，id_table 是个表(也就是数组)，每个元素的类型为 platform_device_id，platform_device_id 结构体内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device_id</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device_id</span> &#123;</span>
 <span class="hljs-number">2</span> 	<span class="hljs-type">char</span> name[PLATFORM_NAME_SIZE];
 <span class="hljs-number">3</span> 	<span class="hljs-type">kernel_ulong_t</span> driver_data;
 <span class="hljs-number">4</span> &#125;;</code></pre></div>
 
 <hr>
 <p>device_driver 结构体定义在 include&#x2F;linux&#x2F;device.h，device_driver 结构体内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_driver</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">device_driver</span> &#123;</span>
 <span class="hljs-number">2</span> 	<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name;
 <span class="hljs-number">3</span> 	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">bus_type</span> *<span class="hljs-title">bus</span>;</span>
 <span class="hljs-number">4</span>
@@ -383,7 +383,7 @@
 <span class="hljs-number">23</span> &#125;;</code></pre></div>
 
 <p>第 10 行，of_match_table 就是采用设备树的时候驱动使用的匹配表，同样是数组，每个匹配项都为 of_device_id 结构体类型，此结构体定义在文件 include&#x2F;linux&#x2F;mod_devicetable.h 中，内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> &#123;</span>
 <span class="hljs-number">2</span> 	<span class="hljs-type">char</span> name[<span class="hljs-number">32</span>];
 <span class="hljs-number">3</span> 	<span class="hljs-type">char</span> type[<span class="hljs-number">32</span>];
 <span class="hljs-number">4</span> 	<span class="hljs-type">char</span> compatible[<span class="hljs-number">128</span>];
@@ -392,15 +392,15 @@
 
 <p>第 4 行的 compatible 非常重要，因为对于设备树而言，就是通过设备节点的 compatible 属性值和 of_match_table 中每个项目的 compatible 成员变量进行比较，如果有相等的就表示设备和此驱动匹配成功。</p>
 <p>在编写 platform 驱动的时候，首先定义一个 platform_driver 结构体变量，然后实现结构体中的各个成员变量，重点是实现匹配方法以及 probe 函数。当驱动和设备匹配成功以后probe函数就会执行，具体的驱动程序在 probe 函数里面编写，比如字符设备驱动等等。当我们定义并初始化好 platform_driver 结构体变量以后，需要在驱动入口函数里面调用platform_driver_register 函数向 Linux 内核注册一个 platform 驱动，platform_driver_register 函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">platform_driver_register</span> <span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_driver *driver)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">platform_driver_register</span> <span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_driver *driver)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>driver</strong>：要注册的 platform 驱动。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
 <p>还需要在驱动卸载函数中通过 platform_driver_unregister 函数卸载 platform 驱动，platform_driver_unregister 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">platform_driver_unregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_driver *drv)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">platform_driver_unregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_driver *drv)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>drv</strong>：要卸载的 platform 驱动。<br><strong>返回值</strong>：无。</p>
 <p>platform 驱动框架如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 设备结构体 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* 设备结构体 */</span>
 <span class="hljs-number">1</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">xxx_dev</span>&#123;</span>
 <span class="hljs-number">2</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cdev</span> <span class="hljs-title">cdev</span>;</span>
 <span class="hljs-number">3</span> 		<span class="hljs-comment">/* 设备结构体其他具体内容 */</span>
@@ -493,7 +493,7 @@
 <p>第 74~77 行，驱动出口函数，调用 platform_driver_unregister 函数卸载前面注册的 platform驱动。</p>
 <p>总体来说，platform 驱动还是传统的字符设备驱动、块设备驱动或网络设备驱动，只是套<br>上了一张“platform”的皮，目的是为了使用总线、驱动和设备这个驱动模型来实现驱动的分<br>离与分层。</p>
 <h3 id="3-platform设备"><a href="#3-platform设备" class="headerlink" title="3| platform设备"></a>3| platform设备</h3><p>platform 驱动已经准备好了，我们还需要 platform 设备，否则的话单单一个驱动也做不了什么。platform_device 这个结构体表示 platform 设备，这里我们要注意，如果内核支持设备树的话就不要再使用 platform_device 来描述设备了，因为改用设备树去描述了。当然了，你如果一定要用 platform_device 来描述设备信息的话也是可以的。platform_device 结构体定义在文件include&#x2F;linux&#x2F;platform_device.h 中，结构体内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">22</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">22</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">platform_device</span> &#123;</span>
 <span class="hljs-number">23</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name;
 <span class="hljs-number">24</span> 		<span class="hljs-type">int</span> id;
 <span class="hljs-number">25</span> 		<span class="hljs-type">bool</span> id_auto;
@@ -514,7 +514,7 @@
 <p>第 23 行，name 表示设备名字，要和所使用的 platform 驱动的 name 字段相同，否则的话设备就无法匹配到对应的驱动。比如对应的 platform 驱动的 name 字段为“xxx-gpio”，那么此 name字段也要设置为“xxx-gpio”。</p>
 <p>第 27 行，num_resources 表示资源数量，一般为第 28 行 resource 资源的大小。</p>
 <p>第 28 行，resource 表示资源，也就是设备信息，比如外设寄存器等。Linux 内核使用resource结构体表示资源，resource 结构体内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">18</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">resource</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">18</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">resource</span> &#123;</span>
 <span class="hljs-number">19</span> 		<span class="hljs-type">resource_size_t</span> start;
 <span class="hljs-number">20</span> 		<span class="hljs-type">resource_size_t</span> end;
 <span class="hljs-number">21</span> 		<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name;
@@ -523,7 +523,7 @@
 <span class="hljs-number">24</span> &#125;;</code></pre></div>
 
 <p>start 和 end 分别表示资源的起始和终止信息，对于内存类的资源，就表示内存起始和终止地址，name 表示资源名字，flags 表示资源类型，可选的资源类型都定义在了文件include&#x2F;linux&#x2F;ioport.h 里面，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">29</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> IORESOURCE_BITS 			0x000000ff <span class="hljs-comment">/* Bus-specific bits */</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">29</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> IORESOURCE_BITS 			0x000000ff <span class="hljs-comment">/* Bus-specific bits */</span></span>
 <span class="hljs-number">30</span>
 <span class="hljs-number">31</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> IORESOURCE_TYPE_BITS  	0x00001f00 <span class="hljs-comment">/* Resource type */</span></span>
 <span class="hljs-number">32</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> IORESOURCE_IO 			0x00000100 <span class="hljs-comment">/* PCI/ISA I/O ports */</span></span>
@@ -537,15 +537,15 @@
 <span class="hljs-number">105</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> IORESOURCE_PCI_FIXED (1&lt;&lt;4) <span class="hljs-comment">/* Do not move resource */</span></span></code></pre></div>
 
 <p>在以前不支持设备树的Linux版本中，用户需要编写platform_device变量来描述设备信息，然后使用 platform_device_register 函数将设备信息注册到 Linux 内核中，此函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">platform_device_register</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">platform_device_register</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>pdev</strong>：要注册的 platform 设备。<br><strong>返回值</strong>：负数，失败；0，成功。</p>
 <p>如果不再使用 platform 的话可以通过 platform_device_unregister 函数注销掉相应的platform设备，platform_device_unregister 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">platform_device_unregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">platform_device_unregister</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> platform_device *pdev)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>pdev</strong>：要注销的 platform 设备。<br><strong>返回值</strong>：无。</p>
 <p>platform 设备信息框架如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 寄存器地址定义*/</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 寄存器地址定义*/</span>
 <span class="hljs-number">2</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> PERIPH1_REGISTER_BASE (0X20000000) <span class="hljs-comment">/* 外设 1 寄存器首地址 */</span></span>
 <span class="hljs-number">3</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> PERIPH2_REGISTER_BASE (0X020E0068) <span class="hljs-comment">/* 外设 2 寄存器首地址 */</span></span>
 <span class="hljs-number">4</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> REGISTER_LENGTH 4</span>
@@ -597,7 +597,7 @@
 <p>关于 platform 下的总线、驱动和设备就讲解到这里，我们接下来就使用 platform 驱动框架来编写一个 LED 灯驱动，本章我们不使用设备树来描述设备信息，我们采用自定义platform_device这种“古老”方式来编写LED的设备信息。下一章我们来编写设备树下的platform驱动，这样我们就掌握了无设备树和有设备树这两种 platform 驱动的开发方式。</p>
 <h2 id="三、‘古老的’-platform驱动开发方式（无设备树）"><a href="#三、‘古老的’-platform驱动开发方式（无设备树）" class="headerlink" title="三、‘古老的’ platform驱动开发方式（无设备树）"></a>三、‘古老的’ platform驱动开发方式（无设备树）</h2><p>我们需要编写一个驱动模块和一个设备模块，其中驱动模块是 platform 驱动程序，设备模块是 platform 的设备信息。当这两个模块都加载成功以后就会匹配成功，然后 platform驱动模块中的 probe 函数就会执行，probe 函数中就是传统的字符设备驱动那一套。</p>
 <h3 id="1-platform-设备与驱动程序编写"><a href="#1-platform-设备与驱动程序编写" class="headerlink" title="1| platform 设备与驱动程序编写"></a>1| platform 设备与驱动程序编写</h3><p>新建名为“17_platform”的文件夹，然后在 17_platform 文件夹里面创建 vscode 工程，工作<br>区命名为“platform”。新建名为 leddevice.c 和 leddriver.c 这两个文件，这两个文件分别为LED灯的 platform 设备文件和 LED 灯的 platform 的驱动文件。在 leddevice.c 中输入如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
@@ -716,7 +716,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>第 103~106 行，设备模块加载函数，在此函数里面通过 platform_device_register 向 Linux 内核注册 leddevice 这个 platform 设备。</p>
 <p>第 113~116 行，设备模块卸载函数，在此函数里面通过 platform_device_unregister 从 Linux内核中删除掉 leddevice 这个 platform 设备。</p>
 <p>leddevice.c 文件编写完成以后就编写 leddriver.c 这个 platform 驱动文件，在 leddriver.c 里<br>面输入如下内容:</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>
@@ -975,7 +975,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>platform_driver 驱动结构体，注意 name 字段为”imx6ul-led”，和我们在leddevice.c 文件里面设置的设备 name 字段一致。</p>
 <p>驱动模块加载函数，在此函数里面通过 platform_driver_register 向 Linux 内核注册 led_driver 驱动。<br>驱动模块卸载函数，在此函数里面通过 platform_driver_unregister 从 Linux内核卸载 led_driver 驱动。</p>
 <h3 id="2-测试-APP-编写"><a href="#2-测试-APP-编写" class="headerlink" title="2| 测试 APP  编写"></a>2| 测试 APP  编写</h3><p>测试 APP 的内容很简单，就是打开和关闭 LED 灯，新建 ledApp.c 这个文件，然后在里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;unistd.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/types.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sys/stat.h&quot;</span></span>
@@ -1032,7 +1032,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 <h3 id="3-运行测试"><a href="#3-运行测试" class="headerlink" title="3| 运行测试"></a>3| 运行测试</h3><p>编译驱动程序</p>
 <p>编写 Makefile 文件，本章实验的 Makefile 文件和第四十章实验基本一样，只是将 obj-m 变<br>量的值改为“leddevice.o leddriver.o”，Makefile 内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">1 KERNELDIR := /home/zuozhongkai/linux/IMX6ULL/linux/temp/linux-imx-
+<div class="code-wrapper"><pre><code class="hljs makefile">1 KERNELDIR := /home/zuozhongkai/linux/IMX6ULL/linux/temp/linux-imx-
 rel_imx_4.1.15_2.1.0_ga_alientek
 ......
 4 obj-m :=  leddevice.o leddriver.o</code></pre></div>
@@ -1040,7 +1040,7 @@ rel_imx_4.1.15_2.1.0_ga_alientek
 
 
 <p>将编译出来 leddevice.ko 、 leddriver.ko 和 ledApp 这两个文件拷贝到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15 目录中，重启开发板，进入到目录 lib&#x2F;modules&#x2F;4.1.15 中，输入如下命令加载 leddevice.ko 设备模块和 leddriver.ko 这个驱动模块。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">depmod //第一次加载驱动的时候需要运行此命令
+<div class="code-wrapper"><pre><code class="hljs sh">depmod //第一次加载驱动的时候需要运行此命令
 modprobe leddevice.ko //加载设备模块
 modprobe leddriver.ko //加载驱动模块</code></pre></div>
 
@@ -1051,13 +1051,13 @@ modprobe leddriver.ko //加载驱动模块</code></pre></div>
 <p>驱动模块和设备模块加载成功以后 platform 总线就会进行匹配，当驱动和设备匹配成功以<br>后就会输出如图 所示一行语句：</p>
 <p><img src="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/12%E3%80%81platform%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200828154419442.png" srcset="/img/loading.gif" lazyload alt="image-20200828154419442"></p>
 <p>驱动和设备匹配成功以后就可以测试 LED 灯驱动了，输入如下命令打开 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/platled 1 /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/platled 1 /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
 
 <p>在输入如下命令关闭 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/platled 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/ledApp /</span>dev<span class="hljs-regexp">/platled 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
 
 <p>观察一下 LED 灯能否打开和关闭，如果可以的话就说明驱动工作正常，如果要卸载驱动的话输入如下命令即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">rmmod leddevice.ko
+<div class="code-wrapper"><pre><code class="hljs c">rmmod leddevice.ko
 rmmod leddriver.ko</code></pre></div>
 
 
@@ -1066,7 +1066,7 @@ rmmod leddriver.ko</code></pre></div>
 <p>上一章我们讲解了传统的、未采用设备树的 platform 设备和驱动编写方法。最新的 Linux 内核已经支持了设备树，因此在设备树下如何编写 platform驱动就显得尤为重要，本章我们就来学习一下如何在设备树下编写 platform 驱动。</p>
 <h3 id="1-设备树下的-platform-驱动简介"><a href="#1-设备树下的-platform-驱动简介" class="headerlink" title="1| 设备树下的 platform  驱动简介"></a>1| 设备树下的 platform  驱动简介</h3><p>platform 驱动框架分为总线、设备和驱动，其中总线不需要我们这些驱动程序员去管理，这个是 Linux 内核提供的，我们在编写驱动的时候只要关注于设备和驱动的具体实现即可。在没有设备树的 Linux 内核下，我们需要分别编写并注册 platform_device 和 platform_driver，分别代表设备和驱动。在使用设备树的时候，设备的描述被放到了设备树中，因此 platform_device 就不需要我们去编写了，我们只需要实现 platform_driver 即可。在编写基于设备树的platform 驱动的时候我们需要注意一下几点：</p>
 <h4 id="1、在设备树中创建设备节点"><a href="#1、在设备树中创建设备节点" class="headerlink" title="1、在设备树中创建设备节点"></a>1、在设备树中创建设备节点</h4><p>毫无疑问，肯定要先在设备树中创建设备节点来描述设备信息，重点是要设置好 compatible属性的值，因为 platform 总线需要通过设备节点的 compatible 属性值来匹配驱动！这点要切记。比如，我们可以编写如下所示的设备节点来描述我们本章实验要用到的 LED 这个设备：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> gpioled &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> gpioled &#123;
 <span class="hljs-number">2</span> 		<span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 <span class="hljs-number">3</span> 		<span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
 <span class="hljs-number">4</span> 		compatible = <span class="hljs-string">&quot;atkalpha-gpioled&quot;</span>;
@@ -1078,7 +1078,7 @@ rmmod leddriver.ko</code></pre></div>
 
 <p>示例中的 gpioled 节点其实就是 之前中创建的 gpioled 设备节点，我们可以直接拿过来用。注意第 4 行的 compatible 属性值为“atkalpha-gpioled”，因此一会在编写 platform驱动的时候 of_match_table 属性表中要有“atkalpha-gpioled”。</p>
 <h4 id="2-、编写-platform-驱动的时候要注意兼容属性"><a href="#2-、编写-platform-驱动的时候要注意兼容属性" class="headerlink" title="2 、编写 platform 驱动的时候要注意兼容属性"></a>2 、编写 platform 驱动的时候要注意兼容属性</h4><p>上一章已经详细的讲解过了，在使用设备树的时候 platform 驱动会通过 of_match_table 来保存兼容性值，也就是表明此驱动兼容哪些设备。所以，of_match_table 将会尤为重要，比如本例程的 platform 驱动中 platform_driver 就可以按照如下所示设置：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">leds_of_match</span>[] =</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">leds_of_match</span>[] =</span> &#123;
 <span class="hljs-number">2</span> 		&#123; .compatible = <span class="hljs-string">&quot;atkalpha-gpioled&quot;</span> &#125;, <span class="hljs-comment">/*  兼容属性 */</span>
 <span class="hljs-number">3</span> 		&#123; <span class="hljs-comment">/* Sentinel */</span> &#125;
 <span class="hljs-number">4</span> &#125;;
@@ -1100,7 +1100,7 @@ rmmod leddriver.ko</code></pre></div>
 <h4 id="3-、编写-platform-驱动"><a href="#3-、编写-platform-驱动" class="headerlink" title="3 、编写 platform 驱动"></a>3 、编写 platform 驱动</h4><p>基于设备树的 platform 驱动和上一章无设备树的 platform 驱动基本一样，都是当驱动和设备匹配成功以后就会执行 probe 函数。我们需要在 probe 函数里面执行字符设备驱动那一套，当注销驱动模块的时候 remove 函数就会执行，都是大同小异的。</p>
 <h3 id="2-实验程序编写"><a href="#2-实验程序编写" class="headerlink" title="2| 实验程序编写"></a>2| 实验程序编写</h3><h4 id="1、修改设备树文件"><a href="#1、修改设备树文件" class="headerlink" title="1、修改设备树文件"></a>1、修改设备树文件</h4><p>首先修改设备树文件，加上我们需要的设备信息，本章我们就使用到一个 LED 灯，因此可以直接使用之前小节编写的 gpioled 子节点即可，不需要再重复添加。</p>
 <h4 id="2、platform-驱动程序编写"><a href="#2、platform-驱动程序编写" class="headerlink" title="2、platform  驱动程序编写"></a>2、platform  驱动程序编写</h4><p>设备已经准备好了，接下来就要编写相应的 platform 驱动了，新建名为“18_dtsplatform”的文件夹，然后在 18_dtsplatform 文件夹里面创建 vscode 工程，工作区命名为“dtsplatform”。新建名为 leddriver.c 的驱动文件，在 leddriver.c 中输入如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/delay.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ide.h&gt;</span></span>

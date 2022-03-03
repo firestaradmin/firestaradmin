@@ -245,14 +245,14 @@
             
             <div class="markdown-body">
               <h1 id="Linux按键输入驱动实验"><a href="#Linux按键输入驱动实验" class="headerlink" title="Linux按键输入驱动实验"></a>Linux按键输入驱动实验</h1><h2 id="1-设备树修改"><a href="#1-设备树修改" class="headerlink" title="1|设备树修改"></a>1|设备树修改</h2><p>I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">pinctrl_key: keygrp &#123;
+<div class="code-wrapper"><pre><code class="hljs c">pinctrl_key: keygrp &#123;
     fsl,pins = &lt;
         MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 <span class="hljs-number">0xF080</span>
     &gt;;
 &#125;;</code></pre></div>
 
 <p>在根节点“&#x2F;”下创建 KEY 节点，节点名为“key”，节点内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">key &#123;
+<div class="code-wrapper"><pre><code class="hljs c">key &#123;
     <span class="hljs-meta">#address-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
     <span class="hljs-meta">#size-cells = <span class="hljs-string">&lt;1&gt;</span>;</span>
     compatible = <span class="hljs-string">&quot;atkalpha-key&quot;</span>;
@@ -269,7 +269,7 @@
 <p>启动成功以后进入“&#x2F;proc&#x2F;device-tree”目录中查看“key”节点是否存在，如果存在的话就说明设备树基本修改成功(具体还要驱动验证)，结果如图 所示：</p>
 <p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823175735837.png" srcset="/img/loading.gif" lazyload alt="image-20200823175735837"></p>
 <h2 id="2-按键驱动程序编写"><a href="#2-按键驱动程序编写" class="headerlink" title="2|按键驱动程序编写"></a>2|按键驱动程序编写</h2><p>设备树准备好以后就可以编写驱动程序了，新建名为“11_key”的文件夹，然后在 11_key文件夹里面创建 vscode 工程，工作区命名为“key”。工程创建好以后新建 key.c 文件，在 key.c里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -489,7 +489,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>驱动入口函数，调用 atomic_set 函数初始化原子变量默认为无效值。</p>
 <p>key.c 文件代码很简单，重点就是 key_read 函数读取按键值，要对 keyvalue 进行保护。</p>
 <h2 id="3-测试APP编写"><a href="#3-测试APP编写" class="headerlink" title="3|测试APP编写"></a>3|测试APP编写</h2><p>新建名为 keyApp.c 的文件，然后输入如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
@@ -551,7 +551,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>循环读取&#x2F;dev&#x2F;key 文件，也就是循环读取按键值，并且将按键值打印出来。</p>
 <h2 id="4-运行测试"><a href="#4-运行测试" class="headerlink" title="4|运行测试"></a>4|运行测试</h2><p>编译，加载，运行。</p>
 <p>驱动加载成功以后如下命令来测试：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/keyApp /</span>dev/key</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/keyApp /</span>dev/key</code></pre></div>
 
 <p>输入上述命令以后,按下开发板的KEY0按键， 终端显示如图 49.4.2.1 所示：</p>
 <p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/image-20200823184134402.png" srcset="/img/loading.gif" lazyload alt="image-20200823184134402"></p>
@@ -601,9 +601,9 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/">
+                      <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">5| pinctrl 和 gpio 子系统实验</span>
+                        <span class="hidden-mobile">4| Linux  设备树</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     

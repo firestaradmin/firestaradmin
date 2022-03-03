@@ -242,7 +242,7 @@
               <p>@firestaradmin 2020年10月17日22:08:27</p>
 <h1 id="UVGUI-的链表实现原理"><a href="#UVGUI-的链表实现原理" class="headerlink" title="UVGUI 的链表实现原理"></a>UVGUI 的链表实现原理</h1><hr>
 <p>UVGUI的链表是参考LVGL GUI库写的，在此做一下记录。</p>
-<h2 id="一、数据结构分析"><a href="#一、数据结构分析" class="headerlink" title="一、数据结构分析"></a>一、数据结构分析</h2><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/** Dummy type to make handling easier*/</span>
+<h2 id="一、数据结构分析"><a href="#一、数据结构分析" class="headerlink" title="一、数据结构分析"></a>一、数据结构分析</h2><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/** Dummy type to make handling easier*/</span>
 <span class="hljs-keyword">typedef</span> <span class="hljs-type">uint8_t</span> <span class="hljs-type">ug_ll_node_t</span>;
 
 
@@ -255,7 +255,7 @@
 
 <p>UVGUI 的链表通过结构体<code>ug_ll_t</code> 表示。</p>
 <p>节点则是<code>typedef uint8_t ug_ll_node_t</code>  定义，这只是虚假类型，只是为了处理时更方便。而实际储存的节点类型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* in fact, the node type is as follows  */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/* in fact, the node type is as follows  */</span>
 <span class="hljs-comment">/*</span>
 <span class="hljs-comment">struct _ug_ll_node&#123;</span>
 <span class="hljs-comment">    uint8_t node[node_size];</span>
@@ -266,7 +266,7 @@
 
 <p>UVGUI 的链表使用时，先声明一个链表变量，用于储存链表信息，每创建一个节点，都会申请相应大小的内存块用于储存节点（即链表节点大小是固定的等于节点数据大小）。</p>
 <h2 id="二、初始化"><a href="#二、初始化" class="headerlink" title="二、初始化"></a>二、初始化</h2><p>初始化函数，根据指定的节点大小来初始化一个链表。将链表的头节点指针和尾节点指针设为NULL，然后设置节点大小。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Initialize linked list</span>
 <span class="hljs-comment"> * @param ll_dsc pointer to ll_dsc variable</span>
 <span class="hljs-comment"> * @param node_size the size of 1 node in bytes</span>
@@ -284,7 +284,7 @@
 
 
 
-<h2 id="三、API"><a href="#三、API" class="headerlink" title="三、API"></a>三、API</h2><h3 id="1-插入节点"><a href="#1-插入节点" class="headerlink" title="1|插入节点"></a>1|插入节点</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<h2 id="三、API"><a href="#三、API" class="headerlink" title="三、API"></a>三、API</h2><h3 id="1-插入节点"><a href="#1-插入节点" class="headerlink" title="1|插入节点"></a>1|插入节点</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Add a new head to a linked list</span>
 <span class="hljs-comment"> * @param ll_p pointer to linked list</span>
 <span class="hljs-comment"> * @return pointer to the new head</span>
@@ -373,10 +373,10 @@
 
 <p>上述为三个插入节点的函数，插入的位置不同而已。</p>
 <p>其中<code>LL_NODE_META_SIZE</code> 宏定义为两个节点指针的大小，如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NODE_META_SIZE (sizeof(ug_ll_node_t *) + sizeof(ug_ll_node_t *))</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NODE_META_SIZE (sizeof(ug_ll_node_t *) + sizeof(ug_ll_node_t *))</span></code></pre></div>
 
 <p>其中有两个辅助函数<code>node_set_prev</code> , <code>node_set_next</code>  ，用来设置节点的指针，使其指向相应的节点。定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Set the previous node pointer of a node</span>
 <span class="hljs-comment"> * @param ll_p pointer to linked list</span>
 <span class="hljs-comment"> * @param act pointer to a node which prev. node pointer should be set</span>
@@ -415,12 +415,12 @@
 &#125;</code></pre></div>
 
 <p>上述有两个宏定义，是根据节点结构计算指针的位置，如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_PREV_P_OFFSET(ll_p) (ll_p-&gt;n_size)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_PREV_P_OFFSET(ll_p) (ll_p-&gt;n_size)</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> LL_NEXT_P_OFFSET(ll_p) (ll_p-&gt;n_size + sizeof(ug_ll_node_t *))</span></code></pre></div>
 
 
 
-<h3 id="2-删除节点"><a href="#2-删除节点" class="headerlink" title="2|删除节点"></a>2|删除节点</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<h3 id="2-删除节点"><a href="#2-删除节点" class="headerlink" title="2|删除节点"></a>2|删除节点</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * Remove the node &#x27;node_p&#x27; from &#x27;ll_p&#x27; linked list.</span>
 <span class="hljs-comment"> * It does not free the the memory of node.</span>
 <span class="hljs-comment"> * @param ll_p pointer to the linked list of &#x27;node_p&#x27;</span>
@@ -481,7 +481,7 @@
 
 <hr>
 <p>其他相关函数请看源码。</p>
-<h2 id="四、源码"><a href="#四、源码" class="headerlink" title="四、源码"></a>四、源码</h2><h3 id="File-“ug-ll-h”"><a href="#File-“ug-ll-h”" class="headerlink" title="File “ug_ll.h”"></a>File “ug_ll.h”</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __UG_LL_H__</span>
+<h2 id="四、源码"><a href="#四、源码" class="headerlink" title="四、源码"></a>四、源码</h2><h3 id="File-“ug-ll-h”"><a href="#File-“ug-ll-h”" class="headerlink" title="File “ug_ll.h”"></a>File “ug_ll.h”</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __UG_LL_H__</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __UG_LL_H__</span>
 
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_type.h&quot;</span></span>
@@ -638,7 +638,7 @@
 <span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">// !__UG_LL_H__</span></span>
 </code></pre></div>
 
-<h3 id="File-“ug-ll-c”"><a href="#File-“ug-ll-c”" class="headerlink" title="File “ug_ll.c”"></a>File “ug_ll.c”</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_ll.h&quot;</span></span>
+<h3 id="File-“ug-ll-c”"><a href="#File-“ug-ll-c”" class="headerlink" title="File “ug_ll.c”"></a>File “ug_ll.c”</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_ll.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ug_mem.h&quot;</span></span>
 <span class="hljs-comment">/*********************</span>
 <span class="hljs-comment"> *      DEFINES</span>

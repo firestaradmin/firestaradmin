@@ -254,7 +254,7 @@
 <p>Keil里实现C++环境编程，在C&#x2F;C++ 选项卡中 添加Misc 功能，添加<code>--cpp11</code> 即可支持C++。</p>
 <p>可是在移植一些第三方库的时候会出现问题，比如说FreeRTOS、USB库等等。</p>
 <p>如以下编译错误：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs llvm">..\OS\FreeRTOS\tasks.<span class="hljs-keyword">c</span>(<span class="hljs-number">2896</span>): error:  <span class="hljs-variable">#513</span>: a value of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;void *&quot;</span> cannot be assigned <span class="hljs-keyword">to</span> an entity of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;TCB_t *&quot;</span>
+<div class="code-wrapper"><pre><code class="hljs llvm">..\OS\FreeRTOS\tasks.<span class="hljs-keyword">c</span>(<span class="hljs-number">2896</span>): error:  <span class="hljs-variable">#513</span>: a value of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;void *&quot;</span> cannot be assigned <span class="hljs-keyword">to</span> an entity of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;TCB_t *&quot;</span>
 
 ..\OS\FreeRTOS\portable\MemMang\heap_<span class="hljs-number">4</span>.<span class="hljs-keyword">c</span>(<span class="hljs-number">350</span>): error:  <span class="hljs-variable">#513</span>: a value of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;void *&quot;</span> cannot be assigned <span class="hljs-keyword">to</span> an entity of <span class="hljs-keyword">type</span> <span class="hljs-string">&quot;A_BLOCK_LINK *&quot;</span></code></pre></div>
 

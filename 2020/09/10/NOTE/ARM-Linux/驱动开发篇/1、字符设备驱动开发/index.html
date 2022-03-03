@@ -270,7 +270,7 @@
 <p>open、close、write 和 read 等这些函数是由 C 库提供的，在 Linux 系统中，系统调用作为 C 库的一部分。当我们调用 open 函数的时候流程如图  所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820132050798.png" srcset="/img/loading.gif" lazyload alt="image-20200820132050798"></p>
 <p>其中关于 C 库以及如何通过系统调用“陷入”到内核空间这个我们不用去管，我们重点关注的是应用程序和具体的驱动，应用程序使用到的函数在具体驱动程序中都有与之对应的函数，比如应用程序中调用了 open 这个函数，那么在驱动程序中也得有一个名为 open 的函数。每一个系统调用，在驱动中都有与之对应的一个驱动函数，在 Linux 内核文件 include&#x2F;linux&#x2F;fs.h 中有个叫做 file_operations 的结构体，此结构体就是 Linux 内核驱动操作函数集合，内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1588</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1588</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> &#123;</span>
 <span class="hljs-number">1589</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span> *<span class="hljs-title">owner</span>;</span>
 <span class="hljs-number">1590</span> <span class="hljs-type">loff_t</span> (*llseek) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">loff_t</span>, <span class="hljs-type">int</span>);
 <span class="hljs-number">1591</span> <span class="hljs-type">ssize_t</span> (*read) (<span class="hljs-keyword">struct</span> file *, <span class="hljs-type">char</span> __user *, <span class="hljs-type">size_t</span>, <span class="hljs-type">loff_t</span> *);
@@ -311,12 +311,12 @@
 <h3 id="1、-驱动-模块的加载和卸载"><a href="#1、-驱动-模块的加载和卸载" class="headerlink" title="1、 驱动 模块的加载和卸载"></a>1、 驱动 模块的加载和卸载</h3><p>Linux 驱动有两种运行方式，第一种就是将驱动编译进 Linux 内核中，这样当 Linux 内核启动的时候就会自动运行驱动程序。第二种就是将驱动编译成模块(Linux 下模块扩展名为.ko)，在Linux 内核启动以后使用“insmod”命令加载驱动模块。</p>
 <p>在调试驱动的时候一般都选择将其编译为模块，这样我们修改驱动以后只需要编译一下驱动代码即可，不需要编译整个 Linux 代码。而且在调试的时候只需要加载或者卸载驱动模块即可，不需要重启整个系统。总之，将驱动编译为模块最大的好处就是方便开发，当驱动开发完成，确定没有问题以后就可以将驱动编译进Linux 内核中，当然也可以不编译进 Linux 内核中，具体看自己的需求。</p>
 <p>模块有加载和卸载两种操作，我们在编写驱动的时候需要注册这两种操作函数，模块的加载和卸载注册函数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">module_init(xxx_init); <span class="hljs-comment">//注册模块加载函数</span>
+<div class="code-wrapper"><pre><code class="hljs c">module_init(xxx_init); <span class="hljs-comment">//注册模块加载函数</span>
 module_exit(xxx_exit); <span class="hljs-comment">//注册模块卸载函数</span></code></pre></div>
 
 <p>module_init 函数用来向 Linux 内核注册一个模块加载函数，参数 xxx_init 就是需要注册的具体函数，<strong>当使用“insmod”命令加载驱动的时候，xxx_init 这个函数就会被调用</strong>。module_exit()函数用来向 Linux 内核注册一个模块卸载函数，参数 xxx_exit 就是需要注册的具体函数，<strong>当使用“rmmod”命令卸载具体驱动的时候 xxx_exit 函数就会被调用</strong>。</p>
 <p>字符设备驱动模块加载和卸载模板如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 驱动入口函数 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 驱动入口函数 */</span>
 <span class="hljs-number">2</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">xxx_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
 3 &#123;
 <span class="hljs-number">4</span> 	<span class="hljs-comment">/* 入口函数具体内容 */</span>
@@ -336,25 +336,25 @@ module_exit(xxx_exit); <span class="hljs-comment">//注册模块卸载函数</sp
 <p><strong>第 2 行</strong>，定义了个名为 xxx_init 的驱动入口函数，并且使用了“__init”来修饰。<br><strong>第 9 行</strong>，定义了个名为 xxx_exit 的驱动出口函数，并且使用了“__exit”来修饰。<br><strong>第 15 行</strong>，调用函数 module_init 来声明 xxx_init 为驱动入口函数，当加载驱动的时候 xxx_init函数就会被调用。<br><strong>第16行</strong>，调用函数module_exit来声明xxx_exit为驱动出口函数，当卸载驱动的时候xxx_exit函数就会被调用。</p>
 <hr>
 <p>驱动编译完成以后扩展名为.ko，有两种命令可以加载驱动模块：<strong>insmod</strong>和<strong>modprobe</strong>，insmod是最简单的模块加载命令，此命令用于加载指定的.ko 模块，比如加载 drv.ko 这个驱动模块，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">insmod drv.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">insmod drv.ko</code></pre></div>
 
 <p><strong>insmod 命令不能解决模块的依赖关系，比如 drv.ko 依赖 first.ko 这个模块，就必须先使用insmod 命令加载 first.ko 这个模块，然后再加载 drv.ko 这个模块。</strong>但是 modprobe 就不会存在这个问题，modprobe 会分析模块的依赖关系，然后会将所有的依赖模块都加载到内核中，因此modprobe 命令相比 insmod 要智能一些。</p>
 <hr>
 <p><strong>modprobe</strong> 命令主要智能在提供了模块的依赖性分析、错误检查、错误报告等功能，推荐使用modprobe 命令来加载驱动。modprobe 命令默认会去<code>lib/modules/&lt;kernel-version&gt;</code>目录中查找模块，比如本书使用的 Linux kernel 的版本号为 4.1.15，因此 modprobe 命令默认会到&#x2F;lib&#x2F;modules&#x2F;4.1.15 这个目录中查找相应的驱动模块，一般自己制作的根文件系统中是不会有这个目录的，所以需要自己手动创建。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">modprobe</span> drv.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs nginx"><span class="hljs-attribute">modprobe</span> drv.ko</code></pre></div>
 
 
 
 <hr>
 <p>驱动模块的卸载使用命令“<strong>rmmod</strong>”即可，比如要卸载 drv.ko，使用如下命令即可：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">rmmod drv.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">rmmod drv.ko</code></pre></div>
 
 <p>也可以使用“modprobe -r”命令卸载驱动，比如要卸载 drv.ko，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">modprobe -r drv.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">modprobe -r drv.ko</code></pre></div>
 
 <p>使用 modprobe 命令可以卸载掉驱动模块所依赖的其他模块，前提是这些依赖模块已经没有被其他模块所使用，否则就不能使用 modprobe 来卸载驱动模块。<strong>所以对于模块的卸载，还是推荐使用 rmmod 命令。</strong></p>
 <h3 id="2、字符设备注册与注销"><a href="#2、字符设备注册与注销" class="headerlink" title="2、字符设备注册与注销"></a>2、字符设备注册与注销</h3><p><strong>对于字符设备驱动而言，当驱动模块加载成功以后需要注册字符设备，同样，卸载驱动模块的时候也需要注销掉字符设备</strong>。字符设备的注册和注销函数原型如下所示:</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title function_">register_chrdev</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> major, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name, </span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title function_">register_chrdev</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> major, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name, </span>
 <span class="hljs-params">                                  <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> file_operations *fops)</span>
 <span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">unregister_chrdev</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> major, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name)</span></code></pre></div>
 
@@ -363,7 +363,7 @@ module_exit(xxx_exit); <span class="hljs-comment">//注册模块卸载函数</sp
 <p><strong>unregister_chrdev 函数用户注销字符设备</strong>，此函数有两个参数，这两个参数含义如下：</p>
 <p><strong>major</strong> ：要注销的设备对应的主设备号。<br><strong>name</strong> ：要注销的设备对应的设备名。</p>
 <p>一般字符设备的注册在驱动模块的入口函数 xxx_init 中进行，字符设备的注销在驱动模块的出口函数 xxx_exit 中进行。字符设备的注册和注销，内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">test_fops</span>;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">test_fops</span>;</span>
 <span class="hljs-number">2</span>
 <span class="hljs-number">3</span> <span class="hljs-comment">/* 驱动入口函数 */</span>
 <span class="hljs-number">4</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">xxx_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>
@@ -407,7 +407,7 @@ module_exit(xxx_exit); <span class="hljs-comment">//注册模块卸载函数</sp
 </li>
 </ul>
 <p>需求很清晰了，修改前面的示例代码，在其中加入 test_fops 这个结构体变量的初始化操作，完成以后的内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/*  打开设备 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/*  打开设备 */</span>
 <span class="hljs-number">2</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">chrtest_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
 3 &#123;
 <span class="hljs-number">4</span> 		<span class="hljs-comment">/*  用户实现具体功能 */</span>
@@ -471,11 +471,11 @@ module_exit(xxx_exit); <span class="hljs-comment">//注册模块卸载函数</sp
 
 <p>在此示例代码中我们一开始编写了四个函数：chrtest_open、chrtest_read、chrtest_write和 chrtest_release。这四个函数就是 chrtest 设备的 open、read、write 和 release 操作函数。第 29行~35 行初始化 test_fops 的 open、read、write 和 release 这四个成员变量。</p>
 <h3 id="4、添加LICENSE-和-作者信息"><a href="#4、添加LICENSE-和-作者信息" class="headerlink" title="4、添加LICENSE 和 作者信息"></a>4、添加LICENSE 和 作者信息</h3><p>最后我们需要在驱动中加入 LICENSE 信息和作者信息，其中 LICENSE 是必须添加的，否则的话编译的时候会报错，作者信息可以添加也可以不添加。LICENSE 和作者信息的添加使用如下两个函数：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">MODULE_LICENSE() <span class="hljs-comment">//添加模块 LICENSE 信息</span>
+<div class="code-wrapper"><pre><code class="hljs c">MODULE_LICENSE() <span class="hljs-comment">//添加模块 LICENSE 信息</span>
 MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></code></pre></div>
 
 <p>最后给示例代码加入 LICENSE 和作者信息，完成以后的内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 打开设备 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 打开设备 */</span>
 <span class="hljs-number">2</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">chrtest_open</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> inode *inode, <span class="hljs-keyword">struct</span> file *filp)</span>
 3 &#123;
 <span class="hljs-number">4</span> 		<span class="hljs-comment">/* 用户实现具体功能 */</span>
@@ -493,17 +493,17 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 <p>第 62 行，LICENSE 采用 GPL 协议。<br>第 63 行，添加作者名字。<br>至此，字符设备驱动开发的完整步骤就讲解完了，而且也编写好了一个完整的字符设备驱动模板，以后字符设备驱动开发都可以在此模板上进行。</p>
 <h2 id="三、Linux-设备号"><a href="#三、Linux-设备号" class="headerlink" title="三、Linux 设备号"></a>三、Linux 设备号</h2><h3 id="1、设备号的组成"><a href="#1、设备号的组成" class="headerlink" title="1、设备号的组成"></a>1、设备号的组成</h3><p>为了方便管理，Linux 中每个设备都有一个设备号，<strong>设备号由主设备号和次设备号两部分组成</strong>，主设备号表示某一个具体的驱动，次设备号表示使用这个驱动的各个设备。</p>
 <p>Linux 提供了一个名为 <strong>dev_t</strong> 的数据类型表示设备号，dev_t 定义在文件 include&#x2F;linux&#x2F;types.h 里面，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">12</span> <span class="hljs-keyword">typedef</span> __u32 <span class="hljs-type">__kernel_dev_t</span>;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">12</span> <span class="hljs-keyword">typedef</span> __u32 <span class="hljs-type">__kernel_dev_t</span>;
 ......
 <span class="hljs-number">15</span> <span class="hljs-keyword">typedef</span> <span class="hljs-type">__kernel_dev_t</span> <span class="hljs-type">dev_t</span>;</code></pre></div>
 
 <p>可以看出 dev_t 是__u32 类型的，而__u32 定义在文件 include&#x2F;uapi&#x2F;asm-generic&#x2F;int-ll64.h 里<br>面，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">26</span> <span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> __u32;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">26</span> <span class="hljs-keyword">typedef</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> __u32;</code></pre></div>
 
 <p>综上所述，<strong>dev_t 其实就是 unsigned int 类型</strong>，是一个 32 位的数据类型。这 32 位的数据构成了主设备号和次设备号两部分，<strong>其中高 12 位为主设备号，低 20 位为次设备号</strong>。因此 Linux系统中主设备号范围为 0~4095，所以大家在选择主设备号的时候一定不要超过这个范围。</p>
 <hr>
 <p>在文件<code>include/linux/kdev_t.h</code> 中提供了几个关于设备号的操作函数(本质是宏)，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">6</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MINORBITS 20</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">6</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MINORBITS 20</span>
 <span class="hljs-number">7</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MINORMASK ((1U &lt;&lt; MINORBITS) - 1)</span>
 <span class="hljs-number">8</span>
 <span class="hljs-number">9</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> MAJOR(dev) ((unsigned int) ((dev) &gt;&gt; MINORBITS))</span>
@@ -514,7 +514,7 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 <h3 id="2、设备号的分配"><a href="#2、设备号的分配" class="headerlink" title="2、设备号的分配"></a>2、设备号的分配</h3><h4 id="1-、静态分配设备号"><a href="#1-、静态分配设备号" class="headerlink" title="1 、静态分配设备号"></a>1 、静态分配设备号</h4><p>本小节讲的设备号分配主要是主设备号的分配。前面讲解字符设备驱动的时候说过了，注册字符设备的时候需要给设备指定一个设备号，这个设备号可以是驱动开发者静态的指定一个设备号，比如选择 200 这个主设备号。有一些常用的设备号已经被 Linux 内核开发者给分配掉了，具体分配的内容可以查看文档 Documentation&#x2F;devices.txt。</p>
 <p>并不是说内核开发者已经分配掉的主设备号我们就不能用了，具体能不能用还得看我们的硬件平台运行过程中有没有使用这个主设备号，使用“cat &#x2F;proc&#x2F;devices”命令即可查看当前系统中所有已经使用了的设备号。</p>
 <h4 id="2-、动态分配设备号"><a href="#2-、动态分配设备号" class="headerlink" title="2 、动态分配设备号"></a>2 、动态分配设备号</h4><p>静态分配设备号需要我们检查当前系统中所有被使用了的设备号，然后挑选一个没有使用的。而且静态分配设备号很容易带来冲突问题，<strong>Linux 社区推荐使用动态分配设备号</strong>，在注册字符设备之前先申请一个设备号，系统会自动给你一个没有被使用的设备号，这样就避免了冲突。卸载驱动的时候释放掉这个设备号即可，设备号的申请函数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">alloc_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> *dev, </span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">alloc_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> *dev, </span>
 <span class="hljs-params">                        <span class="hljs-type">unsigned</span> baseminor, </span>
 <span class="hljs-params">                        <span class="hljs-type">unsigned</span> count, </span>
 <span class="hljs-params">                        <span class="hljs-type">const</span> <span class="hljs-type">char</span> *name)</span></code></pre></div>
@@ -522,7 +522,7 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 <p>函数 <strong>alloc_chrdev_region</strong> 用于申请设备号，此函数有 4 个参数：</p>
 <p><strong>dev</strong>：保存申请到的设备号。<br><strong>baseminor</strong> ：次设备号起始地址，alloc_chrdev_region 可以申请一段连续的多个设备号，这些设备号的主设备号一样，但是次设备号不同，次设备号以 baseminor 为起始地址地址开始递增。一般baseminor 为 0，也就是说次设备号从 0 开始。<br><strong>count</strong> ：要申请的设备号数量。<br><strong>name</strong>：设备名字。</p>
 <p>注销字符设备之后要释放掉设备号，设备号释放函数如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">unregister_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> from, <span class="hljs-type">unsigned</span> count)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">unregister_chrdev_region</span><span class="hljs-params">(<span class="hljs-type">dev_t</span> from, <span class="hljs-type">unsigned</span> count)</span></code></pre></div>
 
 <p>此函数有两个参数：<br><strong>from</strong>：要释放的设备号。<br><strong>count</strong> ：表示从 from 开始，要释放的设备号数量。</p>
 <h2 id="四、chrdevbase字符设备驱动开发实验"><a href="#四、chrdevbase字符设备驱动开发实验" class="headerlink" title="四、chrdevbase字符设备驱动开发实验"></a>四、chrdevbase字符设备驱动开发实验</h2><p>字符设备驱动开发的基本步骤我们已经了解了，本节我们就以 chrdevbase 这个虚拟设备为例，完整的编写一个字符设备驱动模块。</p>
@@ -537,7 +537,7 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 <p>打开 C&#x2F;C++编辑配置文件，如图所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820141458574.png" srcset="/img/loading.gif" lazyload alt="image-20200820141458574"></p>
 <p>打开以后会自动在.vscode 目录下生成一个名为 <strong>c_cpp_properties.json</strong> 的文件，此文件默认内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-attr">&quot;configurations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
         <span class="hljs-punctuation">&#123;</span>
             <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Linux&quot;</span><span class="hljs-punctuation">,</span>
@@ -556,7 +556,7 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 
 <p><strong>includePath</strong> 表示头文件路径，需要将 Linux 源码里面的头文件路径添加进来，也就是我们前面移植的 Linux 源码中的头文件路径。</p>
 <p>添加头文件路径以后的 c_cpp_properties.json的文件内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
+<div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
     <span class="hljs-attr">&quot;configurations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
         <span class="hljs-punctuation">&#123;</span>
             <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Linux&quot;</span><span class="hljs-punctuation">,</span>
@@ -578,7 +578,7 @@ MODULE_AUTHOR() <span class="hljs-comment">//添加模块作者信息</span></co
 
 <p><strong>第7~9行</strong>就是添加好的Linux头文件路径。分别是开发板所使用的Linux源码下的include、arch&#x2F;arm&#x2F;include 和 arch&#x2F;arm&#x2F;include&#x2F;generated 这三个目录的路径，注意，这里使用了绝对路径。</p>
 <h4 id="3、编写实验程序"><a href="#3、编写实验程序" class="headerlink" title="3、编写实验程序"></a>3、编写实验程序</h4><p>工程建立好以后就可以开始编写驱动程序了，打开chrdevbase.c，然后在里面输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -706,7 +706,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>printk 相当于 printf 的孪生兄妹，printf运行在用户态，printk 运行在内核态。在内核中想要向控制台输出或显示一些内容，必须使用printk 这个函数。</p>
 <hr>
 <p><strong>chrdevbase_read</strong>通过函数 copy_to_user 将readbuf 中的数据复制到参数 buf 中。因为内核空间不能直接操作用户空间的内存，因此需要借助 copy_to_user 函数来完成内核空间的数据到用户空间的复制。copy_to_user 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">long</span> <span class="hljs-title function_">copy_to_user</span><span class="hljs-params">(<span class="hljs-type">void</span> __user *to, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *from, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> n)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">long</span> <span class="hljs-title function_">copy_to_user</span><span class="hljs-params">(<span class="hljs-type">void</span> __user *to, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *from, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> n)</span></code></pre></div>
 
 <p><strong>参数 to</strong> 表示目的，<strong>参数 from</strong> 表示源，<strong>参数 n</strong> 表示要复制的数据长度。如果复制成功，返回值为 0，如果复制失败则返回负数。</p>
 <hr>
@@ -718,7 +718,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <hr>
 <p><strong>①、open  函数</strong></p>
 <p>open 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">open</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *pathname, <span class="hljs-type">int</span> flags)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">open</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *pathname, <span class="hljs-type">int</span> flags)</span></code></pre></div>
 
 <p>open 函数参数含义如下：</p>
 <p><strong>pathname</strong>：要打开的设备或者文件名。<br><strong>flags</strong> ：文件打开模式，以下三种模式必选其一：</p>
@@ -733,7 +733,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <hr>
 <p><strong>②、read  函数</strong></p>
 <p>read 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">read</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> count)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">read</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> count)</span></code></pre></div>
 
 <p>read 函数参数含义如下：</p>
 <p><strong>fd</strong>：要读取的文件描述符，读取文件之前要先用 open 函数打开文件，open 函数打开文件成功以后会得到文件描述符。<br><strong>buf</strong> ：数据读取到此 buf 中。<br><strong>count</strong> ：要读取的数据长度，也就是字节数。</p>
@@ -742,19 +742,19 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <hr>
 <p><strong>③、write  函数</strong></p>
 <p>write 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">write</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> count)</span>;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">write</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> count)</span>;</code></pre></div>
 
 <p>write 函数参数含义如下：<br><strong>fd</strong>：要进行写操作的文件描述符，写文件之前要先用 open 函数打开文件，open 函数打开文<br>件成功以后会得到文件描述符。<br><strong>buf</strong> ：要写入的数据。<br><strong>count</strong> ：要写入的数据长度，也就是字节数。<br><strong>返回值</strong>：写入成功的话返回写入的字节数；如果返回 0 表示没有写入任何数据；如果返回负值，表示写入失败。</p>
 <p>在 Ubuntu 中输入“man 2 write”命令即可查看 write 函数的详细内容。</p>
 <hr>
 <p><strong>④、close  函数</strong></p>
 <p>close 函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">close</span><span class="hljs-params">(<span class="hljs-type">int</span> fd)</span>;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">close</span><span class="hljs-params">(<span class="hljs-type">int</span> fd)</span>;</code></pre></div>
 
 <p>close 函数参数含义如下：<br><strong>fd</strong>：要关闭的文件描述符。<br><strong>返回值</strong>：0 表示关闭成功，负值表示关闭失败。</p>
 <p>在 Ubuntu 中输入“man 2 close”命令即可查看 close 函数的详细内容。</p>
 <h4 id="2、编写测试-APP-程序"><a href="#2、编写测试-APP-程序" class="headerlink" title="2、编写测试 APP  程序"></a>2、编写测试 APP  程序</h4><p>驱动编写好以后是需要测试的，一般编写一个简单的测试 APP，测试 APP 运行在用户空间。测试 APP 很简单通过输入相应的指令来对 chrdevbase 设备执行读或者写操作。打开 chrdevbaseApp.c 文件，在此文件中输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
@@ -827,11 +827,11 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 <p>程序开始判断运行测试 APP 的时候输入的参数是不是为 3 个，main 函数的 argc 参数表示参数数量，argv[]保存着具体的参数，如果参数不为 3 个的话就表示测试 APP 用法错误，然后给出提示。</p>
 <p>比如，现在要从 chrdevbase 设备中读取数据，需要输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">/chrdevbaseAPP /dev/chrdevbase 1</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">/chrdevbaseAPP /dev/chrdevbase 1</code></pre></div>
 
 <p>上述命令一共有三个参数“.&#x2F;chrdevbaseApp”、“&#x2F;dev&#x2F;chrdevbase”和“1”，这三个参数分别对应 argv[0]、argv[1]和 argv[2]。</p>
 <h3 id="3、编译驱动程序和测试-APP"><a href="#3、编译驱动程序和测试-APP" class="headerlink" title="3、编译驱动程序和测试 APP"></a>3、编译驱动程序和测试 APP</h3><h4 id="1-、编译驱动程序"><a href="#1-、编译驱动程序" class="headerlink" title="1 、编译驱动程序"></a>1 、编译驱动程序</h4><p>首先编译驱动程序，也就是 chrdevbase.c 这个文件，我们需要将其编译为.ko 模块，创建Makefile 文件，然后在其中输入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">KERNEL_DIR := /home/firestaradmin/linux/IMX6UL/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg
+<div class="code-wrapper"><pre><code class="hljs makefile">KERNEL_DIR := /home/firestaradmin/linux/IMX6UL/linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_lxg
 CURRENT_PATH := <span class="hljs-variable">$(<span class="hljs-built_in">shell</span> pwd)</span>
 obj-m := chrdevbase.o
 
@@ -850,20 +850,20 @@ obj-m := chrdevbase.o
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820151835351.png" srcset="/img/loading.gif" lazyload alt="image-20200820151835351"></p>
 <p>编译成功以后就会生成一个叫做 chrdevbaes.ko 的文件，此文件就是 chrdevbase 设备的驱动模块。至此，chrdevbase 设备的驱动就编译成功。</p>
 <h4 id="2、编译测试-APP"><a href="#2、编译测试-APP" class="headerlink" title="2、编译测试 APP"></a>2、编译测试 APP</h4><p>测试 APP 比较简单，只有一个文件，因此就不需要编写 Makefile 了，直接输入命令编译。因为测试 APP 是要在 ARM 开发板上运行的，所以需要使用 arm-linux-gnueabihf-gcc 来编译，输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc chrdevbaseApp.c -o chrdevbaseApp</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">arm-linux-gnueabihf-gcc chrdevbaseApp.c -o chrdevbaseApp</code></pre></div>
 
 <p>编译完成以后会生成一个叫做 chrdevbaseApp 的可执行程序，输入如下命令查看chrdevbaseAPP 这个程序的文件信息：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">file chrdevbaseApp</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">file chrdevbaseApp</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152045899.png" srcset="/img/loading.gif" lazyload alt="image-20200820152045899"></p>
 <p>从图可以看出，chrdevbaseAPP 这个可执行文件是 32 位 LSB 格式，ARM 版本的，因此 chrdevbaseAPP 只能在 ARM 芯片下运行。</p>
 <h3 id="4、运行测试"><a href="#4、运行测试" class="headerlink" title="4、运行测试"></a>4、运行测试</h3><h4 id="1、加载模块驱动"><a href="#1、加载模块驱动" class="headerlink" title="1、加载模块驱动"></a>1、加载模块驱动</h4><p>通过 NFS 将 Ubuntu 中的 rootfs(制作好的根文件系统)目录挂载为根文件系统，所以可以很方便的将chrdevbase.ko 和 chrdevbaseAPP 复制到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15 目录中.</p>
 <p>输入如下命令加载 chrdevbase.ko 驱动文件：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">insmod chrdevbase.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">insmod chrdevbase.ko</code></pre></div>
 
 <p>或</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">modprobe chrdevbase.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">modprobe chrdevbase.ko</code></pre></div>
 
 <p>如果使用 modprobe 加载驱动的话，可能会出现如图 所示的提示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152529602.png" srcset="/img/loading.gif" lazyload alt="image-20200820152529602"></p>
@@ -875,28 +875,28 @@ obj-m := chrdevbase.o
 <p>从图可以看到“chrdevbase init！”这一行，这一行正是 chrdevbase.c 中模块入口函数 chrdevbase_init 输出的信息，说明模块加载成功！<br>输入“lsmod”命令即可查看当前系统中存在的模块，结果如图 所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152749421.png" srcset="/img/loading.gif" lazyload alt="image-20200820152749421"></p>
 <p>从图可以看出，当前系统只有“chrdevbase”这一个模块。输入如下命令查看当前系统中有没有 chrdevbase 这个设备：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/devices</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /proc/devices</code></pre></div>
 
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820152847237.png" srcset="/img/loading.gif" lazyload alt="image-20200820152847237"></p>
 <p>从图 可以看出，当前系统存在 chrdevbase 这个设备，主设备号为 200，跟我们设置的主设备号一致。</p>
 <h4 id="2-、创建设备节点文件"><a href="#2-、创建设备节点文件" class="headerlink" title="2 、创建设备节点文件"></a>2 、创建设备节点文件</h4><p>驱动加载成功需要在&#x2F;dev 目录下创建一个与之对应的设备节点文件，应用程序就是通过操作这个设备节点文件来完成对具体设备的操作。输入如下命令创建&#x2F;dev&#x2F;chrdevbase 这个设备节点文件：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mknod</span> /dev/chrdevbase c 200 0</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mknod</span> /dev/chrdevbase c 200 0</code></pre></div>
 
 <p>其中“mknod”是创建节点命令，“&#x2F;dev&#x2F;chrdevbase”是要创建的节点文件，“c”表示这是个字符设备，“200”是设备的主设备号，“0”是设备的次设备号。</p>
 <p>创建完成以后就会存在&#x2F;dev&#x2F;chrdevbase 这个文件，可以使用<code>ls /dev/chrdevbase -l</code>命令查看，结果如图所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153138996.png" srcset="/img/loading.gif" lazyload alt="image-20200820153138996"></p>
 <p>如果 chrdevbaseAPP 想要读写 chrdevbase 设备，直接对&#x2F;dev&#x2F;chrdevbase 进行读写操作即可。相当于&#x2F;dev&#x2F;chrdevbase 这个文件是 chrdevbase 设备在用户空间中的实现。前面一直说 Linux 下一切皆文件，包括设备也是文件，现在大家应该是有这个概念了吧？</p>
 <h4 id="3、chrdevbase设备操作测试"><a href="#3、chrdevbase设备操作测试" class="headerlink" title="3、chrdevbase设备操作测试"></a>3、chrdevbase设备操作测试</h4><p>使用 chrdevbaseApp 软件操作 chrdevbase 这个设备，看看读写是否正常，首先进行读操作，输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 1</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 1</code></pre></div>
 
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153332666.png" srcset="/img/loading.gif" lazyload alt="image-20200820153332666"></p>
 <p>从图可以看出，首先输出“kernel senddata ok!”这一行信息，这是驱动程序中chrdevbase_read 函数输出的信息，因为 chrdevbaseAPP 使用 read 函数从 chrdevbase 设备读取数据，因此 chrdevbase_read 函数就会执行。chrdevbase_read 函数向 chrdevbaseAPP 发送“kerneldata!”数据，chrdevbaseAPP 接收到以后就打印出来，“read data:kernel data!”就是 chrdevbaseAPP打印出来的接收到的数据。说明对 chrdevbase 的读操作正常，接下来测试对 chrdevbase 设备的写操作，输入如下命令</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 2</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">./chrdevbaseAPP /dev/chrdevbase 2</code></pre></div>
 
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153515594.png" srcset="/img/loading.gif" lazyload alt="image-20200820153515594"></p>
 <p> chrdevbase 的写操作正常，既然读写都没问题，说明我们编写的 chrdevbase 驱动是没有问题的。</p>
 <h4 id="4、卸载驱动模块"><a href="#4、卸载驱动模块" class="headerlink" title="4、卸载驱动模块"></a>4、卸载驱动模块</h4><p>如果不再使用某个设备的话可以将其驱动卸载掉，比如输入如下命令卸载掉 chrdevbase 这个设备：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">rmmod chrdevbase.ko</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">rmmod chrdevbase.ko</code></pre></div>
 
 <p>卸载以后使用 lsmod 命令查看 chrdevbase 这个模块还存不存在，结果如图  所示：</p>
 <p><img src="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/image-20200820153622245.png" srcset="/img/loading.gif" lazyload alt="image-20200820153622245"></p>

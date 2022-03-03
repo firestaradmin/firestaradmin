@@ -268,7 +268,7 @@
 </blockquote>
 <hr>
 <h3 id="顶层CMake-文件"><a href="#顶层CMake-文件" class="headerlink" title="顶层CMake 文件"></a>顶层CMake 文件</h3><p>该文件位于 <code>./CMakeLists.txt</code> 内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-comment"># 设置最低需求版本</span>
+<div class="code-wrapper"><pre><code class="hljs cmake"><span class="hljs-comment"># 设置最低需求版本</span>
 <span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
 <span class="hljs-comment"># 设置工程名称</span>
 <span class="hljs-keyword">project</span> (CMAKE_DEMO)
@@ -294,7 +294,7 @@
 
 
 <h3 id="APP-下的子工程-CMake-文件"><a href="#APP-下的子工程-CMake-文件" class="headerlink" title="APP 下的子工程 CMake 文件"></a>APP 下的子工程 CMake 文件</h3><p><strong>.&#x2F;app&#x2F;demo1&#x2F;CMakeLists.txt ：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
+<div class="code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
 
 <span class="hljs-keyword">project</span> (demo1)
  
@@ -319,7 +319,7 @@
 
 
 <p><strong>.&#x2F;app&#x2F;demo2&#x2F;CMakeLists.txt ：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
+<div class="code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
 
 <span class="hljs-keyword">project</span> (demo2)
  
@@ -349,7 +349,7 @@
 
 
 <h3 id="LIB-下的CMake-文件"><a href="#LIB-下的CMake-文件" class="headerlink" title="LIB 下的CMake 文件"></a>LIB 下的CMake 文件</h3><p><strong>.&#x2F;lib&#x2F;CMakeLists.txt：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
+<div class="code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.19</span>)
 
 <span class="hljs-comment"># 查找当前目录下的所有源文件</span>
 <span class="hljs-comment"># 并将名称保存到 DIR_LIB_SRCS 变量</span>
@@ -372,7 +372,7 @@
 
 
 <h2 id="二、编译输出"><a href="#二、编译输出" class="headerlink" title="二、编译输出"></a>二、编译输出</h2><p><strong>1、在根目录创建 build 目录，进入后输入如下命令：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">cmake ..
+<div class="code-wrapper"><pre><code class="hljs shell">cmake ..
 或者
 cmake .. -G &quot;MingW Makefiles&quot;</code></pre></div>
 
@@ -380,7 +380,7 @@ cmake .. -G &quot;MingW Makefiles&quot;</code></pre></div>
 <p><strong>2、cmake 后使用make 进行编译链接</strong></p>
 <p><strong>win10 下：</strong></p>
 <p>在build&#x2F; 目录下 输入以下命令（以MinGW 为例）：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">mingw32-make
+<div class="code-wrapper"><pre><code class="hljs shell">mingw32-make
 mingw32-make demo1
 mingw32-make clean</code></pre></div>
 
@@ -390,7 +390,7 @@ mingw32-make clean</code></pre></div>
 <li>mingw32-make clean：删除所有编译</li>
 </ul>
 <p><strong>Linux 下：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs gauss">mingw32-<span class="hljs-built_in">make</span>
+<div class="code-wrapper"><pre><code class="hljs gauss">mingw32-<span class="hljs-built_in">make</span>
 <span class="hljs-built_in">make</span> demo1
 <span class="hljs-built_in">make</span> clean</code></pre></div>
 
@@ -401,7 +401,7 @@ mingw32-make clean</code></pre></div>
 </ul>
 <h2 id="三、文件内容"><a href="#三、文件内容" class="headerlink" title="三、文件内容"></a>三、文件内容</h2><p><strong>1、demo</strong></p>
 <p><strong>.&#x2F;app&#x2F;demo1&#x2F;main.c</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;main.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath.h&quot;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath2.h&quot;</span></span>
@@ -423,7 +423,7 @@ mingw32-make clean</code></pre></div>
 
 
 <p><strong>.&#x2F;app&#x2F;demo1&#x2F;main.h</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MAIN_H_</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MAIN_H_</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __MAIN_H_</span>
 
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> NUM1 100</span>
@@ -434,7 +434,7 @@ mingw32-make clean</code></pre></div>
 
 <p><strong>2、driver</strong></p>
 <p><strong>.&#x2F;driver&#x2F;include&#x2F;mymath.h</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MYMATH_H_</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MYMATH_H_</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __MYMATH_H_</span>
 <span class="hljs-type">int</span> <span class="hljs-title function_">myadd</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>;
 
@@ -444,7 +444,7 @@ mingw32-make clean</code></pre></div>
 
 
 <p><strong>.&#x2F;driver&#x2F;include&#x2F;mymath.c</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath.h&quot;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath.h&quot;</span></span>
 
 <span class="hljs-type">int</span> <span class="hljs-title function_">myadd</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>
 &#123;
@@ -457,7 +457,7 @@ mingw32-make clean</code></pre></div>
 
 <p><strong>3、lib</strong></p>
 <p><strong>.&#x2F;lib&#x2F;mymath2.h</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MYMATH2_H_</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> __MYMATH2_H_</span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> __MYMATH2_H_</span>
 <span class="hljs-type">int</span> <span class="hljs-title function_">mysub</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>;
 
@@ -467,7 +467,7 @@ mingw32-make clean</code></pre></div>
 
 
 <p><strong>.&#x2F;lib&#x2F;mymath2.c</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath2.h&quot;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mymath2.h&quot;</span></span>
 
 <span class="hljs-type">int</span> <span class="hljs-title function_">mysub</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>
 &#123;

@@ -252,24 +252,24 @@
             
             <div class="markdown-body">
               <h1 id="Linux文件共享"><a href="#Linux文件共享" class="headerlink" title="Linux文件共享"></a>Linux文件共享</h1><p>@firestaradmin 2020年12月10日</p>
-<h2 id="NFS"><a href="#NFS" class="headerlink" title="NFS"></a>NFS</h2><h3 id="NFS-服务端"><a href="#NFS-服务端" class="headerlink" title="NFS 服务端"></a>NFS 服务端</h3><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
+<h2 id="NFS"><a href="#NFS" class="headerlink" title="NFS"></a>NFS</h2><h3 id="NFS-服务端"><a href="#NFS-服务端" class="headerlink" title="NFS 服务端"></a>NFS 服务端</h3><div class="code-wrapper"><pre><code class="hljs bash">sudo apt-get install nfs-kernel-server rpcbind</code></pre></div>
 
 <p>安装完成后创建一个nfs文件夹，以后需要通过网络用的文件都放这里.<code>xxxx/nfs</code></p>
 <p>之后配置文件&#x2F;etc&#x2F;exports：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo vi /etc/exports</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo vi /etc/exports</code></pre></div>
 
 <p>在文件末尾添加如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">xxxx/nfs *(rw,<span class="hljs-built_in">sync</span>,no_root_squash)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">xxxx/nfs *(rw,<span class="hljs-built_in">sync</span>,no_root_squash)</code></pre></div>
 
 <p>重启 NFS 服务</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">sudo /etc/init.d/nfs-kernel-server restart</code></pre></div>
 
 <h3 id="NFS客户端"><a href="#NFS客户端" class="headerlink" title="NFS客户端"></a>NFS客户端</h3><p>安装客户端应用：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">apt-get install -y nfs-common</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">apt-get install -y nfs-common</code></pre></div>
 
 <p>用mkdir命令创建一个文件夹xxx&#x2F;nfs-mount。</p>
 <p>将NFS服务器的xxx&#x2F;nfs 目录挂载到NFS客户端的xxx&#x2F;nfs-mount 目录，执行以下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">mount 192.168.119.128:xxx/nfs  xxx/nfs-mount</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs shell">mount 192.168.119.128:xxx/nfs  xxx/nfs-mount</code></pre></div>
 
 
 
@@ -277,7 +277,7 @@
 <p><img src="/2020/12/10/NOTE/Linux/Linux%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/image-20200820013608568.png" srcset="/img/loading.gif" lazyload alt="image-20200820013608568"></p>
 <p>ARM-Linux NFS挂载不上，是由于高版本的NFS服务，默认不支持nfs v2的连接，而uboot中nfs服务是 V2版本的，所以需要修改<code>/etc/default/nfs-kernel-server </code>文件以支持v2 nfs。</p>
 <p>修改完内容如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># Number of servers to start up</span>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-comment"># Number of servers to start up</span>
 <span class="hljs-comment">#RPCNFSDCOUNT=8</span>
 RPCNFSDCOUNT=<span class="hljs-string">&#x27;-V 2 8&#x27;</span>
 
@@ -305,36 +305,36 @@ RPCSVCGSSDOPTS=<span class="hljs-string">&quot;--nfs-version 2,3,4 --debug --sys
 
 
 <h2 id="Samba"><a href="#Samba" class="headerlink" title="Samba"></a>Samba</h2><h3 id="1、在Ubuntu上安装Samba"><a href="#1、在Ubuntu上安装Samba" class="headerlink" title="1、在Ubuntu上安装Samba"></a>1、在Ubuntu上安装Samba</h3><p><strong>更新apt包索引：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">sudo apt update</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs shell">sudo apt update</code></pre></div>
 
 <p><strong>安装Samba软件包：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt install samba</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt install samba</code></pre></div>
 
 <p><strong>安装完成后，Samba服务将自动启动。 要检查Samba服务器是否正在运行，请键入：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo systemctl status nmbd
+<div class="code-wrapper"><pre><code class="hljs sh">sudo systemctl status nmbd
 //或
 service smbd status</code></pre></div>
 
 <p><strong>输出应如下所示，表示Samba服务处于活动状态并正在运行：</strong></p>
 <p><img src="/2020/12/10/NOTE/Linux/Linux%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/image-20201210172357197.png" srcset="/img/loading.gif" lazyload alt="image-20201210172357197"></p>
 <h3 id="2、创建共享的文件位置和创建用户"><a href="#2、创建共享的文件位置和创建用户" class="headerlink" title="2、创建共享的文件位置和创建用户"></a>2、创建共享的文件位置和创建用户</h3><p><strong>1、创建要共享的文件位置：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> xxx/samba_share</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> xxx/samba_share</code></pre></div>
 
 <p><strong>2、设置共享文件的权限</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">chomd -R 777 xxx/samba_share</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">chomd -R 777 xxx/samba_share</code></pre></div>
 
 <p><strong>3、创建Samba用户</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo smbpasswd -a Samba用户名</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo smbpasswd -a Samba用户名</code></pre></div>
 
 <p><strong>然后输入密码</strong></p>
 <h3 id="3、配置Samba"><a href="#3、配置Samba" class="headerlink" title="3、配置Samba"></a>3、配置Samba</h3><p><strong>1、在更改Samba配置文件之前，请创建备份以供将来参考或还原：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo cp <span class="hljs-regexp">/etc/</span>samba<span class="hljs-regexp">/smb.conf /</span>etc<span class="hljs-regexp">/samba/</span>smb.conf.bak</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">sudo cp <span class="hljs-regexp">/etc/</span>samba<span class="hljs-regexp">/smb.conf /</span>etc<span class="hljs-regexp">/samba/</span>smb.conf.bak</code></pre></div>
 
 <p><strong>2、修改配置文件</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">sudo vim <span class="hljs-regexp">/etc/</span>samba/smb.conf</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">sudo vim <span class="hljs-regexp">/etc/</span>samba/smb.conf</code></pre></div>
 
 <p><strong>在最后增加以下内容：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">[share]						<span class="hljs-comment"># 连接的时候的名字</span>
+<div class="code-wrapper"><pre><code class="hljs sh">[share]						<span class="hljs-comment"># 连接的时候的名字</span>
    comment = share folder	<span class="hljs-comment"># 描述，说明共享信息</span>
    path = xxx/samba_share	<span class="hljs-comment"># 要共享的文件位置</span>
    create mask = 0777		<span class="hljs-comment"># 创建文件的权限</span>
@@ -349,19 +349,19 @@ service smbd status</code></pre></div>
    <span class="hljs-built_in">read</span> only = no     		<span class="hljs-comment"># 是否为只读</span></code></pre></div>
 
 <p>其他设置：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">samba安全级别
+<div class="code-wrapper"><pre><code class="hljs sh">samba安全级别
        share   <span class="hljs-comment">##匿名共享，不需要用户名密码</span>
        user    <span class="hljs-comment">#需要用户名密码，默认由samba服务器检查  </span>
        server    <span class="hljs-comment">#由指定的服务器认证</span>
        domain     <span class="hljs-comment">#由域控制器验证</span></code></pre></div>
 
 <p><strong>3、重启Samba</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo systemctl restart nmbd
+<div class="code-wrapper"><pre><code class="hljs sh">sudo systemctl restart nmbd
 // 或者
 service smbd restart</code></pre></div>
 
 <p><strong>4、验证配置的正确性</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">smbclient -L //localhost/share</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">smbclient -L //localhost/share</code></pre></div>
 
 <p><strong>输入账号和密码，正确则会出现以下内容：</strong></p>
 <p><img src="/2020/12/10/NOTE/Linux/Linux%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/image-20201210172732864.png" srcset="/img/loading.gif" lazyload alt="image-20201210172732864"></p>
@@ -380,27 +380,27 @@ service smbd restart</code></pre></div>
 <h3 id="5、可能遇到的问题"><a href="#5、可能遇到的问题" class="headerlink" title="5、可能遇到的问题"></a>5、可能遇到的问题</h3><h4 id="防火墙问题"><a href="#防火墙问题" class="headerlink" title="防火墙问题"></a><strong>防火墙问题</strong></h4><p>有时候会因为防火墙的原因导致window访问Ubuntu中的共享文件失败。</p>
 <p><strong>（1）法一：</strong></p>
 <p>关闭防火墙：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo ufw <span class="hljs-built_in">disable</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo ufw <span class="hljs-built_in">disable</span></code></pre></div>
 
 <p>注：开启防火墙：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo ufw <span class="hljs-built_in">enable</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo ufw <span class="hljs-built_in">enable</span></code></pre></div>
 
 <p><strong>（2）允许Samba使用端口</strong></p>
 <p>查看Samba服务所使用的端口：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">netstat -anop | grep smbd（Samba）</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">netstat -anop | grep smbd（Samba）</code></pre></div>
 
 <p><img src="/2020/12/10/NOTE/Linux/Linux%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/20201204162510322.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">netstat -anop | grep nmbd</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">netstat -anop | grep nmbd</code></pre></div>
 
 <p><img src="/2020/12/10/NOTE/Linux/Linux%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/20201204162510288.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>nmbd是属于smb服务的一个进程。</p>
 <p>我们看到使用了tcp的139和445端口，udp的137和138端口。在防火墙中允许通行，如允许139端口被访问：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo ufw alow 139
+<div class="code-wrapper"><pre><code class="hljs sh">sudo ufw alow 139
 \\ 或者
 sudo allow Sambd</code></pre></div>
 
 <p><strong>（3）查看ufw状态</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo ufw status</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo ufw status</code></pre></div>
 
 <h4 id="windows10上面的配置问题"><a href="#windows10上面的配置问题" class="headerlink" title="windows10上面的配置问题"></a>windows10上面的配置问题</h4><p><strong>（1）开启共享服务</strong></p>
 <p>​    控制面板&#x3D;&#x3D;》卸载程序&#x3D;&#x3D;》启动或关闭windows功能&#x3D;&#x3D;》勾选SMB1.0&#x2F;CIFS文件共享支持&#x3D;&#x3D;》重启电脑</p>
@@ -408,7 +408,7 @@ sudo allow Sambd</code></pre></div>
 <p><strong>（2）本地组策略编辑</strong></p>
 <p>注意win10家庭版一开始是打不开本地组策略的</p>
 <p><strong>（a）新建文档，内容入下：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmd">@<span class="hljs-built_in">echo</span> off
+<div class="code-wrapper"><pre><code class="hljs cmd">@<span class="hljs-built_in">echo</span> off
 <span class="hljs-built_in">pushd</span> &quot;%~dp0&quot;
 <span class="hljs-built_in">dir</span> /b C:\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~<span class="hljs-number">3</span>*.mum &gt;List.txt
 <span class="hljs-built_in">dir</span> /b C:\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~<span class="hljs-number">3</span>*.mum &gt;&gt;List.txt

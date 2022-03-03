@@ -26,8 +26,8 @@
 <meta property="article:published_time" content="2020-12-14T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-12-14T16:00:00.000Z">
 <meta property="article:author" content="firestaradmin">
-<meta property="article:tag" content="Python">
 <meta property="article:tag" content="Windows">
+<meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -249,7 +249,7 @@
 <p>这个模块包含控制键盘的函数.</p>
 </blockquote>
 <h5 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h5><p>按下键或者释放键</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.key.toggle(autopy.key.Code.UP_ARROW, <span class="hljs-literal">True</span>, [])  <span class="hljs-comment">#按下方向键</span>
+<div class="code-wrapper"><pre><code class="hljs python">autopy.key.toggle(autopy.key.Code.UP_ARROW, <span class="hljs-literal">True</span>, [])  <span class="hljs-comment">#按下方向键</span>
 autopy.key.toggle(autopy.key.Code.UP_ARROW, <span class="hljs-literal">False</span>, [])  <span class="hljs-comment">#释放方向键</span></code></pre></div>
 
 <p><strong>autopy.key.toggle(autopy.key.Code.UP_ARROW, True, [autopy.key.Modifier.CONTROL], 0)</strong>  </p>
@@ -424,26 +424,26 @@ autopy.key.toggle(autopy.key.Code.UP_ARROW, <span class="hljs-literal">False</sp
 <p>这个模块包含获取发鼠标状态和控制鼠标光标的函数.非特殊情况下,都使用屏幕坐标系,原点在左上角.</p>
 </blockquote>
 <h5 id="函数-1"><a href="#函数-1" class="headerlink" title="函数"></a>函数</h5><p><strong>#移动鼠标到指定点–相对于屏幕，没有移动过程</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.mouse.move(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs python">autopy.mouse.move(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>)</code></pre></div>
 
 
 
 <hr>
 <p><strong>#移动鼠标到指定点–相对于屏幕，有直线移动过程</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.mouse.smooth_move(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs python">autopy.mouse.smooth_move(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>)</code></pre></div>
 
 
 
 <hr>
 <p><strong>#返回鼠标的当前位置–相对于屏幕</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">i = autopy.mouse.location()
+<div class="code-wrapper"><pre><code class="hljs python">i = autopy.mouse.location()
 <span class="hljs-comment">#i =&gt; (500.0, 500.0)</span></code></pre></div>
 
 
 
 <hr>
 <p> <strong>#按下指定鼠标键</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.mouse.toggle(autopy.mouse.Button.LEFT, <span class="hljs-literal">True</span>)
+<div class="code-wrapper"><pre><code class="hljs python">autopy.mouse.toggle(autopy.mouse.Button.LEFT, <span class="hljs-literal">True</span>)
 
 <span class="hljs-comment">#autopy.mouse.Button.LEFT   鼠标左键</span>
 <span class="hljs-comment">#autopy.mouse.Button.RIGHT  鼠标右键</span>
@@ -454,13 +454,13 @@ autopy.key.toggle(autopy.key.Code.UP_ARROW, <span class="hljs-literal">False</sp
 
 <hr>
 <p><strong>#释放指定鼠标键</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.mouse.toggle(autopy.mouse.Button.LEFT, <span class="hljs-literal">False</span>)  
+<div class="code-wrapper"><pre><code class="hljs python">autopy.mouse.toggle(autopy.mouse.Button.LEFT, <span class="hljs-literal">False</span>)  
 <span class="hljs-comment">#注意释放，要不然会电脑会一直按着那个键，直到你终止程序</span></code></pre></div>
 
 
 
 <hr>
-<div class="hljs code-wrapper"><pre><code class="hljs python">autopy.mouse.click(<span class="hljs-literal">None</span>)   <span class="hljs-comment"># 点左键一下,然后松开</span>
+<div class="code-wrapper"><pre><code class="hljs python">autopy.mouse.click(<span class="hljs-literal">None</span>)   <span class="hljs-comment"># 点左键一下,然后松开</span>
 autopy.mouse.click(autopy.mouse.Button.RIGHT)  <span class="hljs-comment"># 点右键一下,然后松开</span>
 autopy.mouse.click(autopy.mouse.Button.LEFT, <span class="hljs-number">3</span>)   <span class="hljs-comment"># 按住左键保持3秒,然后松开</span></code></pre></div>
 
@@ -502,10 +502,10 @@ autopy.mouse.click(autopy.mouse.Button.LEFT, <span class="hljs-number">3</span>)
 <p>autopy 也有图像识别，但是是位图识别，它的处理图像不适合脚本编写，我们会使用其他的模块，更加适合。</p>
 <h2 id="二、屏幕截图"><a href="#二、屏幕截图" class="headerlink" title="二、屏幕截图"></a>二、屏幕截图</h2><h3 id="Pillow"><a href="#Pillow" class="headerlink" title="Pillow"></a>Pillow</h3><p>Pillow是PIL的一个派生分支，但如今已经发展成为比PIL本身更具活力的图像处理库。pillow可以说已经取代了PIL，将其封装成python的库（pip即可安装），且支持python2和python3，目前最新版本是3.0.0。</p>
 <p><strong>安装：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs cmake">pip3 <span class="hljs-keyword">install</span> pillow</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs cmake">pip3 <span class="hljs-keyword">install</span> pillow</code></pre></div>
 
 <p><strong>屏幕截图：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> ImageGrab 
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> ImageGrab 
 im = ImageGrab.grab((<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">800</span>,<span class="hljs-number">200</span>)) 	<span class="hljs-comment">#截取屏幕指定区域的图像 </span>
 im = ImageGrab.grab() 				<span class="hljs-comment">#不带参数表示全屏幕截图</span>
 im.save(<span class="hljs-string">&quot;D:\\test.jpg&quot;</span>);			<span class="hljs-comment">#储存为.jpg</span></code></pre></div>
@@ -514,7 +514,7 @@ im.save(<span class="hljs-string">&quot;D:\\test.jpg&quot;</span>);			<span clas
 <h2 id="三、窗口控制"><a href="#三、窗口控制" class="headerlink" title="三、窗口控制"></a>三、窗口控制</h2><h3 id="pywin32"><a href="#pywin32" class="headerlink" title="pywin32"></a>pywin32</h3><p>一般系统自带，如果没有，安装可能是<code>pip install pywin32</code></p>
 <hr>
 <p>使用 <code>win32gui</code> <code>win32api</code> <code>win32con</code> 等模块进行窗体控制。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> win32gui, win32api, win32con
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> win32gui, win32api, win32con
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
     <span class="hljs-keyword">global</span> game_hwnd, window_size
     game_hwnd = win32gui.FindWindow(game_class, game_title)  <span class="hljs-comment">#获得句柄 &lt;hwnd: int&gt;</span>
@@ -526,28 +526,28 @@ im.save(<span class="hljs-string">&quot;D:\\test.jpg&quot;</span>);			<span clas
 
 
 
-<h4 id="1、获取窗口句柄"><a href="#1、获取窗口句柄" class="headerlink" title="1、获取窗口句柄"></a>1、获取窗口句柄</h4><div class="hljs code-wrapper"><pre><code class="hljs python">win32gui.FindWindow(game_class, game_title)  <span class="hljs-comment">#获得句柄 &lt;hwnd: int&gt;</span></code></pre></div>
+<h4 id="1、获取窗口句柄"><a href="#1、获取窗口句柄" class="headerlink" title="1、获取窗口句柄"></a>1、获取窗口句柄</h4><div class="code-wrapper"><pre><code class="hljs python">win32gui.FindWindow(game_class, game_title)  <span class="hljs-comment">#获得句柄 &lt;hwnd: int&gt;</span></code></pre></div>
 
 <p>关键在于 <strong>窗口类名</strong> 和 <strong>窗口标题 ** 的获取， 可以使用</strong>spy**++ 软件 来抓取窗口信息。</p>
-<h4 id="2、窗口移到最前"><a href="#2、窗口移到最前" class="headerlink" title="2、窗口移到最前"></a>2、窗口移到最前</h4><div class="hljs code-wrapper"><pre><code class="hljs python">win32gui.SetForegroundWindow(game_hwnd)     <span class="hljs-comment">#窗口浮现</span></code></pre></div>
+<h4 id="2、窗口移到最前"><a href="#2、窗口移到最前" class="headerlink" title="2、窗口移到最前"></a>2、窗口移到最前</h4><div class="code-wrapper"><pre><code class="hljs python">win32gui.SetForegroundWindow(game_hwnd)     <span class="hljs-comment">#窗口浮现</span></code></pre></div>
 
 <p>把窗口移到前方，但窗口最小化后会有错误，待解决。</p>
-<h4 id="3、获取窗口坐标位置"><a href="#3、获取窗口坐标位置" class="headerlink" title="3、获取窗口坐标位置"></a>3、获取窗口坐标位置</h4><div class="hljs code-wrapper"><pre><code class="hljs python">window_size = win32gui.GetWindowRect(game_hwnd)      <span class="hljs-comment">#pos: (x1, y1, x2, y2) &lt;pos: tuple&gt;</span></code></pre></div>
+<h4 id="3、获取窗口坐标位置"><a href="#3、获取窗口坐标位置" class="headerlink" title="3、获取窗口坐标位置"></a>3、获取窗口坐标位置</h4><div class="code-wrapper"><pre><code class="hljs python">window_size = win32gui.GetWindowRect(game_hwnd)      <span class="hljs-comment">#pos: (x1, y1, x2, y2) &lt;pos: tuple&gt;</span></code></pre></div>
 
 <p>获取窗口的位置，可以通过点坐标计算窗口大小，获取的位置数据类型为 元组 (X1, Y1, X2, Y2) 对应窗体左上角和右下角的坐标。</p>
 <h4 id="4、更好的获取句柄的方式"><a href="#4、更好的获取句柄的方式" class="headerlink" title="4、更好的获取句柄的方式"></a>4、更好的获取句柄的方式</h4><p>因为有时候应用程序会更新，标题可能会更改，所以可以通过 窗口的标题进行关键字匹配，从而找到窗体句柄。</p>
-<h2 id="四、图像识别"><a href="#四、图像识别" class="headerlink" title="四、图像识别"></a>四、图像识别</h2><h3 id="CV2-opencv-python"><a href="#CV2-opencv-python" class="headerlink" title="CV2 [ opencv-python ]"></a>CV2 [ opencv-python ]</h3><h4 id="安装："><a href="#安装：" class="headerlink" title="安装："></a><strong>安装：</strong></h4><div class="hljs code-wrapper"><pre><code class="hljs python">pip3 install opencv-python</code></pre></div>
+<h2 id="四、图像识别"><a href="#四、图像识别" class="headerlink" title="四、图像识别"></a>四、图像识别</h2><h3 id="CV2-opencv-python"><a href="#CV2-opencv-python" class="headerlink" title="CV2 [ opencv-python ]"></a>CV2 [ opencv-python ]</h3><h4 id="安装："><a href="#安装：" class="headerlink" title="安装："></a><strong>安装：</strong></h4><div class="code-wrapper"><pre><code class="hljs python">pip3 install opencv-python</code></pre></div>
 
 <p>会自动安装依赖的 numpy 模块。</p>
 <p><strong>可能的import 错误：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs elm">&gt;&gt;&gt;<span class="hljs-keyword">import</span> cv2 
+<div class="code-wrapper"><pre><code class="hljs elm">&gt;&gt;&gt;<span class="hljs-keyword">import</span> cv2 
 <span class="hljs-type">ImportError</span>: numpy.core.multiarray failed to <span class="hljs-keyword">import</span></code></pre></div>
 
 <p>原因是因为 numpy 模块的版本太新，将版本降低即可。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python">pip3 install -U numpy==<span class="hljs-number">1.14</span><span class="hljs-number">.5</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs python">pip3 install -U numpy==<span class="hljs-number">1.14</span><span class="hljs-number">.5</span></code></pre></div>
 
 <p>具体版本和 opencv 的 版本有关。可以直接降低到 1.12.0。 如果版本太低，会有提示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">opencv</span>-python <span class="hljs-number">4.4.0.46</span> has requirement numpy&gt;=<span class="hljs-number">1</span>.<span class="hljs-number">14</span>.<span class="hljs-number">5</span>, but you&#x27;ll have numpy <span class="hljs-number">1</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span> which is incompatible.</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">opencv</span>-python <span class="hljs-number">4.4.0.46</span> has requirement numpy&gt;=<span class="hljs-number">1</span>.<span class="hljs-number">14</span>.<span class="hljs-number">5</span>, but you&#x27;ll have numpy <span class="hljs-number">1</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span> which is incompatible.</code></pre></div>
 
 
 
@@ -566,7 +566,7 @@ im.save(<span class="hljs-string">&quot;D:\\test.jpg&quot;</span>);			<span clas
 <li>第一个参数是显示图像的窗口的名字</li>
 <li>第二个参数是要显示的图像（imread读入的图像），窗口大小自动调整为图片大小</li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs python">cv2.imshow(<span class="hljs-string">&#x27;image&#x27;</span>,img)
+<div class="code-wrapper"><pre><code class="hljs python">cv2.imshow(<span class="hljs-string">&#x27;image&#x27;</span>,img)
 cv2.waitKey(<span class="hljs-number">0</span>)   <span class="hljs-comment">#等待键盘输入，单位为毫秒，即等待指定的毫秒数看是否有键盘输入，若在等待时间内按下任意键则返回按键的ASCII码，程序继续运行。</span>
 <span class="hljs-comment">#若没有按下任何键，超时后返回-1。参数为0表示无限等待。不调用waitKey的话，窗口会一闪而逝，看不到显示的图片。</span>
 cv2.destroyAllWindow()     <span class="hljs-comment">#销毁所有窗口</span>
@@ -578,7 +578,7 @@ cv2.destroyWindow(wname)   <span class="hljs-comment">#销毁指定窗口</span>
 <li>第二个参数是要保存的图像。可选的第三个参数，它针对特定的格式：对于JPEG，其表示的是图像的质量，用0 - 100的整数表示，默认95。</li>
 <li>第三个参数表示的是压缩级别。默认为3.</li>
 </ul>
-<h5 id="4、其他部分函数"><a href="#4、其他部分函数" class="headerlink" title="4、其他部分函数"></a>4、其他部分函数</h5><div class="hljs code-wrapper"><pre><code class="hljs python">img.copy()  <span class="hljs-comment">#图像复制</span>
+<h5 id="4、其他部分函数"><a href="#4、其他部分函数" class="headerlink" title="4、其他部分函数"></a>4、其他部分函数</h5><div class="code-wrapper"><pre><code class="hljs python">img.copy()  <span class="hljs-comment">#图像复制</span>
 
 cv2.resize(image, image2,dsize)   <span class="hljs-comment">#图像缩放：(输入原始图像，输出新图像，图像的大小)</span>
 
@@ -603,7 +603,7 @@ cv2.flip(img,flipcode)            <span class="hljs-comment">#图像翻转，fli
 <p>一般，寻找的目标和容器，尺寸必须相同</p>
 </blockquote>
 <p> <strong>实例代码</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> cv2
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> cv2
 <span class="hljs-string">&#x27;&#x27;&#x27;</span>
 <span class="hljs-string">* @brief 在容器图片里寻找样例. 使用OPONCV TM_CCOEFF_NORMED 模式识别</span>
 <span class="hljs-string">* @param template the target will find in container ex. &quot;D:\\a.jpg&quot;</span>
@@ -622,7 +622,7 @@ cv2.flip(img,flipcode)            <span class="hljs-comment">#图像翻转，fli
 <p>返回值 res 为列表变量，所以取res.max() 判断是否大于阈值，大于就说明可能找到了该图。</p>
 <hr>
 <p>但我们的目的大部分的在屏幕上查找坐标，然后进行鼠标点击操作。那么如何获得图片相对于屏幕的坐标呢？</p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 <span class="hljs-keyword">import</span> cv2
 
@@ -651,12 +651,12 @@ cv2.flip(img,flipcode)            <span class="hljs-comment">#图像翻转，fli
 
 
 <h2 id="五、配置文件"><a href="#五、配置文件" class="headerlink" title="五、配置文件"></a>五、配置文件</h2><h3 id="configparser"><a href="#configparser" class="headerlink" title="configparser"></a>configparser</h3><p>python使用自带的<strong>configparser</strong>模块用来读取配置文件，配置文件的形式类似windows中的ini文件，在使用前需要先安装该模块，使用pip安装即可</p>
-<div class="hljs code-wrapper"><pre><code class="hljs shell">pip install configparser</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs shell">pip install configparser</code></pre></div>
 
 <hr>
 <p><strong>实例：</strong></p>
 <p>可以新建一个.ini文件 输入以下内容进行测试：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ini"><span class="hljs-section">[user-info]</span>
+<div class="code-wrapper"><pre><code class="hljs ini"><span class="hljs-section">[user-info]</span>
 <span class="hljs-attr">name</span> = ZhangSan
 <span class="hljs-attr">passwd</span> = <span class="hljs-number">123456</span>
 <span class="hljs-attr">level</span> = <span class="hljs-number">12</span>
@@ -666,7 +666,7 @@ cv2.flip(img,flipcode)            <span class="hljs-comment">#图像翻转，fli
 <span class="hljs-attr">passwd</span> = <span class="hljs-number">123123</span></code></pre></div>
 
 <p><strong>python code：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> configparser 
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> configparser 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
     cf = configparser.ConfigParser()
@@ -692,7 +692,7 @@ cv2.flip(img,flipcode)            <span class="hljs-comment">#图像翻转，fli
 </code></pre></div>
 
 <p>执行结果如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs css">&gt;&gt;&gt;
+<div class="code-wrapper"><pre><code class="hljs css">&gt;&gt;&gt;
 <span class="hljs-selector-attr">[<span class="hljs-string">&#x27;user-info&#x27;</span>, <span class="hljs-string">&#x27;email&#x27;</span>]</span>
 <span class="hljs-selector-attr">[<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;passwd&#x27;</span>]</span>
 <span class="hljs-selector-attr">[(<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;ZhangSan&#x27;</span>), (<span class="hljs-string">&#x27;passwd&#x27;</span>, <span class="hljs-string">&#x27;123456&#x27;</span>)]</span>
@@ -701,7 +701,7 @@ ZhangSan
 
 <hr>
 <p><strong>实例2</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> configparser
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> configparser
 
 <span class="hljs-string">&#x27;&#x27;&#x27;</span>
 <span class="hljs-string">config.ini 内容：</span>
@@ -727,7 +727,7 @@ ZhangSan
     <span class="hljs-built_in">print</span>(val_bool)</code></pre></div>
 
 <p>结果：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ada">&gt;&gt;&gt;
+<div class="code-wrapper"><pre><code class="hljs ada">&gt;&gt;&gt;
 NBA2KOL2 <span class="hljs-number">0.3</span>.<span class="hljs-number">230.675</span>
 <span class="hljs-string">&quot;NBAWindowClass&quot;</span>
 <span class="hljs-literal">False</span></code></pre></div>
@@ -736,7 +736,7 @@ NBA2KOL2 <span class="hljs-number">0.3</span>.<span class="hljs-number">230.675<
 
 <h2 id="六、其他知识"><a href="#六、其他知识" class="headerlink" title="六、其他知识"></a>六、其他知识</h2><h3 id="1、判断是否以管理员模式运行"><a href="#1、判断是否以管理员模式运行" class="headerlink" title="1、判断是否以管理员模式运行"></a>1、判断是否以管理员模式运行</h3><p><strong>使用 pywin32 模块</strong></p>
 <p><strong>代码如下：</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> win32com.shell <span class="hljs-keyword">import</span> shell
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> win32com.shell <span class="hljs-keyword">import</span> shell
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
     <span class="hljs-keyword">if</span> shell.IsUserAnAdmin():
@@ -748,13 +748,13 @@ NBA2KOL2 <span class="hljs-number">0.3</span>.<span class="hljs-number">230.675<
 
 <hr>
 <h3 id="2、获取程序当前绝对路径"><a href="#2、获取程序当前绝对路径" class="headerlink" title="2、获取程序当前绝对路径"></a>2、获取程序当前绝对路径</h3><p><strong>使用 os 模块</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os
+<div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os
 
 <span class="hljs-built_in">print</span>(os.getcwd())</code></pre></div>
 
 
 
-<h2 id="七、NBA2kOL2-挂机实例"><a href="#七、NBA2kOL2-挂机实例" class="headerlink" title="七、NBA2kOL2 挂机实例"></a>七、NBA2kOL2 挂机实例</h2><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-string">&#x27;&#x27;&#x27;</span>
+<h2 id="七、NBA2kOL2-挂机实例"><a href="#七、NBA2kOL2-挂机实例" class="headerlink" title="七、NBA2kOL2 挂机实例"></a>七、NBA2kOL2 挂机实例</h2><div class="code-wrapper"><pre><code class="hljs python"><span class="hljs-string">&#x27;&#x27;&#x27;</span>
 <span class="hljs-string"> @brief This is for NBA2KOL2 game.</span>
 <span class="hljs-string"> @author firestaradmin 2020年12月16日</span>
 <span class="hljs-string">&#x27;&#x27;&#x27;</span>
@@ -1142,9 +1142,9 @@ cwd_path = <span class="hljs-string">&quot;&quot;</span>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
-                    
                       <a class="hover-with-bg" href="/tags/Windows/">Windows</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
                     
                   </div>
                 

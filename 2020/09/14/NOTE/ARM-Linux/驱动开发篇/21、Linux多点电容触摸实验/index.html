@@ -276,7 +276,7 @@
 <li>Type B：适用于有硬件追踪并能区分触摸点的触摸设备，此类型设备通过 slot 更新某一个触摸点的信息，FT5426 就属于此类型，一般的多点电容触摸屏 IC 都有此能力。</li>
 </ul>
 <p>触摸点的信息通过一系列的 ABS_MT 事件(有的资料也叫消息)上报给 linux 内核，只有ABS_MT 事件是用于多点触摸的，ABS_MT 事件定义在文件 linux&#x2F;input.h 中，相关事件如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">852</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ABS_MT_SLOT 		0x2f  <span class="hljs-comment">/* MT slot being modified */</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">852</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ABS_MT_SLOT 		0x2f  <span class="hljs-comment">/* MT slot being modified */</span></span>
 <span class="hljs-number">853</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ABS_MT_TOUCH_MAJOR 	0x30  <span class="hljs-comment">/* Major axis of touching ellipse */</span></span>
 <span class="hljs-number">854</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ABS_MT_TOUCH_MINOR 	0x31  <span class="hljs-comment">/* Minor axis (omit if circular) */</span></span>
 <span class="hljs-number">855</span> <span class="hljs-meta">#<span class="hljs-keyword">define</span> ABS_MT_WIDTH_MAJOR 	0x32  <span class="hljs-comment">/* Major axis of approaching ellipse */</span></span>
@@ -294,12 +294,12 @@
 
 <p>在 上 面 这 些 众 多 的 ABS_MT 事 件 中 ， 我 们 最 常 用 的 就 是 <strong>ABS_MT_SLOT</strong> 、<strong>ABS_MT_POSITION_X</strong> 、 <strong>ABS_MT_POSITION_Y</strong> 和 <strong>ABS_MT_TRACKING_ID</strong> 。 其 中ABS_MT_POSITION_X 和 ABS_MT_POSITION_Y 用来上报触摸点的(X,Y)坐标信息，ABS_MT_SLOT 用 来 上 报 触 摸 点 ID ， 对 于 Type B 类 型 的 设 备 ， 需 要 用 到ABS_MT_TRACKING_ID 事件来区分触摸点。</p>
 <p><strong>对于 Type A 类型的设备</strong>，通过 input_mt_sync()函数来隔离不同的触摸点数据信息，此函数原型如下所示</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_sync</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_sync</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev)</span></code></pre></div>
 
 <p>此函数只要一个参数，类型为 input_dev，用于指定具体的 input_dev 设备。input_mt_sync()函数会触发 SYN_MT_REPORT 事件，此事件会通知接收者获取当前触摸数据，并且准备接收下一个触摸点数据。</p>
 <hr>
 <p><strong>对于 Type B 类型的设备</strong>，上报触摸点信息的时候需要通过 input_mt_slot()函数区分是哪一个触摸点，input_mt_slot()函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_slot</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev, <span class="hljs-type">int</span> slot)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_slot</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev, <span class="hljs-type">int</span> slot)</span></code></pre></div>
 
 <p>此函数有两个参数，第一个参数是 input_dev 设备，第二个参数 slot 用于指定当前上报的是哪个触摸点信息。input_mt_slot()函数会触发 ABS_MT_SLOT 事件，此事件会告诉接收者当前正在更新的是哪个触摸点(slot)的数据。</p>
 <hr>
@@ -309,7 +309,7 @@
 <p>Type B 设备驱动需要给每个识别出来的触摸点分配一个 slot，后面使用这个 slot 来上报触摸点信息。可以通过 slot 的 ABS_MT_TRACKING_ID 来新增、替换或删除触摸点。一个非负数的 ID 表示一个有效的触摸点，-1 这个 ID 表示未使用 slot。一个以前不存在的 ID 表示这是一个新加的触摸点，一个 ID 如果再也不存在了就表示删除了。</p>
 <p>有些设备识别或追踪的触摸点信息要比他上报的多，这些设备驱动应该给硬件上报的每个触摸点分配一个 Type B 的 slot。一旦检测到某一个 slot 关联的触摸点 ID 发生了变化，驱动就应该改变这个 slot 的 ABS_MT_TRACKING_ID，使这个 slot 失效。如果硬件设备追踪到了比他正在上报的还要多的触摸点，那么驱动程序应该发送 BTN_TOOL_*TAP 消息，并且调用input_mt_report_pointer_emulation()函数，将此函数的第二个参数 use_count 设置为 false。</p>
 <h3 id="2-Type-A-触摸点信息上报时序"><a href="#2-Type-A-触摸点信息上报时序" class="headerlink" title="2| Type A 触摸点信息上报时序"></a>2| Type A 触摸点信息上报时序</h3><p>对于 Type A 类型的设备，发送触摸点信息的时序如下所示，这里以 2 个触摸点为例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_POSITION_X x[<span class="hljs-number">0</span>]
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_POSITION_X x[<span class="hljs-number">0</span>]
 <span class="hljs-number">2</span> ABS_MT_POSITION_Y y[<span class="hljs-number">0</span>]
 <span class="hljs-number">3</span> SYN_MT_REPORT
 <span class="hljs-number">4</span> ABS_MT_POSITION_X x[<span class="hljs-number">1</span>]
@@ -319,7 +319,7 @@
 
 <p>第 1 行，通过 ABS_MT_POSITION_X 事件上报第一个触摸点的 X 坐标数据，<strong>通过input_report_abs 函数实现</strong>，下面同理。<br>第 2 行，通过 ABS_MT_POSITION_Y 事件上报第一个触摸点的 Y 坐标数据。<br>第 3 行，上报 SYN_MT_REPORT 事件，通过调用 input_mt_sync 函数来实现。<br>第 4 行，通过 ABS_MT_POSITION_X 事件上报第二个触摸点的 X 坐标数据。<br>第 5 行，通过 ABS_MT_POSITION_Y 事件上报第二个触摸点的 Y 坐标数据。<br>第 6 行，上报 SYN_MT_REPORT 事件，通过调用 input_mt_sync 函数来实现。<br>第 7 行，上报 SYN_REPORT 事件，通过调用 input_sync 函数实现。</p>
 <p>我们在编写 Type A 类型的多点触摸驱动的时候就需要按照示例代码中的时序上报坐标信息。Linux 内核里面也有 Type A 类型的多点触摸驱动，找到 st2332.c 这个驱动文件，路径为 drivers&#x2F;input&#x2F;touchscreen&#x2F;st1232.c，找到 st1232_ts_irq_handler 函数，此函数里面就是上报触摸点坐标信息的。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">103</span> <span class="hljs-type">static</span> <span class="hljs-type">irqreturn_t</span> <span class="hljs-title function_">st1232_ts_irq_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> irq, <span class="hljs-type">void</span> *dev_id)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">103</span> <span class="hljs-type">static</span> <span class="hljs-type">irqreturn_t</span> <span class="hljs-title function_">st1232_ts_irq_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> irq, <span class="hljs-type">void</span> *dev_id)</span>
 104 &#123;
 ......
 <span class="hljs-number">111</span> 	ret = st1232_ts_read_data(ts);
@@ -352,7 +352,7 @@
 <li>第 142 行，每上报完一轮触摸点信息就调用一次 input_sync 函数，也就是发送一个SYN_REPORT 事件</li>
 </ul>
 <h3 id="3-Type-B-触摸点信息上报时序"><a href="#3-Type-B-触摸点信息上报时序" class="headerlink" title="3| Type B  触摸点信息上报时序"></a>3| Type B  触摸点信息上报时序</h3><p>对于 Type B 类型的设备，发送触摸点信息的时序如下所示，这里以 2 个触摸点为例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_SLOT <span class="hljs-number">0</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_SLOT <span class="hljs-number">0</span>
 <span class="hljs-number">2</span> ABS_MT_TRACKING_ID <span class="hljs-number">45</span>
 <span class="hljs-number">3</span> ABS_MT_POSITION_X x[<span class="hljs-number">0</span>]
 <span class="hljs-number">4</span> ABS_MT_POSITION_Y y[<span class="hljs-number">0</span>]
@@ -371,7 +371,7 @@
 <li>第9行，当所有的触摸点坐标都上传完毕以后就得发送SYN_REPORT事件，使用input_sync函数来完成。</li>
 </ul>
 <p>当一个触摸点移除以后，同样需要通过 SLOT 关联的 ABS_MT_TRACKING_ID 来处理，时序如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_TRACKING_ID <span class="hljs-number">-1</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ABS_MT_TRACKING_ID <span class="hljs-number">-1</span>
 <span class="hljs-number">2</span> SYN_REPORT</code></pre></div>
 
 <ul>
@@ -379,7 +379,7 @@
 <li>第 2 行，当所有的触摸点坐标都上传完毕以后就得发送 SYN_REPORT 事件。</li>
 </ul>
 <p>当要编写 Type B 类型的多点触摸驱动的时候就需要按照示例代码中的时序上报坐标信息。Linux 内核里面有大量的 Type B 类型的多点触摸驱动程序，我们可以参考这些现成的驱动程序来编写自己的驱动代码。这里就以 ili210x 这个触摸驱动 IC 为例，看看是 Type B 类型是 如 何 上 报 触 摸 点 坐 标 信 息 的 。 找 到 ili210x.c 这 个 驱 动 文 件 ， 路 径 为drivers&#x2F;input&#x2F;touchscreen&#x2F;ili210x.c，找到 ili210x_report_events 函数，此函数就是用于上报 ili210x触摸坐标信息的，函数内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">78</span> 	<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ili210x_report_events</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *input,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">78</span> 	<span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">ili210x_report_events</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *input,</span>
 <span class="hljs-params"><span class="hljs-number">79</span> 									  <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> touchdata *touchdata)</span>
 80 	&#123;
 <span class="hljs-number">81</span> 		<span class="hljs-type">int</span> i;
@@ -418,12 +418,12 @@
 <p>本章节所使用的触摸屏是正点原子的 ATK7084(7 寸 800<em>480)和 ATK7016(7 寸 1024</em>600)这两款触摸屏，这两款触摸屏都使用 FT5426 这款触摸 IC，因此驱动程序是完全通用的。</p>
 <h3 id="5-多点触摸所使用到的-API-函数"><a href="#5-多点触摸所使用到的-API-函数" class="headerlink" title="5| 多点触摸所使用到的 API  函数"></a>5| 多点触摸所使用到的 API  函数</h3><p>根据前面的讲解，我们知道 linux 下的多点触摸协议其实就是通过不同的事件来上报触摸点坐标信息，这些事件都是通过 Linux 内核提供的对应 API 函数实现的，本小节我们来看一下一些常见的 API 函数。</p>
 <h4 id="1-、input-mt-init-slots-函数"><a href="#1-、input-mt-init-slots-函数" class="headerlink" title="1 、input_mt_init_slots  函数"></a>1 、input_mt_init_slots  函数</h4><p><strong>input_mt_init_slots 函数用于初始化 MT 的输入 slots</strong>，编写 MT 驱动的时候必须先调用此函<br>数初始化 slots，此函数定义在文件 drivers&#x2F;input&#x2F;input-mt.c 中，函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">input_mt_init_slots</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">input_mt_init_slots</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
 <span class="hljs-params">                        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> num_slots,</span>
 <span class="hljs-params">                        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> flags)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ： MT 设备对应的 input_dev，因为 MT 设备隶属于 input_dev。<br><strong>num_slots</strong>：设备要使用的 SLOT 数量，也就是触摸点的数量。<br><strong>flags</strong> ：其他一些 flags 信息，可设置的 flags 如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MT_POINTER  	0x0001 <span class="hljs-comment">/* pointer device, e.g. trackpad */</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MT_POINTER  	0x0001 <span class="hljs-comment">/* pointer device, e.g. trackpad */</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MT_DIRECT  	0x0002 <span class="hljs-comment">/* direct device, e.g. touchscreen */</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MT_DROP_UNUSED 0x0004 <span class="hljs-comment">/* drop contacts not seen in frame */</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">define</span> INPUT_MT_TRACK  	0x0008 <span class="hljs-comment">/* use in-kernel tracking */</span></span>
@@ -431,31 +431,31 @@
 
 <p>可以采用‘|’运算来同时设置多个 flags 标识。<br><strong>返回值</strong>：0，成功；负值，失败。</p>
 <h4 id="2-、input-mt-slot"><a href="#2-、input-mt-slot" class="headerlink" title="2 、input_mt_slot"></a>2 、input_mt_slot</h4><p>此函数用于 Type B 类型，此函数用于产生 ABS_MT_SLOT 事件，告诉内核当前上报的是哪个触摸点的坐标数据，此函数定义在文件 include&#x2F;linux&#x2F;input&#x2F;mt.h 中，函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_slot</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_slot</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev,</span>
 <span class="hljs-params">                   <span class="hljs-type">int</span> slot)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ： MT 设备对应的 input_dev。<br><strong>slot</strong>：当前发送的是哪个 slot 的坐标信息，也就是哪个触摸点。<br><strong>返回值</strong>：无。</p>
 <h4 id="3-、input-mt-report-slot-state-函数"><a href="#3-、input-mt-report-slot-state-函数" class="headerlink" title="3 、input_mt_report_slot_state  函数"></a>3 、input_mt_report_slot_state  函数</h4><p>此函数用于 Type B 类型，用于产生 ABS_MT_TRACKING_ID 和 ABS_MT_TOOL_TYPE事 件 ， ABS_MT_TRACKING_ID 事 件 给 slot 关 联 一 个 ABS_MT_TRACKING_ID ，ABS_MT_TOOL_TYPE 事件指定触摸类型（是笔还是手指等）。此函数定义在文件drivers&#x2F;input&#x2F;input-mt.c 中，此函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_report_slot_state</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_report_slot_state</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
 <span class="hljs-params">                                <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> tool_type,</span>
 <span class="hljs-params">                                <span class="hljs-type">bool</span> active)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ： MT 设备对应的 input_dev。<br><strong>tool_type</strong>：触摸类型，可以选择 MT_TOOL_FINGER(手指)、MT_TOOL_PEN(笔)或MT_TOOL_PALM(手掌)，对于多点电容触摸屏来说一般都是手指。<br><strong>active</strong>：true，连续触摸，input子系统内核会自动分配一个ABS_MT_TRACKING_ID 给 slot ; false，触摸点抬起，表示某个触摸点无效了，input 子系统内核会分配一个-1 给 slot，表示触摸点溢出。<br><strong>返回值</strong>：无。</p>
 <h4 id="4-、input-report-abs-函数"><a href="#4-、input-report-abs-函数" class="headerlink" title="4 、input_report_abs  函数"></a>4 、input_report_abs  函数</h4><p>Type A 和 Type B 类型都使用此函数上报触摸点坐标信息，通过 ABS_MT_POSITION_X 和ABS_MT_POSITION_Y 事 件 实 现 X 和 Y 轴 坐 标 信 息 上 报 。 此 函 数 定 义 在 文 件include&#x2F;linux&#x2F;input.h 中，函数原型如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_report_abs</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_report_abs</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> input_dev *dev,</span>
 <span class="hljs-params">                      <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> code,</span>
 <span class="hljs-params">                      <span class="hljs-type">int</span> value)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ： MT 设备对应的 input_dev。<br><strong>code</strong>：要上报的是什么数据，可以设置为 ABS_MT_POSITION_X 或 ABS_MT_POSITION_Y，也就是 X 轴或者 Y 轴坐标数据。<br><strong>value</strong>：具体的 X 轴或 Y 轴坐标数据值。<br><strong>返回值</strong>：无。</p>
 <h4 id="5-、input-mt-report-pointer-emulation-函数"><a href="#5-、input-mt-report-pointer-emulation-函数" class="headerlink" title="5 、input_mt_report_pointer_emulation  函数"></a>5 、input_mt_report_pointer_emulation  函数</h4><p>如果追踪到的触摸点数量多于当前上报的数量，驱动程序使用 BTN_TOOL_TAP 事件来通知用户空间当前追踪到的触摸点总数量，然后调用 input_mt_report_pointer_emulation 函数将use_count 参数设置为false。否则的话将 use_count 参数设置为 true，表示当前的触摸点数量(此函数会获取到具体的触摸点数量，不需要用户给出)，此函数定义在文件 drivers&#x2F;input&#x2F;input-mt.c中，函数原型如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_report_pointer_emulation</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev,</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">input_mt_report_pointer_emulation</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> input_dev *dev,</span>
 <span class="hljs-params">                                       <span class="hljs-type">bool</span> use_count)</span></code></pre></div>
 
 <p>函数参数和返回值含义如下：<br><strong>dev</strong> ： MT 设备对应的 input_dev。<br><strong>use_count</strong>：true，有效的触摸点数量；false，追踪到的触摸点数量多于当前上报的数量。<br><strong>返回值</strong>：无。</p>
 <h3 id="6-多点电容触摸驱动框架"><a href="#6-多点电容触摸驱动框架" class="headerlink" title="6| 多点电容触摸驱动框架"></a>6| 多点电容触摸驱动框架</h3><p>前面几小节已经详细的讲解了 linux 下多点触摸屏驱动原理，本小节我们来梳理一下 linux下多点电容触摸驱动的编写框架和步骤。首先确定驱动需要用到哪些知识点，哪些框架？根据前面的分析，我们在编写驱动的时候需要注意一下几点：</p>
 <p>①、多点电容触摸芯片的接口，一般都为 I2C 接口，因此驱动主框架肯定是 I2C。<br>②、linux 里面一般都是通过中断来上报触摸点坐标信息，因此需要用到中断框架。<br>③、多点电容触摸属于 input 子系统，因此还要用到 input 子系统框架。<br>④、在中断处理程序中按照 linux 的 MT 协议上报坐标信息。</p>
 <p>根据上面的分析，多点电容触摸驱动编写框架以及步骤如下：</p>
-<h4 id="1-、I2C-驱动框架"><a href="#1-、I2C-驱动框架" class="headerlink" title="1 、I2C  驱动框架"></a>1 、I2C  驱动框架</h4><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 设备树匹配表 */</span>
+<h4 id="1-、I2C-驱动框架"><a href="#1-、I2C-驱动框架" class="headerlink" title="1 、I2C  驱动框架"></a>1 、I2C  驱动框架</h4><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-comment">/* 设备树匹配表 */</span>
 <span class="hljs-number">2</span> <span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">i2c_device_id</span> <span class="hljs-title">xxx_ts_id</span>[] =</span> &#123;
 <span class="hljs-number">3</span> 		&#123; <span class="hljs-string">&quot;xxx&quot;</span>, <span class="hljs-number">0</span>, &#125;,
 <span class="hljs-number">4</span> 		&#123; <span class="hljs-comment">/* sentinel */</span> &#125;
@@ -510,7 +510,7 @@
 
 <p>I2C 驱动框架已经进行了详细的讲解，这里就不再赘述了。当设备树中触摸 IC的设备节点和驱动匹配以后，示例代码中第 21 行的 xxx_ts_probe 函数就会执行，我们可以在此函数中初始化触摸 IC，中断和 input 子系统等。</p>
 <h4 id="2、初始化触摸-IC-、中断和-input-子系统"><a href="#2、初始化触摸-IC-、中断和-input-子系统" class="headerlink" title="2、初始化触摸 IC 、中断和 input 子系统"></a>2、初始化触摸 IC 、中断和 input 子系统</h4><p>初始化操作都是在 xxx_ts_probe 函数中完成，参考框架如下所示(以下代码中步骤顺序可以自行调整，不一定按照示例框架来)：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">xxx_ts_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_client *client, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_device_id *id)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">xxx_ts_probe</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> i2c_client *client, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> i2c_device_id *id)</span>
 2 &#123;
 <span class="hljs-number">3</span> 		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">input_dev</span> *<span class="hljs-title">input</span>;</span>
 <span class="hljs-number">4</span>
@@ -572,7 +572,7 @@
 </li>
 </ul>
 <h4 id="3、上报坐标信息"><a href="#3、上报坐标信息" class="headerlink" title="3、上报坐标信息"></a>3、上报坐标信息</h4><p>最后就是在中断服务程序中上报读取到的坐标信息，根据所使用的多点电容触摸设备类型选择使用 Type A 还是 Type B 时序。由于大多数的设备都是 Type B 类型，因此这里就以 Type B类型为例讲解一下上报过程，参考驱动框架如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">irqreturn_t</span> <span class="hljs-title function_">xxx_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> irq, <span class="hljs-type">void</span> *dev_id)</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> <span class="hljs-type">static</span> <span class="hljs-type">irqreturn_t</span> <span class="hljs-title function_">xxx_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> irq, <span class="hljs-type">void</span> *dev_id)</span>
 2 &#123;
 <span class="hljs-number">3</span>
 <span class="hljs-number">4</span> 		<span class="hljs-type">int</span> num; <span class="hljs-comment">/* 触摸点数量 */</span>
@@ -605,21 +605,21 @@
 <h2 id="硬件原理图分析"><a href="#硬件原理图分析" class="headerlink" title="硬件原理图分析"></a>硬件原理图分析</h2><p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905142552964.png" srcset="/img/loading.gif" lazyload alt="image-20200905142552964"></p>
 <h2 id="试验程序编写"><a href="#试验程序编写" class="headerlink" title="试验程序编写"></a>试验程序编写</h2><p>本试验以正点原子的 ATK7084(7 寸 800*480 分辨率)和 ATK7016(7 寸 1024*600 分辨率)这两款屏幕所使用的 FT5426 触摸芯片为例，讲解如何编写多点电容触摸驱动。</p>
 <h3 id="1-修改设备树"><a href="#1-修改设备树" class="headerlink" title="1| 修改设备树"></a>1| 修改设备树</h3><h4 id="1、添加-FT5426-所使用的-IO"><a href="#1、添加-FT5426-所使用的-IO" class="headerlink" title="1、添加 FT5426  所使用的 IO"></a>1、添加 FT5426  所使用的 IO</h4><p>FT5426 触摸芯片用到了 4 个 IO，一个复位 IO、一个中断 IO、I2C2 的 SCL 和 SDA，所以我们需要先在设备树中添加 IO 相关的信息。复位 IO 和中断 IO 是普通的 GPIO，因此这两个 IO可以放到同一个节点下去描述，I2C2 的 SCL 和 SDA 属于 I2C2，因此这两个要放到同一个节点下去描述。首先是复位 IO 和中断 IO，imx6ull-lxg-emmc.dts 文件里面默认有个名为“pinctrl_tsc”的节点，如果被删除了的话就自行创建，在此节点下添加触摸屏的中断引脚信息，修改以后的“pinctrl_tsc”节点内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_tsc: tscgrp &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_tsc: tscgrp &#123;
 <span class="hljs-number">2</span> 		fsl,pins = &lt;
 <span class="hljs-number">3</span> 			MX6UL_PAD_GPIO1_IO09__GPIO1_IO09 <span class="hljs-number">0xF080</span> <span class="hljs-comment">/* TSC_INT */</span>
 <span class="hljs-number">4</span> 		&gt;;
 <span class="hljs-number">5</span> &#125;;</code></pre></div>
 
 <p>触摸屏复位引脚使用的是 SNVS_TAMPER9，因此复位引脚信息要添加到 iomuxc_snvs 节点下，在 iomuxc_snvs 节点新建一个名为 pinctrl_tsc_reset 的子节点，然后在此子节点里面输入复位引脚配置信息即可，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_tsc_reset: tsc_reset &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_tsc_reset: tsc_reset &#123;
 <span class="hljs-number">2</span> 		fsl,pins = &lt;
 <span class="hljs-number">3</span> 			MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09 <span class="hljs-number">0x10B0</span>
 <span class="hljs-number">4</span> 		&gt;;
 <span class="hljs-number">5</span> &#125;;</code></pre></div>
 
 <p>继续添加 I2C2 的 SCL 和 SDA 这两个 IO 信息，imx6ull-lxg-emmc.dts 里面默认就已经添加了 I2C2 的 IO 信息，这是 NXP 官方添加的，所以不需要我们去修改。找到“pinctrl_i2c2”节点，此节点就是用于描述 I2C2 的 IO 信息，节点内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_i2c2: i2c2grp &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> pinctrl_i2c2: i2c2grp &#123;
 <span class="hljs-number">2</span> 		fsl,pins = &lt;
 <span class="hljs-number">3</span> 			MX6UL_PAD_UART5_TX_DATA__I2C2_SCL <span class="hljs-number">0x4001b8b0</span>
 <span class="hljs-number">4</span> 			MX6UL_PAD_UART5_RX_DATA__I2C2_SDA <span class="hljs-number">0x4001b8b0</span>
@@ -628,7 +628,7 @@
 
 <p>最后，一定要检查一下设备树，确保触摸屏所使用的 IO 没有被其他的外设使用，如果有的话就需要将其屏蔽掉，保证只有触摸屏用到了这四个 IO。</p>
 <h4 id="2-、添加-FT5426-节点"><a href="#2-、添加-FT5426-节点" class="headerlink" title="2 、添加 FT5426  节点"></a>2 、添加 FT5426  节点</h4><p>FT5426 这个触摸 IC 挂载 I2C2 下，因此需要向 I2C2 节点下添加一个子节点，此子节点用于描述 FT5426，添加完成以后的 I2C2 节点内容如下所示(省略掉其他挂载到 I2C2 下的设备)：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c2 &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> &amp;i2c2 &#123;
 <span class="hljs-number">2</span> 		clock_frequency = &lt;<span class="hljs-number">100000</span>&gt;;
 <span class="hljs-number">3</span> 		pinctrl-names = <span class="hljs-string">&quot;default&quot;</span>;
 <span class="hljs-number">4</span> 		pinctrl<span class="hljs-number">-0</span> = &lt;&amp;pinctrl_i2c2&gt;;
@@ -654,7 +654,7 @@
 
 <p>第 12 行，触摸屏所使用的 FT5426 芯片节点，挂载 I2C2 节点下，FT5426 的器件地址为0X38。<br>第 14 行，reg 属性描述 FT5426 的器件地址为 0x38。<br>第 16 和 17 行，pinctrl-0 属性描述 FT5426 的复位 IO 和中断 IO 所使用的节点为 pinctrl_tsc和 pinctrl_tsc_reset。<br>第 18 行，interrupt-parent 属性描述中断 IO 对应的 GPIO 组为 GPIO1。<br>第 19 行，interrupts 属性描述中断 IO 对应的是 GPIO1 组的 IOI09。<br>第 20 行，reset-gpios 属性描述复位 IO 对应的 GPIO 为 GPIO5_IO09。<br>第 21 行，interrupt-gpios 属性描述中断 IO 对应的 GPIO 为 GPIO1_IO09。</p>
 <h3 id="2-编写多点电容触摸驱动"><a href="#2-编写多点电容触摸驱动" class="headerlink" title="2| 编写多点电容触摸驱动"></a>2| 编写多点电容触摸驱动</h3><p>新建名为“23_multitouch”的文件夹，然后在 23_multitouch 文件夹里面创建 vscode 工程，工作区命名为“multitouch”。工程创建好以后新建 ft5x06.c 这个驱动文件，在里面输入如下所示内容:</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/ratelimit.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/interrupt.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/input.h&gt;</span></span>
@@ -1055,7 +1055,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 </ul>
 <h2 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h2><h3 id="1-编译驱动程序"><a href="#1-编译驱动程序" class="headerlink" title="1| 编译驱动程序"></a>1| 编译驱动程序</h3><p>编译成功以后就会生成一个名为“ft5x06.ko”的驱动模块文件。</p>
 <h3 id="2-运行测试"><a href="#2-运行测试" class="headerlink" title="2| 运行测试"></a>2| 运行测试</h3><p>编译设备树，然后使用新的设备树启动 linux 内核。多点电容触摸屏测试不需要编写专门的 APP，将上一小节编译出来 ft5x06.ko 拷贝到rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15 目录中，启动开发板，进入到目录lib&#x2F;modules&#x2F;4.1.15 中，输入如下命令加载 ft5x06.ko 这个驱动模块。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">depmod //第一次加载驱动的时候需要运行此命令
+<div class="code-wrapper"><pre><code class="hljs sh">depmod //第一次加载驱动的时候需要运行此命令
 modprobe ft5x06.ko  //加载驱动模块</code></pre></div>
 
 <p>当驱动模块加载成功以后会有如图 所示信息输入：</p>
@@ -1063,7 +1063,7 @@ modprobe ft5x06.ko  //加载驱动模块</code></pre></div>
 <p>驱动加载成功以后就会生成&#x2F;dev&#x2F;input&#x2F;eventX(X&#x3D;1,2,3…)，比如本实验的多点电容触摸驱动就会在我所使用的 ALPHA 开发板平台下就会生成&#x2F;dev&#x2F;input&#x2F;event2 这个文件，如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905150208249.png" srcset="/img/loading.gif" lazyload alt="image-20200905150208249"></p>
 <p>不同的平台 event 序号不同，也可能是 event3，event4 等，一切以实际情况为准！输入如下命令查看 event2，也就是多点电容触摸屏上报的原始数据：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">hexdump /dev/input/event2</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c">hexdump /dev/input/event2</code></pre></div>
 
 <p>现在用一根手指触摸屏幕的右上角，然后再抬起，理论坐标值为(1023,0)，但是由于触摸误差的原因，大概率不会是绝对的(1023,0)，应该是在此值附近的一个触摸坐标值，实际的上报数据如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905150308374.png" srcset="/img/loading.gif" lazyload alt="image-20200905150308374"></p>
@@ -1082,19 +1082,19 @@ modprobe ft5x06.ko  //加载驱动模块</code></pre></div>
 <p>第 11 行，type 为 0x0，是一个 EV_SYN 事件，由 input_sync 函数上报。以上就是一个触摸点的坐标上报过程，和我们前面讲解的 Type B 类型设备一致。</p>
 <h3 id="3-将驱动添加到内核中"><a href="#3-将驱动添加到内核中" class="headerlink" title="3| 将驱动添加到内核中"></a>3| 将驱动添加到内核中</h3><p>前面我们一直将触摸驱动编译为模块，每次系统启动以后在手动加载驱动模块，这样很不方便。当我们把驱动调试成功以后一般都会将其编译到内核中，这样内核启动以后就会自动加载驱动，不需要我们再手动 modprobe 了。本节我们就来学习一下如何将 ft5x06.c 添加到 linux内核里面，步骤如下所示：</p>
 <h4 id="1-、将驱动文件放到合适的位置"><a href="#1-、将驱动文件放到合适的位置" class="headerlink" title="1 、将驱动文件放到合适的位置"></a>1 、将驱动文件放到合适的位置</h4><p>首先肯定是在内核源码中找个合适的位置将 ft5x06.c 放进去，ft5x06.c 是个触摸屏驱动，因此我们需要查找一下 linux 内核里面触摸屏驱动放到了哪个目录下。linux 内核里面将触摸屏驱动放到了drivers&#x2F;input&#x2F;touchscreen 目录下，因此我们要将 ft5x06.c 拷贝到此目录下，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> ft5x06.c (内核源码目录)/drivers/input/touchscreen/ -f</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> ft5x06.c (内核源码目录)/drivers/input/touchscreen/ -f</code></pre></div>
 
 
 
 <h4 id="2-、修改对应的-Makefile"><a href="#2-、修改对应的-Makefile" class="headerlink" title="2 、修改对应的 Makefile"></a>2 、修改对应的 Makefile</h4><p>修改 drivers&#x2F;input&#x2F;touchscreen 目录下的 Makefile，在最下面添加下面一行：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">obj-y += ft5x06.o</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">obj-y += ft5x06.o</code></pre></div>
 
 <p>完成以后如图 所示:</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905151355239.png" srcset="/img/loading.gif" lazyload alt="image-20200905151355239"></p>
 <p>修改完成以后重新编译 linux 内核，然后用新的 zImage 启动开发板。如果驱动添加成功的话系统启动的时候就会输出如图所示的信息：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905151639612.png" srcset="/img/loading.gif" lazyload alt="image-20200905151639612"></p>
 <p>从图可以看出，触摸屏驱动已经启动了，这个时候就会自动生成&#x2F;dev&#x2F;input&#x2F;evenvtX。在本实验中将触摸屏驱动添加到 linux 内核里面以后触摸屏对应的是 event1，而不是前面编译为模块对应的 event2，这一点一定要注意！输入如下命令，查看驱动工作是否正常：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">hexdump /dev/input/event1 //查看触摸屏原始数据上报信息</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">hexdump /dev/input/event1 //查看触摸屏原始数据上报信息</code></pre></div>
 
 <p>结果如图 所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905151800603.png" srcset="/img/loading.gif" lazyload alt="image-20200905151800603"></p>
@@ -1102,19 +1102,19 @@ modprobe ft5x06.ko  //加载驱动模块</code></pre></div>
 <h2 id="tslib-移植与使用"><a href="#tslib-移植与使用" class="headerlink" title="tslib  移植与使用"></a>tslib  移植与使用</h2><h3 id="1-tslib-移植"><a href="#1-tslib-移植" class="headerlink" title="1| tslib 移植"></a>1| tslib 移植</h3><p>tslib 是一个开源的第三方库，用于触摸屏性能调试，使用电阻屏的时候一般使用 tslib 进行校准。虽然电容屏不需要校准，但是由于电容屏加工的原因，有的时候其不一定精准，因此有时候也需要进行校准。最主要的是 tslib 提供了一些其他软件，我们可以通过这些软件来测试触摸屏工作是否正常。最新版本的 tslib 已经支持了多点电容触摸屏，因此可以通过 tslib 来直观的测试多点电容触摸屏驱动，这个要比观看 eventX 原始数据方便的多。tslib 的移植很简单，步骤如下：</p>
 <h4 id="1-、获取-tslib-源码"><a href="#1-、获取-tslib-源码" class="headerlink" title="1 、获取 tslib  源码"></a>1 、获取 tslib  源码</h4><p>首先肯定是获取 tslib 的源码，git 地址为 <a target="_blank" rel="noopener" href="https://github.com/kergoth/tslib%EF%BC%8C%E7%9B%AE%E5%89%8D%E6%9C%80%E6%96%B0%E7%9A%84%E7%89%88%E6%9C%AC%E6%98%AF1.21%E3%80%82%E5%B0%86tslib%E6%BA%90%E7%A0%81%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%8F%91%E9%80%81%E5%88%B0">https://github.com/kergoth/tslib，目前最新的版本是1.21。将tslib源码压缩包发送到</a> ubuntu 中并解压，得到名为“tslib-1.21”的目录，此目录下就是 tslib 源码。</p>
 <h4 id="2-、修改-tslib-源码所属用户"><a href="#2-、修改-tslib-源码所属用户" class="headerlink" title="2 、修改 tslib  源码所属用户"></a>2 、修改 tslib  源码所属用户</h4><p>修改解压得到的 tslib-1.21 目录所属用户为当前用户，这一步一定要做！否则在稍后的编译中会遇到各种问题。我当前 ubuntu 的登录用户名为“firestaradmin”，那么修改命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo <span class="hljs-built_in">chown</span> firestaradmin:firestaradmin tslib-1.21 -R</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo <span class="hljs-built_in">chown</span> firestaradmin:firestaradmin tslib-1.21 -R</code></pre></div>
 
 
 
 <h4 id="3-、ubuntu-工具安装"><a href="#3-、ubuntu-工具安装" class="headerlink" title="3 、ubuntu  工具安装"></a>3 、ubuntu  工具安装</h4><p>编译 tslib 的时候需要先在 ubuntu 中安装一些文件，防止编译 tslib 过程中出错，命令如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo apt-get install autoconf
+<div class="code-wrapper"><pre><code class="hljs sh">sudo apt-get install autoconf
 sudo apt-get install automake
 sudo apt-get install libtool</code></pre></div>
 
 
 
 <h4 id="4-、编译-tslib"><a href="#4-、编译-tslib" class="headerlink" title="4 、编译 tslib"></a>4 、编译 tslib</h4><p>首先在 ubuntu 中创建一个名为“tslib”的目录存放编译结果，比如我们创建的 tslib 目录全路为：&#x2F;home&#x2F;firestaradmin&#x2F;linux&#x2F;tools&#x2F;tslib。接下来输入如下命令配置并编译 talib：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> tslib-1.21/ 		//进入 tslib 源码目录
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> tslib-1.21/ 		//进入 tslib 源码目录
 ./autogen.sh 
 ./configure --host=arm-linux-gnueabihf --prefix=/home/firestaradmin/linux/tools/tslib
 make  //编译
@@ -1125,14 +1125,14 @@ make install  //安装</code></pre></div>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905152923501.png" srcset="/img/loading.gif" lazyload alt="image-20200905152923501"></p>
 <p>bin 目录下是可执行文件，包括 tslib 的测试工具。etc 目录下是 tslib 的配置文件，lib 目录下是相关的库文件。</p>
 <p>将图 中的所有文件拷贝到开发板的根文件系统中，命令如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">sudo <span class="hljs-built_in">cp</span> * -rf /home/firestaradmin/linux/nfs/rootfs</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">sudo <span class="hljs-built_in">cp</span> * -rf /home/firestaradmin/linux/nfs/rootfs</code></pre></div>
 
 <h4 id="5、配置-tslib"><a href="#5、配置-tslib" class="headerlink" title="5、配置 tslib"></a>5、配置 tslib</h4><p>打开&#x2F;etc&#x2F;ts.conf 文件，找到下面这一行：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ceylon"><span class="hljs-keyword">module</span><span class="hljs-number">_</span>raw input</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs ceylon"><span class="hljs-keyword">module</span><span class="hljs-number">_</span>raw input</code></pre></div>
 
 <p>如果上面这句前面有“#”的话就删除掉“#”。</p>
 <p>打开&#x2F;etc&#x2F;profile 文件，在里面加入如下内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> export TSLIB_TSDEVICE=/dev/input/event1
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> export TSLIB_TSDEVICE=/dev/input/event1
 <span class="hljs-number">2</span> export TSLIB_CALIBFILE=/etc/pointercal
 <span class="hljs-number">3</span> export TSLIB_CONFFILE=/etc/ts.conf
 <span class="hljs-number">4</span> export TSLIB_PLUGINDIR=/lib/ts
@@ -1149,11 +1149,11 @@ make install  //安装</code></pre></div>
 </ul>
 <p>全部配置好以后重启开发板，然后就可以进行测试了。</p>
 <h3 id="2-tslib-测试"><a href="#2-tslib-测试" class="headerlink" title="2| tslib  测试"></a>2| tslib  测试</h3><p>电容屏可以不用校准，如果是电阻屏就要先进行校准！校准的话输入如下命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">ts_calibrate</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">ts_calibrate</code></pre></div>
 
 <p>校准完成以后如果不满意，或者不小心对电容屏做了校准，那么直接删除掉&#x2F;etc&#x2F;pointercal文件即可。</p>
 <p>最后我们使用 ts_test_mt 这个软件来测试触摸屏工作是否正常，以及多点触摸是否有效，执行如下所示命令：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">ts_test_mt</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">ts_test_mt</code></pre></div>
 
 <p>此命令会打开一个触摸测试界面，如图所示：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905153548331.png" srcset="/img/loading.gif" lazyload alt="image-20200905153548331"></p>
@@ -1167,15 +1167,15 @@ make install  //安装</code></pre></div>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905153619823.png" srcset="/img/loading.gif" lazyload alt="image-20200905153619823"></p>
 <p>从图可以看出，屏幕上有 5 条线，说明 5 点电容触摸工作正常。这 5 跳线都是白色的，图 中由于拍照并处理的原因，导致 5 条线开起来不是白色的。</p>
 <h2 id="使用内核自带的驱动"><a href="#使用内核自带的驱动" class="headerlink" title="使用内核自带的驱动"></a>使用内核自带的驱动</h2><p>Linux 内核已经集成了很多电容触摸 IC 的驱动文件，比如本章实验我们所使用 FT5426，本节我们就来学习一下，如何使用 Linux 内核自带的多点电容触摸驱动。在使用之前要先将前面我们自己添加到内核的 ft5x06.c这个文件从内核中去除掉 ， 只 需 要 修 改drivers&#x2F;input&#x2F;touchscreen&#x2F;Makefile 这个文件即可，将下面这一行删除掉：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs fix"><span class="hljs-attr">obj-y  +</span>=<span class="hljs-string"> ft5x06.o</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs fix"><span class="hljs-attr">obj-y  +</span>=<span class="hljs-string"> ft5x06.o</span></code></pre></div>
 
 <p>内核自带的 FT5426 的驱动文件为 drivers&#x2F;input&#x2F;touchscreen&#x2F;edt-ft5x06.c，此驱动文件不仅仅能够驱动 FT5426，FT5206、FT5406 这些都可以驱动。按照如下步骤来操作，学习如何使用此驱动。</p>
 <h3 id="1-、修改-edt-ft5x06-c"><a href="#1-、修改-edt-ft5x06-c" class="headerlink" title="1 、修改 edt-ft5x06.c"></a>1 、修改 edt-ft5x06.c</h3><p>edt-ft5x06.c 直接使用的话是不行的，需要对其做修改，由于此文件太大，这里就不一一指出来如何修改了。我会将代码放到本篇末尾，大家可以参考看下，对比和原本的文件修改了哪里。</p>
 <h3 id="2-、使能内核自带的-FT5X06-驱动"><a href="#2-、使能内核自带的-FT5X06-驱动" class="headerlink" title="2 、使能内核自带的 FT5X06  驱动"></a>2 、使能内核自带的 FT5X06  驱动</h3><p>edt-ft5x06.c 这个驱动默认是没有使能的，我们需要配置 Linux 内核，使能此驱动，通过图形化配置界面即可完成配置。进入 linux 内核源码目录，输入如下所示命令打开图形化配置界面：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span></code></pre></div>
 
 <p>配置路径如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">Location:
+<div class="code-wrapper"><pre><code class="hljs c">Location:
 -&gt; Device Drivers
     -&gt; Input device support
         -&gt; Generic input <span class="hljs-title function_">layer</span> <span class="hljs-params">(needed <span class="hljs-keyword">for</span> keyboard, mouse, ...)</span> <span class="hljs-params">(INPUT [=y])</span>
@@ -1185,7 +1185,7 @@ make install  //安装</code></pre></div>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905154305722.png" srcset="/img/loading.gif" lazyload alt="image-20200905154305722"></p>
 <p>配置好以后重新编译 linux 内核，生成 zImage，但是还不能直接用，要修改设备树。</p>
 <h3 id="3-、修改设备树"><a href="#3-、修改设备树" class="headerlink" title="3 、修改设备树"></a>3 、修改设备树</h3><p>修改我们在前面中编写的 ft5426 这个设备节点，需要在里面添加 compatible 属性，添加的内容就要参考 edt-ft5x06.c 文件了，edt-ft5x06.c 所支持的 compatible 属性列表如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">edt_ft5x06_of_match</span>[] =</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">of_device_id</span> <span class="hljs-title">edt_ft5x06_of_match</span>[] =</span> &#123;
     &#123; .compatible = <span class="hljs-string">&quot;edt,edt-ft5206&quot;</span>, &#125;,
     &#123; .compatible = <span class="hljs-string">&quot;edt,edt-ft5306&quot;</span>, &#125;,
     &#123; .compatible = <span class="hljs-string">&quot;edt,edt-ft5406&quot;</span>, &#125;,
@@ -1194,10 +1194,10 @@ make install  //安装</code></pre></div>
 
 <p>可以看出，edt-ft5x06.c 文件默认支持的 compatible 属性只要三个“edt,edt-ft5206”、“edt,edt-ft5306”和“edt,edt-ft5406”。</p>
 <p>我们可以修改设备树中的 ft5426 节点，在 compatible 属性值添加一条“edt,edt-ft5406”(示例代码中三选一即可)。或者修改示例代码中的 edt_ft5x06_of_match 表，在里面添加一条：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs jboss-cli">&#123; <span class="hljs-string">.compatible</span> = <span class="hljs-string">&quot;edt,edt-ft5426&quot;</span>, &#125;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs jboss-cli">&#123; <span class="hljs-string">.compatible</span> = <span class="hljs-string">&quot;edt,edt-ft5426&quot;</span>, &#125;</code></pre></div>
 
 <p>总之一句话，让 ft5426 这个设备和 edt-ft5x06.c 这个驱动匹配起来！这里我选择修改设备树中的 ft5426 这个节点，修改后的 ft5426 节点内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ft5426: ft5426@<span class="hljs-number">38</span> &#123;
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> ft5426: ft5426@<span class="hljs-number">38</span> &#123;
 <span class="hljs-number">2</span> compatible = <span class="hljs-string">&quot;edt,edt-ft5426&quot;</span>,<span class="hljs-string">&quot;edt,edt-ft5406&quot;</span>;
 <span class="hljs-number">3</span> reg = &lt;<span class="hljs-number">0x38</span>&gt;;
 。。。。。。</code></pre></div>
@@ -1206,7 +1206,7 @@ make install  //安装</code></pre></div>
 <p>修改完成以后重新编译设备树，然后使用新得到的.dtb 和 zImage 文件启动 linux 内核。如果一切正常的话系统启动的时候就会输出如图所示信息：</p>
 <p><img src="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/21%E3%80%81Linux%E5%A4%9A%E7%82%B9%E7%94%B5%E5%AE%B9%E8%A7%A6%E6%91%B8%E5%AE%9E%E9%AA%8C/image-20200905154521160.png" srcset="/img/loading.gif" lazyload alt="image-20200905154521160"></p>
 <p>直接运行 ts_test_mt 来测试触摸屏是否可以使用。至此，关于 Linux 下的多点电容触摸驱动就结束了，重点就是掌握 linux 下的触摸屏上报时序，大多数都是 Type B 类型。</p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="修改过的edt-ft5x06-c"><a href="#修改过的edt-ft5x06-c" class="headerlink" title="修改过的edt-ft5x06.c"></a>修改过的edt-ft5x06.c</h3><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/*</span>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="修改过的edt-ft5x06-c"><a href="#修改过的edt-ft5x06-c" class="headerlink" title="修改过的edt-ft5x06.c"></a>修改过的edt-ft5x06.c</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">/*</span>
 <span class="hljs-comment"> * Copyright (C) 2012 Simon Budig, &lt;simon.budig@kernelconcepts.de&gt;</span>
 <span class="hljs-comment"> * Daniel Wagener &lt;daniel.wagener@kernelconcepts.de&gt; (M09 firmware support)</span>
 <span class="hljs-comment"> * Lothar Waßmann &lt;LW@KARO-electronics.de&gt; (DT support)</span>
@@ -2423,9 +2423,9 @@ MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/19%E3%80%81Linux_SPI%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
+                      <a href="/2020/09/14/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/20%E3%80%81Linux_UART%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">19| Linux SPI驱动实验</span>
+                        <span class="hidden-mobile">20| Linux UART串口实验</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     

@@ -241,13 +241,13 @@
             
             <div class="markdown-body">
               <h1 id="链接脚本-lds"><a href="#链接脚本-lds" class="headerlink" title="链接脚本.lds"></a>链接脚本.lds</h1><h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>我们链接代码的时候可以使用如下语句：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Ttext 0X87800000 -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Ttext 0X87800000 -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
 
 <p>上面语句中我们是通过“-Ttext”来指定链接地址是 0X87800000 的，这样的话所有的文件都会链接到以 0X87800000 为起始地址的区域。</p>
 <p>但是有时候我们很多文件需要链接到指定的区域，或者叫做段里面，比如在 Linux 里面初始化函数就会放到 init 段里面。因此我们需要能够自定义一些段，这些段的起始地址我们可以自由指定，同样的我们也可以指定一个文件或者函数应该存放到哪个段里面去。要完成这个功能我们就需要使用到链接脚本，看名字就知道链接脚本主要用于链接的，用于描述文件应该如何被链接在一起形成最终的可执行文件。其主要目的是描述输入文件中的段如何被映射到输出文件中，并且控制输出文件中的内存排布。比如我们编译生成的文件一般都包含 text 段、data 段等等。</p>
 <p>链接脚本的语法很简单，就是编写一系列的命令，这些命令组成了链接脚本，每个命令是一个带有参数的关键字或者一个对符号的赋值，可以使用分号分隔命令。像文件名之类的字符串可以直接键入,也可以使用通配符“*”。</p>
 <p>最简单的链接脚本可以只包含一个命令“SECTIONS”,我们可以在这一个 “SECTIONS”里面来描述输出文件的内存布局。我们一般编译出来的代码都包含在 text、data、bss 和 rodata 这四个段内，假设现在的代码要被链接到 0X10000000 这个地址，数据要被链接到 0X30000000 这个地方，下面就是完成此功能的最简单的链接脚本：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">SECTIONS&#123;
+<div class="code-wrapper"><pre><code class="hljs c">SECTIONS&#123;
     . = <span class="hljs-number">0X10000000</span>;
     .text : &#123;*(.text)&#125;
     . = <span class="hljs-number">0X30000000</span>;
@@ -267,7 +267,7 @@
 <li>start.o 要被链接到最开始的地方，因为 start.o 里面包含这第一个要执行的命令。</li>
 </ul>
 <p>根据要求，在 Makefile 同目录下新建一个名为“imx6ul.lds”的文件</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">SECTIONS&#123;
+<div class="code-wrapper"><pre><code class="hljs c">SECTIONS&#123;
     . = <span class="hljs-number">0X87800000</span>;
     .text :
     &#123;
@@ -287,10 +287,10 @@
 <p>在第 11、13 行有“__bss_start”和“__bss_end”这两个东西？这个是什么呢？“__bss_start”和“__bss_end”是符号第 11、13 这两行其实就是对这两个符号进行赋值，其值为定位符“.”，这两个符号用来保存.bss 段的起始地址和结束地址。</p>
 <p>前面说了.bss 段是定义了但是没有被初始化的变量，我们需要手动对.bss 段的变量清零的，因此我们需要知道.bss 段的起始和结束地址，这样我们直接对这段内存赋 0 即可完成清零。通过第 11、13 行代码，.bss 段的起始地址和结束地址就保存在了“__bss_start”和“__bss_end”中，我们就可以直接在汇编或者 C 文件里面使用这两个符号。</p>
 <p>之后我们就可以将 Makefile 中的如下一行代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Ttext 0X87800000 -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Ttext 0X87800000 -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
 
 <p>改为：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Timx6ul.lds -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">arm-linux-gnueabihf-ld -Timx6ul.lds -o ledc.elf <span class="hljs-variable">$^</span></code></pre></div>
 
 
             </div>
@@ -334,9 +334,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/6.IMX6U%E8%A3%B8%E6%9C%BA%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C/">
+                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/5.Makefile%E7%9A%84%E7%AE%80%E5%8D%95%E7%BC%96%E5%86%99(%E8%A7%81C++%E9%87%8C%E7%9A%84%E7%AC%94%E8%AE%B0)/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">6| 裸机程序编译运行</span>
+                        <span class="hidden-mobile">5| Makefile的简单编写</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     

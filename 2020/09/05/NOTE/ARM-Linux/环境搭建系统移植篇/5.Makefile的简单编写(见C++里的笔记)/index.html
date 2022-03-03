@@ -242,7 +242,7 @@
             <div class="markdown-body">
               <h1 id="Makefile的简单编写"><a href="#Makefile的简单编写" class="headerlink" title="Makefile的简单编写"></a>Makefile的简单编写</h1><p>:label:@author:firestaradmin 2020年8月16日15:18:10 </p>
 <hr>
-<h2 id="基本知识："><a href="#基本知识：" class="headerlink" title="基本知识："></a>基本知识：</h2><h3 id="书写形式-例："><a href="#书写形式-例：" class="headerlink" title="书写形式 例："></a>书写形式 例：</h3><div class="hljs code-wrapper"><pre><code class="hljs makefile">foo.o : foo.c defs.h <span class="hljs-comment"># foo 模块</span>
+<h2 id="基本知识："><a href="#基本知识：" class="headerlink" title="基本知识："></a>基本知识：</h2><h3 id="书写形式-例："><a href="#书写形式-例：" class="headerlink" title="书写形式 例："></a>书写形式 例：</h3><div class="code-wrapper"><pre><code class="hljs makefile">foo.o : foo.c defs.h <span class="hljs-comment"># foo 模块</span>
     cc -c -g foo.c</code></pre></div>
 
 <ul>
@@ -255,12 +255,12 @@
 <li><p>如“*.c”表示所有后缀为 c 的文件。一个需要我们注意的是，如果我们的文件名中有通配符，那么可以用转义字符“\”，如“\*”来表示真实的“*”字符，而不是任意长度的字符串。</p>
 </li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">print: *.c</span>
+<div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">print: *.c</span>
     lpr -p <span class="hljs-variable">$?</span>
     touch print</code></pre></div>
 
 <p>上面这个例子说明了通配符也可以在我们的规则中，目标 print 依赖于所有的[.c]文件。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">objects = *.o</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">objects = *.o</code></pre></div>
 
 <p>上面这个例子，表示了，通符同样可以用在变量中。并不是说[*.o]会展开！objects<br>的值就是“*.o”。Makefile 中的变量其实就是 C&#x2F;C++中的宏。如果你要让通配符在变量中<br>展开，也就是让 objects 的值是所有[.o]的文件名的集合，那么，你可以这样：</p>
 <p>objects :&#x3D; $(wildcard *.o)</p>
@@ -268,21 +268,21 @@
 <h3 id="文件搜寻"><a href="#文件搜寻" class="headerlink" title="文件搜寻"></a>文件搜寻</h3><ul>
 <li>Makefile 文件中的特殊变量“VPATH”就是完成这个功能的，如果没有指明这个变量，make 只会在当前的目录中去找寻依赖文件和目标文件。如果定义了这个变量，那么，make就会在当当前目录找不到的情况下，到所指定的目录中去找寻文件了。</li>
 </ul>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">VPATH = src:../headers</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">VPATH = src:../headers</code></pre></div>
 
 <p>上面的的定义指定两个目录，“src”和“..&#x2F;headers”，make 会按照这个顺序进行搜<br>索。目录由“冒号”分隔。（当然，当前目录永远是最高优先搜索的地方）</p>
 <h3 id="伪目标"><a href="#伪目标" class="headerlink" title="伪目标"></a>伪目标</h3><p>最早先的一个例子中，我们提到过一个“clean”的目标，这是一个“伪目标”，</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">clean:</span>
+<div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-section">clean:</span>
     rm *.o temp</code></pre></div>
 
 <p>我们生成了许多文件编译文件，我们也应该提供一个清除它们的“目标”以备完整地重编译而用.（以“make clean”来使用该目标）</p>
 <p>因为，我们并不生成“clean”这个文件。“伪目标”并不是一个文件，只是一个标签，由于“伪目标”不是文件，所以 make 无法生成它的依赖关系和决定它是否要执行。我们只有通过显示地指明这个“目标”才能让其生效。当然，“伪目标”的取名不能和文件名重名，不然其就失去了“伪目标”的意义了。</p>
 <p>当然，为了避免和文件重名的这种情况，我们可以使用一个特殊的标记“.PHONY”来显示地指明一个目标是“伪目标”，向 make 说明，不管是否有这个文件，这个目标就是“伪目标”。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">.PHONY : clean</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">.PHONY : clean</code></pre></div>
 
 <p><strong>只要有这个声明，不管是否有“clean”文件，只要“make clean”都会运行“clean”这个目标。</strong></p>
 <p>于是整个过程可以这样写：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile"><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: clean</span>
+<div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: clean</span>
 <span class="hljs-section">clean:</span>
     rm *.o temp</code></pre></div>
 
@@ -290,7 +290,7 @@
 <li><p>变量在声明时需要给予初值，而在使用时，需要给在变量名前加上“$”符号，但最好用小括号“（）”或是大括号“{}”把变量给包括起来。如果你要使用真实的“$”字符，那么你需要用“$$”来表示。</p>
 </li>
 <li><p>变量可以使用在许多地方，如规则中的“目标”、“依赖”、“命令”以及新的变量中。看一个例子：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">objects = program.o foo.o utils.o
+<div class="code-wrapper"><pre><code class="hljs makefile">objects = program.o foo.o utils.o
 program : <span class="hljs-variable">$(objects)</span>
 cc -o program <span class="hljs-variable">$(objects)</span>
 <span class="hljs-variable">$(objects)</span> : defs.h</code></pre></div></li>
@@ -300,7 +300,7 @@ cc -o program <span class="hljs-variable">$(objects)</span>
 <ul>
 <li><p>“&#x3D;”</p>
 <p>make会将整个makefile展开后，再决定变量的值。也就是说，变量的值将会是整个makefile中最后被指定的值。看例子：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs">  x = foo
+<div class="code-wrapper"><pre><code class="hljs">  x = foo
   y = $(x) bar
   x = xyz
 </code></pre></div>
@@ -310,7 +310,7 @@ cc -o program <span class="hljs-variable">$(objects)</span>
 <ul>
 <li><p>“:&#x3D;”</p>
 <p>  “:&#x3D;”表示变量的值决定于它在makefile中的位置，而不是整个makefile展开后的最终值。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs">  x := foo
+<div class="code-wrapper"><pre><code class="hljs">  x := foo
   y := $(x) bar
   x := xyz
 </code></pre></div>
@@ -333,56 +333,56 @@ cc -o program <span class="hljs-variable">$(objects)</span>
 <li><p>$*<br>这个变量表示目标模式中”%”及其之前的部分。如果目标是”dir&#x2F;a.foo.b”，并且目标的<br>模式是”a.%.b”，那么，”$<em>“的值就是”dir&#x2F;a.foo”。这个变量对于构造有关联的文件名是比<br>较有较。如果目标中没有模式的定义，那么”$</em>“也就不能被推导出，但是，如果目标文件的<br>后缀是 make 所识别的，那么”$<em>“就是除了后缀的那一部分。例如：如果目标是”foo.c”，因<br>为”.c”是 make 所能识别的后缀名，所以，”$</em>“的值就是”foo”。</p>
 </li>
 </ul>
-<h3 id="部分函数"><a href="#部分函数" class="headerlink" title="部分函数"></a>部分函数</h3><h4 id="patsubst"><a href="#patsubst" class="headerlink" title="patsubst"></a>patsubst</h4><div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">patsubst</span> &lt;<span class="hljs-params">pattern</span>&gt;,&lt;<span class="hljs-params">replacement</span>&gt;,&lt;<span class="hljs-params">text</span>&gt;)</span></code></pre></div>
+<h3 id="部分函数"><a href="#部分函数" class="headerlink" title="部分函数"></a>部分函数</h3><h4 id="patsubst"><a href="#patsubst" class="headerlink" title="patsubst"></a>patsubst</h4><div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">patsubst</span> &lt;<span class="hljs-params">pattern</span>&gt;,&lt;<span class="hljs-params">replacement</span>&gt;,&lt;<span class="hljs-params">text</span>&gt;)</span></code></pre></div>
 
 <p>名称：模式字符串替换函数——patsubst。</p>
 <p>功能：查找&lt;text&gt;中的单词（单词以“空格”、“Tab”或“回车”“换行”分隔）是否符合模式&lt;pattern&gt;，如果匹配的话，则以&lt;replacement&gt;替换。这里，&lt;pattern&gt;可以包括通配符“%”，表示任意长度的字串。如果&lt;replacement&gt;中也包含“%”，那么，&lt;replacement&gt;中的这个“%”将是&lt;pattern&gt;中的那个“%”所代表的字串。 （可以用“\”来转义，以“%”来表示真实含义的“%”字符）</p>
 <p>返回：函数返回被替换过后的字符串。</p>
 <p>示例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">patsubst</span> %.<span class="hljs-params">c</span>,%.<span class="hljs-params">o</span>,<span class="hljs-params">x</span>.<span class="hljs-params">c</span>.<span class="hljs-params">c</span> <span class="hljs-params">bar</span>.<span class="hljs-params">c</span>)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">patsubst</span> %.<span class="hljs-params">c</span>,%.<span class="hljs-params">o</span>,<span class="hljs-params">x</span>.<span class="hljs-params">c</span>.<span class="hljs-params">c</span> <span class="hljs-params">bar</span>.<span class="hljs-params">c</span>)</span></code></pre></div>
 
 <p>把字串“x.c.c bar.c”符合模式[%.c]的单词替换成[%.o]，返回结果是“x.c.o bar.o”</p>
-<h4 id="dir"><a href="#dir" class="headerlink" title="dir"></a>dir</h4><div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">dir</span> &lt;<span class="hljs-params">names</span><span class="hljs-operator">...</span>&gt;)</span></code></pre></div>
+<h4 id="dir"><a href="#dir" class="headerlink" title="dir"></a>dir</h4><div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">dir</span> &lt;<span class="hljs-params">names</span><span class="hljs-operator">...</span>&gt;)</span></code></pre></div>
 
 <p>名称：取目录函数——dir。<br>功能：从文件名序列&lt;names&gt;中取出目录部分。目录部分是指最后一个反斜杠（“&#x2F;”）之前<br>的部分。如果没有反斜杠，那么返回“.&#x2F;”。<br>返回：返回文件名序列&lt;names&gt;的目录部分。<br>示例： </p>
-<div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">dir</span> <span class="hljs-params">src</span><span class="hljs-operator">/</span><span class="hljs-params">foo</span>.<span class="hljs-params">c</span> <span class="hljs-params">hacks</span>)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">dir</span> <span class="hljs-params">src</span><span class="hljs-operator">/</span><span class="hljs-params">foo</span>.<span class="hljs-params">c</span> <span class="hljs-params">hacks</span>)</span></code></pre></div>
 
 <p>返回值是“src&#x2F; .&#x2F;”</p>
-<h4 id="notdir"><a href="#notdir" class="headerlink" title="notdir"></a>notdir</h4><div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">notdir</span> &lt;<span class="hljs-params">names</span><span class="hljs-operator">...</span>&gt;)</span></code></pre></div>
+<h4 id="notdir"><a href="#notdir" class="headerlink" title="notdir"></a>notdir</h4><div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">notdir</span> &lt;<span class="hljs-params">names</span><span class="hljs-operator">...</span>&gt;)</span></code></pre></div>
 
 <p>名称：取文件函数——notdir。<br>功能：从文件名序列&lt;names&gt;中取出非目录部分。非目录部分是指最后一个反斜杠（“ &#x2F;”）<br>之后的部分。<br>返回：返回文件名序列&lt;names&gt;的非目录部分。<br>示例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">notdir</span> <span class="hljs-params">src</span><span class="hljs-operator">/</span><span class="hljs-params">foo</span>.<span class="hljs-params">c</span> <span class="hljs-params">hacks</span>)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">notdir</span> <span class="hljs-params">src</span><span class="hljs-operator">/</span><span class="hljs-params">foo</span>.<span class="hljs-params">c</span> <span class="hljs-params">hacks</span>)</span></code></pre></div>
 
 <p>返回值是“foo.c hacks”。</p>
 <h4 id="foreach-函数"><a href="#foreach-函数" class="headerlink" title="foreach  函数"></a>foreach  函数</h4><p>foreach 函数和别的函数非常的不一样。因为这个函数是用来做循环用的，Makefile中的 foreach 函数几乎是仿照于 Unix 标准 Shell（&#x2F;bin&#x2F;sh）中的 for 语句，或是 C-Shell（&#x2F;bin&#x2F;csh）中的 foreach 语句而构建的。它的语法是：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">foreach</span> &lt;<span class="hljs-params">var</span>&gt;,&lt;<span class="hljs-params">list</span>&gt;,&lt;<span class="hljs-params">text</span>&gt;)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-constructor">$(<span class="hljs-params">foreach</span> &lt;<span class="hljs-params">var</span>&gt;,&lt;<span class="hljs-params">list</span>&gt;,&lt;<span class="hljs-params">text</span>&gt;)</span></code></pre></div>
 
 <p>这个函数的意思是，把参数&lt;list&gt;中的单词逐一取出放到参数&lt;var&gt;所指定的变量中，然后再执行&lt;text&gt;所包含的表达式。每一次&lt;text&gt;会返回一个字符串，循环过程中，&lt;text&gt;的所返回的每个字符串会以空格分隔，最后当整个循环结束时，&lt;text&gt;所返回的每个字符串所组成的整个字符串（以空格分隔）将会是 foreach 函数的返回值。</p>
 <p>所以，&lt;var&gt;最好是一个变量名，&lt;list&gt;可以是一个表达式，而&lt;text&gt;中一般会使用&lt;var&gt;<br>这个参数来依次枚举&lt;list&gt;中的单词。举个例子：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">names := a b c d
+<div class="code-wrapper"><pre><code class="hljs makefile">names := a b c d
 files := <span class="hljs-variable">$(<span class="hljs-built_in">foreach</span> n,<span class="hljs-variable">$(names)</span>,<span class="hljs-variable">$(n)</span>.o)</span></code></pre></div>
 
 <p>上面的例子中，$(name)中的单词会被挨个取出，并存到变量“n”中，“$(n).o”每次<br>根据“$(n)”计算出一个值，这些值以空格分隔，最后作为 foreach 函数的返回，所以，<br>$(files)的值是“a.o b.o c.o d.o”。<br>注意，foreach 中的&lt;var&gt;参数是一个临时的局部变量，foreach 函数执行完后，参数<br>&lt;var&gt;的变量将不在作用，其作用域只在 foreach 函数当中。</p>
 <h3 id="静态模式规则"><a href="#静态模式规则" class="headerlink" title="静态模式规则"></a>静态模式规则</h3><p>静态模式可以更加容易地定义多目标的规则，可以让我们的规则变得更加的有弹性和灵活。我们还是先来看一下语法：</p>
 <p>&lt;targets …&gt;: <target-pattern>: &lt;prereq-patterns …&gt;<br>　　<commands><br>…</commands></target-pattern></p>
 <p>没看明白没有关系，看下面的例子：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">objects = foo.o bar.o
+<div class="code-wrapper"><pre><code class="hljs makefile">objects = foo.o bar.o
 all : <span class="hljs-variable">$(objects)</span>
     <span class="hljs-variable">$(objects)</span>: %.o: %.c
     <span class="hljs-variable">$(CC)</span> -c <span class="hljs-variable">$(CFLAGS)</span> <span class="hljs-variable">$&lt;</span> -o <span class="hljs-variable">$@</span></code></pre></div>
 
 <p>上面的例子中，指明了我们的目标从$objects中获取，“%.o”表明要所有以“.o”结尾的目标，也就是“foo.o bar.o”，也就是变量$object集合的模式，而依赖模式“%.c”则取模式“%.o”的“%”，也就是“foo bar”，并为其加下“.c”的后缀，于是，我们的依赖目标就是“foo.c bar.c”。而命令中的“$&lt;”和“$@”则是自动化变量，“$&lt;”表示所有的依赖目标集（也就是“foo.c bar.c”），“$@”表示目标集（也就是“foo.o bar.o”）。于是，上面的规则展开后等价于下面的规则：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">foo.o : foo.c
+<div class="code-wrapper"><pre><code class="hljs makefile">foo.o : foo.c
     <span class="hljs-variable">$(CC)</span> -c <span class="hljs-variable">$(CFLAGS)</span> foo.c -o foo.o
 bar.o : bar.c
     <span class="hljs-variable">$(CC)</span> -c <span class="hljs-variable">$(CFLAGS)</span> bar.c -o bar.o</code></pre></div>
 
 <p>试想，如果我们的“%.o”有几百个，那种我们只要用这种很简单的“静态模式规则”就可以写完一堆规则，实在是太有效率了。“静态模式规则”的用法很灵活，如果用得好，那会一个很强大的功能。 </p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">.c.o：
+<div class="code-wrapper"><pre><code class="hljs makefile">.c.o：
     gcc -c -o <span class="hljs-variable">$*</span>.o <span class="hljs-variable">$&lt;</span></code></pre></div>
 
 <p>.c.o:<br>这句话的意思就是 %.o : %.c<br>也就是说，所有的.o文件，依赖于对应的.c文件<br>比如有三个a.c b.c c.c<br>那么就会有 a.o b.o c.o<br>a.o : a.c<br>b.o : b.c<br>c.o : c.c<br>这是makefile依赖的一种简写方法。makefile的依赖关系有很多种写法。这是其中一种。</p>
-<h2 id="Makefile栗子预览："><a href="#Makefile栗子预览：" class="headerlink" title="Makefile栗子预览："></a>Makefile栗子预览：</h2><div class="hljs code-wrapper"><pre><code class="hljs makefile">CROSS_COMPILE 	?= arm-linux-gnueabihf-
+<h2 id="Makefile栗子预览："><a href="#Makefile栗子预览：" class="headerlink" title="Makefile栗子预览："></a>Makefile栗子预览：</h2><div class="code-wrapper"><pre><code class="hljs makefile">CROSS_COMPILE 	?= arm-linux-gnueabihf-
 TARGET		  	?= uart
 
 CC 				:= <span class="hljs-variable">$(CROSS_COMPILE)</span>gcc
@@ -453,10 +453,10 @@ VPATH			:= <span class="hljs-variable">$(SRCDIRS)</span>
 
 <h3 id="栗子解析："><a href="#栗子解析：" class="headerlink" title="栗子解析："></a>栗子解析：</h3><p>在函数中使用到了除法运算，因此在链接的时候需要将编译器的数学库也链接进来。变量LIBPATH就是数学库的目录.</p>
 <p>在后面的学习中，我们常常要用到一些第三方库，那么在连接程序的时候就需要指定这些<br>第三方库所在的目录，Makefile 在链接的时候使用选项“-L”来指定库所在的目录，比如变量 LIBPATH 就是指定了我们所使用的编译器库所在的目录。</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">LIBPATH			:= -lgcc -L /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">LIBPATH			:= -lgcc -L /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4</code></pre></div>
 
 <hr>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile"><span class="hljs-variable">$(SOBJS)</span> : obj/%.o : %.S
+<div class="code-wrapper"><pre><code class="hljs makefile"><span class="hljs-variable">$(SOBJS)</span> : obj/%.o : %.S
 	<span class="hljs-variable">$(CC)</span> -Wall -nostdlib -fno-builtin -c -O2  <span class="hljs-variable">$(INCLUDE)</span> -o <span class="hljs-variable">$@</span> <span class="hljs-variable">$&lt;</span>
 
 <span class="hljs-variable">$(COBJS)</span> : obj/%.o : %.c
@@ -470,25 +470,25 @@ VPATH			:= <span class="hljs-variable">$(SRCDIRS)</span>
 <li><p>-O2 优化等级</p>
 </li>
 <li><p>选项“-fno-builtin”，否则编译的时候提示“putc”、“puts”<br>这两个函数与内建函数冲突，错误信息如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs pgsql"><span class="hljs-built_in">warning</span>: conflicting <span class="hljs-keyword">types</span> <span class="hljs-keyword">for</span> built-<span class="hljs-keyword">in</span> <span class="hljs-keyword">function</span> ‘putc’
+<div class="code-wrapper"><pre><code class="hljs pgsql"><span class="hljs-built_in">warning</span>: conflicting <span class="hljs-keyword">types</span> <span class="hljs-keyword">for</span> built-<span class="hljs-keyword">in</span> <span class="hljs-keyword">function</span> ‘putc’
 <span class="hljs-built_in">warning</span>: conflicting <span class="hljs-keyword">types</span> <span class="hljs-keyword">for</span> built-<span class="hljs-keyword">in</span> <span class="hljs-keyword">function</span> ‘puts’</code></pre></div>
 
 <p>在编译的时候加入选项“-fno-builtin”表示不使用内建函数，这样我们就可以自己实现 putc<br>和 puts 这样的函数了。</p>
 </li>
 </ul>
 <hr>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">INCLUDE			:= <span class="hljs-variable">$(<span class="hljs-built_in">patsubst</span> %, -I %, <span class="hljs-variable">$(INCDIRS)</span>)</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">INCLUDE			:= <span class="hljs-variable">$(<span class="hljs-built_in">patsubst</span> %, -I %, <span class="hljs-variable">$(INCDIRS)</span>)</span></code></pre></div>
 
 <p>通过函数 patsubst 给变量 INCDIRS 添加一个“-I”，即：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">INCLUDE := -I imx6ul -I bsp/clk -I bsp/led -I bsp/delay</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">INCLUDE := -I imx6ul -I bsp/clk -I bsp/led -I bsp/delay</code></pre></div>
 
 <p>加“-I”的目的是因为 Makefile 语法要求指明头文件目录的时候需要加上“-I”。</p>
 <hr>
-<div class="hljs code-wrapper"><pre><code class="hljs makefile">SFILES			:= <span class="hljs-variable">$(<span class="hljs-built_in">foreach</span> <span class="hljs-built_in">dir</span>, <span class="hljs-variable">$(SRCDIRS)</span>, $(<span class="hljs-built_in">wildcard</span> <span class="hljs-variable">$(dir)</span>/*.S)</span>)</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs makefile">SFILES			:= <span class="hljs-variable">$(<span class="hljs-built_in">foreach</span> <span class="hljs-built_in">dir</span>, <span class="hljs-variable">$(SRCDIRS)</span>, $(<span class="hljs-built_in">wildcard</span> <span class="hljs-variable">$(dir)</span>/*.S)</span>)</code></pre></div>
 
 <p>将$(SRCDIRS)中的目录里的*.s文件取出</p>
 <hr>
-<h2 id="Makefile栗子预览2："><a href="#Makefile栗子预览2：" class="headerlink" title="Makefile栗子预览2："></a>Makefile栗子预览2：</h2><div class="hljs code-wrapper"><pre><code class="hljs makefile">
+<h2 id="Makefile栗子预览2："><a href="#Makefile栗子预览2：" class="headerlink" title="Makefile栗子预览2："></a>Makefile栗子预览2：</h2><div class="code-wrapper"><pre><code class="hljs makefile">
 TARGET = rtkCom
 
 <span class="hljs-comment">#您想要生成可执行文件的名字</span>
@@ -594,9 +594,9 @@ compile : <span class="hljs-variable">$(CPP_OBJS)</span>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/06/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/7.uboot%E7%A7%BB%E6%A4%8D/">
+                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/6.IMX6U%E8%A3%B8%E6%9C%BA%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">7| uboot移植</span>
+                        <span class="hidden-mobile">6| 裸机程序编译运行</span>
                         <span class="visible-mobile">Vorheriger</span>
                       </a>
                     
@@ -604,8 +604,8 @@ compile : <span class="hljs-variable">$(CPP_OBJS)</span>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/09/05/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/6.IMX6U%E8%A3%B8%E6%9C%BA%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C/">
-                        <span class="hidden-mobile">6| 裸机程序编译运行</span>
+                      <a href="/2020/09/04/NOTE/ARM-Linux/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%A7%BB%E6%A4%8D%E7%AF%87/4.%E9%93%BE%E6%8E%A5%E8%84%9A%E6%9C%AClds%E7%9A%84%E7%BC%96%E5%86%99/">
+                        <span class="hidden-mobile">4| 链接脚本lds的编写</span>
                         <span class="visible-mobile">Nächster</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

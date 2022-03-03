@@ -265,10 +265,10 @@
 <h3 id="2、保护内容是什么"><a href="#2、保护内容是什么" class="headerlink" title="2、保护内容是什么"></a>2、保护内容是什么</h3><p>前面一直说要防止并发访问共享资源，换句话说就是要保护共享资源，防止进行并发访问。那么问题来了，什么是共享资源？现实生活中的公共电话、共享单车这些是共享资源，我们都很容易理解，那么在程序中什么是共享资源？也就是保护的内容是什么？我们保护的不是代码，而是数据！某个线程的局部变量不需要保护，我们要保护的是多个线程都会访问的共享数据。一个整形的全局变量 a 是数据，一份要打印的文档也是数据，虽然我们知道了要对共享数据进行保护，那么怎么判断哪些共享数据要保护呢？找到要保护的数据才是重点，而这个也是难点，因为驱动程序各不相同，那么数据也千变万化，一般像全局变量，设备结构体这些肯定是要保护的，至于其他的数据就要根据实际的驱动程序而定了。</p>
 <p>当我们发现驱动程序中存在并发和竞争的时候一定要处理掉，接下来我们依次来学习一下Linux 内核提供的几种并发和竞争的处理方法。 </p>
 <h2 id="2-原子操作"><a href="#2-原子操作" class="headerlink" title="2|原子操作"></a>2|原子操作</h2><h3 id="1、原子操作简介"><a href="#1、原子操作简介" class="headerlink" title="1、原子操作简介"></a>1、原子操作简介</h3><p>首先看一下原子操作，<strong>原子操作就是指不能再进一步分割的操作</strong>，一般原子操作用于变量或者位操作。假如现在要对无符号整形变量 a 赋值，值为 3，对于 C 语言来讲很简单，直接就是：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">a = <span class="hljs-number">3</span>;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c">a = <span class="hljs-number">3</span>;</code></pre></div>
 
 <p>但是 C 语言要先编译为成汇编指令，ARM 架构不支持直接对寄存器进行读写操作，比如要借助寄存器 R0、R1 等来完成赋值操作。假设变量 a 的地址为 0X3000000，“a&#x3D;3”这一行 C语言可能会被编译为如下所示的汇编代码：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs assembly">1 ldr r0, =0X30000000 /* 变量 a 地址 */
+<div class="code-wrapper"><pre><code class="hljs assembly">1 ldr r0, =0X30000000 /* 变量 a 地址 */
 2 ldr r1, = 3 /* 要写入的值 */
 3 str r1, [r0] /* 将 3 写入到 a 变量中 */</code></pre></div>
 
@@ -279,15 +279,15 @@
 <p>按照图 所示的流程，线程 A 最终将变量 a 设置为了 20，而并不是要求的 10！线程B 没有问题。这就是一个最简单的设置变量值的并发与竞争的例子，要解决这个问题就要保证示例代码  中的三行汇编指令作为一个整体运行，也就是作为一个原子存在。</p>
 <p>Linux 内核提供了两组原子操作 API 函数，一组是对整形变量进行操作的，一组是对位进行操作的，我们接下来看一下这些 API 函数。</p>
 <h3 id="2、原子整形操作API函数"><a href="#2、原子整形操作API函数" class="headerlink" title="2、原子整形操作API函数"></a>2、原子整形操作API函数</h3><p>Linux 内核定义了叫做 <strong>atomic_t</strong> 的结构体来完成整形数据的原子操作，在使用中用原子变量来代替整形变量，此结构体定义在 <strong>include&#x2F;linux&#x2F;types.h</strong> 文件中，定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">175</span> <span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">175</span> <span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
 <span class="hljs-number">176</span> 	<span class="hljs-type">int</span> counter;
 <span class="hljs-number">177</span> &#125; <span class="hljs-type">atomic_t</span>;</code></pre></div>
 
 <p>如果要使用原子操作 API 函数，首先要先定义一个 atomic_t 的变量，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> a; <span class="hljs-comment">//定义 a</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> a; <span class="hljs-comment">//定义 a</span></code></pre></div>
 
 <p>也可以在定义原子变量的时候给原子变量赋初值，如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> b = ATOMIC_INIT(<span class="hljs-number">0</span>); <span class="hljs-comment">//定义原子变量 b 并赋初值为 0</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> b = ATOMIC_INIT(<span class="hljs-number">0</span>); <span class="hljs-comment">//定义原子变量 b 并赋初值为 0</span></code></pre></div>
 
 <p>可以通过宏 ATOMIC_INIT 向原子变量赋初值。</p>
 <p>原子变量有了，接下来就是对原子变量进行操作，比如读、写、增加、减少等等，Linux 内核提供了大量的原子操作 API 函数，如表所示：</p>
@@ -352,12 +352,12 @@
 </tr>
 </tbody></table>
 <p>如果使用 64 位的 SOC 的话，就要用到 64 位的原子变量，Linux 内核也定义了 64 位原子结构体，如下所示</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
 	<span class="hljs-type">long</span> <span class="hljs-type">long</span> counter;
 &#125; <span class="hljs-type">atomic64_t</span>;</code></pre></div>
 
 <p>相应的也提供了 64 位原子变量的操作 API 函数，这里我们就不详细讲解了，和表 中的 API 函数用法一样，只是将“atomic_”前缀换为“atomic64_”，将 int 换为 long long。如果使用的是 64 位的 SOC，那么就要使用 64 位的原子操作函数。Cortex-A7 是 32 位的架构，所以本文档只使用表 47.2.2.1 中的 32 位原子操作函数。原子变量和相应的 API 函数使用起来很简单，参考如下示例：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> v = ATOMIC_INIT(<span class="hljs-number">0</span>); <span class="hljs-comment">/* 定义并初始化原子变零 v=0 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">atomic_t</span> v = ATOMIC_INIT(<span class="hljs-number">0</span>); <span class="hljs-comment">/* 定义并初始化原子变零 v=0 */</span>
 <span class="hljs-type">atomic_set</span>(<span class="hljs-number">10</span>); 		<span class="hljs-comment">/* 设置 v=10 */</span>
 <span class="hljs-type">atomic_read</span>(&amp;v); 		<span class="hljs-comment">/* 读取 v 的值，肯定是 10 */</span>
 <span class="hljs-type">atomic_inc</span>(&amp;v); 		<span class="hljs-comment">/* v 的值加 1，v=11 */</span></code></pre></div>
@@ -403,7 +403,7 @@
 <p><strong>当一个线程要访问某个共享资源的时候首先要先获取相应的锁，锁只能被一个线程持有，只要此线程不释放持有的锁，那么其他的线程就不能获取此锁</strong>。对于自旋锁而言，如果自旋锁正在被线程 A 持有，线程 B 想要获取自旋锁，那么线程 B 就会处于忙循环-旋转-等待状态，线程 B 不会进入休眠状态或者说去做其他的处理，而是会一直傻傻的在那里“转圈圈”的等待锁可用。比如现在有个公用电话亭，一次肯定只能进去一个人打电话，现在电话亭里面有人正在打电话，相当于获得了自旋锁。此时你到了电话亭门口，因为里面有人，所以你不能进去打电话，相当于没有获取自旋锁，这个时候你肯定是站在原地等待，你可能因为无聊的等待而转圈圈消遣时光，反正就是哪里也不能去，要一直等到里面的人打完电话出来。终于，里面的人打完电话出来了，相当于释放了自旋锁，这个时候你就可以使用电话亭打电话了，相当于获取到了自旋锁。</p>
 <p>自旋锁的“自旋”也就是“原地打转”的意思，“原地打转”的目的是为了等待自旋锁可以用，可以访问共享资源。把自旋锁比作一个变量 a，变量 a&#x3D;1 的时候表示共享资源可用，当 a&#x3D;0的时候表示共享资源不可用。现在线程 A 要访问共享资源，发现 a&#x3D;0(自旋锁被其他线程持有)，那么线程 A 就会不断的查询 a 的值，直到 a&#x3D;1。从这里我们可以看到<strong>自旋锁的一个缺点</strong>：那就是等待自旋锁的线程会一直处于自旋状态，这样会浪费处理器时间，降低系统性能，所以自旋锁的持有时间不能太长。所以自旋锁适用于短时期的轻量级加锁，如果遇到需要长时间持有锁的场景那就需要换其他的方法了，这个我们后面会讲解。</p>
 <p>Linux 内核使用结构体 spinlock_t 表示自旋锁，结构体定义如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">64</span> <span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">spinlock</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">64</span> <span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">spinlock</span> &#123;</span>
 <span class="hljs-number">65</span> 		<span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span>
 <span class="hljs-number">66</span> 			<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">raw_spinlock</span> <span class="hljs-title">rlock</span>;</span>
 <span class="hljs-number">67</span>
@@ -418,7 +418,7 @@
 <span class="hljs-number">76</span> &#125; <span class="hljs-type">spinlock_t</span>;</code></pre></div>
 
 <p>在使用自旋锁之前，肯定要先定义一个自旋锁变量，定义方法如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">spinlock_t</span> lock; <span class="hljs-comment">//定义自旋锁</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">spinlock_t</span> lock; <span class="hljs-comment">//定义自旋锁</span></code></pre></div>
 
 <p>定义好自旋锁变量以后就可以使用相应的 API 函数来操作自旋锁。</p>
 <h3 id="2、自旋锁-API-函数"><a href="#2、自旋锁-API-函数" class="headerlink" title="2、自旋锁 API  函数"></a>2、自旋锁 API  函数</h3><p>最基本的自旋锁 API 函数如表 所示：</p>
@@ -487,7 +487,7 @@
 </tbody></table>
 <p>使用 spin_lock_irq&#x2F;spin_unlock_irq 的时候需要用户能够确定加锁之前的中断状态，但实际上内核很庞大，运行也是“千变万化”，我们是很难确定某个时刻的中断状态，因此不推荐使用spin_lock_irq&#x2F;spin_unlock_irq。</p>
 <p><strong>建议使用 spin_lock_irqsave&#x2F; spin_unlock_irqrestore</strong>，因为这一组函数会保存中断状态，在释放锁的时候会恢复中断状态。一般在线程中使用 spin_lock_irqsave&#x2F;spin_unlock_irqrestore，在中断中使用 spin_lock&#x2F;spin_unlock，示例代码如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> DEFINE_SPINLOCK(lock) <span class="hljs-comment">/* 定义并初始化一个锁 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-number">1</span> DEFINE_SPINLOCK(lock) <span class="hljs-comment">/* 定义并初始化一个锁 */</span>
 <span class="hljs-number">2</span>
 <span class="hljs-number">3</span> <span class="hljs-comment">/* 线程 A */</span>
 <span class="hljs-number">4</span> <span class="hljs-type">void</span> <span class="hljs-title function_">functionA</span> <span class="hljs-params">()</span>&#123;
@@ -524,7 +524,7 @@
 <h3 id="3、其他类型的锁"><a href="#3、其他类型的锁" class="headerlink" title="3、其他类型的锁"></a>3、其他类型的锁</h3><p>在自旋锁的基础上还衍生出了其他特定场合使用的锁，这些锁在驱动中其实用的不多，更多的是在 Linux 内核中使用，本节我们简单来了解一下这些衍生出来的锁。</p>
 <h4 id="读写自旋锁"><a href="#读写自旋锁" class="headerlink" title="读写自旋锁"></a>读写自旋锁</h4><p>现在有个学生信息表，此表存放着学生的年龄、家庭住址、班级等信息，此表可以随时被修改和读取。此表肯定是数据，那么必须要对其进行保护，如果我们现在使用自旋锁对其进行保护。每次只能一个读操作或者写操作，但是，实际上此表是可以并发读取的。只需要保证在修改此表的时候没人读取，或者在其他人读取此表的时候没有人修改此表就行了。也就是此表的读和写不能同时进行，但是可以多人并发的读取此表。</p>
 <p>像这样，<strong>当某个数据结构符合读&#x2F;写或生产者&#x2F;消费者模型的时候就可以使用读写自旋锁</strong>。读写自旋锁为读和写操作提供了不同的锁，一次只能允许一个写操作，也就是只能一个线程持有写锁，而且不能进行读操作。但是当没有写操作的时候允许一个或多个线程持有读锁，可以进行并发的读操作。Linux 内核使用 rwlock_t 结构体表示读写锁，结构体定义如下(删除了条件编译)：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
 	<span class="hljs-type">arch_rwlock_t</span> raw_lock;
 &#125; <span class="hljs-type">rwlock_t</span>;</code></pre></div>
 
@@ -532,7 +532,7 @@
 <p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/image-20200822125245285.png" srcset="/img/loading.gif" lazyload alt="image-20200822125245285"></p>
 <p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/image-20200822125304199.png" srcset="/img/loading.gif" lazyload alt="image-20200822125304199"></p>
 <h4 id="顺序锁"><a href="#顺序锁" class="headerlink" title="顺序锁"></a>顺序锁</h4><p>顺序锁在读写锁的基础上衍生而来的，使用读写锁的时候读操作和写操作不能同时进行。使用顺序锁的话可以允许在写的时候进行读操作，也就是实现同时读写，但是不允许同时进行并发的写操作。虽然顺序锁的读和写操作可以同时进行，但是如果在读的过程中发生了写操作，最好重新进行读取，保证数据完整性。顺序锁保护的资源不能是指针，因为如果在写操作的时候可能会导致指针无效，而这个时候恰巧有读操作访问指针的话就可能导致意外发生，比如读取野指针导致系统崩溃。Linux 内核使用 seqlock_t 结构体表示顺序锁，结构体定义如下：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">seqcount</span> <span class="hljs-title">seqcount</span>;</span>
     <span class="hljs-type">spinlock_t</span> lock;
 &#125; <span class="hljs-type">seqlock_t</span>;</code></pre></div>
@@ -558,7 +558,7 @@
 </ul>
 <p>信号量有一个信号量值，相当于一个房子有 10 把钥匙，这 10 把钥匙就相当于信号量值为10。因此，可以通过信号量来控制访问共享资源的访问数量，如果要想进房间，那就要先获取一把钥匙，信号量值减 1，直到 10 把钥匙都被拿走，信号量值为 0，这个时候就不允许任何人进入房间了，因为没钥匙了。如果有人从房间出来，那他要归还他所持有的那把钥匙，信号量值加 1，此时有 1 把钥匙了，那么可以允许进去一个人。相当于通过信号量控制访问资源的线程数，在初始化的时候将信号量值设置的大于 1，那么这个信号量就是<strong>计数型信号量</strong>，<strong>计数型信号量不能用于互斥访问</strong>，因为它允许多个线程同时访问共享资源。如果要互斥的访问共享资源那么信号量的值就不能大于 1，此时的信号量就是一个<strong>二值信号量</strong>。</p>
 <h3 id="2、信号量-API-函数"><a href="#2、信号量-API-函数" class="headerlink" title="2、信号量 API  函数"></a>2、信号量 API  函数</h3><p>Linux 内核使用 <strong>semaphore 结构体</strong>表示信号量，结构体内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">semaphore</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">semaphore</span> &#123;</span>
     <span class="hljs-type">raw_spinlock_t</span> lock;
     <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> count;
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">wait_list</span>;</span>
@@ -598,7 +598,7 @@
 </tr>
 </tbody></table>
 <p>信号量的使用如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">semaphore</span> <span class="hljs-title">sem</span>;</span> <span class="hljs-comment">/* 定义信号量 */</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">semaphore</span> <span class="hljs-title">sem</span>;</span> <span class="hljs-comment">/* 定义信号量 */</span>
 
 sema_init(&amp;sem, <span class="hljs-number">1</span>)； <span class="hljs-comment">/* 初始化信号量 */</span>
     
@@ -611,7 +611,7 @@ up(&amp;sem); <span class="hljs-comment">/* 释放信号量 */</span></code></pr
 
 
 <h2 id="5-互斥体"><a href="#5-互斥体" class="headerlink" title="5|互斥体"></a>5|互斥体</h2><h3 id="1、互斥体简介"><a href="#1、互斥体简介" class="headerlink" title="1、互斥体简介"></a>1、互斥体简介</h3><p>在 FreeRTOS 和 UCOS 中也有互斥体，将信号量的值设置为 1 就可以使用信号量进行互斥访问了，虽然可以通过信号量实现互斥，但是 Linux 提供了一个比信号量更专业的机制来进行互斥，它就是<strong>互斥体—mutex</strong>。<strong>互斥访问表示一次只有一个线程可以访问共享资源</strong>，不能递归申请互斥体。在我们编写 Linux 驱动的时候遇到需要互斥访问的地方建议使用 mutex。Linux 内核使用 mutex 结构体表示互斥体，定义如下(省略条件编译部分)：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mutex</span> &#123;</span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mutex</span> &#123;</span>
     <span class="hljs-comment">/* 1: unlocked, 0: locked, negative: locked, possible waiters */</span>
     <span class="hljs-type">atomic_t</span> count;
     <span class="hljs-type">spinlock_t</span> wait_lock;
@@ -665,7 +665,7 @@ up(&amp;sem); <span class="hljs-comment">/* 释放信号量 */</span></code></pr
 <h2 id="1-原子操作实验"><a href="#1-原子操作实验" class="headerlink" title="1|原子操作实验"></a>1|原子操作实验</h2><p>本例程我们在前面的 gpioled.c 文件基础上完成。在本节使用中我们使用原子操作来实现对 LED 这个设备的互斥访问，也就是一次只允许一个应用程序可以使用 LED 灯。</p>
 <h3 id="LED-驱动修改"><a href="#LED-驱动修改" class="headerlink" title="LED  驱动修改"></a>LED  驱动修改</h3><p>实验在实验驱动文件 gpioled.c 的基础上修改而来。新建名为“7_atomic”的文件夹，然后在 7_atomic 文件夹里面创建 vscode 工程，工作区命名为“atomic”。将 5_gpioled实验中的 gpioled.c 复制到 7_atomic 文件夹中，并且重命名为 atomic.c。</p>
 <p>本节实验重点就是使用atomic 来实现一次只能允许一个应用访问 LED，所以我们只需要在 atomic.c 文件源码的基础上加上添加 atomic 相关代码即可，完成以后的 atomic.c 文件内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -929,7 +929,7 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>驱动初始化函数初始化原子变量 lock，初始值设置为 1，这样每次就只允许一个应用使用 LED灯。</p>
 <hr>
 <h3 id="APP编写"><a href="#APP编写" class="headerlink" title="APP编写"></a>APP编写</h3><p>新建名为 atomicApp.c 的测试 APP，在里面输入如下所示内容：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
@@ -995,14 +995,14 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 
 <p>atomicApp.c 中的内容就是在 ledAPP.c 的基础上修改而来的，重点是加入了模拟占用 25 秒 LED 的代码。测试 APP 在获取到 LED 灯驱动的使用权以后会使用 25S，在使用的这段时间如果有其他的应用也去获取 LED 灯使用权的话肯定会失败！</p>
 <h3 id="运行测试："><a href="#运行测试：" class="headerlink" title="运行测试："></a>运行测试：</h3><p>将编译出来的 atomic.ko 和 atomicApp 这两个文件拷贝到 rootfs&#x2F;lib&#x2F;modules&#x2F;4.1.15目录中，重启开发板，进入到目录 lib&#x2F;modules&#x2F;4.1.15 中，输入如下命令加载 atomic.ko 驱动模块：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c">depmod <span class="hljs-comment">//第一次加载驱动的时候需要运行此命令</span>
+<div class="code-wrapper"><pre><code class="hljs c">depmod <span class="hljs-comment">//第一次加载驱动的时候需要运行此命令</span>
 modprobe atomic.ko  <span class="hljs-comment">//加载驱动</span></code></pre></div>
 
 <p>驱动加载成功以后就可以使用 atomicApp 软件来测试驱动是否工作正常，输入如下命令以后台运行模式打开 LED 灯，“&amp;”表示在后台运行 atomicApp 这个软件：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh">./atomicApp /dev/atomicled 1&amp; //打开 LED 灯</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh">./atomicApp /dev/atomicled 1&amp; //打开 LED 灯</code></pre></div>
 
 <p>然后在app程序结束前，再次输入：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/atomicled 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/atomicled 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
 
 <p>会发现提示 error can’t open file.</p>
 <h2 id="2-自旋锁实验"><a href="#2-自旋锁实验" class="headerlink" title="2|自旋锁实验"></a>2|自旋锁实验</h2><p>上一节我们使用原子变量实现了一次只能有一个应用程序访问 LED 灯，本节我们使用自旋锁来实现此功能。在使用自旋锁之前，先回顾一下自旋锁的使用注意事项：</p>
@@ -1012,7 +1012,7 @@ modprobe atomic.ko  <span class="hljs-comment">//加载驱动</span></code></pre
 </ul>
 <p>综上所述，在本节例程中，我们通过定义一个变量 dev_stats 表示设备的使用情况，dev_stats为 0 的时候表示设备没有被使用，dev_stats 大于 0 的时候表示设备被使用。驱动 open 函数中先判断 dev_stats 是否为 0，也就是判断设备是否可用，如果为 0 的话就使用设备，并且将 dev_stats加 1，表示设备被使用了。使用完以后在 release 函数中将 dev_stats 减 1，表示设备没有被使用了。因此真正实现设备互斥访问的是变量 dev_stats，但是我们要使用自旋锁对 dev_stats 来做保护。</p>
 <h3 id="驱动程序编写"><a href="#驱动程序编写" class="headerlink" title="驱动程序编写"></a>驱动程序编写</h3><p>本节实验在第上一节实验驱动文件 atomic.c 的基础上修改而来。新建名为“8_spinlock”的文件夹，然后在 8_spinlock 文件夹里面创建 vscode 工程，工作区命名为“spinlock”。将 7_atomic实验中的 atomic.c 复制到 8_spinlock 文件夹中，并且重命名为 spinlock.c。将原来使用 atomic 的地方换为 spinlock 即可，其他代码不需要修改，完成以后的 spinlock.c 文件内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -1286,15 +1286,15 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>在驱动入口函数 led_init 中调用 spin_lock_init 函数初始化自旋锁。</p>
 <h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><p>编译运行。</p>
 <p>驱动加载成功以后就可以使用 spinlockApp 软件测试驱动是否工作正常，测试方法和 前面测试小节中一样，先输入如下命令让 spinlockAPP 软件模拟占用 25S 的 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/spinlock_led 1&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/spinlock_led 1&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
 
 <p>紧接着再输入如下命令关闭 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/spinlock_led 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomicApp /</span>dev<span class="hljs-regexp">/spinlock_led 0 /</span><span class="hljs-regexp">/关闭 LED 灯</span></code></pre></div>
 
 <p>看一下能不能关闭 LED 灯，驱动正常工作的话并不会马上关闭 LED 灯，会提示你“open failed!”，必须等待第一个 atomicApp 软件运行完成(25S 计时结束)才可以再次操作 LED 灯。</p>
 <h2 id="3-信号量实验"><a href="#3-信号量实验" class="headerlink" title="3|信号量实验"></a>3|信号量实验</h2><p>本节我们来使用信号量实现了一次只能有一个应用程序访问 LED 灯，信号量可以导致休眠，因此信号量保护的临界区没有运行时间限制，可以在驱动的 open 函数申请信号量，然后在release 函数中释放信号量。但是<strong>信号量不能用在中断中</strong>，本节实验我们不会在中断中使用信号量。</p>
 <h3 id="LED-驱动修改-1"><a href="#LED-驱动修改-1" class="headerlink" title="LED  驱动修改"></a>LED  驱动修改</h3><p>本节实验在实验驱动文件 spinlock.c 的基础上修改而来。新建名为“9_semaphore”的文件夹，然后在 9_semaphore 文件夹里面创建 vscode 工程，工作区命名为“semaphore”。将8_spinlock 实验中的 spinlock.c 复制到 9_semaphore 文件夹中，并且重命名为 semaphore.c。将原来使用到自旋锁的地方换为信号量即可，其他的内容基本不变，完成以后的 semaphore.c 文件内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>
@@ -1561,16 +1561,16 @@ MODULE_AUTHOR(<span class="hljs-string">&quot;LXG@firestaradmin&quot;</span>);</
 <p>在驱动入口函数中调用 sema_init 函数初始化信号量 sem 的值为 1，相当于 sem是个二值信号量。</p>
 <h3 id="运行测试-1"><a href="#运行测试-1" class="headerlink" title="运行测试"></a>运行测试</h3><p>编译后，加载运行。</p>
 <p>测试方法和前面小节中一样，先输入如下命令让 软件模拟占用 25S 的 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomic /</span>dev<span class="hljs-regexp">/semaphore_led 1&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomic /</span>dev<span class="hljs-regexp">/semaphore_led 1&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
 
 <p>紧接着再输入如下命令关闭 LED 灯：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomic /</span>dev<span class="hljs-regexp">/semaphore_led 0&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs awk">.<span class="hljs-regexp">/atomic /</span>dev<span class="hljs-regexp">/semaphore_led 0&amp; /</span><span class="hljs-regexp">/打开 LED 灯</span></code></pre></div>
 
 <p>注意两个命令都是运行在后台，第一条命令先获取到信号量，因此可以操作 LED 灯，将LED 灯打开，并且占有 25S。第二条命令因为获取信号量失败而进入休眠状态，等待第一条命令运行完毕并释放信号量以后才拥有 LED 灯使用权，将 LED 灯关闭，运行结果如图 所示：</p>
 <p><img src="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/image-20200823150509236.png" srcset="/img/loading.gif" lazyload alt="image-20200823150509236"></p>
 <h2 id="4-互斥体实验"><a href="#4-互斥体实验" class="headerlink" title="4|互斥体实验"></a>4|互斥体实验</h2><p>前面我们使用原子操作、自旋锁和信号量实现了对 LED 灯的互斥访问，但是最适合互斥的就是互斥体 mutex 了。本节我们来学习一下如何使用 mutex 实现对 LED 灯的互斥访问。</p>
 <h3 id="LED驱动修改"><a href="#LED驱动修改" class="headerlink" title="LED驱动修改"></a>LED驱动修改</h3><p>本节实验在第上一节实验驱动文件 semaphore.c 的基础上修改而来。新建名为“10_mutex”的文件夹，然后在10_mutex文件夹里面创建vscode工程，工作区命名为“mutex”。将9_semaphore实验中的semaphore.c 复制到 10_mutex 文件夹中，并且重命名为 mutex.c。将原来使用到信号量的地方换为mutex即可，其他的内容基本不变，完成以后的mutex.c文件内容如下所示：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span>

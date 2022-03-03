@@ -242,7 +242,7 @@
             <div class="markdown-body">
               <h1 id="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动"><a href="#linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动" class="headerlink" title="linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动"></a>linux下烧录uboot、linux-kernel、dtb、rootfs到SD卡启动</h1><p><strong>[假设识别u盘为设备&#x2F;dev&#x2F;sdb]</strong></p>
 <p>@author:firestaradmin 2020年4月28日19:15:33</p>
-<h2 id="0-清除SD卡前1024KB的数据-dd命令（可选步骤）"><a href="#0-清除SD卡前1024KB的数据-dd命令（可选步骤）" class="headerlink" title="0.清除SD卡前1024KB的数据 dd命令（可选步骤）"></a>0.清除SD卡前1024KB的数据 dd命令（可选步骤）</h2><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024</code></pre></div>
+<h2 id="0-清除SD卡前1024KB的数据-dd命令（可选步骤）"><a href="#0-清除SD卡前1024KB的数据-dd命令（可选步骤）" class="headerlink" title="0.清除SD卡前1024KB的数据 dd命令（可选步骤）"></a>0.清除SD卡前1024KB的数据 dd命令（可选步骤）</h2><div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024</code></pre></div>
 
 <ul>
 <li><p><strong>if&#x3D;文件名</strong>：输入文件名，默认为标准输入。即指定源文件。</p>
@@ -258,7 +258,7 @@
 </li>
 </ul>
 <h2 id="1-插入SD卡并分区-fdisk命令"><a href="#1-插入SD卡并分区-fdisk命令" class="headerlink" title="1. 插入SD卡并分区 fdisk命令"></a>1. 插入SD卡并分区 fdisk命令</h2><p>Linux下使用fdisk命令进行分区：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">fdisk /dev/sdb</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">fdisk /dev/sdb</code></pre></div>
 
 <p>需要建立两个分区：  </p>
 <ul>
@@ -268,19 +268,19 @@
 </li>
 </ul>
 <p>（注意，第一个分区起始扇区需要为uboot保留一定空间 所以在扇区大小为512B时，一般第一个起始扇区地址为8192即512*8192B&#x3D;4MB保留给uboot）</p>
-<h2 id="2-使用mkfs命令进行分区的格式化"><a href="#2-使用mkfs命令进行分区的格式化" class="headerlink" title="2. 使用mkfs命令进行分区的格式化"></a>2. 使用mkfs命令进行分区的格式化</h2><div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs.vfat -F 32 -n <span class="hljs-string">&quot;boot&quot;</span> /dev/sdb1</code></pre></div>
+<h2 id="2-使用mkfs命令进行分区的格式化"><a href="#2-使用mkfs命令进行分区的格式化" class="headerlink" title="2. 使用mkfs命令进行分区的格式化"></a>2. 使用mkfs命令进行分区的格式化</h2><div class="code-wrapper"><pre><code class="hljs bash">mkfs.vfat -F 32 -n <span class="hljs-string">&quot;boot&quot;</span> /dev/sdb1</code></pre></div>
 
 <p>将sd卡分区1格式化为FAT32</p>
 <p><strong>-n</strong> “boot” 设置卷标为boot</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs.ext4 -F -L <span class="hljs-string">&quot;rootfs&quot;</span> /dev/sdb2</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">mkfs.ext4 -F -L <span class="hljs-string">&quot;rootfs&quot;</span> /dev/sdb2</code></pre></div>
 
 <p>将sd卡分区2格式化为ext4</p>
 <p><strong>-L</strong> “rootfs” 设置卷标为rootfs</p>
 <p>格式化前需要先取消挂载，使用umount命令</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">umount /dev/sdb1</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">umount /dev/sdb1</code></pre></div>
 
 <h2 id="3-使用dd命令烧写uboot-imx到sd卡起始位置"><a href="#3-使用dd命令烧写uboot-imx到sd卡起始位置" class="headerlink" title="3. 使用dd命令烧写uboot.imx到sd卡起始位置"></a>3. 使用dd命令烧写uboot.imx到sd卡起始位置</h2><p>在uboot目录下打开终端 </p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=uboot.imx of=/dev/sdb bs=1024 seek=1 conv=fsync</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=uboot.imx of=/dev/sdb bs=1024 seek=1 conv=fsync</code></pre></div>
 
 <ul>
 <li><p>if&#x3D;文件名：输入文件名，默认为标准输入。即指定源文件。 </p>
@@ -302,21 +302,21 @@
 </li>
 </ul>
 <h2 id="4-将zImage和dtb设备树文件拷贝到第一个分区"><a href="#4-将zImage和dtb设备树文件拷贝到第一个分区" class="headerlink" title="4. 将zImage和dtb设备树文件拷贝到第一个分区"></a>4. 将zImage和dtb设备树文件拷贝到第一个分区</h2><p>将p1挂载到某个地方</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/boot
+<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/boot
 mount /dev/sdb1 /media/boot/
 <span class="hljs-built_in">cp</span> zImage *.dtb /media/boot/</code></pre></div>
 
-<h2 id="5-拷贝根文件系统至第二个分区"><a href="#5-拷贝根文件系统至第二个分区" class="headerlink" title="5. 拷贝根文件系统至第二个分区"></a><strong>5.</strong> <strong>拷贝根文件系统至第二个分区</strong></h2><h3 id="1-压缩根文件系统"><a href="#1-压缩根文件系统" class="headerlink" title="1.压缩根文件系统"></a>1.压缩根文件系统</h3><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> rootfs/
+<h2 id="5-拷贝根文件系统至第二个分区"><a href="#5-拷贝根文件系统至第二个分区" class="headerlink" title="5. 拷贝根文件系统至第二个分区"></a><strong>5.</strong> <strong>拷贝根文件系统至第二个分区</strong></h2><h3 id="1-压缩根文件系统"><a href="#1-压缩根文件系统" class="headerlink" title="1.压缩根文件系统"></a>1.压缩根文件系统</h3><div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> rootfs/
 tar -vcjf rootfs.tar.bz2 *</code></pre></div>
 
-<h3 id="2-挂载设备并解压"><a href="#2-挂载设备并解压" class="headerlink" title="2.挂载设备并解压"></a>2.挂载设备并解压</h3><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/rootfs
+<h3 id="2-挂载设备并解压"><a href="#2-挂载设备并解压" class="headerlink" title="2.挂载设备并解压"></a>2.挂载设备并解压</h3><div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /media/rootfs
 mount /dev/sdb2 /media/rootfs/
 tar jxfm \**rootfs.tar.bz2\** -C /media/rootfs/</code></pre></div>
 
 <h2 id="6-同步和卸载u盘"><a href="#6-同步和卸载u盘" class="headerlink" title="6.同步和卸载u盘"></a>6.同步和卸载u盘</h2><p>输入<code>sync</code>同步数据，然后<code>umount /run/media/sda1/</code>去卸载一个目录，</p>
 <p>然后用<code>df</code> 指令查看 sda1 这个目录已经不存在了，表明已经卸载了，U 盘可以正常拔出了！</p>
 <h2 id="7-插入开发板，并修改bootcmd和bootargs启动系统进行测试"><a href="#7-插入开发板，并修改bootcmd和bootargs启动系统进行测试" class="headerlink" title="7. 插入开发板，并修改bootcmd和bootargs启动系统进行测试"></a>7. 插入开发板，并修改bootcmd和bootargs启动系统进行测试</h2><h1 id="命令附录："><a href="#命令附录：" class="headerlink" title="命令附录："></a>命令附录：</h1><h2 id="fdisk命令："><a href="#fdisk命令：" class="headerlink" title="fdisk命令："></a>fdisk命令：</h2><p>磁盘操作命令</p>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><div class="hljs code-wrapper"><pre><code class="hljs css">fdisk <span class="hljs-selector-attr">[必要参数]</span><span class="hljs-selector-attr">[选择参数]</span></code></pre></div>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><div class="code-wrapper"><pre><code class="hljs css">fdisk <span class="hljs-selector-attr">[必要参数]</span><span class="hljs-selector-attr">[选择参数]</span></code></pre></div>
 
 <h3 id="必要参数："><a href="#必要参数：" class="headerlink" title="必要参数："></a>必要参数：</h3><ul>
 <li><p>-l 列出素所有分区表</p>
@@ -356,7 +356,7 @@ tar jxfm \**rootfs.tar.bz2\** -C /media/rootfs/</code></pre></div>
 </ul>
 <h2 id="mkfs命令："><a href="#mkfs命令：" class="headerlink" title="mkfs命令："></a>mkfs命令：</h2><p>Linux mkfs命令用于在特定的分区上建立 linux 文件系统</p>
 <p>使用方式 : </p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs [-V] [-t fstype] [fs-options] filesys [blocks]</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">mkfs [-V] [-t fstype] [fs-options] filesys [blocks]</code></pre></div>
 
 <h3 id="参数-："><a href="#参数-：" class="headerlink" title="参数 ："></a>参数 ：</h3><ul>
 <li><p>device ： 预备检查的硬盘分区，例如：&#x2F;dev&#x2F;sda1</p>
@@ -374,10 +374,10 @@ tar jxfm \**rootfs.tar.bz2\** -C /media/rootfs/</code></pre></div>
 </ul>
 <h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ul>
 <li><p>在 &#x2F;dev&#x2F;hda5 上建一个 msdos 的档案系统，同时检查是否有坏轨存在，并且将过程详细列出来 :</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">mkfs -V -t msdos -c /dev/hda5</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">mkfs -V -t msdos -c /dev/hda5</code></pre></div>
 </li>
 <li><p>将sda6分区格式化为ext3格式</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash">mfks -t ext3 /dev/sda6</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs bash">mfks -t ext3 /dev/sda6</code></pre></div>
 
 <p><strong>注意：这里的文件系统是要指定的，比如 ext3 ；reiserfs ；ext2 ；fat32 ；msdos 等。</strong></p>
 </li>
@@ -385,7 +385,7 @@ tar jxfm \**rootfs.tar.bz2\** -C /media/rootfs/</code></pre></div>
 <h2 id="dd命令："><a href="#dd命令：" class="headerlink" title="dd命令："></a>dd命令：</h2><p>Linux dd命令用于读取、转换并输出数据。</p>
 <p>dd可从标准输入或文件中读取数据，根据指定的格式来转换数据，再输出到文件、设备或标准输出。</p>
 <p>如我们上面使用的命令</p>
-<div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024
+<div class="code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/dev/sdb bs=1024 count=1024
 <span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=uboot.imx of=/dev/sdb bs=1024 seek=1 conv=fsync</code></pre></div>
 
 <h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明:"></a>参数说明:</h3><p>  if&#x3D;文件名：输入文件名，默认为标准输入。即指定源文件。</p>

@@ -246,7 +246,7 @@
 <p>在后台运行的软件可以使用<strong>“kill -9 pid(进程 ID)”</strong>命令来关闭掉，首先使用<strong>“ps”</strong>命令查看要关闭的软件 PID 是多少，ps 命令用于查看所有当前正在运行的进程，并且会给出进程的 PID。</p>
 <p><strong>总结：</strong></p>
 <p><strong>软件后面加“&amp;”、使用 ps 查看要关闭的软件 PID、使用“kill -9 pid”来关闭指定的软件。</strong></p>
-<div class="hljs code-wrapper"><pre><code class="hljs stata">xxx/<span class="hljs-keyword">app</span>.exe &amp;		#runnning <span class="hljs-keyword">app</span> <span class="hljs-keyword">in</span> background
+<div class="code-wrapper"><pre><code class="hljs stata">xxx/<span class="hljs-keyword">app</span>.exe &amp;		#runnning <span class="hljs-keyword">app</span> <span class="hljs-keyword">in</span> background
 ps -ef | grep <span class="hljs-keyword">app</span> 	#searching <span class="hljs-keyword">app</span>&#x27;s PID</code></pre></div>
 
 
@@ -260,7 +260,7 @@ ps -ef | grep <span class="hljs-keyword">app</span> 	#searching <span class="hlj
 <p><img src="/2020/08/13/NOTE/Linux/Linux%E4%B8%8B%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E8%BD%AF%E4%BB%B6/image-20220214101916666.png" srcset="/img/loading.gif" lazyload alt="image-20220214101916666"></p>
 <h2 id="3-nohup-x2F-xxx-gt-xx-log-2-gt-amp-1-amp"><a href="#3-nohup-x2F-xxx-gt-xx-log-2-gt-amp-1-amp" class="headerlink" title="3.  nohup .&#x2F;xxx &gt; xx.log 2&gt;&amp;1 &amp;"></a>3.  nohup .&#x2F;xxx &gt; xx.log 2&gt;&amp;1 &amp;</h2><p>但是使用上方的 nohup 可能还会有问题，当我们运行多个程序后台，并且想把程序的输出储存至不同的文件中怎么办？</p>
 <p>这个时候就要使用 &gt; 符号 将输出定向至 文件，如：</p>
-<div class="hljs code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">nohup</span> ./a.py &gt; py.log 2&gt;&amp;1 &amp;</code></pre></div>
+<div class="code-wrapper"><pre><code class="hljs sh"><span class="hljs-built_in">nohup</span> ./a.py &gt; py.log 2&gt;&amp;1 &amp;</code></pre></div>
 
 <p><img src="/2020/08/13/NOTE/Linux/Linux%E4%B8%8B%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E8%BD%AF%E4%BB%B6/image-20220214102419451.png" srcset="/img/loading.gif" lazyload alt="image-20220214102419451"></p>
 <p>运行后，会在当前路径下生成 py.log 文件</p>
