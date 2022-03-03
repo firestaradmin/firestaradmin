@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          13| Linux自带的LED灯驱动
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          14| Linux MISC驱动实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/13%E3%80%81Linux%E8%87%AA%E5%B8%A6%E7%9A%84LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/13/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/14%E3%80%81Linux_MISC%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux自带的LED灯驱动前面我们都是自己编写 LED 灯驱动，其实像 LED 灯这样非常基础的设备驱动，Linux 内核已经集成了。Linux 内核的 LED 灯驱动采用 platform 框架，因此我们只需要按照要求在设备树文件中添加相应的 LED 节点即可，本章我们就来学习如何使用 Linux 内核自带的 LED 驱动来驱动 I.MX6U-ALPHA 开发板上的 LED0。 1| Linu
+          Linux MISC驱动实验misc 的意思是混合、杂项的，因此 MISC 驱动也叫做杂项驱动，也就是当我们板子上的某些外设无法进行分类的时候就可以使用 MISC 驱动。 MISC 驱动其实就是最简单的字符设备驱动，通常嵌套在 platform 总线驱动中，实现复杂的驱动，本章我们就来学习一下 MISC 驱动的编写。 一、MISC 设备驱动简介所有的 MISC 设备驱动的主设备号都为 10，不同的
         </a>
       </p>
 
@@ -529,15 +529,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
-          10| Linux阻塞非阻塞IO实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
+          11| Linux异步通知实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux阻塞非阻塞IO实验阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种设备访问模式，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。 一、阻塞和非阻塞IO1|阻塞和非阻塞简介这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引
+          异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处
         </a>
       </p>
 
@@ -586,15 +586,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
-          11| Linux异步通知实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
+          10| Linux阻塞非阻塞IO实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/11%E3%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/10%E3%80%81Linux%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          异步通知实验在前面使用阻塞或者非阻塞的方式来读取驱动中按键值都是应用程序主动读取的，对于非阻塞方式来说还需要应用程序通过 poll 函数不断的轮询。最好的方式就是驱动程序能主动向应用程序发出通知，报告自己可以访问，然后应用程序在从驱动程序中读取或写入数据，类似于我们在裸机例程中讲解的中断。Linux 提供了异步通知这个机制来完成此功能，本章我们就来学习一下异步通知以及如何在驱动中添加异步通知相关处
+          Linux阻塞非阻塞IO实验阻塞和非阻塞 IO 是 Linux 驱动开发里面很常见的两种设备访问模式，在编写驱动的时候一定要考虑到阻塞和非阻塞。本章我们就来学习一下阻塞和非阻塞 IO，以及如何在驱动程序中处理阻塞与非阻塞，如何在驱动程序使用等待队列和 poll 机制。 一、阻塞和非阻塞IO1|阻塞和非阻塞简介这里的“IO”并不是我们学习 STM32 或者其他单片机的时候所说的“GPIO”(也就是引
         </a>
       </p>
 
@@ -814,15 +814,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          7| Linux按键输入驱动实验
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
+          4| Linux  设备树
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
           
-          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
+          Linux  设备树什么是“设备树”，本章我们就来详细的谈一谈设备树。掌握设备树是 Linux 驱动开发人员必备的技能！因为在新版本的 Linux 中，ARM 相关的驱动全部采用了设备树(也有支持老式驱动的，比较少)，最新出的 CPU 其驱动开发也基本都是基于设备树的，比如 ST 新出的 STM32MP157、NXP的I.MX8系列等。 我们所使用的Linux版本为4.1.15，其支持设备树，所以
         </a>
       </p>
 
@@ -858,6 +858,8 @@
               <a href="/tags/Linux/">Linux</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
@@ -930,15 +932,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
-          4| Linux  设备树
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          7| Linux按键输入驱动实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/4%E3%80%81Linux%E8%AE%BE%E5%A4%87%E6%A0%91/" target="_self">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux  设备树什么是“设备树”，本章我们就来详细的谈一谈设备树。掌握设备树是 Linux 驱动开发人员必备的技能！因为在新版本的 Linux 中，ARM 相关的驱动全部采用了设备树(也有支持老式驱动的，比较少)，最新出的 CPU 其驱动开发也基本都是基于设备树的，比如 ST 新出的 STM32MP157、NXP的I.MX8系列等。 我们所使用的Linux版本为4.1.15，其支持设备树，所以
+          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
         </a>
       </p>
 
@@ -974,8 +976,6 @@
               <a href="/tags/Linux/">Linux</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
@@ -1103,15 +1103,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/" target="_self">
-          2| LED灯驱动开发实验记录
+        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/" target="_self">
+          3| 新字符设备驱动实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/" target="_self">
           
-          LED灯驱动开发实验记录一、Linux 下 LED  灯驱动原理Linux 下的任何外设驱动，最终都是要配置相应的硬件寄存器。所以本章的 LED 灯驱动最终也是对 I.MX6ULL 的 IO 口进行配置，与裸机实验不同的是，在 Linux 下编写驱动要符合 Linux的驱动框架。I.MX6U-ALPHA开发板上的LED连接到 I.MX6ULL 的 GPIO1_IO03 这个引脚上，因此本实验的重点
+          新字符设备驱动实验经过前两实验的实战操作，我们已经掌握了 Linux 字符设备驱动开发的基本步骤，字符设备驱动开发重点是使用 register_chrdev 函数注册字符设备，当不再使用设备的时候就使用unregister_chrdev 函数注销字符设备，驱动模块加载成功以后还需要手动使用 mknod 命令创建设备节点。 register_chrdev 和 unregister_chrdev 这两
         </a>
       </p>
 
@@ -1160,15 +1160,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/" target="_self">
-          3| 新字符设备驱动实验
+        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/" target="_self">
+          2| LED灯驱动开发实验记录
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/3%E3%80%81%E6%96%B0%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8/" target="_self">
+        <a href="/2020/09/10/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/2%E3%80%81LED%E7%81%AF%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          新字符设备驱动实验经过前两实验的实战操作，我们已经掌握了 Linux 字符设备驱动开发的基本步骤，字符设备驱动开发重点是使用 register_chrdev 函数注册字符设备，当不再使用设备的时候就使用unregister_chrdev 函数注销字符设备，驱动模块加载成功以后还需要手动使用 mknod 命令创建设备节点。 register_chrdev 和 unregister_chrdev 这两
+          LED灯驱动开发实验记录一、Linux 下 LED  灯驱动原理Linux 下的任何外设驱动，最终都是要配置相应的硬件寄存器。所以本章的 LED 灯驱动最终也是对 I.MX6ULL 的 IO 口进行配置，与裸机实验不同的是，在 Linux 下编写驱动要符合 Linux的驱动框架。I.MX6U-ALPHA开发板上的LED连接到 I.MX6ULL 的 GPIO1_IO03 这个引脚上，因此本实验的重点
         </a>
       </p>
 
