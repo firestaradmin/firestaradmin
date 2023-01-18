@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="firestaradmin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="FreeRTOS 任务的通信、同步  待到采菊六月天，满城尽带黄金甲。  @firestaradmin  今天浅浅记录一下关于FreeRTOS 的任务间的 通信、同步等知识，主要是一些概念和应用场景的浅析记录，不包含具体代码用法。 总是会忘记，所以在此记录。 FreeRTOS 里主要有 消息队列、信号量、互斥量、事件、软件定时器、人物通知等功能模块用于任务间（或者任务和中断间）的通信和同步等功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS 任务的通信、同步">
+<meta property="og:url" content="http://firestaradmin.top/2022/03/22/NOTE/ARM/FreeRTOS/FreeRTOS%20%E4%BB%BB%E5%8A%A1%E9%80%9A%E4%BF%A1&%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:site_name" content="firestaradmin&#39;s Fortune">
+<meta property="og:description" content="FreeRTOS 任务的通信、同步  待到采菊六月天，满城尽带黄金甲。  @firestaradmin  今天浅浅记录一下关于FreeRTOS 的任务间的 通信、同步等知识，主要是一些概念和应用场景的浅析记录，不包含具体代码用法。 总是会忘记，所以在此记录。 FreeRTOS 里主要有 消息队列、信号量、互斥量、事件、软件定时器、人物通知等功能模块用于任务间（或者任务和中断间）的通信和同步等功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-21T16:00:00.000Z">
+<meta property="article:author" content="firestaradmin">
+<meta property="article:tag" content="FreeRTOS">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>FreeRTOS 任务的通信、同步 - firestaradmin&#39;s Fortune</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/hybrid.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_3219187_rorsfvmryjl.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"firestaradmin.top","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>firestaradmin&#39;s fortune</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页啦
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                文章
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default_banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="FreeRTOS 任务的通信、同步">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      firestaradmin
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-22 00:00" pubdate>
+        2022年3月22日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      33 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">FreeRTOS 任务的通信、同步</h1>
+            
+            <div class="markdown-body">
+              <h1 id="FreeRTOS-任务的通信、同步"><a href="#FreeRTOS-任务的通信、同步" class="headerlink" title="FreeRTOS 任务的通信、同步"></a>FreeRTOS 任务的通信、同步</h1><hr>
+<blockquote>
+<p>待到采菊六月天，满城尽带黄金甲。  @firestaradmin</p>
+</blockquote>
+<p>今天浅浅记录一下关于FreeRTOS 的任务间的 通信、同步等知识，主要是一些概念和应用场景的浅析记录，不包含具体代码用法。</p>
+<p>总是会忘记，所以在此记录。</p>
+<p>FreeRTOS 里主要有 消息队列、信号量、互斥量、事件、软件定时器、人物通知等功能模块用于任务间（或者任务和中断间）的通信和同步等功能。</p>
+<h2 id="1、队列"><a href="#1、队列" class="headerlink" title="1、队列"></a>1、队列</h2><p>队列又称消息队列，是一种常用于任务间通信的数据结构，队列可以在任务与任务间、中断和任务间传递信息，实现了任务接收来自其他任务或中断的不固定长度的消息，任务能够从队列里面读取消息。消息队列是一种异步的通信方式。</p>
+<p>当队列中的消息是空时，读取消息的任务将被阻塞，用户还可以指定阻塞的任务时间 xTicksToWait，在这段时间中，如果队列为空，该任务将保持阻塞状态以等待队列数据有效，当队列中有新消息时，被阻塞的任务会被唤醒并处理新消息；当等待的时间超过了指定的阻塞时间，即使队列中尚无有效数据，任务也会自动从阻塞态转为就绪态。</p>
+<p>通过消息队列服务，任务或中断服务例程可以将一条或多条消息放入消息队列中。同样，一个或多个任务可以从消息队列中获得消息。当有多个消息发送到消息队列时，通常是将先进入消息队列的消息先传给任务，也就是说，任务先得到的是最先进入消息队列的消息，即先进先出原则（FIFO），但是也支持后进先出原则（LIFO）。</p>
+<p>FreeRTOS 中使用队列数据结构实现任务异步通信工作，具有如下特性：</p>
+<ul>
+<li>消息支持先进先出方式排队，支持异步读写工作方式。</li>
+<li>读写队列均支持超时机制。</li>
+<li>消息支持后进先出方式排队，往队首发送消息（LIFO）。 </li>
+<li>可以允许不同长度（不超过队列节点最大值）的任意类型消息。</li>
+<li>一个任务能够从任意一个消息队列接收和发送消息。</li>
+<li>多个任务能够从同一个消息队列接收和发送消息。</li>
+<li>当队列使用结束后，可以通过删除队列函数进行删除</li>
+</ul>
+<h2 id="2、信号量"><a href="#2、信号量" class="headerlink" title="2、信号量"></a>2、信号量</h2><p>信号量（Semaphore）是一种实现任务间通信的机制，可以<strong>实现任务之间同步或临界资源的互斥访问</strong>，常用于协助一组相互竞争的任务来访问临界资源。在多任务系统中，各任 务之间需要同步或互斥实现临界资源的保护，信号量功能可以为用户提供这方面的支持。</p>
+<p>抽象的来讲，信号量是一个非负整数，所有获取它的任务都会将该整数减一（获取它当然是为了使用资源），当该整数值为零时，所有试图获取它的任务都将处于阻塞状态。</p>
+<p>通常一个信号量的计数值用于对应有效的资源数，表示剩下的可被占用的互斥资源数。其值的含义分两种情况：</p>
+<ul>
+<li>0：表示没有积累下来的释放信号量操作，且有可能有在此信号量上阻塞的任务。 </li>
+<li>正值，表示有一个或多个释放信号量操作。</li>
+</ul>
+<h3 id="2-1-二值信号量"><a href="#2-1-二值信号量" class="headerlink" title="2.1 二值信号量"></a>2.1 二值信号量</h3><p><strong>一般的，二值信号量更多用于同步功能，当然也可以用于临界资源访问，但一般临界资源访问我们使用互斥量（具体原因看下面互斥信号量讲解）。</strong></p>
+<p>二值信号量和互斥信号量（以下使用互斥量表示互斥信号量）非常相似，但是有一些细微差别：互斥量有优先级继承机制，二值信号量则没有这个机制。这使得二值信号量更偏向应用于同步功能（任务与任务间的同步或任务和中断间同步），而互斥量更偏向应用于临界资源的访问。</p>
+<p>用作同步时，信号量在创建后应被置为空，任务 1 获取信号量而进入阻塞，任务 2 在某种条件发生后，释放信号量，于是任务 1 获得信号量得以进入就绪态，如果任务 1 的优先级是最高的，那么就会立即切换任务，从而达到了两个任务间的同步。同样的，在中断服务函数中释放信号量，任务 1 也会得到信号量，从而达到任务与中断间的同步。</p>
+<p>还记得我们经常说的中断要快进快出吗，在裸机开发中我们经常是在中断中做一个标记，然后在退出的时候进行轮询处理，这个就是类似我们使用信号量进行同步的，当标记发生了，我们再做其他事情。在 FreeRTOS 中我们用信号量用于同步，任务与任务的同步，中断与任务的同步，可以大大提高效率。</p>
+<p>可以将二值信号量看作只有一个消息的队列，因此这个队列只能为空或满（因此称为二值），我们在运用的时候只需要知道队列中是否有消息即可，而无需关注消息是什么。</p>
+<hr>
+<h3 id="2-2-计数信号量"><a href="#2-2-计数信号量" class="headerlink" title="2.2 计数信号量"></a>2.2 计数信号量</h3><p><strong>二进制信号量可以被认为是长度为 1 的队列</strong>，而计数信号量则可以被认为长度大于 1的队列，信号量使用者依然不必关心存储在队列中的消息，只需关心队列是否有消息即可。</p>
+<p>顾名思义，<strong>计数信号量肯定是用于计数的，在实际的使用中，我们常将计数信号量用于事件计数与资源管理</strong>。每当某个事件发生时，任务或者中断将释放一个信号量（信号量计数值加 1），当处理被事件时（一般在任务中处理），处理任务会取走该信号量（信号量计数值减 1），信号量的计数值则表示还有多少个事件没被处理。此外，系统还有很多资源，我们也可以使用计数信号量进行资源管理，信号量的计数值表示系统中可用的资源数目，任务必须先获取到信号量才能获取资源访问权，当信号量的计数值为零时表示系统没有可用的资源，但是要注意，在使用完资源的时候必须归还信号量，否则当计数值为 0的时候任务就无法访问该资源了。</p>
+<h2 id="3、互斥信号量"><a href="#3、互斥信号量" class="headerlink" title="3、互斥信号量"></a>3、互斥信号量</h2><p>互斥量又称互斥信号量（本质是信号量），是一种特殊的二值信号量，<strong>它和信号量不同的是，它支持互斥量所有权、递归访问以及防止优先级翻转的特性，用于实现对临界资源的独占式处理</strong>。</p>
+<p>任意时刻互斥量的状态只有两种，开锁或闭锁。当互斥量被任务持有时，该互斥量处于闭锁状态，这个任务获得互斥量的所有权。当该任务释放这个互斥量时，该互斥量处于开锁状态，任务失去该互斥量的所有权。</p>
+<p>当一个任务持有互斥量时，其他任务将不能再对该互斥量进行开锁或持有。持有该互斥量的任务也能够再次获得这个锁而不被挂起，这就是递归访问，也就是递归互斥量的特性，这个特性与一般的信号量有很大的不同，在信号量中，由于已经不存在可用的信号量，任务递归获取信号量时会发生主动挂起任务最终形成死锁。</p>
+<p><strong>如果想要用于实现同步（任务之间或者任务与中断之间），二值信号量或许是更好的选择，虽然互斥量也可以用于任务与任务、任务与中断的同步，但是互斥量更多的是用于保护资源的互锁。</strong></p>
+<p>用于互锁的互斥量可以充当保护资源的令牌，当一个任务希望访问某个资源时，它必须先获取令牌。当任务使用完资源后，必须还回令牌，以便其它任务可以访问该资源。是不是很熟悉，在我们的二值信号量里面也是一样的，用于保护临界资源，保证多任务的访问井然有序。当任务获取到信号量的时候才能开始使用被保护的资源，使用完就释放信号量，下一个任务才能获取到信号量从而可用使用被保护的资源。</p>
+<p>但是信号量会导致的另一个潜在问题，那就是任务优先级翻转（具体会在下文讲解）。而 FreeRTOS 提供的互斥量可以通过优先级继承算法，可以降低优先级翻转问题产生的响，所以，用于临界资源的保护一般建议使用互斥量。</p>
+<h3 id="3-1-优先级翻转和继承"><a href="#3-1-优先级翻转和继承" class="headerlink" title="3.1 优先级翻转和继承"></a>3.1 优先级翻转和继承</h3><p>这里引用<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_26972441/article/details/120708702?ops_request_misc=%7B%22request_id%22:%22164792077716780255269879%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=164792077716780255269879&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduend~default-1-120708702.nonecase&utm_term=freertos%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%87%8F&spm=1018.2226.3001.4450">(242条消息) RTOS信号量与互斥量的理解_奔跑的小赛兔的博客-CSDN博客_freertos互斥信号量</a> 博客。</p>
+<p><strong>优先级反转</strong>：低优先级先执行，高优先级后执行。<br><strong>优先级继承</strong>：将低优先级暂时拉到和高优先级相同的优先级（继承高优先级的优先级）。</p>
+<h4 id="优先级反转的举例："><a href="#优先级反转的举例：" class="headerlink" title="优先级反转的举例："></a>优先级反转的举例：</h4><p>任务1优先级 &gt; 任务2优先级 &gt; 任务3优先级</p>
+<p>任务1首先执行（首先不断获取二值信号量，由于之前没有释放二值信号量的操作，所以任务1首先释放一次二值信号量，然后进入获取二值信号量的等待）</p>
+<p>任务2接着执行。</p>
+<p>任务3执行（首先获取信号量，由于之前任务1释放了信号量，所以任务3就得到了这个信号量，在释放这个二值信号量之前发起很多次任务调度，在任务调度的过程中发现了优先级更高的任务1，由于任务3没有释放掉这个信号量，所以任务1暂时被阻塞，等待任务3释放信号量。在此同时，任务调度还在发起，检测到次优先级任务2，所以此时任务2开始运行直到结束再切换到任务3，任务3接着运行直到结束。而任务1一直处于阻塞状态，直到任务2、任务3运行完才能运行任务1）.这个过程中就发生了优先级反转，任务1本来优先级最高却没有机会及时执行。</p>
+<p>由于优先级反转危害太大，说以这种情况就用互斥量代替二值信号量，互斥量具有优先级继承机制，有效避免了优先级反转的危害。</p>
+<h4 id="优先级继承的举例："><a href="#优先级继承的举例：" class="headerlink" title="优先级继承的举例："></a>优先级继承的举例：</h4><p>任务1优先级 &gt; 任务2优先级 &gt; 任务3优先级</p>
+<p>和上述例子的区别在于，任务调度发起后，任务1由于没得到任务3释放的信号量而阻塞，此时系统将任务3的优先级提升到和任务1相同（优先级继承），目的就是任务3释放信号量之前任务2不能运行，任务3一释放信号量任务1马上运行。那任务1等待的时间最多也就是任务3运行的时间，这样就节省了等待任务2的时间，有效的保证了实时性。</p>
+<h2 id="4、事件"><a href="#4、事件" class="headerlink" title="4、事件"></a>4、事件</h2><p>事件是一种实现任务间通信的机制，主要用于实现多任务间的同步，但事件通信只能是事件类型的通信，无数据传输。与信号量不同的是，它可以实现一对多，多对多的同步。即一个任务可以等待多个事件的发生：可以是任意一个事件发生时唤醒任务进行事件处理；也可以是几个事件都发生后才唤醒任务进行事件处理。同样，也可以是多个任务同步多个事件。</p>
+<hr>
+<p>TODO</p>
+<h2 id="5、软件定时器"><a href="#5、软件定时器" class="headerlink" title="5、软件定时器"></a>5、软件定时器</h2><p>定时器，是指从指定的时刻开始，经过一个指定时间，然后触发一个超时事件，用户可以自定义定时器的周期与频率。类似生活中的闹钟，我们可以设置闹钟每天什么时候响，还能设置响的次数，是响一次还是每天都响。</p>
+<hr>
+<p>TODO</p>
+<h2 id="6、任务通知"><a href="#6、任务通知" class="headerlink" title="6、任务通知"></a>6、任务通知</h2><p>FreeRTOS 从 V8.2.0 版本开始提供任务通知这个功能，每个任务都有一个 32 位的通知值，在大多数情况下，任务通知可以替代二值信号量、计数信号量、事件组，也可以替代长度为 1 的队列（可以保存一个 32 位整数或指针值）。</p>
+<hr>
+<p>TODO</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/">NOTE</a>
+                    
+                      <a class="hover-with-bg" href="/categories/NOTE/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/FreeRTOS/">FreeRTOS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/07/18/NOTE/Script/%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BA%E6%8E%A7%E5%88%B6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">终端输出控制</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/09/NOTE/Windows/%E5%88%A0%E9%99%A4%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E5%90%8E%E7%BC%80%E5%92%8C%E7%AE%AD%E5%A4%B4/">
+                        <span class="hidden-mobile">WIN10删除快捷方式后缀和小箭头</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
