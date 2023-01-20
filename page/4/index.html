@@ -193,23 +193,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="7| Linux按键输入驱动实验">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="9| Linux 中断实验">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
-          7| Linux按键输入驱动实验
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/" target="_self">
+          9| Linux 中断实验
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+        <a href="/2020/09/12/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/9%E3%80%81Linux%E4%B8%AD%E6%96%AD%E5%AE%9E%E9%AA%8C/" target="_self">
           
-          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
+          Linux 中断实验不管是裸机实验还是 Linux 下的驱动实验，中断都是频繁使用的功能，在裸机中使用中断我们需要做一大堆的工作，比如配置寄存器，使能 IRQ 等等。Linux 内核提供了完善的中断框架，我们只需要申请中断，然后注册中断处理函数即可，使用非常方便，不需要一系列复杂的寄存器配置。本章我们就来学习一下如何在 Linux 下使用中断。 一、 Linux 中断简介1|Linux  中断 A
         </a>
       </p>
 
@@ -217,8 +217,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-11 00:00" pubdate>
-              2020-09-11
+            <time datetime="2020-09-12 00:00" pubdate>
+              2020-09-12
             </time>
           </div>
         
@@ -245,71 +245,6 @@
               <a href="/tags/Linux/">Linux</a>
             
               <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="5| pinctrl 和 gpio 子系统实验">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          5| pinctrl 和 gpio 子系统实验
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
-          
-          pinctrl 和 gpio 子系统实验上次我们编写了基于设备树的 LED 驱动，但是驱动的本质还是没变，都是配置 LED 灯所使用的 GPIO 寄存器，驱动开发方式和裸机基本没啥区别。 Linux 是一个庞大而完善的系统，尤其是驱动框架，像 GPIO 这种最基本的驱动不可能采用“原始”的裸机驱动开发方式，否则就相当于你买了一辆车，结果每天推着车去上班。Linux 内核提供了 pinctrl 和
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-11 00:00" pubdate>
-              2020-09-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Embedded/">Embedded</a>
-            
-              <a href="/tags/ARM/">ARM</a>
-            
-              <a href="/tags/Linux/">Linux</a>
-            
-              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
-            
-              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
             
           </div>
         
@@ -386,6 +321,71 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="5| pinctrl 和 gpio 子系统实验">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
+          5| pinctrl 和 gpio 子系统实验
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/5%E3%80%81pinctrl%E5%92%8Cgpio%E5%AD%90%E7%B3%BB%E7%BB%9F/" target="_self">
+          
+          pinctrl 和 gpio 子系统实验上次我们编写了基于设备树的 LED 驱动，但是驱动的本质还是没变，都是配置 LED 灯所使用的 GPIO 寄存器，驱动开发方式和裸机基本没啥区别。 Linux 是一个庞大而完善的系统，尤其是驱动框架，像 GPIO 这种最基本的驱动不可能采用“原始”的裸机驱动开发方式，否则就相当于你买了一辆车，结果每天推着车去上班。Linux 内核提供了 pinctrl 和
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-11 00:00" pubdate>
+              2020-09-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Embedded/">Embedded</a>
+            
+              <a href="/tags/ARM/">ARM</a>
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+              <a href="/tags/dts%E8%AE%BE%E5%A4%87%E6%A0%91/">dts设备树</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/" target="_self">
           <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="6| Linux 并发与竞争">
         </a>
@@ -403,6 +403,69 @@
         <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/6%E3%80%81Linux%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%AB%9E%E4%BA%89/" target="_self">
           
           Linux 并发与竞争Linux是一个多任务操作系统，肯定会存在多个任务共同操作同一段内存或者设备的情况，多个任务甚至中断都能访问的资源叫做共享资源，就和共享单车一样。 在驱动开发中要注意对共享资源的保护，也就是要处理对共享资源的并发访问。比如共享单车，大家按照谁扫谁骑走的原则来共用这个单车，如果没有这个并发访问共享单车的原则存在，只怕到时候为了一辆单车要打起来了。在 Linux 驱动编写过程中对
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-11 00:00" pubdate>
+              2020-09-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/NOTE/">NOTE</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
+            
+              <a href="/categories/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/">驱动开发篇</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Embedded/">Embedded</a>
+            
+              <a href="/tags/ARM/">ARM</a>
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/">驱动开发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="7| Linux按键输入驱动实验">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          7| Linux按键输入驱动实验
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/11/NOTE/ARM-Linux/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%AF%87/7%E3%80%81Linux%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5%E9%A9%B1%E5%8A%A8%E5%AE%9E%E9%AA%8C/" target="_self">
+          
+          Linux按键输入驱动实验1|设备树修改I.MX6U-ALPHA 开发板上的 KEY 使用了 UART1_CTS_B 这个 PIN，打开 imx6ull-lxg-emmc.dts，在 iomuxc 节点的 imx6ul-evk 子节点下创建一个名为“pinctrl_key”的子节点，节点内容如下所示： pinctrl_key: keygrp &amp;#123;     fsl,pins &#x3D; &lt;
         </a>
       </p>
 
@@ -1348,68 +1411,9 @@
             
               <a href="/tags/Linux/">Linux</a>
             
-              <a href="/tags/Script/">Script</a>
-            
               <a href="/tags/Makefile/">Makefile</a>
             
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/08/15/NOTE/ARM-Linux/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%AB%98%E7%BA%A7C%E7%AC%94%E8%AE%B0/" target="_self">
-          <img src="/img/default_index.png" srcset="/img/loading.gif" lazyload alt="高级C嵌入式深入知识点记录">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/08/15/NOTE/ARM-Linux/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%AB%98%E7%BA%A7C%E7%AC%94%E8%AE%B0/" target="_self">
-          高级C嵌入式深入知识点记录
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/08/15/NOTE/ARM-Linux/%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%AB%98%E7%BA%A7C%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          ​        如果你爱编程，那么你就应该爱C，如果你爱C，那么你就应该爱指针，如果你爱指针，那么你就应该爱函数指针。        —— 东南大学 凌明   ARMCC编译器，函数怎么传参的？（寄存器用哪些？传参顺序？）变量类型的大小？（char 几位? Short? Int? long？）ARMCC编译器后，链接的地址分配？有哪些段？程序各部分存储位置？（绝对地址？相对地址？TEXT段？D
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-08-15 00:00" pubdate>
-              2020-08-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/NOTE/">NOTE</a>
-            
-              <a href="/categories/NOTE/ARM-Linux/">ARM-Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Embedded/">Embedded</a>
-            
-              <a href="/tags/ARM/">ARM</a>
-            
-              <a href="/tags/C/">C</a>
+              <a href="/tags/Script/">Script</a>
             
           </div>
         

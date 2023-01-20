@@ -32,6 +32,7 @@
 <meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/20191022202405.png">
 <meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20220303215823827.png">
 <meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20220303220121161.png">
+<meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20230118124344622.png">
 <meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20220303220540885.png">
 <meta property="og:image" content="http://firestaradmin.top/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20220303221136593.png">
 <meta property="article:published_time" content="2022-03-01T16:00:00.000Z">
@@ -219,7 +220,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.2k 字
+      3.4k 字
     </span>
   
 
@@ -228,7 +229,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      27 分钟
+      29 分钟
     </span>
   
 
@@ -374,6 +375,15 @@ git --work-tree=/home/xx/www/hexo --git-dir=/home/xx/myRepo/myblog.git checkout 
 
 
 <p>这样添加脚本后，每次上传Git 后，仓库内容就会被推送到<code>/home/xx/www/hexo</code> 目录下了</p>
+<h3 id="2-3-Git-仓库地址"><a href="#2-3-Git-仓库地址" class="headerlink" title="2.3 Git 仓库地址"></a>2.3 Git 仓库地址</h3><p>项目的地址：ssh:&#x2F;&#x2F;用户名@ + 地址 + ：+ 端口 + 项目所在目录 </p>
+<div class="hljs code-wrapper"><pre><code class="hljs shell">内网 若端口是默认ssh的22，可省略
+git clone ssh://ubuntu@192.168.1.110:/home/xx/myRepo/myblog.git
+
+外网 假设端口为10000，映射树莓派ssh的22
+git clone ssh://ubuntu@www.xxx.com:10000/home/xx/myRepo/myblog.git</code></pre></div>
+
+
+
 <h2 id="3-在树莓派上部署Nginx-服务"><a href="#3-在树莓派上部署Nginx-服务" class="headerlink" title="3. 在树莓派上部署Nginx 服务"></a>3. 在树莓派上部署Nginx 服务</h2><p>安装nginx</p>
 <div class="hljs code-wrapper"><pre><code class="hljs shell">sudo apt install nginx</code></pre></div>
 
@@ -400,6 +410,8 @@ git --work-tree=/home/xx/www/hexo --git-dir=/home/xx/myRepo/myblog.git checkout 
 <h2 id="4-上传Hexo-网页代码至树莓派Git"><a href="#4-上传Hexo-网页代码至树莓派Git" class="headerlink" title="4. 上传Hexo 网页代码至树莓派Git"></a>4. 上传Hexo 网页代码至树莓派Git</h2><p>生成Hexo 网页：</p>
 <div class="hljs code-wrapper"><pre><code class="hljs sh">hexo g</code></pre></div>
 
+<p>修改hexo git仓库地址，打开根目录下的 <code>_config.yml</code>文件：</p>
+<p><img src="/2022/03/02/NOTE/Web/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2(hexo)/image-20230118124344622.png" srcset="/img/loading.gif" lazyload alt="image-20230118124344622"></p>
 <p>部署Hexo 网页文件至Git：</p>
 <div class="hljs code-wrapper"><pre><code class="hljs sh">hexo d</code></pre></div>
 
